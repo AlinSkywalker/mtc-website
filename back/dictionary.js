@@ -7,14 +7,20 @@ const dictionaryRouter = (app, passport) => {
   //regionDictionary
   app.get('/regionDictionary', passport.authenticate('jwt', { session: false }), (req, res) => {
     pool.query(`SELECT * FROM region`, (error, result) => {
-      if (error) console.log(error);
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+      }
       res.send(result);
     });
   })
   app.put('/regionDictionary', passport.authenticate('jwt', { session: false }), (req, res) => {
     const { name, desc } = req.body;
     pool.query(`INSERT INTO region (region_name, region_desk) VALUES(?,?)`, [name, desc], (error, result) => {
-      if (error) console.log(error);
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+      }
       res.json({ success: true });
     })
   })
@@ -22,7 +28,10 @@ const dictionaryRouter = (app, passport) => {
     const id = req.params.id;
     const { name, desc } = req.body;
     pool.query(`UPDATE region SET region_name='${name}',region_desk='${desc}' WHERE id=${id}`, (error, result) => {
-      if (error) console.log(error);
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+      }
       res.json({ success: true });
     })
   })
@@ -30,22 +39,32 @@ const dictionaryRouter = (app, passport) => {
   app.delete('/regionDictionary/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
     const id = req.params.id;
     pool.query(`DELETE FROM region WHERE id=${id}`, (error, result) => {
-      if (error) console.log(error);
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+      }
       res.json({ success: true });
     })
   })
 
   // districtDictionary
   app.get('/districtDictionary/', passport.authenticate('jwt', { session: false }), (req, res) => {
-    pool.query(`SELECT r.*, reg.id AS region_id, reg.region_name FROM raion r LEFT JOIN region reg on reg.id=r.rai_reg`, (error, result) => {
-      if (error) console.log(error);
+    pool.query(`SELECT r.*, reg.id AS region_id, reg.region_name FROM raion r 
+                LEFT JOIN region reg on reg.id=r.rai_reg`, (error, result) => {
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+      }
       res.send(result);
     });
   })
   app.put('/districtDictionary', passport.authenticate('jwt', { session: false }), (req, res) => {
     const { rai_name, rai_desc, rai_num, rai_reg } = req.body;
     pool.query(`INSERT INTO raion (rai_name, rai_desc, rai_num, rai_reg) VALUES(?,?,?,?)`, [rai_name, rai_desc, rai_num, rai_reg], (error, result) => {
-      if (error) console.log(error);
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+      }
       res.json({ success: true });
     })
   })
@@ -57,22 +76,33 @@ const dictionaryRouter = (app, passport) => {
       rai_desc='${rai_desc}', 
       rai_num='${rai_num}', 
       rai_reg='${rai_reg}' WHERE id=${id}`, (error, result) => {
-      if (error) console.log(error);
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+      }
       res.json({ success: true });
     })
   })
   app.delete('/districtDictionary/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
     const id = req.params.id;
     pool.query(`DELETE FROM raion WHERE id=${id}`, (error, result) => {
-      if (error) console.log(error);
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+      }
       res.json({ success: true });
     })
   })
 
   // summitDictionary
   app.get('/summitDictionary/', passport.authenticate('jwt', { session: false }), (req, res) => {
-    pool.query(`SELECT m.*, r.rai_name FROM mount m LEFT JOIN raion r ON m.mount_rai=r.id`, (error, result) => {
-      if (error) console.log(error);
+    pool.query(`SELECT m.*, r.rai_name, r.rai_reg, reg.region_name FROM mount m 
+                LEFT JOIN raion r ON m.mount_rai=r.id
+                LEFT JOIN region reg ON r.rai_reg = region.id`, (error, result) => {
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+      }
       res.send(result);
     });
   })
@@ -80,7 +110,10 @@ const dictionaryRouter = (app, passport) => {
     const { mount_rai, mount_desc, mount_height, mount_name } = req.body;
     pool.query(`INSERT INTO mount (mount_rai, mount_desc, mount_height, mount_name) VALUES(?,?,?,?)`,
       [mount_rai, mount_desc, mount_height, mount_name], (error, result) => {
-        if (error) console.log(error);
+        if (error) {
+          console.log(error);
+          res.status(500).json({ success: false, message: error });
+        }
         res.json({ success: true });
       })
   })
@@ -92,14 +125,20 @@ const dictionaryRouter = (app, passport) => {
       mount_desc='${mount_desc}', 
       mount_height='${mount_height}', 
       mount_name='${mount_name}' WHERE id=${id}`, (error, result) => {
-      if (error) console.log(error);
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+      }
       res.json({ success: true });
     })
   })
   app.delete('/summitDictionary/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
     const id = req.params.id;
     pool.query(`DELETE FROM mount WHERE id=${id}`, (error, result) => {
-      if (error) console.log(error);
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+      }
       res.json({ success: true });
     })
   })
@@ -107,8 +146,14 @@ const dictionaryRouter = (app, passport) => {
 
   // routeDictionary
   app.get('/routeDictionary/', passport.authenticate('jwt', { session: false }), (req, res) => {
-    pool.query(`SELECT r.*, m.mount_name FROM route r LEFT JOIN mount m ON r.rout_mount=m.id`, (error, result) => {
-      if (error) console.log(error);
+    pool.query(`SELECT r.*, m.mount_name, m.mount_rai, rai.rai_name, rai.rai_reg, reg.region_name  FROM route r 
+                LEFT JOIN mount m ON r.rout_mount=m.id
+                LEFT JOIN raion rai ON m.mount_rai=rai.id
+                LEFT JOIN region reg ON rai.rai_reg = region.id`, (error, result) => {
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+      }
       res.send(result);
     });
   })
@@ -116,7 +161,10 @@ const dictionaryRouter = (app, passport) => {
     const { rout_mount, rout_desc, rout_per, rout_sup, rout_tip, rout_comp, rout_name } = req.body;
     pool.query(`INSERT INTO route (rout_mount, rout_desc, rout_per, rout_sup, rout_tip, rout_comp, rout_name) VALUES(?,?,?,?,?,?,?)`,
       [rout_mount, rout_desc, rout_per, rout_sup, rout_tip, rout_comp, rout_name], (error, result) => {
-        if (error) console.log(error);
+        if (error) {
+          console.log(error);
+          res.status(500).json({ success: false, message: error });
+        }
         res.json({ success: true });
       })
   })
@@ -132,29 +180,43 @@ const dictionaryRouter = (app, passport) => {
       rout_comp='${rout_comp}', 
       rout_name='${rout_name}'
       WHERE id=${id}`, (error, result) => {
-      if (error) console.log(error);
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+      }
       res.json({ success: true });
     })
   })
   app.delete('/routeDictionary/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
     const id = req.params.id;
     pool.query(`DELETE FROM route WHERE id=${id}`, (error, result) => {
-      if (error) console.log(error);
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+      }
       res.json({ success: true });
     })
   })
 
   // laboratoryDictionary
   app.get('/laboratoryDictionary/', passport.authenticate('jwt', { session: false }), (req, res) => {
-    pool.query(`SELECT l.*, r.rai_name FROM laba l LEFT JOIN raion r ON l.laba_rai=r.id`, (error, result) => {
-      if (error) console.log(error);
+    pool.query(`SELECT l.*, r.rai_name, r.rai_reg, reg.region_name FROM laba l 
+                LEFT JOIN raion r ON l.laba_rai=r.id
+                LEFT JOIN region reg ON r.rai_reg = region.id`, (error, result) => {
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+      }
       res.send(result);
     });
   })
   app.put('/laboratoryDictionary', passport.authenticate('jwt', { session: false }), (req, res) => {
     const { laba_name, laba_desk, laba_rai } = req.body;
     pool.query(`INSERT INTO laba (laba_name, laba_desk, laba_rai) VALUES(?,?,?)`, [laba_name, laba_desk, laba_rai], (error, result) => {
-      if (error) console.log(error);
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+      }
       res.json({ success: true });
     })
   })
@@ -165,7 +227,10 @@ const dictionaryRouter = (app, passport) => {
       laba_name='${laba_name}',
       laba_desk='${laba_desk}', 
       laba_rai='${laba_rai}' WHERE id=${id}`, (error, result) => {
-      if (error) console.log(error);
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+      }
       res.json({ success: true });
     })
   })
@@ -173,7 +238,10 @@ const dictionaryRouter = (app, passport) => {
   app.delete('/laboratoryDictionary/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
     const id = req.params.id;
     pool.query(`DELETE FROM laba WHERE id=${id}`, (error, result) => {
-      if (error) console.log(error);
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+      }
       res.json({ success: true });
     })
   })
@@ -181,7 +249,10 @@ const dictionaryRouter = (app, passport) => {
   // contractorDictionary
   app.get('/contractorDictionary/', passport.authenticate('jwt', { session: false }), (req, res) => {
     pool.query(`SELECT * FROM contractor`, (error, result) => {
-      if (error) console.log(error);
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+      }
       res.send(result);
     });
   })
@@ -195,7 +266,10 @@ const dictionaryRouter = (app, passport) => {
       cont_tel1 } = req.body;
     pool.query(`INSERT INTO contractor (cont_fio, cont_desc, cont_email,cont_tel3, cont_tel2, cont_tel1) VALUES(?,?,?,?,?,?)`,
       [cont_fio, cont_desc, cont_email, cont_tel3, cont_tel2, cont_tel1], (error, result) => {
-        if (error) console.log(error);
+        if (error) {
+          console.log(error);
+          res.status(500).json({ success: false, message: error });
+        }
         res.json({ success: true });
       })
   })
@@ -215,7 +289,10 @@ const dictionaryRouter = (app, passport) => {
       cont_tel2='${cont_tel2}',
       cont_tel1='${cont_tel1}' 
       WHERE id=${id}`, (error, result) => {
-      if (error) console.log(error);
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+      }
       res.json({ success: true });
     })
   })
@@ -223,15 +300,24 @@ const dictionaryRouter = (app, passport) => {
   app.delete('/contractorDictionary/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
     const id = req.params.id;
     pool.query(`DELETE FROM contractor WHERE id=${id}`, (error, result) => {
-      if (error) console.log(error);
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+      }
       res.json({ success: true });
     })
   })
 
   // baseDictionary
   app.get('/baseDictionary/', passport.authenticate('jwt', { session: false }), (req, res) => {
-    pool.query(`SELECT b.*, c.cont_fio, r.rai_name FROM base b LEFT JOIN raion r on b.base_rai=r.id LEFT JOIN contractor c on b.base_cont = c.id`, (error, result) => {
-      if (error) console.log(error);
+    pool.query(`SELECT b.*, c.cont_fio, r.rai_name, r.rai_reg, reg.region_name FROM base b 
+                LEFT JOIN raion r on b.base_rai=r.id
+                LEFT JOIN region reg ON r.rai_reg = region.id
+                LEFT JOIN contractor c on b.base_cont = c.id`, (error, result) => {
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+      }
       res.send(result);
     });
   })
@@ -243,7 +329,10 @@ const dictionaryRouter = (app, passport) => {
       base_cont } = req.body;
     pool.query(`INSERT INTO base (base_rai, base_name, base_adres,base_desc, base_cont) VALUES(?,?,?,?,?)`,
       [base_rai, base_name, base_adres, base_desc, base_cont], (error, result) => {
-        if (error) console.log(error);
+        if (error) {
+          console.log(error);
+          res.status(500).json({ success: false, message: error });
+        }
         res.json({ success: true });
       })
   })
@@ -261,14 +350,20 @@ const dictionaryRouter = (app, passport) => {
       base_desc='${base_desc}',
       base_cont='${base_cont}',
       WHERE id=${id}`, (error, result) => {
-      if (error) console.log(error);
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+      }
       res.json({ success: true });
     })
   })
   app.delete('/baseDictionary/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
     const id = req.params.id;
     pool.query(`DELETE FROM base WHERE id=${id}`, (error, result) => {
-      if (error) console.log(error);
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+      }
       res.json({ success: true });
     })
   })
@@ -276,7 +371,10 @@ const dictionaryRouter = (app, passport) => {
   // cityDictionary
   app.get('/cityDictionary/', passport.authenticate('jwt', { session: false }), (req, res) => {
     pool.query(`SELECT * FROM city`, (error, result) => {
-      if (error) console.log(error);
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+      }
       res.send(result);
     });
   })
@@ -284,7 +382,10 @@ const dictionaryRouter = (app, passport) => {
     const { name_city, desc_city, pred_city, tel_city, email } = req.body;
     pool.query(`INSERT INTO city ( name_city, desc_city, pred_city, tel_city, email) VALUES(?,?,?,?,?)`,
       [name_city, desc_city, pred_city, tel_city, email], (error, result) => {
-        if (error) console.log(error);
+        if (error) {
+          console.log(error);
+          res.status(500).json({ success: false, message: error });
+        }
         res.send(result);
       });
   })
@@ -297,14 +398,20 @@ const dictionaryRouter = (app, passport) => {
       pred_city='${pred_city}',
       tel_city='${tel_city}',
       email='${email}' WHERE id=${id}`, (error, result) => {
-      if (error) console.log(error);
+      if (error){
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+      }
       res.send(result);
     });
   })
   app.delete('/cityDictionary/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
     const id = req.params.id;
     pool.query(`DELETE FROM city WHERE id=${id}`, (error, result) => {
-      if (error) console.log(error);
+      if (error){
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+      }
       res.send(result);
     });
   })
