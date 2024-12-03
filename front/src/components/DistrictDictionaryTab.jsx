@@ -10,7 +10,7 @@ import apiClient from '../api/api'
 import { useQueryClient } from '@tanstack/react-query'
 import { DictionaryEditToolbar } from './DictionaryEditToolbar'
 import { SelectEditInputCell } from './SelectEditInputCell'
-import * as Yup  from 'yup'
+// import * as Yup  from 'yup'
 import {ActionsCellItem} from './ActionsCellItem'
 import {DictionaryEditableTable} from './DictionaryEditableTable'
 
@@ -23,12 +23,12 @@ const defaultDictionaryItem = {
   region_name: '',
 }
 
-const validationSchema = Yup.object({
-  rai_reg: Yup.string().required(),
-  rai_num: Yup.string().required(),
-  rai_name: Yup.string().required(),
-  rai_desc: Yup.string().required(),
-});
+// const validationSchema = Yup.object({
+//   rai_reg: Yup.string().required(),
+//   rai_num: Yup.string().required(),
+//   rai_name: Yup.string().required(),
+//   rai_desc: Yup.string().required(),
+// });
 
 export const DistrictDictionaryTab = () => {
   const queryClient = useQueryClient()
@@ -129,14 +129,14 @@ export const DistrictDictionaryTab = () => {
     // если все норм - пойдем сохранять
     // если что-то не так надо вывести ошибку и НЕ сохранять на бэк
 
-    const isValid = validationSchema.isValid(newRow)
-    if(!isValid){
-      // что-то для индикации ошибки
+    // const isValid = validationSchema.isValid(newRow)
+    // if(!isValid){
+    //   // что-то для индикации ошибки
 
-      // возвращаем строку обратно
-      const errorRow = { ...newRow, error: true }
-      return errorRow
-    }
+    //   // возвращаем строку обратно
+    //   const errorRow = { ...newRow, error: true }
+    //   return errorRow
+    // }
 
     const handleSave = newRow.isNew ? handleSaveNewItem : handleSaveEditedItem
     handleSave(newRow).then((res) => {
