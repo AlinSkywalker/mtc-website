@@ -37,7 +37,8 @@ const dictionaryRouter = (app, passport) => {
 
   // districtDictionary
   app.get('/districtDictionary/', passport.authenticate('jwt', { session: false }), (req, res) => {
-    pool.query(`SELECT r.*, reg.id AS region_id, reg.region_name FROM raion r LEFT JOIN region reg on reg.id=r.rai_reg`, (error, result) => {
+    pool.query(`SELECT r.*, reg.id AS region_id, reg.region_name FROM raion r 
+                LEFT JOIN region reg on reg.id=r.rai_reg`, (error, result) => {
       if (error) console.log(error);
       res.send(result);
     });
@@ -71,7 +72,9 @@ const dictionaryRouter = (app, passport) => {
 
   // summitDictionary
   app.get('/summitDictionary/', passport.authenticate('jwt', { session: false }), (req, res) => {
-    pool.query(`SELECT m.*, r.rai_name FROM mount m LEFT JOIN raion r ON m.mount_rai=r.id`, (error, result) => {
+    pool.query(`SELECT m.*, r.rai_name, r.rai_reg, reg.region_name FROM mount m 
+                LEFT JOIN raion r ON m.mount_rai=r.id
+                LEFT JOIN region reg ON r.rai_reg = region.id`, (error, result) => {
       if (error) console.log(error);
       res.send(result);
     });
@@ -107,7 +110,10 @@ const dictionaryRouter = (app, passport) => {
 
   // routeDictionary
   app.get('/routeDictionary/', passport.authenticate('jwt', { session: false }), (req, res) => {
-    pool.query(`SELECT r.*, m.mount_name FROM route r LEFT JOIN mount m ON r.rout_mount=m.id`, (error, result) => {
+    pool.query(`SELECT r.*, m.mount_name, m.mount_rai, rai.rai_name, rai.rai_reg, reg.region_name  FROM route r 
+                LEFT JOIN mount m ON r.rout_mount=m.id
+                LEFT JOIN raion rai ON m.mount_rai=rai.id
+                LEFT JOIN region reg ON rai.rai_reg = region.id`, (error, result) => {
       if (error) console.log(error);
       res.send(result);
     });
@@ -146,7 +152,9 @@ const dictionaryRouter = (app, passport) => {
 
   // laboratoryDictionary
   app.get('/laboratoryDictionary/', passport.authenticate('jwt', { session: false }), (req, res) => {
-    pool.query(`SELECT l.*, r.rai_name FROM laba l LEFT JOIN raion r ON l.laba_rai=r.id`, (error, result) => {
+    pool.query(`SELECT l.*, r.rai_name, r.rai_reg, reg.region_name FROM laba l 
+                LEFT JOIN raion r ON l.laba_rai=r.id
+                LEFT JOIN region reg ON r.rai_reg = region.id`, (error, result) => {
       if (error) console.log(error);
       res.send(result);
     });
@@ -230,7 +238,10 @@ const dictionaryRouter = (app, passport) => {
 
   // baseDictionary
   app.get('/baseDictionary/', passport.authenticate('jwt', { session: false }), (req, res) => {
-    pool.query(`SELECT b.*, c.cont_fio, r.rai_name FROM base b LEFT JOIN raion r on b.base_rai=r.id LEFT JOIN contractor c on b.base_cont = c.id`, (error, result) => {
+    pool.query(`SELECT b.*, c.cont_fio, r.rai_name, r.rai_reg, reg.region_name FROM base b 
+                LEFT JOIN raion r on b.base_rai=r.id
+                LEFT JOIN region reg ON r.rai_reg = region.id
+                LEFT JOIN contractor c on b.base_cont = c.id`, (error, result) => {
       if (error) console.log(error);
       res.send(result);
     });
