@@ -84,7 +84,7 @@ export const DictionaryPage = () => {
           </TabList>
         </Box>
         {dictionaryTabs.map((tab, index) => (
-          <TabPanel key={index} value={index}>
+          <TabPanel key={index} value={index} sx={{ p: '10px 0' }}>
             {value === index && tab.component}
           </TabPanel>
         ))}

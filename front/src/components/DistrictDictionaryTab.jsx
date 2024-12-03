@@ -1,19 +1,10 @@
 import React from 'react'
 import { useFetchDistrictDictionaryList } from '../queries/dictionary'
-import {
-  DataGrid,
-  GridRowModes,
-  GridRowEditStopReasons,
-} from '@mui/x-data-grid'
-import { Grid2 } from '@mui/material'
 import apiClient from '../api/api'
 import { useQueryClient } from '@tanstack/react-query'
-import { DictionaryEditToolbar } from './DictionaryEditToolbar'
 import { SelectEditInputCell } from './SelectEditInputCell'
-// import * as Yup  from 'yup'
-import {ActionsCellItem} from './ActionsCellItem'
-import {DictionaryEditableTable} from './DictionaryEditableTable'
-
+import * as Yup from 'yup'
+import { DictionaryEditableTable } from './DictionaryEditableTable'
 
 const defaultDictionaryItem = {
   rai_reg: '',
@@ -23,18 +14,17 @@ const defaultDictionaryItem = {
   region_name: '',
 }
 
-// const validationSchema = Yup.object({
-//   rai_reg: Yup.string().required(),
-//   rai_num: Yup.string().required(),
-//   rai_name: Yup.string().required(),
-//   rai_desc: Yup.string().required(),
-// });
+const validationSchema = Yup.object({
+  rai_reg: Yup.string().required('Поле Регион обязательно для заполнения'),
+  rai_num: Yup.string().required('Поле Номер обязательно для заполнения'),
+  rai_name: Yup.string().required('Поле Название обязательно для заполнения'),
+})
 
 export const DistrictDictionaryTab = () => {
   const queryClient = useQueryClient()
   const { isLoading, data } = useFetchDistrictDictionaryList()
 
-  const [rows, setRows] = React.useState(data)
+  const [rows, setRows] = React.useState([])
   // console.log('rows', rows)
   const [rowModesModel, setRowModesModel] = React.useState({})
 
@@ -70,22 +60,6 @@ export const DistrictDictionaryTab = () => {
   }
 
   const columns = [
-    {
-      field: 'actions',
-      type: 'actions',
-      headerName: '',
-      width: 100,
-      cellClassName: 'actions',
-      getActions: ({ id }) => {
-        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit
-        return <ActionsCellItem 
-          isInEditMode={isInEditMode} 
-          handleSaveClick={handleSaveClick} 
-          handleCancelClick={handleCancelClick}
-          handleEditClick={handleEditClick}
-          handleDeleteItem={handleDeleteItem}/>
-      },
-    },
     { field: 'rai_name', headerName: 'Название', width: 350, editable: true },
     { field: 'rai_desc', headerName: 'Описание', width: 350, editable: true },
     { field: 'rai_num', headerName: 'Номер', width: 150, editable: true },
@@ -102,25 +76,9 @@ export const DistrictDictionaryTab = () => {
       },
     },
   ]
-
-  const handleEditClick = (id) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } })
-  }
-
-  const handleSaveClick = (id) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } })
-  }
-
-  const handleCancelClick = (id) => () => {
-    setRowModesModel({
-      ...rowModesModel,
-      [id]: { mode: GridRowModes.View, ignoreModifications: true },
-    })
-
-    const editedRow = rows.find((row) => row.id === id)
-    if (editedRow.isNew) {
-      setRows(rows.filter((row) => row.id !== id))
-    }
+  const fieldToFocus = 'rai_name'
+  const columnVisibilityModel = {
+    region_name: false,
   }
 
   const processRowUpdate = (newRow) => {
@@ -128,40 +86,48 @@ export const DistrictDictionaryTab = () => {
     // сначала надо провалидировать строку
     // если все норм - пойдем сохранять
     // если что-то не так надо вывести ошибку и НЕ сохранять на бэк
-
-    // const isValid = validationSchema.isValid(newRow)
-    // if(!isValid){
-    //   // что-то для индикации ошибки
-
-    //   // возвращаем строку обратно
-    //   const errorRow = { ...newRow, error: true }
-    //   return errorRow
-    // }
-
-    const handleSave = newRow.isNew ? handleSaveNewItem : handleSaveEditedItem
-    handleSave(newRow).then((res) => {
-      queryClient.invalidateQueries({ queryKey: ['districtDictionary'] })
-      const updatedRow = { ...newRow, isNew: false }
-      setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)))
-      return updatedRow
-    }).catch(e=>{
-      // ошибка с бэка - надо как то вывести, и оно видимо не сохранилось
-      const errorRow = { ...newRow, error: true }
-      return errorRow
-    })
+    let resultRow = newRow
+    try {
+      validationSchema.validateSync(newRow, { abortEarly: false })
+      //   console.log(resultRow)
+      const handleSave = newRow.isNew ? handleSaveNewItem : handleSaveEditedItem
+      handleSave(newRow)
+        .then((res) => {
+          queryClient.invalidateQueries({ queryKey: ['districtDictionary'] })
+          const updatedRow = { ...newRow, isNew: false, error: false }
+          setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)))
+          resultRow = updatedRow
+        })
+        .catch((e) => {
+          // ошибка с бэка - надо как то вывести, и оно видимо не сохранилось
+          const errorRow = { ...newRow, error: true }
+          setRows(rows.map((row) => (row.id === newRow.id ? errorRow : row)))
+          resultRow = errorRow
+        })
+    } catch (e) {
+      const errors = e.inner.map((item) => ({ path: item.path, message: item.message }))
+      // console.log(errors)
+      const errorRow = { ...newRow, error: true, errors }
+      setRows(rows.map((row) => (row.id === newRow.id ? errorRow : row)))
+      resultRow = errorRow
+    }
+    // console.log('after try')
+    return resultRow
   }
-
+  // console.log('columns1', columns)
   return (
-    <DictionaryEditableTable 
-    rows={rows}
-    setRows={setRows}
-    rowModesModel={rowModesModel}
-    setRowModesModel={setRowModesModel}
-    columns={columns}
-    processRowUpdate={processRowUpdate}
-    fieldToFocus={fieldToFocus}
-    columnVisibilityModel={columnVisibilityModel}
-    defaultDictionaryItem={defaultDictionaryItem}
+    <DictionaryEditableTable
+      rows={rows}
+      setRows={setRows}
+      rowModesModel={rowModesModel}
+      setRowModesModel={setRowModesModel}
+      columns={columns}
+      processRowUpdate={processRowUpdate}
+      fieldToFocus={fieldToFocus}
+      columnVisibilityModel={columnVisibilityModel}
+      defaultDictionaryItem={defaultDictionaryItem}
+      isLoading={isLoading}
+      handleDeleteItem={handleDeleteItem}
     />
   )
 }

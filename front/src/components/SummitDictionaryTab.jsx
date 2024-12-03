@@ -15,6 +15,7 @@ import SaveIcon from '@mui/icons-material/Save'
 import CancelIcon from '@mui/icons-material/Close'
 import { DictionaryEditToolbar } from './DictionaryEditToolbar'
 import { SelectEditInputCell } from './SelectEditInputCell'
+import { DictionaryEditableTable } from './DictionaryEditableTable'
 
 const defaultDictionaryItem = {
   mount_rai: '',
@@ -68,55 +69,6 @@ export const SummitDictionaryTab = () => {
   }
 
   const columns = [
-    {
-      field: 'actions',
-      type: 'actions',
-      headerName: '',
-      width: 100,
-      cellClassName: 'actions',
-      getActions: ({ id }) => {
-        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit
-
-        if (isInEditMode) {
-          return [
-            <GridActionsCellItem
-              key={1}
-              icon={<SaveIcon />}
-              label='Сохранить'
-              sx={{
-                color: 'primary.main',
-              }}
-              onClick={handleSaveClick(id)}
-            />,
-            <GridActionsCellItem
-              key={2}
-              icon={<CancelIcon />}
-              label='Отменить'
-              className='textPrimary'
-              onClick={handleCancelClick(id)}
-              color='inherit'
-            />,
-          ]
-        }
-        return [
-          <GridActionsCellItem
-            key={1}
-            icon={<EditIcon />}
-            label='Редактировать'
-            className='textPrimary'
-            onClick={handleEditClick(id)}
-            color='inherit'
-          />,
-          <GridActionsCellItem
-            key={2}
-            icon={<DeleteIcon />}
-            label='Удалить'
-            onClick={handleDeleteItem(id)}
-            color='inherit'
-          />,
-        ]
-      },
-    },
     { field: 'mount_name', headerName: 'Название', width: 350, editable: true },
     { field: 'mount_desc', headerName: 'Описание', width: 350, editable: true },
     { field: 'mount_height', headerName: 'Высота', width: 150, editable: true, type: 'number' },
@@ -137,36 +89,9 @@ export const SummitDictionaryTab = () => {
     },
   ]
 
-  // mount_rai: '',
-  // mount_desc: '',
-  // mount_height: '',
-  // mount_name: '',
-  // rai_name: '',
-
-  const handleRowEditStop = (params, event) => {
-    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-      event.defaultMuiPrevented = true
-    }
-  }
-
-  const handleEditClick = (id) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } })
-  }
-
-  const handleSaveClick = (id) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } })
-  }
-
-  const handleCancelClick = (id) => () => {
-    setRowModesModel({
-      ...rowModesModel,
-      [id]: { mode: GridRowModes.View, ignoreModifications: true },
-    })
-
-    const editedRow = rows.find((row) => row.id === id)
-    if (editedRow.isNew) {
-      setRows(rows.filter((row) => row.id !== id))
-    }
+  const fieldToFocus = 'mount_name'
+  const columnVisibilityModel = {
+    rai_name: false,
   }
 
   const processRowUpdate = (newRow) => {
@@ -178,43 +103,19 @@ export const SummitDictionaryTab = () => {
     return updatedRow
   }
 
-  const handleRowModesModelChange = (newRowModesModel) => {
-    setRowModesModel(newRowModesModel)
-  }
-
   return (
-    <>
-      <Grid2 spacing={2} container flexDirection={'column'}>
-        <Grid2 item size={12}>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            loading={isLoading}
-            editMode='row'
-            rowModesModel={rowModesModel}
-            onRowModesModelChange={handleRowModesModelChange}
-            onRowEditStop={handleRowEditStop}
-            processRowUpdate={processRowUpdate}
-            onProcessRowUpdateError={(error) => console.log(error)}
-            slots={{
-              toolbar: () => (
-                <DictionaryEditToolbar
-                  setRows={setRows}
-                  setRowModesModel={setRowModesModel}
-                  fieldToFocus='mount_name'
-                  defaultDictionaryItem={defaultDictionaryItem}
-                />
-              ),
-            }}
-            slotProps={{
-              toolbar: { setRows, setRowModesModel },
-            }}
-            columnVisibilityModel={{
-              rai_name: false,
-            }}
-          />
-        </Grid2>
-      </Grid2>
-    </>
+    <DictionaryEditableTable
+      rows={rows}
+      setRows={setRows}
+      rowModesModel={rowModesModel}
+      setRowModesModel={setRowModesModel}
+      columns={columns}
+      processRowUpdate={processRowUpdate}
+      fieldToFocus={fieldToFocus}
+      columnVisibilityModel={columnVisibilityModel}
+      defaultDictionaryItem={defaultDictionaryItem}
+      isLoading={isLoading}
+      handleDeleteItem={handleDeleteItem}
+    />
   )
 }

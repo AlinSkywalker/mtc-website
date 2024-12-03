@@ -1,0 +1,6 @@
+.errorField{
+  background-color: #cf8c8c;
+}
+.errorField.MuiDataGrid-row--editing{
+  background-color: #cf8c8c;
+}
