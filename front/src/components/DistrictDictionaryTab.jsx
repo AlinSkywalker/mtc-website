@@ -183,7 +183,7 @@ export const DistrictDictionaryTab = () => {
   return (
     <>
       <Grid2 spacing={2} container flexDirection={'column'}>
-        <Grid2 item size={12}>
+        <Grid2 item size={12} sx={{height: `calc(100vh-250)`}}>
           <DataGrid
             rows={rows}
             columns={columns}
