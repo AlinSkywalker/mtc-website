@@ -2,19 +2,18 @@ import React from 'react'
 import { useFetchDistrictDictionaryList } from '../queries/dictionary'
 import {
   DataGrid,
-  GridActionsCellItem,
   GridRowModes,
   GridRowEditStopReasons,
 } from '@mui/x-data-grid'
 import { Grid2 } from '@mui/material'
 import apiClient from '../api/api'
 import { useQueryClient } from '@tanstack/react-query'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/DeleteOutlined'
-import SaveIcon from '@mui/icons-material/Save'
-import CancelIcon from '@mui/icons-material/Close'
 import { DictionaryEditToolbar } from './DictionaryEditToolbar'
 import { SelectEditInputCell } from './SelectEditInputCell'
+import * as Yup  from 'yup'
+import {ActionsCellItem} from './ActionsCellItem'
+import {DictionaryEditableTable} from './DictionaryEditableTable'
+
 
 const defaultDictionaryItem = {
   rai_reg: '',
@@ -23,6 +22,13 @@ const defaultDictionaryItem = {
   rai_desc: '',
   region_name: '',
 }
+
+const validationSchema = Yup.object({
+  rai_reg: Yup.string().required(),
+  rai_num: Yup.string().required(),
+  rai_name: Yup.string().required(),
+  rai_desc: Yup.string().required(),
+});
 
 export const DistrictDictionaryTab = () => {
   const queryClient = useQueryClient()
@@ -40,9 +46,7 @@ export const DistrictDictionaryTab = () => {
     // console.log('handleSaveNewItem')
     const { id, isNew, ...postedData } = data
     // postedData['rai_reg'] = postedData['rai_reg'].split('|')[0]
-    apiClient.put('/api/districtDictionary', postedData).then((res) => {
-      queryClient.invalidateQueries({ queryKey: ['districtDictionary'] })
-    })
+    return apiClient.put('/api/districtDictionary', postedData)
   }
 
   const handleDeleteItem = (id) => () => {
@@ -55,9 +59,7 @@ export const DistrictDictionaryTab = () => {
     // console.log('handleSaveEditedItem', data)
     const { id, isNew, ...postedData } = data
     // postedData['rai_reg'] = postedData['rai_reg'].split('|')[0]
-    apiClient.post(`/api/districtDictionary/${id}`, postedData).then((res) => {
-      queryClient.invalidateQueries({ queryKey: ['districtDictionary'] })
-    })
+    return apiClient.post(`/api/districtDictionary/${id}`, postedData)
   }, [])
 
   const renderSelectEditCell = (params) => {
@@ -76,45 +78,12 @@ export const DistrictDictionaryTab = () => {
       cellClassName: 'actions',
       getActions: ({ id }) => {
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit
-
-        if (isInEditMode) {
-          return [
-            <GridActionsCellItem
-              key={1}
-              icon={<SaveIcon />}
-              label='Сохранить'
-              sx={{
-                color: 'primary.main',
-              }}
-              onClick={handleSaveClick(id)}
-            />,
-            <GridActionsCellItem
-              key={2}
-              icon={<CancelIcon />}
-              label='Отменить'
-              className='textPrimary'
-              onClick={handleCancelClick(id)}
-              color='inherit'
-            />,
-          ]
-        }
-        return [
-          <GridActionsCellItem
-            key={1}
-            icon={<EditIcon />}
-            label='Редактировать'
-            className='textPrimary'
-            onClick={handleEditClick(id)}
-            color='inherit'
-          />,
-          <GridActionsCellItem
-            key={2}
-            icon={<DeleteIcon />}
-            label='Удалить'
-            onClick={handleDeleteItem(id)}
-            color='inherit'
-          />,
-        ]
+        return <ActionsCellItem 
+          isInEditMode={isInEditMode} 
+          handleSaveClick={handleSaveClick} 
+          handleCancelClick={handleCancelClick}
+          handleEditClick={handleEditClick}
+          handleDeleteItem={handleDeleteItem}/>
       },
     },
     { field: 'rai_name', headerName: 'Название', width: 350, editable: true },
@@ -127,25 +96,12 @@ export const DistrictDictionaryTab = () => {
       width: 350,
       editable: true,
       renderEditCell: renderSelectEditCell,
-      // valueGetter: (value, row) => {
-      //   return `${row.region_id}|${row.region_name}`
-      // },
       renderCell: (params) => {
         const displayValue = params.row.region_name
         return <>{displayValue}</>
       },
     },
   ]
-  // rai_reg: '',
-  // rai_num: '',
-  // rai_name: '',
-  // rai_desc: '',
-
-  const handleRowEditStop = (params, event) => {
-    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-      event.defaultMuiPrevented = true
-    }
-  }
 
   const handleEditClick = (id) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } })
@@ -169,50 +125,43 @@ export const DistrictDictionaryTab = () => {
 
   const processRowUpdate = (newRow) => {
     // console.log('processRowUpdate')
-    const handleSave = newRow.isNew ? handleSaveNewItem : handleSaveEditedItem
-    handleSave(newRow)
-    const updatedRow = { ...newRow, isNew: false }
-    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)))
-    return updatedRow
-  }
+    // сначала надо провалидировать строку
+    // если все норм - пойдем сохранять
+    // если что-то не так надо вывести ошибку и НЕ сохранять на бэк
 
-  const handleRowModesModelChange = (newRowModesModel) => {
-    setRowModesModel(newRowModesModel)
+    const isValid = validationSchema.isValid(newRow)
+    if(!isValid){
+      // что-то для индикации ошибки
+
+      // возвращаем строку обратно
+      const errorRow = { ...newRow, error: true }
+      return errorRow
+    }
+
+    const handleSave = newRow.isNew ? handleSaveNewItem : handleSaveEditedItem
+    handleSave(newRow).then((res) => {
+      queryClient.invalidateQueries({ queryKey: ['districtDictionary'] })
+      const updatedRow = { ...newRow, isNew: false }
+      setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)))
+      return updatedRow
+    }).catch(e=>{
+      // ошибка с бэка - надо как то вывести, и оно видимо не сохранилось
+      const errorRow = { ...newRow, error: true }
+      return errorRow
+    })
   }
 
   return (
-    <>
-      <Grid2 spacing={2} container flexDirection={'column'}>
-        <Grid2 item size={12} sx={{height: `calc(100vh-250)`}}>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            loading={isLoading}
-            editMode='row'
-            rowModesModel={rowModesModel}
-            onRowModesModelChange={handleRowModesModelChange}
-            onRowEditStop={handleRowEditStop}
-            processRowUpdate={processRowUpdate}
-            onProcessRowUpdateError={(error) => console.log(error)}
-            slots={{
-              toolbar: () => (
-                <DictionaryEditToolbar
-                  setRows={setRows}
-                  setRowModesModel={setRowModesModel}
-                  fieldToFocus='rai_name'
-                  defaultDictionaryItem={defaultDictionaryItem}
-                />
-              ),
-            }}
-            slotProps={{
-              toolbar: { setRows, setRowModesModel },
-            }}
-            columnVisibilityModel={{
-              region_name: false,
-            }}
-          />
-        </Grid2>
-      </Grid2>
-    </>
+    <DictionaryEditableTable 
+    rows={rows}
+    setRows={setRows}
+    rowModesModel={rowModesModel}
+    setRowModesModel={setRowModesModel}
+    columns={columns}
+    processRowUpdate={processRowUpdate}
+    fieldToFocus={fieldToFocus}
+    columnVisibilityModel={columnVisibilityModel}
+    defaultDictionaryItem={defaultDictionaryItem}
+    />
   )
 }
