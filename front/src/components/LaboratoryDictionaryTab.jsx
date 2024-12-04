@@ -56,7 +56,7 @@ export const LaboratoryDictionaryTab = () => {
   }
 
   const columns = [
-    { field: 'laba_name', headerName: 'Название', width: 350, editable: true },
+    { field: 'laba_name', headerName: 'Название', width: 250, editable: true },
     { field: 'laba_desk', headerName: 'Описание', width: 350, editable: true },
     { field: 'rai_name', headerName: 'rai_name', width: 0, editable: true },
     {
@@ -65,9 +65,6 @@ export const LaboratoryDictionaryTab = () => {
       width: 350,
       editable: true,
       renderEditCell: renderSelectEditCell,
-      // valueGetter: (value, row) => {
-      //   return `${row.region_id}|${row.region_name}`
-      // },
       renderCell: (params) => {
         const displayValue = params.row.rai_name
         return <>{displayValue}</>

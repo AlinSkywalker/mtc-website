@@ -11,6 +11,7 @@ const defaultDictionaryItem = {
   cont_tel3: '',
   cont_tel2: '',
   cont_tel1: '',
+  cont_zan: '',
 }
 
 export const ContractorDictionaryTab = () => {
@@ -50,6 +51,7 @@ export const ContractorDictionaryTab = () => {
   const columns = [
     { field: 'cont_fio', headerName: 'ФИО', width: 350, editable: true },
     { field: 'cont_desc', headerName: 'Описание', width: 350, editable: true },
+    { field: 'cont_zan', headerName: 'Занятие', width: 150, editable: true },
     { field: 'cont_email', headerName: 'Email', width: 150, editable: true },
     { field: 'cont_tel1', headerName: 'Телефон 1', width: 150, editable: true },
     { field: 'cont_tel2', headerName: 'Телефон 2', width: 150, editable: true },

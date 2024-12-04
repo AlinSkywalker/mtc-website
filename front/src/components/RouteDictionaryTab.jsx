@@ -60,31 +60,10 @@ export const RouteDictionaryTab = () => {
   }
 
   const columns = [
-    { field: 'rout_name', headerName: 'Название', width: 350, editable: true },
-    {
-      field: 'rout_comp',
-      headerName: 'Сложность',
-      width: 100,
-      editable: true,
-      type: 'singleSelect',
-      valueOptions: ['1Б', '2А', '2Б', '3А', '3Б', '4А', '4Б', '5А', '5Б', '6А', '6Б'],
-    },
-    {
-      field: 'rout_tip',
-      headerName: 'Характер',
-      width: 150,
-      editable: true,
-      type: 'singleSelect',
-      valueOptions: ['ск', 'к', 'лс'],
-    },
-    { field: 'rout_sup', headerName: 'Руководитель', width: 350, editable: true },
-    { field: 'rout_per', headerName: 'Год прохождения', width: 100, editable: true },
-    { field: 'rout_desc', headerName: 'Описание', width: 150, editable: true },
-    { field: 'mount_name', headerName: 'mount_name', width: 0, editable: true },
     {
       field: 'rout_mount',
       headerName: 'Вершина',
-      width: 350,
+      width: 250,
       editable: true,
       renderEditCell: renderSelectEditCell,
       // valueGetter: (value, row) => {
@@ -95,6 +74,27 @@ export const RouteDictionaryTab = () => {
         return <>{displayValue}</>
       },
     },
+    { field: 'rout_name', headerName: 'Название', width: 350, editable: true },
+    {
+      field: 'rout_comp',
+      headerName: 'КС',
+      width: 50,
+      editable: true,
+      type: 'singleSelect',
+      valueOptions: ['1Б', '2А', '2Б', '3А', '3Б', '4А', '4Б', '5А', '5Б', '6А', '6Б'],
+    },
+    {
+      field: 'rout_tip',
+      headerName: 'Тип',
+      width: 50,
+      editable: true,
+      type: 'singleSelect',
+      valueOptions: ['ск', 'к', 'лс'],
+    },
+    { field: 'rout_sup', headerName: 'Руководитель', width: 150, editable: true },
+    { field: 'rout_per', headerName: 'Год', width: 100, editable: true },
+    { field: 'rout_desc', headerName: 'Описание', width: 250, editable: true },
+    { field: 'mount_name', headerName: 'mount_name', width: 0, editable: true },
   ]
 
   const fieldToFocus = 'rout_name'

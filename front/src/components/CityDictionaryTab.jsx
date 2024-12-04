@@ -50,8 +50,8 @@ export const CityDictionaryTab = () => {
     { field: 'name_city', headerName: 'Название', width: 250, editable: true },
     { field: 'desc_city', headerName: 'Описание', width: 350, editable: true },
     { field: 'pred_city', headerName: 'Представитель', width: 350, editable: true },
-    { field: 'tel_city', headerName: 'Телефон представителя', width: 350, editable: true },
-    { field: 'email', headerName: 'Почта представителя', width: 350, editable: true },
+    { field: 'tel_city', headerName: 'Телефон', width: 150, editable: true },
+    { field: 'email', headerName: 'Email', width: 150, editable: true },
   ]
 
   const fieldToFocus = 'city_name'

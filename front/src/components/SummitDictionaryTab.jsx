@@ -69,9 +69,9 @@ export const SummitDictionaryTab = () => {
   }
 
   const columns = [
-    { field: 'mount_name', headerName: 'Название', width: 350, editable: true },
+    { field: 'mount_name', headerName: 'Название', width: 250, editable: true },
     { field: 'mount_desc', headerName: 'Описание', width: 350, editable: true },
-    { field: 'mount_height', headerName: 'Высота', width: 150, editable: true, type: 'number' },
+    { field: 'mount_height', headerName: 'Высота', width: 100, editable: true, type: 'number' },
     { field: 'rai_name', headerName: 'rai_name', width: 0, editable: true },
     {
       field: 'mount_rai',

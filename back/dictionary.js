@@ -274,9 +274,10 @@ const dictionaryRouter = (app, passport) => {
       cont_email,
       cont_tel3,
       cont_tel2,
-      cont_tel1 } = req.body;
-    pool.query(`INSERT INTO contractor (cont_fio, cont_desc, cont_email,cont_tel3, cont_tel2, cont_tel1) VALUES(?,?,?,?,?,?)`,
-      [cont_fio, cont_desc, cont_email, cont_tel3, cont_tel2, cont_tel1], (error, result) => {
+      cont_tel1,
+      cont_zan } = req.body;
+    pool.query(`INSERT INTO contractor (cont_fio, cont_desc, cont_email,cont_tel3, cont_tel2, cont_tel1,cont_zan) VALUES(?,?,?,?,?,?,?)`,
+      [cont_fio, cont_desc, cont_email, cont_tel3, cont_tel2, cont_tel1, cont_zan], (error, result) => {
         if (error) {
           console.log(error);
           res.status(500).json({ success: false, message: error });
@@ -291,7 +292,8 @@ const dictionaryRouter = (app, passport) => {
       cont_email,
       cont_tel3,
       cont_tel2,
-      cont_tel1 } = req.body;
+      cont_tel1,
+      cont_zan } = req.body;
     pool.query(`UPDATE contractor SET 
       cont_fio='${cont_fio}',
       cont_desc='${cont_desc}', 
@@ -299,6 +301,7 @@ const dictionaryRouter = (app, passport) => {
       cont_tel3='${cont_tel3}',
       cont_tel2='${cont_tel2}',
       cont_tel1='${cont_tel1}',
+      cont_zan='${cont_zan}',
       updated_date=CURRENT_TIMESTAMP
       WHERE id=${id}`, (error, result) => {
       if (error) {
@@ -322,10 +325,31 @@ const dictionaryRouter = (app, passport) => {
 
   // baseDictionary
   app.get('/baseDictionary/', passport.authenticate('jwt', { session: false }), (req, res) => {
-    pool.query(`SELECT b.*, c.cont_fio, r.rai_name, r.rai_reg, reg.region_name FROM base b 
-                LEFT JOIN raion r on b.base_rai=r.id
-                LEFT JOIN region reg ON r.rai_reg = reg.id
-                LEFT JOIN contractor c on b.base_cont = c.id`, (error, result) => {
+    pool.query(`SELECT
+	b.*,
+	r.rai_name,
+	r.rai_reg,
+	reg.region_name,
+	b_c.contr_names,
+	b_c.contr_ids
+FROM
+	base b
+LEFT JOIN raion r on
+	b.base_rai = r.id
+LEFT JOIN region reg ON
+	r.rai_reg = reg.id
+LEFT JOIN (
+	SELECT
+		b_c.base_base,
+		GROUP_CONCAT(c.cont_fio SEPARATOR '||') as contr_names,
+		GROUP_CONCAT(c.id SEPARATOR '||') as contr_ids
+	FROM
+		base_cont b_c
+	LEFT JOIN contractor c on
+		c.id = b_c.base_contr
+	GROUP BY
+		b_c.base_base) b_c on
+	b_c.base_base = b.id;`, (error, result) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
