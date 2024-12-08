@@ -1,10 +1,11 @@
 import React from 'react'
-import { useFetchContractorDictionaryList } from '../queries/dictionary'
-import apiClient from '../api/api'
+import { useFetchContractorDictionaryList } from '../../queries/dictionary'
+import apiClient from '../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
-import { DictionaryEditableTable } from './DictionaryEditableTable'
+import { EditableTable } from '../EditableTable'
+import * as Yup from 'yup'
 
-const defaultDictionaryItem = {
+const defaultItem = {
   cont_fio: '',
   cont_desc: '',
   cont_email: '',
@@ -13,6 +14,11 @@ const defaultDictionaryItem = {
   cont_tel1: '',
   cont_zan: '',
 }
+
+const validationSchema = Yup.object({
+  cont_fio: Yup.string().required('Поле обязательно для заполнения'),
+  cont_zan: Yup.string().required('Поле обязательно для заполнения'),
+})
 
 export const ContractorDictionaryTab = () => {
   const queryClient = useQueryClient()
@@ -29,9 +35,7 @@ export const ContractorDictionaryTab = () => {
   const handleSaveNewItem = (data) => {
     //console.log('handleSaveNewItem')
     const { id, isNew, ...postedData } = data
-    apiClient.put('/api/contractorDictionary', postedData).then((res) => {
-      queryClient.invalidateQueries({ queryKey: ['contractorDictionary'] })
-    })
+    return apiClient.put('/api/contractorDictionary', postedData)
   }
 
   const handleDeleteItem = (id) => () => {
@@ -43,15 +47,19 @@ export const ContractorDictionaryTab = () => {
   const handleSaveEditedItem = React.useCallback((data) => {
     //console.log('handleSaveEditedItem', data)
     const { id, isNew, ...postedData } = data
-    apiClient.post(`/api/contractorDictionary/${id}`, postedData).then((res) => {
-      queryClient.invalidateQueries({ queryKey: ['contractorDictionary'] })
-    })
+    return apiClient.post(`/api/contractorDictionary/${id}`, postedData)
   }, [])
-
   const columns = [
     { field: 'cont_fio', headerName: 'ФИО', width: 350, editable: true },
     { field: 'cont_desc', headerName: 'Описание', width: 350, editable: true },
-    { field: 'cont_zan', headerName: 'Занятие', width: 150, editable: true },
+    {
+      field: 'cont_zan',
+      headerName: 'Занятие',
+      width: 150,
+      editable: true,
+      type: 'singleSelect',
+      valueOptions: ['Администратор', 'Водитель', 'Повар'],
+    },
     { field: 'cont_email', headerName: 'Email', width: 150, editable: true },
     { field: 'cont_tel1', headerName: 'Телефон 1', width: 150, editable: true },
     { field: 'cont_tel2', headerName: 'Телефон 2', width: 150, editable: true },
@@ -62,16 +70,36 @@ export const ContractorDictionaryTab = () => {
   const columnVisibilityModel = {}
 
   const processRowUpdate = (newRow) => {
-    //console.log('processRowUpdate')
-    const handleSave = newRow.isNew ? handleSaveNewItem : handleSaveEditedItem
-    handleSave(newRow)
-    const updatedRow = { ...newRow, isNew: false }
-    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)))
-    return updatedRow
+    let resultRow = newRow
+    try {
+      validationSchema.validateSync(newRow, { abortEarly: false })
+      const handleSave = newRow.isNew ? handleSaveNewItem : handleSaveEditedItem
+      handleSave(newRow)
+        .then((res) => {
+          queryClient.invalidateQueries({ queryKey: ['contractorDictionary'] })
+          const updatedRow = { ...newRow, isNew: false, error: false }
+          setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)))
+          resultRow = updatedRow
+        })
+        .catch((e) => {
+          // ошибка с бэка - надо как то вывести, и оно видимо не сохранилось
+          const errorRow = { ...newRow, error: true }
+          setRows(rows.map((row) => (row.id === newRow.id ? errorRow : row)))
+          resultRow = errorRow
+          throw errorRow
+        })
+    } catch (e) {
+      const errors = e.inner.map((item) => ({ path: item.path, message: item.message }))
+      const errorRow = { ...newRow, error: true, errors }
+      setRows(rows.map((row) => (row.id === newRow.id ? errorRow : row)))
+      resultRow = errorRow
+      throw errorRow
+    }
+    return resultRow
   }
 
   return (
-    <DictionaryEditableTable
+    <EditableTable
       rows={rows}
       setRows={setRows}
       rowModesModel={rowModesModel}
@@ -80,7 +108,7 @@ export const ContractorDictionaryTab = () => {
       processRowUpdate={processRowUpdate}
       fieldToFocus={fieldToFocus}
       columnVisibilityModel={columnVisibilityModel}
-      defaultDictionaryItem={defaultDictionaryItem}
+      defaultItem={defaultItem}
       isLoading={isLoading}
       handleDeleteItem={handleDeleteItem}
     />

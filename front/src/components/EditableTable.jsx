@@ -1,5 +1,10 @@
 import React from 'react'
-import { DataGrid, GridRowEditStopReasons, GridRowModes } from '@mui/x-data-grid'
+import {
+  DataGrid,
+  GridRowEditStopReasons,
+  GridRowModes,
+  GridRowEditStartReasons,
+} from '@mui/x-data-grid'
 import { Grid2, ThemeProvider } from '@mui/material'
 import { DictionaryEditToolbar } from './DictionaryEditToolbar'
 import EditIcon from '@mui/icons-material/Edit'
@@ -7,10 +12,10 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined'
 import SaveIcon from '@mui/icons-material/Save'
 import CancelIcon from '@mui/icons-material/Close'
 import { GridActionsCellItem } from '@mui/x-data-grid'
-import './DictionaryEditableTableStyles.css'
+import './EditableTableStyles.css'
 import theme from '../api/theme'
 
-export const DictionaryEditableTable = ({
+export const EditableTable = ({
   rows,
   setRows,
   rowModesModel,
@@ -19,11 +24,22 @@ export const DictionaryEditableTable = ({
   processRowUpdate,
   fieldToFocus,
   columnVisibilityModel,
-  defaultDictionaryItem,
+  defaultItem,
   isLoading,
   handleDeleteItem,
+  toolbar,
+  fullHeight = true,
 }) => {
+  const handleRowEditStart = (params, event) => {
+    // console.log('handleRowEditStart', params, event)
+    if (params.reason === GridRowEditStartReasons.cellDoubleClick) {
+      // console.log('rowModesModel', rowModesModel)
+      event.defaultMuiPrevented = true
+    }
+  }
+
   const handleRowEditStop = (params, event) => {
+    // console.log('handleRowEditStop', params, event)
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
       event.defaultMuiPrevented = true
     }
@@ -49,6 +65,9 @@ export const DictionaryEditableTable = ({
     if (editedRow.isNew) {
       setRows(rows.filter((row) => row.id !== id))
     }
+  }
+  const handleProcessRowUpdateError = (error) => {
+    console.log('error', error)
   }
   const getActions = (id) => {
     {
@@ -121,10 +140,10 @@ export const DictionaryEditableTable = ({
     },
     ...columns,
   ]
-  console.log('columns', tableColumns)
+  // console.log('columns', tableColumns)
   return (
     <Grid2 spacing={2} container flexDirection={'column'}>
-      <Grid2 item size={12} sx={{ height: `calc(100vh - 150px)` }}>
+      <Grid2 item size={12} sx={{ height: fullHeight ? `calc(100vh - 150px)` : 600 }}>
         <ThemeProvider theme={theme}>
           <DataGrid
             rows={rows}
@@ -133,18 +152,23 @@ export const DictionaryEditableTable = ({
             editMode='row'
             rowModesModel={rowModesModel}
             onRowModesModelChange={handleRowModesModelChange}
+            onRowEditStart={handleRowEditStart}
             onRowEditStop={handleRowEditStop}
             processRowUpdate={processRowUpdate}
-            onProcessRowUpdateError={(error) => console.log(error)}
+            onProcessRowUpdateError={handleProcessRowUpdateError}
             slots={{
-              toolbar: () => (
-                <DictionaryEditToolbar
-                  setRows={setRows}
-                  setRowModesModel={setRowModesModel}
-                  fieldToFocus={fieldToFocus}
-                  defaultDictionaryItem={defaultDictionaryItem}
-                />
-              ),
+              toolbar: () => {
+                return toolbar ? (
+                  toolbar
+                ) : (
+                  <DictionaryEditToolbar
+                    setRows={setRows}
+                    setRowModesModel={setRowModesModel}
+                    fieldToFocus={fieldToFocus}
+                    defaultItem={defaultItem}
+                  />
+                )
+              },
             }}
             slotProps={{
               toolbar: { setRows, setRowModesModel },
@@ -158,7 +182,7 @@ export const DictionaryEditableTable = ({
               }
             }}
             columnHeaderHeight={36}
-            rowHeight={40}
+            rowHeight={42}
           />
         </ThemeProvider>
       </Grid2>

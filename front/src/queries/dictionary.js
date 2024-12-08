@@ -1,11 +1,20 @@
 import apiClient from '../api/api'
 import { useQuery } from '@tanstack/react-query'
 
-export function useFetchDictionaryByName(dictionaryName) {
+export function useFetchDictionaryByName(dictionaryName, returnType) {
   return useQuery({
     queryKey: [dictionaryName],
     queryFn: async () => {
-      const { data } = await apiClient.get(`/api/${dictionaryName}`)
+      const { data } = await apiClient.get(`/api/${dictionaryName}?returnType=${returnType}`)
+      return data
+    },
+  })
+}
+export function useFetchDictionaryByNameAndParentId(dictionaryName, parentId) {
+  return useQuery({
+    queryKey: [dictionaryName],
+    queryFn: async () => {
+      const { data } = await apiClient.get(`/api/${dictionaryName}?parentId=${parentId}`)
       return data
     },
   })

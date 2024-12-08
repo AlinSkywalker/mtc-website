@@ -1,16 +1,21 @@
 import React from 'react'
-import { useFetchCityDictionaryList } from '../queries/dictionary'
-import apiClient from '../api/api'
+import { useFetchCityDictionaryList } from '../../queries/dictionary'
+import apiClient from '../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
-import { DictionaryEditableTable } from './DictionaryEditableTable'
+import { EditableTable } from '../EditableTable'
+import * as Yup from 'yup'
 
-const defaultDictionaryItem = {
+const defaultItem = {
   name_city: '',
   desc_city: '',
   pred_city: '',
   tel_city: '',
   email: '',
 }
+
+const validationSchema = Yup.object({
+  name_city: Yup.string().required('Поле обязательно для заполнения'),
+})
 
 export const CityDictionaryTab = () => {
   const queryClient = useQueryClient()
@@ -27,9 +32,7 @@ export const CityDictionaryTab = () => {
   const handleSaveNewItem = (data) => {
     //console.log('handleSaveNewItem')
     const { id, isNew, ...postedData } = data
-    apiClient.put('/api/cityDictionary', postedData).then((res) => {
-      queryClient.invalidateQueries({ queryKey: ['cityDictionary'] })
-    })
+    return apiClient.put('/api/cityDictionary', postedData)
   }
 
   const handleDeleteItem = (id) => () => {
@@ -41,9 +44,7 @@ export const CityDictionaryTab = () => {
   const handleSaveEditedItem = React.useCallback((data) => {
     //console.log('handleSaveEditedItem', data)
     const { id, isNew, ...postedData } = data
-    apiClient.post(`/api/cityDictionary/${id}`, postedData).then((res) => {
-      queryClient.invalidateQueries({ queryKey: ['cityDictionary'] })
-    })
+    return apiClient.post(`/api/cityDictionary/${id}`, postedData)
   }, [])
 
   const columns = [
@@ -58,16 +59,36 @@ export const CityDictionaryTab = () => {
   const columnVisibilityModel = {}
 
   const processRowUpdate = (newRow) => {
-    //console.log('processRowUpdate')
-    const handleSave = newRow.isNew ? handleSaveNewItem : handleSaveEditedItem
-    handleSave(newRow)
-    const updatedRow = { ...newRow, isNew: false }
-    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)))
-    return updatedRow
+    let resultRow = newRow
+    try {
+      validationSchema.validateSync(newRow, { abortEarly: false })
+      const handleSave = newRow.isNew ? handleSaveNewItem : handleSaveEditedItem
+      handleSave(newRow)
+        .then((res) => {
+          queryClient.invalidateQueries({ queryKey: ['cityDictionary'] })
+          const updatedRow = { ...newRow, isNew: false, error: false }
+          setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)))
+          resultRow = updatedRow
+        })
+        .catch((e) => {
+          // ошибка с бэка - надо как то вывести, и оно видимо не сохранилось
+          const errorRow = { ...newRow, error: true }
+          setRows(rows.map((row) => (row.id === newRow.id ? errorRow : row)))
+          resultRow = errorRow
+          throw errorRow
+        })
+    } catch (e) {
+      const errors = e.inner.map((item) => ({ path: item.path, message: item.message }))
+      const errorRow = { ...newRow, error: true, errors }
+      setRows(rows.map((row) => (row.id === newRow.id ? errorRow : row)))
+      resultRow = errorRow
+      throw errorRow
+    }
+    return resultRow
   }
 
   return (
-    <DictionaryEditableTable
+    <EditableTable
       rows={rows}
       setRows={setRows}
       rowModesModel={rowModesModel}
@@ -76,7 +97,7 @@ export const CityDictionaryTab = () => {
       processRowUpdate={processRowUpdate}
       fieldToFocus={fieldToFocus}
       columnVisibilityModel={columnVisibilityModel}
-      defaultDictionaryItem={defaultDictionaryItem}
+      defaultItem={defaultItem}
       isLoading={isLoading}
       handleDeleteItem={handleDeleteItem}
     />

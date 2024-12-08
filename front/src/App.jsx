@@ -13,6 +13,9 @@ import { AuthContext } from './components/AuthContext'
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
 import { AuthProvider } from './components/AuthContext'
 import CssBaseline from '@mui/material/CssBaseline'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3'
+import { ru } from 'date-fns/locale/ru'
 
 const queryClient = new QueryClient()
 
@@ -36,84 +39,86 @@ const LoginRoute = ({ children }) => {
 
 const App = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <CssBaseline />
-      <AuthProvider>
-        <BrowserRouter basename={'/mountaineering-training-center'}>
-          <Routes>
-            <Route
-              path='/login'
-              element={
-                <LoginRoute>
-                  <LoginPage />
-                </LoginRoute>
-              }
-              exact
-            />
-            <Route
-              path='/register'
-              element={
-                <LoginRoute>
-                  <RegistrationPage />
-                </LoginRoute>
-              }
-              exact
-            />
+    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ru}>
+      <QueryClientProvider client={queryClient}>
+        <CssBaseline />
+        <AuthProvider>
+          <BrowserRouter basename={'/mountaineering-training-center'}>
+            <Routes>
+              <Route
+                path='/login'
+                element={
+                  <LoginRoute>
+                    <LoginPage />
+                  </LoginRoute>
+                }
+                exact
+              />
+              <Route
+                path='/register'
+                element={
+                  <LoginRoute>
+                    <RegistrationPage />
+                  </LoginRoute>
+                }
+                exact
+              />
 
-            <Route
-              path='/admin/event'
-              element={
-                <PrivateRoute>
-                  <EventListPage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path='/admin/event/:id'
-              element={
-                <PrivateRoute>
-                  <EventInfoPage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path='/admin/member'
-              element={
-                <PrivateRoute>
-                  <MemberListPage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path='/admin/member/:id'
-              element={
-                <PrivateRoute>
-                  <EventInfoPage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path='/admin/dictionary'
-              element={
-                <PrivateRoute>
-                  <DictionaryPage />
-                </PrivateRoute>
-              }
-            />
+              <Route
+                path='/admin/event'
+                element={
+                  <PrivateRoute>
+                    <EventListPage />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path='/admin/event/:id'
+                element={
+                  <PrivateRoute>
+                    <EventInfoPage />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path='/admin/member'
+                element={
+                  <PrivateRoute>
+                    <MemberListPage />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path='/admin/member/:id'
+                element={
+                  <PrivateRoute>
+                    <EventInfoPage />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path='/admin/dictionary'
+                element={
+                  <PrivateRoute>
+                    <DictionaryPage />
+                  </PrivateRoute>
+                }
+              />
 
-            <Route
-              path='/profile'
-              element={
-                <PrivateRoute>
-                  <ProfilePage />
-                </PrivateRoute>
-              }
-              exact
-            />
-          </Routes>
-        </BrowserRouter>
-      </AuthProvider>
-    </QueryClientProvider>
+              <Route
+                path='/profile'
+                element={
+                  <PrivateRoute>
+                    <ProfilePage />
+                  </PrivateRoute>
+                }
+                exact
+              />
+            </Routes>
+          </BrowserRouter>
+        </AuthProvider>
+      </QueryClientProvider>
+    </LocalizationProvider>
   )
 }
 

@@ -8,17 +8,53 @@ import Grid from '@mui/material/Grid2'
 import Container from '@mui/material/Container'
 import apiClient from '../api/api'
 import { useFetchEvent } from '../queries/event'
+import { useFetchMemberList } from '../queries/member'
 import { useHistory, useLocation } from 'react-router-dom'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import { useFetchBaseDictionaryList } from '../queries/dictionary'
+import formatISO from 'date-fns/parseISO'
+import { AsynchronousAutocomplete } from './AsynchronousAutocomplete'
+import { CircularProgress } from '@mui/material'
+import Tab from '@mui/material/Tab'
+import TabContext from '@mui/lab/TabContext'
+import TabList from '@mui/lab/TabList'
+import TabPanel from '@mui/lab/TabPanel'
+import Box from '@mui/material/Box'
+import { EventMembersTab } from './eventTabs/EventMembersTab'
+import { EventSmenaTab } from './eventTabs/EventSmenaTab'
+import { EventDepartmentTab } from './eventTabs/EventDepartmentTab'
+
+const defaultValues = {
+  id: 0,
+  event_name: '',
+  event_base: 0,
+  event_start: null,
+  event_finish: null,
+  event_st: 0,
+  event_ob: 0,
+  event_desc: '',
+  created_date: '',
+  updated_date: '',
+  ob_fio: '',
+  st_fio: '',
+  base_name: '',
+  ob: { fio: '', id: 0 },
+  st: { fio: '', id: 0 },
+  base: { base_name: '', id: 0 },
+}
 
 export const EventInfoPage = () => {
+  const [value, setValue] = React.useState(0)
+  // console.log('value', value)
+  const handleChange = (event, newValue) => {
+    setValue(newValue)
+  }
   const location = useLocation()
   const locationSplitted = location.pathname.split('/')
   const currentId = locationSplitted[locationSplitted.length - 1]
-  console.log(location)
+  // console.log(location)
   const { isLoading, data } = useFetchEvent(currentId)
-
-  const defaultValues = data
-
+  // console.log(data)
   const {
     handleSubmit,
     formState: { errors, dirtyFields },
@@ -26,89 +62,192 @@ export const EventInfoPage = () => {
     reset,
   } = useForm({ defaultValues })
 
+  useEffect(() => {
+    data && reset(data)
+  }, [data])
+
   const isDirty = !!Object.keys(dirtyFields).length
-  const handleSaveProfileData = async (data, e) => {
+  const handleSave = async (data, e) => {
     console.log('handleLogin', data)
     e.preventDefault()
     try {
-      const { username, password } = data
-      const response = await apiClient.post('/api/profile', { username, data })
-      // Handle successful login
+      const response = await apiClient.post(`/api/event/${data.id}`, {
+        ...data,
+        event_start: formatISO(data.event_start),
+        event_finish: formatISO(data.event_finish),
+      })
+
       console.log(response.data)
     } catch (error) {
-      // Handle login error
       console.error(error)
     }
   }
   const handleReset = () => {
-    reset(defaultValues)
+    reset(data)
   }
 
+  const fetchAllMembers = useFetchMemberList()
+  const fetchAllBase = useFetchBaseDictionaryList()
+
+  const eventTabs = [
+    {
+      name: 'members',
+      label: 'Участники',
+      component: <EventMembersTab eventId={currentId} />,
+    },
+    {
+      name: 'department',
+      label: 'Отделения',
+      component: <EventDepartmentTab eventId={currentId} />,
+    },
+    {
+      name: 'smena',
+      label: 'Смены',
+      component: <EventSmenaTab eventId={currentId} />,
+    },
+  ]
+
+  if (isLoading) {
+    return (
+      <Container
+        maxWidth={false}
+        sx={{ height: '100vh', backgroundColor: { xs: '#fff', md: '#f4f4f4' } }}
+      >
+        <CircularProgress />
+      </Container>
+    )
+  }
   return (
     <Container
       maxWidth={false}
-      sx={{ height: '100vh', backgroundColor: { xs: '#fff', md: '#f4f4f4' } }}
+      sx={{ minHeight: '100vh', backgroundColor: { xs: '#fff', md: '#f4f4f4' } }}
     >
       <Card sx={{ minWidth: 275 }}>
         <CardContent>
-          <form onSubmit={handleSubmit(handleSaveProfileData)}>
+          <form onSubmit={handleSubmit(handleSave)}>
             <Grid
               container
-              justifyContent='center'
-              alignItems='center'
-              flexDirection='column'
+              // justifyContent='center'
+              // alignItems='center'
+              flexDirection='row'
               spacing={2}
             >
-              <Grid item>
+              <Grid item size={4}>
                 <Controller
-                  name='username'
+                  name='event_name'
                   control={control}
                   render={({ field }) => (
-                    <TextField {...field} variant='outlined' label='Email' disabled />
+                    <TextField {...field} variant='outlined' label='Название' fullWidth />
                   )}
                 />
               </Grid>
-              <Grid item>
+              <Grid item size={4}>
                 <Controller
-                  name='lastName'
+                  name='event_desc'
                   control={control}
                   render={({ field }) => (
-                    <TextField {...field} variant='outlined' label='Фамилия' />
+                    <TextField {...field} variant='outlined' label='Описание' fullWidth />
                   )}
                 />
               </Grid>
-              <Grid item>
+              <Grid item size={2}>
                 <Controller
-                  name='firstName'
-                  control={control}
-                  render={({ field }) => <TextField {...field} variant='outlined' label='Имя' />}
-                />
-              </Grid>
-              <Grid item>
-                <Controller
-                  name='middleName'
+                  name='event_start'
                   control={control}
                   render={({ field }) => (
-                    <TextField {...field} variant='outlined' label='Отчество' />
+                    <DatePicker
+                      label='Дата начала'
+                      {...field}
+                      slotProps={{ textField: { fullWidth: true } }}
+                    />
                   )}
                 />
               </Grid>
-              <Grid container item>
-                <Grid item>
-                  <Button variant='text' type='button' disabled={!isDirty} onClick={handleReset}>
-                    Отменить
-                  </Button>
-                </Grid>
-                <Grid item>
-                  <Button variant='contained' type='submit'>
-                    Сохранить
-                  </Button>
-                </Grid>
+              <Grid item size={2}>
+                <Controller
+                  name='event_finish'
+                  control={control}
+                  render={({ field }) => (
+                    <DatePicker
+                      label='Дата окончания'
+                      {...field}
+                      slotProps={{ textField: { fullWidth: true } }}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item size={3}>
+                <Controller
+                  name='ob'
+                  control={control}
+                  render={({ field }) => (
+                    <AsynchronousAutocomplete
+                      label='ОБ'
+                      request={fetchAllMembers}
+                      dataNameField='fio'
+                      field={field}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item size={3}>
+                <Controller
+                  name='st'
+                  control={control}
+                  render={({ field }) => (
+                    <AsynchronousAutocomplete
+                      label='СТ'
+                      request={fetchAllMembers}
+                      dataNameField='fio'
+                      field={field}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item size={3}>
+                <Controller
+                  name='base'
+                  control={control}
+                  render={({ field }) => (
+                    <AsynchronousAutocomplete
+                      label='База'
+                      request={fetchAllBase}
+                      dataNameField='base_name'
+                      field={field}
+                    />
+                  )}
+                />
+              </Grid>
+            </Grid>
+            <Grid container>
+              <Grid item>
+                <Button variant='text' type='button' disabled={!isDirty} onClick={handleReset}>
+                  Отменить
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button variant='contained' type='submit' disabled={!isDirty}>
+                  Сохранить
+                </Button>
               </Grid>
             </Grid>
           </form>
         </CardContent>
       </Card>
+      <TabContext value={value}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <TabList onChange={handleChange}>
+            {eventTabs.map((tab, index) => (
+              <Tab key={index} label={tab.label} value={index} />
+            ))}
+          </TabList>
+        </Box>
+        {eventTabs.map((tab, index) => (
+          <TabPanel key={index} value={index} sx={{ p: '10px 0' }}>
+            {value === index && tab.component}
+          </TabPanel>
+        ))}
+      </TabContext>
     </Container>
   )
 }

@@ -1,27 +1,22 @@
 import React from 'react'
 import Container from '@mui/material/Container'
-import { useFetchMemberList } from '../queries/member'
-import { useNavigate } from 'react-router-dom'
 import Tab from '@mui/material/Tab'
 import TabContext from '@mui/lab/TabContext'
 import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
 import Box from '@mui/material/Box'
-import { RegionDictionaryTab } from './RegionDictionaryTab'
-import { CityDictionaryTab } from './CityDictionaryTab'
-import { DistrictDictionaryTab } from './DistrictDictionaryTab'
-import { LaboratoryDictionaryTab } from './LaboratoryDictionaryTab'
-import { ContractorDictionaryTab } from './ContractorDictionaryTab'
-import { BaseDictionaryTab } from './BaseDictionaryTab'
-import { SummitDictionaryTab } from './SummitDictionaryTab'
-import { RouteDictionaryTab } from './RouteDictionaryTab'
+import { RegionDictionaryTab } from './dictionaryTabs/RegionDictionaryTab'
+import { CityDictionaryTab } from './dictionaryTabs/CityDictionaryTab'
+import { DistrictDictionaryTab } from './dictionaryTabs/DistrictDictionaryTab'
+import { LaboratoryDictionaryTab } from './dictionaryTabs/LaboratoryDictionaryTab'
+import { ContractorDictionaryTab } from './dictionaryTabs/ContractorDictionaryTab'
+import { BaseDictionaryTab } from './dictionaryTabs/BaseDictionaryTab'
+import { SummitDictionaryTab } from './dictionaryTabs/SummitDictionaryTab'
+import { RouteDictionaryTab } from './dictionaryTabs/RouteDictionaryTab'
 
 export const DictionaryPage = () => {
-  const { isLoading, data } = useFetchMemberList()
-  const navigate = useNavigate()
-
   const [value, setValue] = React.useState(0)
-  console.log('value', value)
+  // console.log('value', value)
   const handleChange = (event, newValue) => {
     setValue(newValue)
   }
@@ -69,7 +64,6 @@ export const DictionaryPage = () => {
     },
   ]
 
-  if (isLoading) return null
   return (
     <Container
       maxWidth={false}

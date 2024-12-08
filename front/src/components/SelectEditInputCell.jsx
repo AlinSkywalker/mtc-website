@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { unstable_useEnhancedEffect as useEnhancedEffect } from '@mui/utils'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
+import TextField from '@mui/material/TextField'
+import Autocomplete from '@mui/material/Autocomplete'
 import { useFetchDictionaryByName } from '../queries/dictionary'
 import { useGridApiContext } from '@mui/x-data-grid'
 
@@ -47,18 +49,25 @@ function mapDictionaryData(dictionaryName, dictionaryData = []) {
 export function SelectEditInputCell(props) {
   const { id, value, field, hasFocus, dictionaryName, nameField } = props
   // console.log('SelectEditInputCell props', props)
-  const { isLoading, data } = useFetchDictionaryByName(dictionaryName)
+  const { isLoading, data } = useFetchDictionaryByName(dictionaryName, 'arrayType')
+
+  const [autocompleteValue, setAutocompleteValue] = useState({
+    id: props.row[nameField],
+    name: value,
+  })
+  const [inputValue, setInputValue] = React.useState(value)
 
   const dictionaryData = mapDictionaryData(dictionaryName, data)
   // console.log('dictionaryData', dictionaryData)
   const apiRef = useGridApiContext()
   const ref = React.useRef(null)
 
-  const handleChange = (event, newValue) => {
-    // console.log('newValue', newValue)
+  const handleChange = (newValue) => {
+    console.log('newValue', newValue)
+    setAutocompleteValue(newValue)
     // children
-    apiRef.current.setEditCellValue({ id, field, value: newValue.props.value })
-    apiRef.current.setEditCellValue({ id, field: nameField, value: newValue.props.children })
+    apiRef.current.setEditCellValue({ id, field, value: newValue?.name || '' })
+    apiRef.current.setEditCellValue({ id, field: nameField, value: newValue?.id || '' })
   }
 
   useEnhancedEffect(() => {
@@ -69,20 +78,24 @@ export function SelectEditInputCell(props) {
   }, [hasFocus, value])
 
   return (
-    <FormControl fullWidth variant='standard' sx={{ padding: '0 10px' }}>
-      <Select
-        id='demo-simple-select'
-        value={value}
-        onChange={handleChange}
-        MenuProps={{ sx: { maxWidth: 800 } }}
-      >
-        <MenuItem value=''></MenuItem>
-        {dictionaryData.map((item, index) => (
-          <MenuItem value={item.id} key={index}>
-            {item.name}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+    <Autocomplete
+      id='demo-simple-select'
+      value={autocompleteValue}
+      inputValue={inputValue}
+      // onChange={handleChange}
+      size='small'
+      MenuProps={{ sx: { maxWidth: 800 } }}
+      renderInput={(params) => <TextField {...params} sx={{ height: 36, fontSize: 14 }} />}
+      options={dictionaryData}
+      getOptionLabel={(option) => option.name}
+      onChange={(event, newValue) => {
+        console.log('newValue', newValue)
+        handleChange(newValue)
+      }}
+      onInputChange={(event, newInputValue) => {
+        setInputValue(newInputValue)
+      }}
+      fullWidth
+    />
   )
 }

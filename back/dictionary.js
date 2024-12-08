@@ -10,6 +10,7 @@ const dictionaryRouter = (app, passport) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
+        return
       }
       res.send(result);
     });
@@ -20,6 +21,7 @@ const dictionaryRouter = (app, passport) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
+        return
       }
       res.json({ success: true });
     })
@@ -35,6 +37,7 @@ const dictionaryRouter = (app, passport) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
+        return
       }
       res.json({ success: true });
     })
@@ -46,6 +49,7 @@ const dictionaryRouter = (app, passport) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
+        return
       }
       res.json({ success: true });
     })
@@ -58,6 +62,7 @@ const dictionaryRouter = (app, passport) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
+        return
       }
       res.send(result);
     });
@@ -68,6 +73,7 @@ const dictionaryRouter = (app, passport) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
+        return
       }
       res.json({ success: true });
     })
@@ -85,6 +91,7 @@ const dictionaryRouter = (app, passport) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
+        return
       }
       res.json({ success: true });
     })
@@ -95,6 +102,7 @@ const dictionaryRouter = (app, passport) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
+        return
       }
       res.json({ success: true });
     })
@@ -108,6 +116,7 @@ const dictionaryRouter = (app, passport) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
+        return
       }
       res.send(result);
     });
@@ -115,10 +124,11 @@ const dictionaryRouter = (app, passport) => {
   app.put('/summitDictionary', passport.authenticate('jwt', { session: false }), (req, res) => {
     const { mount_rai, mount_desc, mount_height, mount_name } = req.body;
     pool.query(`INSERT INTO mount (mount_rai, mount_desc, mount_height, mount_name) VALUES(?,?,?,?)`,
-      [mount_rai, mount_desc, mount_height, mount_name], (error, result) => {
+      [mount_rai, mount_desc, mount_height || null, mount_name], (error, result) => {
         if (error) {
           console.log(error);
           res.status(500).json({ success: false, message: error });
+          return
         }
         res.json({ success: true });
       })
@@ -129,13 +139,14 @@ const dictionaryRouter = (app, passport) => {
     pool.query(`UPDATE mount SET 
       mount_rai='${mount_rai}',
       mount_desc='${mount_desc}', 
-      mount_height='${mount_height}', 
+      mount_height='${mount_height || null}', 
       mount_name='${mount_name}',
       updated_date=CURRENT_TIMESTAMP
       WHERE id=${id}`, (error, result) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
+        return
       }
       res.json({ success: true });
     })
@@ -146,6 +157,7 @@ const dictionaryRouter = (app, passport) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
+        return
       }
       res.json({ success: true });
     })
@@ -161,24 +173,26 @@ const dictionaryRouter = (app, passport) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
+        return
       }
       res.send(result);
     });
   })
   app.put('/routeDictionary', passport.authenticate('jwt', { session: false }), (req, res) => {
     const { rout_mount, rout_desc, rout_per, rout_sup, rout_tip, rout_comp, rout_name } = req.body;
-    pool.query(`INSERT INTO route (rout_mount, rout_desc, rout_per, rout_sup, rout_tip, rout_comp, rout_name) VALUES(?,?,?,?,?,?,?)`,
-      [rout_mount, rout_desc, rout_per, rout_sup, rout_tip, rout_comp, rout_name], (error, result) => {
+    pool.query(`INSERT INTO route (rout_mount, rout_desc, rout_per, rout_sup, rout_tip, rout_comp, rout_name,rout_winter) VALUES(?,?,?,?,?,?,?,?)`,
+      [rout_mount, rout_desc, rout_per, rout_sup, rout_tip, rout_comp, rout_name, rout_winter], (error, result) => {
         if (error) {
           console.log(error);
           res.status(500).json({ success: false, message: error });
+          return
         }
         res.json({ success: true });
       })
   })
   app.post('/routeDictionary/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
     const id = req.params.id;
-    const { rout_mount, rout_desc, rout_per, rout_sup, rout_tip, rout_comp, rout_name } = req.body;
+    const { rout_mount, rout_desc, rout_per, rout_sup, rout_tip, rout_comp, rout_name, rout_winter } = req.body;
     pool.query(`UPDATE route SET 
       rout_mount='${rout_mount}',
       rout_desc='${rout_desc}', 
@@ -187,11 +201,13 @@ const dictionaryRouter = (app, passport) => {
       rout_tip='${rout_tip}', 
       rout_comp='${rout_comp}', 
       rout_name='${rout_name}',
+      rout_winter='${rout_winter}',
       updated_date=CURRENT_TIMESTAMP
       WHERE id=${id}`, (error, result) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
+        return
       }
       res.json({ success: true });
     })
@@ -202,8 +218,10 @@ const dictionaryRouter = (app, passport) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
+        return
       }
       res.json({ success: true });
+      return
     })
   })
 
@@ -215,6 +233,7 @@ const dictionaryRouter = (app, passport) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
+        return
       }
       res.send(result);
     });
@@ -225,6 +244,7 @@ const dictionaryRouter = (app, passport) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
+        return
       }
       res.json({ success: true });
     })
@@ -241,6 +261,7 @@ const dictionaryRouter = (app, passport) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
+        return
       }
       res.json({ success: true });
     })
@@ -252,6 +273,7 @@ const dictionaryRouter = (app, passport) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
+        return
       }
       res.json({ success: true });
     })
@@ -263,8 +285,18 @@ const dictionaryRouter = (app, passport) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
+        return
       }
-      res.send(result);
+      const returnType = req.query.returnType
+      if (returnType == 'objectType') {
+        const newResult = {}
+        result.forEach(item => { newResult[item.id] = { ...item, name: item.cont_fio } });
+        res.send(newResult)
+      }
+      else {
+        res.send(result);
+      }
+
     });
   })
 
@@ -281,6 +313,7 @@ const dictionaryRouter = (app, passport) => {
         if (error) {
           console.log(error);
           res.status(500).json({ success: false, message: error });
+          return
         }
         res.json({ success: true });
       })
@@ -307,6 +340,7 @@ const dictionaryRouter = (app, passport) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
+        return
       }
       res.json({ success: true });
     })
@@ -318,6 +352,7 @@ const dictionaryRouter = (app, passport) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
+        return
       }
       res.json({ success: true });
     })
@@ -353,8 +388,15 @@ LEFT JOIN (
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
+        return
       }
-      res.send(result);
+      const fullResult = result.map(item => {
+        const contr_name_list = item.contr_names.split('||')
+        const contr_id_list = item.contr_ids.split('||').map(item => Number(item))
+        const cont_fio = contr_name_list.join(', ')
+        return { ...item, contr_name_list, contr_id_list, cont_fio }
+      })
+      res.send(fullResult);
     });
   })
   app.put('/baseDictionary', passport.authenticate('jwt', { session: false }), (req, res) => {
@@ -362,15 +404,27 @@ LEFT JOIN (
       base_name,
       base_adres,
       base_desc,
-      base_cont,
-      base_sait } = req.body;
-    pool.query(`INSERT INTO base (base_rai, base_name, base_adres,base_desc, base_cont,base_sait) VALUES(?,?,?,?,?,?)`,
-      [base_rai, base_name, base_adres, base_desc, base_cont, base_sait], (error, result) => {
+      base_sait,
+      contr_id_list,
+    } = req.body;
+    pool.query(`INSERT INTO base (base_rai, base_name, base_adres,base_desc,base_sait) VALUES(?,?,?,?,?)`,
+      [base_rai, base_name, base_adres, base_desc, base_sait], (error, result) => {
         if (error) {
           console.log(error);
           res.status(500).json({ success: false, message: error });
+          return
         }
-        res.json({ success: true });
+        const baseId = result.insertId
+        const baseContractValues = contr_id_list.map(item => `(${baseId},${item})`).join(', ')
+        pool.query(`INSERT INTO base_cont (base_base, base_contr) VALUES ${baseContractValues}`, (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return
+          }
+          res.json({ success: true });
+        })
+
       })
   })
   app.post('/baseDictionary/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
@@ -379,22 +433,39 @@ LEFT JOIN (
       base_name,
       base_adres,
       base_desc,
-      base_cont,
-      base_sait } = req.body;
+      base_sait,
+      contr_id_list } = req.body;
+    const baseContractValues = contr_id_list.map(item => `(${id},${item})`).join(', ')
     pool.query(`UPDATE base SET 
       base_rai='${base_rai}',
       base_name='${base_name}', 
       base_adres='${base_adres}',
       base_desc='${base_desc}',
-      base_cont='${base_cont}',
       base_sait='${base_sait}',
       updated_date=CURRENT_TIMESTAMP
       WHERE id=${id}`, (error, result) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
+        return
       }
-      res.json({ success: true });
+      pool.query(`DELETE FROM base_cont WHERE base_base=${id}`, (error, result) => {
+        if (error) {
+          console.log(error);
+          res.status(500).json({ success: false, message: error });
+          return
+        }
+        pool.query(`INSERT INTO base_cont (base_base, base_contr) VALUES ${baseContractValues}`, (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return
+          }
+          res.json({ success: true });
+        })
+
+      })
+
     })
   })
   app.delete('/baseDictionary/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
@@ -403,6 +474,7 @@ LEFT JOIN (
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
+        return
       }
       res.json({ success: true });
     })
@@ -414,6 +486,7 @@ LEFT JOIN (
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
+        return
       }
       res.send(result);
     });
@@ -425,6 +498,7 @@ LEFT JOIN (
         if (error) {
           console.log(error);
           res.status(500).json({ success: false, message: error });
+          return
         }
         res.send(result);
       });
@@ -442,6 +516,7 @@ LEFT JOIN (
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
+        return
       }
       res.send(result);
     });
@@ -452,6 +527,7 @@ LEFT JOIN (
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
+        return
       }
       res.send(result);
     });

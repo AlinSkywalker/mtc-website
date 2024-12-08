@@ -12,6 +12,8 @@ const pool = require("./mysql")
 const eventListRouter = require('./eventList')
 const memberListRouter = require('./memberList')
 const dictionaryRouter = require('./dictionary')
+const eventSmenaRouter = require('./eventSmena')
+
 
 
 const jwtOptions = {
@@ -128,14 +130,15 @@ app.post('/profile', passport.authenticate('jwt', { session: false }), (req, res
 })
 
 
-eventListRouter(app, passport)
+eventListRouter(app, passport);
 memberListRouter(app, passport);
 dictionaryRouter(app, passport);
+eventSmenaRouter(app, passport);
 
 
 app.get("*", (req, res) => {
   // console.log(req.params)
-  res.send("PAGE NOT FOUND");
+  res.status(404).send("PAGE NOT FOUND");
 });
 app.listen(port, () =>
   console.log(`Server running at http://localhost:${port}`));

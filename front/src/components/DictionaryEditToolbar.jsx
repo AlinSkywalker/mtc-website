@@ -5,11 +5,11 @@ import AddIcon from '@mui/icons-material/Add'
 import { Button } from '@mui/material'
 
 export function DictionaryEditToolbar(props) {
-  const { setRows, setRowModesModel, defaultDictionaryItem, fieldToFocus } = props
+  const { setRows, setRowModesModel, defaultItem, fieldToFocus } = props
 
   const handleClick = () => {
     const id = randomId()
-    setRows((oldRows) => [{ ...defaultDictionaryItem, id, isNew: true }, ...oldRows])
+    setRows((oldRows) => [{ ...defaultItem, id, isNew: true }, ...oldRows])
     setRowModesModel((oldModel) => ({
       ...oldModel,
       [id]: { mode: GridRowModes.Edit, fieldToFocus: fieldToFocus },
