@@ -2,7 +2,7 @@ import React from 'react'
 import { useFetchBaseDictionaryList } from '../../queries/dictionary'
 import apiClient from '../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
-import { DistrictSelectMenu } from '../DistrictSelectMenu'
+import { DistrictSelectMenu } from '../dataGridCell/DistrictSelectMenu'
 import { EditableTable } from '../EditableTable'
 import { MultiValueSelectEditInputCell } from '../MultiValueSelectEditInputCell'
 import * as Yup from 'yup'
@@ -79,7 +79,7 @@ export const BaseDictionaryTab = () => {
   const columns = [
     { field: 'base_name', headerName: 'Название', width: 350, editable: true },
     { field: 'base_desc', headerName: 'Описание', width: 350, editable: true },
-    { field: 'base_adres', headerName: 'Сайт', width: 150, editable: true },
+    { field: 'base_adres', headerName: 'Местоположение', width: 150, editable: true },
     { field: 'base_rai', headerName: 'base_rai', width: 0, editable: true },
     {
       field: 'cont_fio',
@@ -140,33 +140,11 @@ export const BaseDictionaryTab = () => {
     rai_reg: false,
   }
 
-  const processRowUpdate = (newRow) => {
-    let resultRow = newRow
-    try {
-      validationSchema.validateSync(newRow, { abortEarly: false })
-      const handleSave = newRow.isNew ? handleSaveNewItem : handleSaveEditedItem
-      handleSave(newRow)
-        .then((res) => {
-          queryClient.invalidateQueries({ queryKey: ['baseDictionary'] })
-          const updatedRow = { ...newRow, isNew: false, error: false }
-          setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)))
-          resultRow = updatedRow
-        })
-        .catch((e) => {
-          // ошибка с бэка - надо как то вывести, и оно видимо не сохранилось
-          const errorRow = { ...newRow, error: true }
-          setRows(rows.map((row) => (row.id === newRow.id ? errorRow : row)))
-          resultRow = errorRow
-          throw errorRow
-        })
-    } catch (e) {
-      const errors = e.inner.map((item) => ({ path: item.path, message: item.message }))
-      const errorRow = { ...newRow, error: true, errors }
-      setRows(rows.map((row) => (row.id === newRow.id ? errorRow : row)))
-      resultRow = errorRow
-      throw errorRow
-    }
-    return resultRow
+  const processRowUpdate = async (newRow) => {
+    validationSchema.validateSync(newRow, { abortEarly: false })
+    const handleSave = newRow.isNew ? handleSaveNewItem : handleSaveEditedItem
+    await handleSave(newRow)
+    queryClient.invalidateQueries({ queryKey: ['baseDictionary'] })
   }
 
   return (

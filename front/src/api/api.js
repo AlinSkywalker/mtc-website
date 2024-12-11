@@ -16,6 +16,9 @@ instance.interceptors.response.use(
       window.location = '/login'
       localStorage.removeItem('token')
     }
+    if (error && error.response?.status == 500) {
+      return Promise.reject(error)
+    }
   },
 )
 

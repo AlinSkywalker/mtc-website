@@ -179,7 +179,7 @@ const dictionaryRouter = (app, passport) => {
     });
   })
   app.put('/routeDictionary', passport.authenticate('jwt', { session: false }), (req, res) => {
-    const { rout_mount, rout_desc, rout_per, rout_sup, rout_tip, rout_comp, rout_name } = req.body;
+    const { rout_mount, rout_desc, rout_per, rout_sup, rout_tip, rout_comp, rout_name, rout_winter } = req.body;
     pool.query(`INSERT INTO route (rout_mount, rout_desc, rout_per, rout_sup, rout_tip, rout_comp, rout_name,rout_winter) VALUES(?,?,?,?,?,?,?,?)`,
       [rout_mount, rout_desc, rout_per, rout_sup, rout_tip, rout_comp, rout_name, rout_winter], (error, result) => {
         if (error) {
@@ -281,23 +281,39 @@ const dictionaryRouter = (app, passport) => {
 
   // contractorDictionary
   app.get('/contractorDictionary/', passport.authenticate('jwt', { session: false }), (req, res) => {
-    pool.query(`SELECT * FROM contractor`, (error, result) => {
-      if (error) {
-        console.log(error);
-        res.status(500).json({ success: false, message: error });
-        return
-      }
-      const returnType = req.query.returnType
-      if (returnType == 'objectType') {
-        const newResult = {}
-        result.forEach(item => { newResult[item.id] = { ...item, name: item.cont_fio } });
-        res.send(newResult)
-      }
-      else {
-        res.send(result);
-      }
+    const baseId = req.query.baseId
+    if (baseId) {
+      pool.query(`SELECT c.* FROM base_cont b_c LEFT JOIN contractor c on c.id = b_c.base_contr WHERE b_c.base_base='${baseId}'`,
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return
+          }
+          res.send(result);
 
-    });
+
+        });
+    }
+    else {
+      pool.query(`SELECT * FROM contractor`, (error, result) => {
+        if (error) {
+          console.log(error);
+          res.status(500).json({ success: false, message: error });
+          return
+        }
+        const returnType = req.query.returnType
+        if (returnType == 'objectType') {
+          const newResult = {}
+          result.forEach(item => { newResult[item.id] = { ...item, name: item.cont_fio } });
+          res.send(newResult)
+        }
+        else {
+          res.send(result);
+        }
+
+      });
+    }
   })
 
   app.put('/contractorDictionary', passport.authenticate('jwt', { session: false }), (req, res) => {

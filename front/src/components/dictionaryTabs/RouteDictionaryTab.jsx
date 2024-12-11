@@ -2,7 +2,7 @@ import React from 'react'
 import { useFetchRouteDictionaryList } from '../../queries/dictionary'
 import apiClient from '../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
-import { MountSelectMenu } from '../MountSelectMenu'
+import { MountSelectMenu } from '../dataGridCell/MountSelectMenu'
 import { EditableTable } from '../EditableTable'
 import * as Yup from 'yup'
 import { Checkbox } from '@mui/material'
@@ -130,34 +130,11 @@ export const RouteDictionaryTab = () => {
     // mount_name: false,
   }
 
-  const processRowUpdate = (newRow) => {
-    console.log('processRowUpdate')
-    let resultRow = newRow
-    try {
-      validationSchema.validateSync(newRow, { abortEarly: false })
-      const handleSave = newRow.isNew ? handleSaveNewItem : handleSaveEditedItem
-      handleSave(newRow)
-        .then((res) => {
-          queryClient.invalidateQueries({ queryKey: ['routeDictionary'] })
-          const updatedRow = { ...newRow, isNew: false, error: false }
-          setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)))
-          resultRow = updatedRow
-        })
-        .catch((e) => {
-          // ошибка с бэка - надо как то вывести, и оно видимо не сохранилось
-          const errorRow = { ...newRow, error: true }
-          setRows(rows.map((row) => (row.id === newRow.id ? errorRow : row)))
-          resultRow = errorRow
-          throw errorRow
-        })
-    } catch (e) {
-      const errors = e.inner.map((item) => ({ path: item.path, message: item.message }))
-      const errorRow = { ...newRow, error: true, errors }
-      setRows(rows.map((row) => (row.id === newRow.id ? errorRow : row)))
-      resultRow = errorRow
-      throw errorRow
-    }
-    return resultRow
+  const processRowUpdate = async (newRow) => {
+    validationSchema.validateSync(newRow, { abortEarly: false })
+    const handleSave = newRow.isNew ? handleSaveNewItem : handleSaveEditedItem
+    await handleSave(newRow)
+    queryClient.invalidateQueries({ queryKey: ['routeDictionary'] })
   }
 
   return (

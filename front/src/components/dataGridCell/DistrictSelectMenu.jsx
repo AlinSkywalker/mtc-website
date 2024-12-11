@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Grid2 from '@mui/material/Grid2'
 import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
-import { useFetchDictionaryByName } from '../queries/dictionary'
+import { useFetchDictionaryByName } from '../../queries/dictionary'
 import { useGridApiContext } from '@mui/x-data-grid'
 import Popover from '@mui/material/Popover'
 import IconButton from '@mui/material/IconButton'
@@ -67,8 +67,14 @@ export function DistrictSelectMenu(props) {
   const { region_name, rai_reg, rai_name } = row
   const initialDistrictId = row[nameField]
   // console.log('SelectEditInputCell props', props)
-  const { data: regionData } = useFetchDictionaryByName('regionDictionary', 'arrayType')
-  const { data: districtData } = useFetchDictionaryByName('districtDictionary', 'arrayType')
+  const { data: regionData } = useFetchDictionaryByName({
+    dictionaryName: 'regionDictionary',
+    returnType: 'arrayType',
+  })
+  const { data: districtData } = useFetchDictionaryByName({
+    dictionaryName: 'districtDictionary',
+    returnType: 'arrayType',
+  })
 
   const regionMappedData = mapDictionaryData('regionDictionary', regionData)
   const districtMappedData = mapDictionaryData('districtDictionary', districtData)

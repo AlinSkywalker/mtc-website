@@ -1,8 +1,8 @@
 import React from 'react'
-import { useFetchDistrictDictionaryList } from '../../queries/dictionary'
+import { useFetchDistrictDictionaryList, useFetchDictionaryByName } from '../../queries/dictionary'
 import apiClient from '../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
-import { SelectEditInputCell } from '../SelectEditInputCell'
+import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
 import * as Yup from 'yup'
 import { EditableTable } from '../EditableTable'
 
@@ -58,9 +58,9 @@ export const DistrictDictionaryTab = () => {
   }
 
   const columns = [
+    { field: 'rai_num', headerName: 'Номер', width: 150, editable: true },
     { field: 'rai_name', headerName: 'Название', width: 350, editable: true },
     { field: 'rai_desc', headerName: 'Описание', width: 350, editable: true },
-    { field: 'rai_num', headerName: 'Номер', width: 150, editable: true },
     { field: 'rai_reg', headerName: 'rai_reg', width: 0, editable: true },
     {
       field: 'region_name',
@@ -68,10 +68,6 @@ export const DistrictDictionaryTab = () => {
       width: 350,
       editable: true,
       renderEditCell: renderSelectEditCell,
-      // renderCell: (params) => {
-      //   const displayValue = params.row.region_name
-      //   return <>{displayValue}</>
-      // },
     },
   ]
   const fieldToFocus = 'rai_name'
@@ -79,33 +75,11 @@ export const DistrictDictionaryTab = () => {
     rai_reg: false,
   }
 
-  const processRowUpdate = (newRow) => {
-    let resultRow = newRow
-    try {
-      validationSchema.validateSync(newRow, { abortEarly: false })
-      const handleSave = newRow.isNew ? handleSaveNewItem : handleSaveEditedItem
-      handleSave(newRow)
-        .then((res) => {
-          queryClient.invalidateQueries({ queryKey: ['districtDictionary'] })
-          const updatedRow = { ...newRow, isNew: false, error: false }
-          setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)))
-          resultRow = updatedRow
-        })
-        .catch((e) => {
-          // ошибка с бэка - надо как то вывести, и оно видимо не сохранилось
-          const errorRow = { ...newRow, error: true }
-          setRows(rows.map((row) => (row.id === newRow.id ? errorRow : row)))
-          resultRow = errorRow
-          throw errorRow
-        })
-    } catch (e) {
-      const errors = e.inner.map((item) => ({ path: item.path, message: item.message }))
-      const errorRow = { ...newRow, error: true, errors }
-      setRows(rows.map((row) => (row.id === newRow.id ? errorRow : row)))
-      resultRow = errorRow
-      throw errorRow
-    }
-    return resultRow
+  const processRowUpdate = async (newRow) => {
+    validationSchema.validateSync(newRow, { abortEarly: false })
+    const handleSave = newRow.isNew ? handleSaveNewItem : handleSaveEditedItem
+    await handleSave(newRow)
+    queryClient.invalidateQueries({ queryKey: ['districtDictionary'] })
   }
   // console.log('columns1', columns)
   return (

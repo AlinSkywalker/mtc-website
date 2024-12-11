@@ -13,7 +13,6 @@ import SaveIcon from '@mui/icons-material/Save'
 import CancelIcon from '@mui/icons-material/Close'
 import { GridActionsCellItem } from '@mui/x-data-grid'
 import './EditableTableStyles.css'
-import theme from '../api/theme'
 
 export const EditableTable = ({
   rows,
@@ -29,6 +28,10 @@ export const EditableTable = ({
   handleDeleteItem,
   toolbar,
   fullHeight = true,
+  onRowSelectionModelChange,
+  addButtonDisabled,
+  isCellEditable,
+  isRowEditable = () => true,
 }) => {
   const handleRowEditStart = (params, event) => {
     // console.log('handleRowEditStart', params, event)
@@ -66,13 +69,34 @@ export const EditableTable = ({
       setRows(rows.filter((row) => row.id !== id))
     }
   }
+  const handleProcessRowUpdate = async (newRow) => {
+    let resultRow = newRow
+    try {
+      await processRowUpdate(newRow)
+
+      const updatedRow = { ...newRow, isNew: false, error: false, errors: [] }
+      setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)))
+      resultRow = updatedRow
+    } catch (e) {
+      let errors = null
+      if (e.inner) {
+        errors = e.inner.map((item) => ({ path: item.path, message: item.message }))
+      }
+      const errorRow = { ...newRow, error: true, errors }
+      setRows(rows.map((row) => (row.id === newRow.id ? errorRow : row)))
+      throw errorRow
+    }
+    return resultRow
+  }
+
   const handleProcessRowUpdateError = (error) => {
     console.log('error', error)
   }
   const getActions = (id) => {
     {
       const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit
-      const isNew = rows.find((row) => row.id === id)?.isNew
+      const row = rows.find((row) => row.id === id)
+      const { isNew } = row
       if (isInEditMode) {
         return [
           <GridActionsCellItem
@@ -102,6 +126,7 @@ export const EditableTable = ({
           className='textPrimary'
           onClick={handleEditClick(id)}
           color='inherit'
+          disabled={!isRowEditable(row)}
         />,
       ]
       if (isNew) {
@@ -134,57 +159,59 @@ export const EditableTable = ({
       field: 'actions',
       type: 'actions',
       headerName: '',
-      width: 100,
+      width: 70,
       cellClassName: 'actions',
       getActions: ({ id }) => getActions(id),
     },
     ...columns,
   ]
   // console.log('columns', tableColumns)
+  const disabled = addButtonDisabled
   return (
     <Grid2 spacing={2} container flexDirection={'column'}>
       <Grid2 item size={12} sx={{ height: fullHeight ? `calc(100vh - 150px)` : 600 }}>
-        <ThemeProvider theme={theme}>
-          <DataGrid
-            rows={rows}
-            columns={tableColumns}
-            loading={isLoading}
-            editMode='row'
-            rowModesModel={rowModesModel}
-            onRowModesModelChange={handleRowModesModelChange}
-            onRowEditStart={handleRowEditStart}
-            onRowEditStop={handleRowEditStop}
-            processRowUpdate={processRowUpdate}
-            onProcessRowUpdateError={handleProcessRowUpdateError}
-            slots={{
-              toolbar: () => {
-                return toolbar ? (
-                  toolbar
-                ) : (
-                  <DictionaryEditToolbar
-                    setRows={setRows}
-                    setRowModesModel={setRowModesModel}
-                    fieldToFocus={fieldToFocus}
-                    defaultItem={defaultItem}
-                  />
-                )
-              },
-            }}
-            slotProps={{
-              toolbar: { setRows, setRowModesModel },
-            }}
-            columnVisibilityModel={columnVisibilityModel}
-            getCellClassName={(params) => {
-              if (params.row.error) {
-                const fieldHasError = params.row.errors.find((item) => item.path === params.field)
-                if (fieldHasError) return 'errorField'
-                // if(params.row.errors)
-              }
-            }}
-            columnHeaderHeight={36}
-            rowHeight={42}
-          />
-        </ThemeProvider>
+        <DataGrid
+          rows={rows}
+          columns={tableColumns}
+          loading={isLoading}
+          editMode='row'
+          rowModesModel={rowModesModel}
+          onRowModesModelChange={handleRowModesModelChange}
+          onRowEditStart={handleRowEditStart}
+          onRowEditStop={handleRowEditStop}
+          processRowUpdate={handleProcessRowUpdate}
+          onProcessRowUpdateError={handleProcessRowUpdateError}
+          onRowSelectionModelChange={onRowSelectionModelChange}
+          slots={{
+            toolbar: () => {
+              return toolbar ? (
+                toolbar
+              ) : (
+                <DictionaryEditToolbar
+                  setRows={setRows}
+                  setRowModesModel={setRowModesModel}
+                  fieldToFocus={fieldToFocus}
+                  defaultItem={defaultItem}
+                  disabled={disabled}
+                />
+              )
+            },
+          }}
+          slotProps={{
+            toolbar: { setRows, setRowModesModel, disabled, fieldToFocus, defaultItem },
+          }}
+          columnVisibilityModel={columnVisibilityModel}
+          getCellClassName={(params) => {
+            if (params.row.error) {
+              const fieldHasError = params.row.errors?.find((item) => item.path === params.field)
+              if (fieldHasError) return 'errorField'
+              // if(params.row.errors)
+            }
+          }}
+          columnHeaderHeight={36}
+          rowHeight={42}
+          isCellEditable={isCellEditable}
+        />
       </Grid2>
     </Grid2>
   )

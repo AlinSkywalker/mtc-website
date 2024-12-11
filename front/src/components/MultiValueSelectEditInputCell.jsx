@@ -7,6 +7,7 @@ import { useFetchDictionaryByName } from '../queries/dictionary'
 import { useGridApiContext } from '@mui/x-data-grid'
 import ListItemText from '@mui/material/ListItemText'
 import Checkbox from '@mui/material/Checkbox'
+import Grid2 from '@mui/material/Grid2'
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
@@ -33,7 +34,10 @@ export function MultiValueSelectEditInputCell(props) {
     displayNameField,
   } = props
   // console.log('SelectEditInputCell props', props)
-  const { isLoading, data: dictionaryData } = useFetchDictionaryByName(dictionaryName, 'objectType')
+  const { isLoading, data: dictionaryData } = useFetchDictionaryByName({
+    dictionaryName,
+    returnType: 'objectType',
+  })
   // const dictionaryDataList
 
   // const dictionaryData = mapDictionaryData(dictionaryName, data)
@@ -94,8 +98,12 @@ export function MultiValueSelectEditInputCell(props) {
           Object.values(dictionaryData).map((item, index) => {
             return (
               <MenuItem value={item.id} key={index}>
-                <Checkbox checked={personId.includes(item.id)} />
-                <ListItemText primary={item.name} />
+                <Checkbox checked={personId.includes(item.id)} sx={{ p: 0.5 }} />
+                <ListItemText
+                  primary={item.name}
+                  sx={{ width: '100%', whiteSpace: 'normal' }}
+                  secondary={item.cont_desc}
+                />
               </MenuItem>
             )
           })}
@@ -103,3 +111,7 @@ export function MultiValueSelectEditInputCell(props) {
     </FormControl>
   )
 }
+// word-wrap: break-word;
+// white-space: normal;
+// font-size: 13px;
+// color: #666;

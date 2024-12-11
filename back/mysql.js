@@ -6,6 +6,7 @@ const dbConfig = {
   password: 'fHreL67ZT',
   database: 'mtc_db',
   insecureAuth: "true",
+  dateStrings: true,
 };
 const pool = mysql.createPool(dbConfig);
 

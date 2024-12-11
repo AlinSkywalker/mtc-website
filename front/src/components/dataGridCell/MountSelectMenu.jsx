@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react'
 import Grid2 from '@mui/material/Grid2'
 import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
-import { useFetchDictionaryByName } from '../queries/dictionary'
+import { useFetchDictionaryByName } from '../../queries/dictionary'
 import { useGridApiContext } from '@mui/x-data-grid'
 import Popover from '@mui/material/Popover'
 import IconButton from '@mui/material/IconButton'
-import CreateIcon from '@mui/icons-material/Create'
+import CreateIcon from '@mui/icons-material/KeyboardArrowDown'
 import Button from '@mui/material/Button'
 import { Box } from '@mui/material'
 
@@ -66,9 +66,18 @@ export function MountSelectMenu(props) {
   const { id, row } = props
   const { region_name, rai_reg, rai_name, mount_rai, mount_name, rout_mount } = row
   // console.log('SelectEditInputCell props', props)
-  const { data: regionData } = useFetchDictionaryByName('regionDictionary', 'arrayType')
-  const { data: districtData } = useFetchDictionaryByName('districtDictionary', 'arrayType')
-  const { data: summitData } = useFetchDictionaryByName('summitDictionary', 'arrayType')
+  const { data: regionData } = useFetchDictionaryByName({
+    dictionaryName: 'regionDictionary',
+    returnType: 'arrayType',
+  })
+  const { data: districtData } = useFetchDictionaryByName({
+    dictionaryName: 'districtDictionary',
+    returnType: 'arrayType',
+  })
+  const { data: summitData } = useFetchDictionaryByName({
+    dictionaryName: 'summitDictionary',
+    returnType: 'arrayType',
+  })
 
   const regionMappedData = mapDictionaryData('regionDictionary', regionData)
   const districtMappedData = mapDictionaryData('districtDictionary', districtData)

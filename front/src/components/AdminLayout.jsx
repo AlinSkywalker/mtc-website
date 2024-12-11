@@ -49,7 +49,7 @@ export const AdminLayout = ({ children }) => {
   }
   const pages = [
     { name: 'eventList', url: '/admin/event', label: 'Мероприятия' },
-    { name: 'memberList', url: '/admin/member', label: 'Участники' },
+    { name: 'memberList', url: '/admin/member', label: 'Члены клуба' },
     { name: 'dictionary', url: '/admin/dictionary', label: 'Справочники' },
   ]
   const handleCloseGoToPage = (page) => () => {

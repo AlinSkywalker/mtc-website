@@ -1,7 +1,7 @@
 import apiClient from '../api/api'
 import { useQuery } from '@tanstack/react-query'
 
-export function useFetchDictionaryByName(dictionaryName, returnType) {
+export function useFetchDictionaryByName({ dictionaryName, returnType }) {
   return useQuery({
     queryKey: [dictionaryName],
     queryFn: async () => {
@@ -74,6 +74,17 @@ export function useFetchContractorDictionaryList() {
     },
   })
 }
+
+export function useFetchContractorByBaseIdDictionaryList(baseId) {
+  return useQuery({
+    queryKey: ['contractorDictionary', 'baseId', baseId],
+    queryFn: async () => {
+      const { data } = await apiClient.get(`/api/contractorDictionary?baseId=${baseId}`)
+      return data
+    },
+  })
+}
+
 export function useFetchBaseDictionaryList() {
   return useQuery({
     queryKey: ['baseDictionary'],

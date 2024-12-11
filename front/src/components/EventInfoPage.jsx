@@ -8,11 +8,9 @@ import Grid from '@mui/material/Grid2'
 import Container from '@mui/material/Container'
 import apiClient from '../api/api'
 import { useFetchEvent } from '../queries/event'
-import { useFetchMemberList } from '../queries/member'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import { useFetchBaseDictionaryList } from '../queries/dictionary'
-import formatISO from 'date-fns/parseISO'
+import { format } from 'date-fns'
 import { AsynchronousAutocomplete } from './AsynchronousAutocomplete'
 import { CircularProgress } from '@mui/material'
 import Tab from '@mui/material/Tab'
@@ -21,8 +19,11 @@ import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
 import Box from '@mui/material/Box'
 import { EventMembersTab } from './eventTabs/EventMembersTab'
-import { EventSmenaTab } from './eventTabs/EventSmenaTab'
 import { EventDepartmentTab } from './eventTabs/EventDepartmentTab'
+import { EventContractorTab } from './eventTabs/EventContractorTab'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as Yup from 'yup'
+import FormControl from '@mui/material/FormControl'
 
 const defaultValues = {
   id: 0,
@@ -33,8 +34,6 @@ const defaultValues = {
   event_st: 0,
   event_ob: 0,
   event_desc: '',
-  created_date: '',
-  updated_date: '',
   ob_fio: '',
   st_fio: '',
   base_name: '',
@@ -42,6 +41,31 @@ const defaultValues = {
   st: { fio: '', id: 0 },
   base: { base_name: '', id: 0 },
 }
+
+const validationSchema = Yup.object({
+  event_name: Yup.string().required('Поле обязательно для заполнения'),
+  event_start: Yup.string().required('Поле обязательно для заполнения'),
+  event_finish: Yup.string().required('Поле обязательно для заполнения'),
+  ob: Yup.object()
+    .test({
+      name: 'notSt',
+      exclusive: false,
+      params: {},
+      message: 'ОБ не может совпадать с СТ',
+      test: (value, context) => value?.id != context.parent.st?.id,
+    })
+    .required('Поле обязательно для заполнения'),
+  st: Yup.object()
+    .test({
+      name: 'notOb',
+      exclusive: false,
+      params: {},
+      message: 'ОБ не может совпадать с СТ',
+      test: (value, context) => value?.id != context.parent.ob?.id,
+    })
+    .required('Поле обязательно для заполнения'),
+  base: Yup.object().required('Поле обязательно для заполнения'),
+})
 
 export const EventInfoPage = () => {
   const [value, setValue] = React.useState(0)
@@ -60,34 +84,35 @@ export const EventInfoPage = () => {
     formState: { errors, dirtyFields },
     control,
     reset,
-  } = useForm({ defaultValues })
-
+  } = useForm({ defaultValues, resolver: yupResolver(validationSchema) })
+  // console.log(errors)
   useEffect(() => {
     data && reset(data)
   }, [data])
 
   const isDirty = !!Object.keys(dirtyFields).length
   const handleSave = async (data, e) => {
-    console.log('handleLogin', data)
+    // console.log('handleLogin', data)
     e.preventDefault()
     try {
-      const response = await apiClient.post(`/api/event/${data.id}`, {
+      const response = await apiClient.post(`/api/eventList/${data.id}`, {
         ...data,
-        event_start: formatISO(data.event_start),
-        event_finish: formatISO(data.event_finish),
+        event_start: format(data.event_start, 'yyyy-MM-dd'),
+        event_finish: format(data.event_finish, 'yyyy-MM-dd'),
       })
-
-      console.log(response.data)
+      reset(data)
+      // console.log(response.data)
     } catch (error) {
-      console.error(error)
+      // console.error(error)
     }
   }
   const handleReset = () => {
     reset(data)
   }
 
-  const fetchAllMembers = useFetchMemberList()
-  const fetchAllBase = useFetchBaseDictionaryList()
+  const fetchOBMembers = () => apiClient.get(`/api/memberList?possibleRole=ob`)
+  const fetchSTMembers = () => apiClient.get(`/api/memberList?possibleRole=st`)
+  const fetchAllBase = () => apiClient.get(`/api/baseDictionary`)
 
   const eventTabs = [
     {
@@ -100,10 +125,15 @@ export const EventInfoPage = () => {
       label: 'Отделения',
       component: <EventDepartmentTab eventId={currentId} />,
     },
+    // {
+    //   name: 'smena',
+    //   label: 'Смены',
+    //   component: <EventSmenaTab eventId={currentId} />,
+    // },
     {
-      name: 'smena',
-      label: 'Смены',
-      component: <EventSmenaTab eventId={currentId} />,
+      name: 'contractor',
+      label: 'Контрагенты',
+      component: <EventContractorTab baseId={data?.event_base} />,
     },
   ]
 
@@ -137,7 +167,14 @@ export const EventInfoPage = () => {
                   name='event_name'
                   control={control}
                   render={({ field }) => (
-                    <TextField {...field} variant='outlined' label='Название' fullWidth />
+                    <TextField
+                      {...field}
+                      variant='outlined'
+                      label='Название'
+                      fullWidth
+                      error={errors[field.name]}
+                      helperText={errors[field.name]?.message}
+                    />
                   )}
                 />
               </Grid>
@@ -158,7 +195,13 @@ export const EventInfoPage = () => {
                     <DatePicker
                       label='Дата начала'
                       {...field}
-                      slotProps={{ textField: { fullWidth: true } }}
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                          error: errors[field.name],
+                          helperText: errors[field.name]?.message,
+                        },
+                      }}
                     />
                   )}
                 />
@@ -171,7 +214,13 @@ export const EventInfoPage = () => {
                     <DatePicker
                       label='Дата окончания'
                       {...field}
-                      slotProps={{ textField: { fullWidth: true } }}
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                          error: errors[field.name],
+                          helperText: errors[field.name]?.message,
+                        },
+                      }}
                     />
                   )}
                 />
@@ -183,9 +232,10 @@ export const EventInfoPage = () => {
                   render={({ field }) => (
                     <AsynchronousAutocomplete
                       label='ОБ'
-                      request={fetchAllMembers}
+                      request={fetchOBMembers}
                       dataNameField='fio'
                       field={field}
+                      errors={errors}
                     />
                   )}
                 />
@@ -197,9 +247,10 @@ export const EventInfoPage = () => {
                   render={({ field }) => (
                     <AsynchronousAutocomplete
                       label='СТ'
-                      request={fetchAllMembers}
+                      request={fetchSTMembers}
                       dataNameField='fio'
                       field={field}
+                      errors={errors}
                     />
                   )}
                 />
@@ -214,12 +265,13 @@ export const EventInfoPage = () => {
                       request={fetchAllBase}
                       dataNameField='base_name'
                       field={field}
+                      errors={errors}
                     />
                   )}
                 />
               </Grid>
             </Grid>
-            <Grid container>
+            <Grid container sx={{ marginTop: 4 }}>
               <Grid item>
                 <Button variant='text' type='button' disabled={!isDirty} onClick={handleReset}>
                   Отменить

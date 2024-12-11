@@ -5,7 +5,7 @@ import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
 import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
-import { useFetchDictionaryByName } from '../queries/dictionary'
+import { useFetchDictionaryByName } from '../../queries/dictionary'
 import { useGridApiContext } from '@mui/x-data-grid'
 
 function mapDictionaryData(dictionaryName, dictionaryData = []) {
@@ -37,6 +37,9 @@ function mapDictionaryData(dictionaryName, dictionaryData = []) {
       case 'baseDictionary':
         itemName = item.base_name
         break
+      case 'members':
+        itemName = item.fio
+        break
 
       default:
         itemName = ''
@@ -47,13 +50,15 @@ function mapDictionaryData(dictionaryName, dictionaryData = []) {
 }
 
 export function SelectEditInputCell(props) {
-  const { id, value, field, hasFocus, dictionaryName, nameField } = props
+  const { id, value, field, hasFocus, dictionaryName, nameField, hook, hookParams } = props
   // console.log('SelectEditInputCell props', props)
-  const { isLoading, data } = useFetchDictionaryByName(dictionaryName, 'arrayType')
+  const queryHook = hook ? hook : useFetchDictionaryByName
+  const queryHookParams = hookParams ? hookParams : { dictionaryName, returnType: 'arrayType' }
+  const { isLoading, data } = queryHook(queryHookParams)
 
   const [autocompleteValue, setAutocompleteValue] = useState({
-    id: props.row[nameField],
-    name: value,
+    id: props.row[nameField] || '',
+    name: value || '',
   })
   const [inputValue, setInputValue] = React.useState(value)
 

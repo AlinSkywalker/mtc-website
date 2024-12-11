@@ -5,7 +5,7 @@ import AddIcon from '@mui/icons-material/Add'
 import { Button } from '@mui/material'
 
 export function DictionaryEditToolbar(props) {
-  const { setRows, setRowModesModel, defaultItem, fieldToFocus } = props
+  const { setRows, setRowModesModel, defaultItem, fieldToFocus, disabled = false } = props
 
   const handleClick = () => {
     const id = randomId()
@@ -18,7 +18,7 @@ export function DictionaryEditToolbar(props) {
 
   return (
     <GridToolbarContainer>
-      <Button color='primary' startIcon={<AddIcon />} onClick={handleClick}>
+      <Button color='primary' startIcon={<AddIcon />} onClick={handleClick} disabled={disabled}>
         Добавить
       </Button>
     </GridToolbarContainer>

@@ -13,6 +13,9 @@ const eventListRouter = require('./eventList')
 const memberListRouter = require('./memberList')
 const dictionaryRouter = require('./dictionary')
 const eventSmenaRouter = require('./eventSmena')
+const eventDepartmentRouter = require('./eventDepartment')
+const eventMemberRouter = require('./eventMember')
+
 
 
 
@@ -134,6 +137,8 @@ eventListRouter(app, passport);
 memberListRouter(app, passport);
 dictionaryRouter(app, passport);
 eventSmenaRouter(app, passport);
+eventDepartmentRouter(app, passport);
+eventMemberRouter(app, passport);
 
 
 app.get("*", (req, res) => {

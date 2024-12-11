@@ -13,6 +13,7 @@ const eventListRouter = (app, passport) => {
         res.status(500).json({ success: false, message: error });
         return
       }
+      // console.log(result[0].event_start)
       res.send(result);
     });
   })
@@ -72,14 +73,25 @@ const eventListRouter = (app, passport) => {
       event_ob,
       event_desc } = req.body;
     pool.query(`UPDATE eventalp SET 
-        event_name='${event_name}',
-        event_start=CONVERT('${event_start}',DATETIME),
-        event_finish=CONVERT('${event_finish}',DATETIME),
+        event_name=?,
+        event_start=?,
+        event_finish=?,
         event_base=${event_base},
         event_st=${event_st},
         event_ob=${event_ob},
-        event_desc='${event_desc}',
-        updated_date=CURRENT_TIMESTAMP WHERE id=${id}`, (error, result) => {
+        event_desc=?,
+        updated_date=CURRENT_TIMESTAMP WHERE id=${id}`, [event_name, event_start, event_finish, event_desc], (error, result) => {
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+        return
+      }
+      res.send(result);
+    });
+  })
+  app.delete('/eventList/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const id = req.params.id;
+    pool.query(`DELETE FROM eventalp WHERE id=${id}`, (error, result) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });

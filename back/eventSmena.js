@@ -21,8 +21,6 @@ const eventSmenaRouter = (app, passport) => {
   app.put('/eventList/:eventId/smena/', passport.authenticate('jwt', { session: false }), (req, res) => {
     const eventId = req.params.eventId;
     const { smena_tip, smena_datef, smena_dates, smena_name } = req.body;
-    const smena_datefDate = new Date(smena_datef)
-    const smena_datesDate = new Date(smena_dates)
     pool.query(`INSERT INTO smena ( smena_event, smena_tip, smena_datef, smena_dates, smena_name) 
       VALUES('${eventId}','${smena_tip}',CONVERT('${smena_datef}',DATETIME),CONVERT('${smena_dates}',DATETIME),'${smena_name}')`, (error, result) => {
       if (error) {

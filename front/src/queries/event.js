@@ -35,3 +35,35 @@ export function useFetchEventSmenaList(eventId) {
     },
   })
 }
+
+export function useFetchEventDepartmentList(eventId) {
+  return useQuery({
+    queryKey: ['event', eventId, 'department'],
+    queryFn: async () => {
+      const { data } = await apiClient.get(`/api/eventList/${eventId}/department`)
+      return data
+    },
+  })
+}
+
+export function useFetchEventDepartmentMemberList(eventId, departmentId) {
+  return useQuery({
+    queryKey: ['event', eventId, 'department', departmentId],
+    queryFn: async () => {
+      const { data } = await apiClient.get(
+        `/api/eventList/${eventId}/department/${departmentId}/member`,
+      )
+      return data
+    },
+  })
+}
+
+export function useFetchEventMemberList(eventId) {
+  return useQuery({
+    queryKey: ['event', eventId, 'member'],
+    queryFn: async () => {
+      const { data } = await apiClient.get(`/api/eventList/${eventId}/member`)
+      return data
+    },
+  })
+}

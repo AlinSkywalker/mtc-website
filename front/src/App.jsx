@@ -7,6 +7,7 @@ import { AdminLayout } from './components/AdminLayout'
 import { ProfilePage } from './components/ProfilePage'
 import { EventListPage } from './components/EventListPage'
 import { EventInfoPage } from './components/EventInfoPage'
+import { MemberInfoPage } from './components/MemberInfoPage'
 import { MemberListPage } from './components/MemberListPage'
 import { DictionaryPage } from './components/DictionaryPage'
 import { AuthContext } from './components/AuthContext'
@@ -16,6 +17,8 @@ import CssBaseline from '@mui/material/CssBaseline'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3'
 import { ru } from 'date-fns/locale/ru'
+import theme from './api/theme'
+import { ThemeProvider } from '@mui/material'
 
 const queryClient = new QueryClient()
 
@@ -41,82 +44,84 @@ const App = () => {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ru}>
       <QueryClientProvider client={queryClient}>
-        <CssBaseline />
-        <AuthProvider>
-          <BrowserRouter basename={'/mountaineering-training-center'}>
-            <Routes>
-              <Route
-                path='/login'
-                element={
-                  <LoginRoute>
-                    <LoginPage />
-                  </LoginRoute>
-                }
-                exact
-              />
-              <Route
-                path='/register'
-                element={
-                  <LoginRoute>
-                    <RegistrationPage />
-                  </LoginRoute>
-                }
-                exact
-              />
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <AuthProvider>
+            <BrowserRouter basename={'/mountaineering-training-center'}>
+              <Routes>
+                <Route
+                  path='/login'
+                  element={
+                    <LoginRoute>
+                      <LoginPage />
+                    </LoginRoute>
+                  }
+                  exact
+                />
+                <Route
+                  path='/register'
+                  element={
+                    <LoginRoute>
+                      <RegistrationPage />
+                    </LoginRoute>
+                  }
+                  exact
+                />
 
-              <Route
-                path='/admin/event'
-                element={
-                  <PrivateRoute>
-                    <EventListPage />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path='/admin/event/:id'
-                element={
-                  <PrivateRoute>
-                    <EventInfoPage />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path='/admin/member'
-                element={
-                  <PrivateRoute>
-                    <MemberListPage />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path='/admin/member/:id'
-                element={
-                  <PrivateRoute>
-                    <EventInfoPage />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path='/admin/dictionary'
-                element={
-                  <PrivateRoute>
-                    <DictionaryPage />
-                  </PrivateRoute>
-                }
-              />
+                <Route
+                  path='/admin/event'
+                  element={
+                    <PrivateRoute>
+                      <EventListPage />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path='/admin/event/:id'
+                  element={
+                    <PrivateRoute>
+                      <EventInfoPage />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path='/admin/member'
+                  element={
+                    <PrivateRoute>
+                      <MemberListPage />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path='/admin/member/:id'
+                  element={
+                    <PrivateRoute>
+                      <MemberInfoPage />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path='/admin/dictionary'
+                  element={
+                    <PrivateRoute>
+                      <DictionaryPage />
+                    </PrivateRoute>
+                  }
+                />
 
-              <Route
-                path='/profile'
-                element={
-                  <PrivateRoute>
-                    <ProfilePage />
-                  </PrivateRoute>
-                }
-                exact
-              />
-            </Routes>
-          </BrowserRouter>
-        </AuthProvider>
+                <Route
+                  path='/profile'
+                  element={
+                    <PrivateRoute>
+                      <ProfilePage />
+                    </PrivateRoute>
+                  }
+                  exact
+                />
+              </Routes>
+            </BrowserRouter>
+          </AuthProvider>
+        </ThemeProvider>
       </QueryClientProvider>
     </LocalizationProvider>
   )

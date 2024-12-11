@@ -1,24 +1,119 @@
 import React from 'react'
-import Container from '@mui/material/Container'
 import { useFetchEventList } from '../queries/event'
-import { DataGrid } from '@mui/x-data-grid'
-import { formatDateValue } from '../utils/formatDate'
+import { useFetchMemberList } from '../queries/member'
 import { Link } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
+import apiClient from '../api/api'
+import { useQueryClient } from '@tanstack/react-query'
+import { EditableTable } from './EditableTable'
+import * as Yup from 'yup'
+import { SelectEditInputCell } from './dataGridCell/SelectEditInputCell'
+import { dateColumnType } from './dataGridCell/GridEditDateCell'
+
+const defaultItem = {
+  event_name: '',
+  event_base: '',
+  event_start: '',
+  event_finish: '',
+  event_st: '',
+  event_ob: '',
+  event_desc: '',
+  ob_fio: '',
+  st_fio: '',
+  base_name: '',
+}
+
+const validationSchema = Yup.object({
+  event_name: Yup.string().required('Поле обязательно для заполнения'),
+  event_start: Yup.string().required('Поле обязательно для заполнения'),
+  event_finish: Yup.string().required('Поле обязательно для заполнения'),
+  ob_fio: Yup.string()
+    .required('Поле обязательно для заполнения')
+    .notOneOf([Yup.ref('st_fio'), null], 'ОБ не может быть СТ'),
+  st_fio: Yup.string()
+    .required('Поле обязательно для заполнения')
+    .notOneOf([Yup.ref('ob_fio'), null], 'ОБ не может быть СТ'),
+  base_name: Yup.string().required('Поле обязательно для заполнения'),
+})
 
 export const EventListPage = () => {
   const { isLoading, data } = useFetchEventList()
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   const handleClickName = (id) => () => {
     navigate(`/admin/event/${id}`)
   }
-  console.log('event_name', data?.event_name)
+  // console.log('event_name', data?.event_name)
+  const [rows, setRows] = React.useState(data)
+  // console.log('rows', rows)
+  const [rowModesModel, setRowModesModel] = React.useState({})
+
+  React.useEffect(() => {
+    setRows(data)
+  }, [data])
+
+  const handleSaveNewItem = (data) => {
+    // console.log('handleSaveNewItem')
+    const { id, isNew, ...postedData } = data
+    // postedData['rai_reg'] = postedData['rai_reg'].split('|')[0]
+    return apiClient.put('/api/eventList', postedData)
+  }
+
+  const handleDeleteItem = (id) => () => {
+    apiClient.delete(`/api/eventList/${id}`).then((res) => {
+      queryClient.invalidateQueries({ queryKey: ['eventList'] })
+    })
+  }
+
+  const handleSaveEditedItem = React.useCallback((data) => {
+    // console.log('handleSaveEditedItem', data)
+    const { id, isNew, ...postedData } = data
+    // postedData['rai_reg'] = postedData['rai_reg'].split('|')[0]
+    return apiClient.post(`/api/eventList/${id}`, postedData)
+  }, [])
+
+  const renderBaseSelectEditCell = (params) => {
+    // console.log('params', params)
+    return (
+      <SelectEditInputCell {...params} dictionaryName='baseDictionary' nameField='event_base' />
+    )
+  }
+  const renderSTSelectEditCell = (params) => {
+    // console.log('params', params)
+    const hookParams = { possibleRole: 'st' }
+    return (
+      <SelectEditInputCell
+        {...params}
+        dictionaryName='members'
+        nameField='event_st'
+        hook={useFetchMemberList}
+        hookParams={hookParams}
+      />
+    )
+  }
+  const renderOBSelectEditCell = (params) => {
+    // console.log('params', params)
+    const hookParams = { possibleRole: 'ob' }
+    return (
+      <SelectEditInputCell
+        {...params}
+        dictionaryName='members'
+        nameField='event_ob'
+        hook={useFetchMemberList}
+        hookParams={hookParams}
+      />
+    )
+  }
   const renderLink = (params) => {
     // console.log(params)
     const link = params.value ?? ''
 
-    return <Link onClick={handleClickName(params.row.id)}>{link}</Link>
+    return (
+      <Link onClick={handleClickName(params.row.id)} sx={{ cursor: 'pointer' }}>
+        {link}
+      </Link>
+    )
   }
   const columns = [
     {
@@ -26,47 +121,75 @@ export const EventListPage = () => {
       headerName: 'Название',
       width: 150,
       renderCell: renderLink,
+      editable: true,
     },
-    { field: 'event_desc', headerName: 'Описание', width: 350 },
+    { field: 'event_desc', headerName: 'Описание', width: 350, editable: true },
     {
       field: 'event_start',
+      ...dateColumnType,
       headerName: 'Дата начала',
       width: 150,
-      valueGetter: (value) => {
-        return formatDateValue(value, 'dd.MM.yyyy')
-      },
+      editable: true,
     },
     {
       field: 'event_finish',
+      ...dateColumnType,
       headerName: 'Дата окончания',
       width: 150,
-      valueGetter: (value) => {
-        return formatDateValue(value, 'dd.MM.yyyy')
-      },
+      editable: true,
     },
-    { field: 'base_name', headerName: 'Место проведения', width: 150 },
-    { field: 'st_fio', headerName: 'Старший тренер', width: 150 },
-    { field: 'ob_fio', headerName: 'ОБ', width: 150 },
+    {
+      field: 'base_name',
+      headerName: 'Место проведения',
+      width: 150,
+      renderEditCell: renderBaseSelectEditCell,
+      editable: true,
+    },
+    {
+      field: 'st_fio',
+      headerName: 'Старший тренер',
+      width: 150,
+      renderEditCell: renderSTSelectEditCell,
+      editable: true,
+    },
+    {
+      field: 'ob_fio',
+      headerName: 'ОБ',
+      width: 150,
+      renderEditCell: renderOBSelectEditCell,
+      editable: true,
+    },
+    { field: 'event_base', headerName: 'event_base', width: 0, editable: true },
+    { field: 'event_st', headerName: 'event_st', width: 0, editable: true },
+    { field: 'event_ob', headerName: 'event_ob', width: 0, editable: true },
   ]
+  const fieldToFocus = 'event_name'
+  const columnVisibilityModel = {
+    event_base: false,
+    event_st: false,
+    event_ob: false,
+  }
 
-  // {
-  //   "id": 1,
-  //   "event_name": "Левак",
-  //   "event_base": 1,
-  //   "event_start": "2025-03-08T21:00:00.000Z",
-  //   "event_finish": "2025-04-05T21:00:00.000Z",
-  //   "event_st": 1,
-  //   "event_ob": 2,
-  //   "event_desc": "Пример"
-  // }
+  const processRowUpdate = async (newRow) => {
+    validationSchema.validateSync(newRow, { abortEarly: false })
+    const handleSave = newRow.isNew ? handleSaveNewItem : handleSaveEditedItem
+    await handleSave(newRow)
+    queryClient.invalidateQueries({ queryKey: ['eventList'] })
+  }
 
-  if (isLoading) return null
   return (
-    <Container
-      maxWidth={false}
-      sx={{ height: '100vh', backgroundColor: { xs: '#fff', md: '#f4f4f4' }, overflowX: 'scroll' }}
-    >
-      <DataGrid rows={data} columns={columns} editMode='row' />
-    </Container>
+    <EditableTable
+      rows={rows}
+      setRows={setRows}
+      rowModesModel={rowModesModel}
+      setRowModesModel={setRowModesModel}
+      columns={columns}
+      processRowUpdate={processRowUpdate}
+      fieldToFocus={fieldToFocus}
+      columnVisibilityModel={columnVisibilityModel}
+      defaultItem={defaultItem}
+      isLoading={isLoading}
+      handleDeleteItem={handleDeleteItem}
+    />
   )
 }

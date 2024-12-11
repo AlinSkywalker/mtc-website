@@ -3,7 +3,7 @@ import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
 import CircularProgress from '@mui/material/CircularProgress'
 
-export function AsynchronousAutocomplete({ request, label, dataNameField, field }) {
+export function AsynchronousAutocomplete({ request, label, dataNameField, field, errors }) {
   const [open, setOpen] = React.useState(false)
   const [options, setOptions] = React.useState([])
   const [loading, setLoading] = React.useState(false)
@@ -14,7 +14,7 @@ export function AsynchronousAutocomplete({ request, label, dataNameField, field 
     setOpen(true)
     ;(async () => {
       setLoading(true)
-      const { data } = await request
+      const { data } = await request()
       setLoading(false)
 
       setOptions(data)
@@ -49,6 +49,8 @@ export function AsynchronousAutocomplete({ request, label, dataNameField, field 
         <TextField
           {...params}
           label={label}
+          error={errors?.[field.name]}
+          helperText={errors?.[field.name]?.message}
           slotProps={{
             input: {
               ...params.InputProps,

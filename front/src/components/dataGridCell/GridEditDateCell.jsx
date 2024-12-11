@@ -35,7 +35,11 @@ function GridEditDateCell({ id, field, value, colDef }) {
   const Component = DatePicker
   console.log('GridEditDateCell', value)
   const handleChange = (newValue) => {
-    apiRef.current.setEditCellValue({ id, field, value: formatISO(newValue) })
+    apiRef.current.setEditCellValue({
+      id,
+      field,
+      value: formatISO(newValue, { representation: 'date' }),
+    })
   }
   const pickerValue = parseISO(value)
   return (

@@ -1,70 +1,154 @@
 import React from 'react'
-import Container from '@mui/material/Container'
 import { useFetchMemberList } from '../queries/member'
-import { DataGrid } from '@mui/x-data-grid'
-import { formatDateValue } from '../utils/formatDate'
 import { Link } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
+import apiClient from '../api/api'
+import { useQueryClient } from '@tanstack/react-query'
+import { EditableTable } from './EditableTable'
+import * as Yup from 'yup'
+import { SelectEditInputCell } from './dataGridCell/SelectEditInputCell'
+import { dateColumnType } from './dataGridCell/GridEditDateCell'
+import { sizeClothOptions, sizeShoeOptions } from '../constants'
+
+const defaultItem = {
+  fio: '',
+  gender: '',
+  memb_city: '',
+  name_city: '',
+  tel_1: '',
+  tel_2: '',
+  memb_email: '',
+  size_cloth: '?',
+  size_shoe: '?',
+  date_birth: null,
+}
+
+const validationSchema = Yup.object({
+  fio: Yup.string().required('Поле обязательно для заполнения'),
+  gender: Yup.string().required('Поле обязательно для заполнения'),
+})
 
 export const MemberListPage = () => {
   const { isLoading, data } = useFetchMemberList()
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   const handleClickName = (id) => () => {
     navigate(`/admin/member/${id}`)
   }
   // console.log('event_name', data?.event_name)
+  const [rows, setRows] = React.useState(data)
+  // console.log('rows', rows)
+  const [rowModesModel, setRowModesModel] = React.useState({})
+
+  React.useEffect(() => {
+    setRows(data)
+  }, [data])
+
+  const handleSaveNewItem = (data) => {
+    // console.log('handleSaveNewItem')
+    const { id, isNew, ...postedData } = data
+    // postedData['rai_reg'] = postedData['rai_reg'].split('|')[0]
+    return apiClient.put('/api/memberList', postedData)
+  }
+
+  const handleDeleteItem = (id) => () => {
+    apiClient.delete(`/api/memberList/${id}`).then((res) => {
+      queryClient.invalidateQueries({ queryKey: ['eventList'] })
+    })
+  }
+
+  const handleSaveEditedItem = React.useCallback((data) => {
+    // console.log('handleSaveEditedItem', data)
+    const { id, isNew, ...postedData } = data
+    // postedData['rai_reg'] = postedData['rai_reg'].split('|')[0]
+    return apiClient.post(`/api/memberList/${id}`, postedData)
+  }, [])
+
+  const renderCitySelectEditCell = (params) => {
+    // console.log('params', params)
+    return <SelectEditInputCell {...params} dictionaryName='cityDictionary' nameField='memb_city' />
+  }
+
   const renderLink = (params) => {
     // console.log(params)
     const link = params.value ?? ''
 
-    return <Link onClick={handleClickName(params.row.id)}>{link}</Link>
+    return (
+      <Link onClick={handleClickName(params.row.id)} sx={{ cursor: 'pointer' }}>
+        {link}
+      </Link>
+    )
   }
-
-  // {
-  //   "id": 1,
-  //   "fio": "Вещагин Михаил Александрович",
-  //   "gender": "М",
-  //   "date_birth": "1979-01-18T21:00:00.000Z",
-  //   "memb_city": 1,
-  //   "tel_1": "+79509632051",
-  //   "tel_2": null,
-  //   "memb_email": "misha19-01-79@yandex.ru",
-  //   "size_cloth": "48",
-  //   "size_shoe": "41",
-  // }
   const columns = [
     {
       field: 'fio',
       headerName: 'ФИО',
       width: 250,
       renderCell: renderLink,
+      editable: true,
     },
-    { field: 'gender', headerName: 'Пол', width: 100 },
+    { field: 'gender', headerName: 'Пол', width: 100, editable: true },
     {
       field: 'date_birth',
+      ...dateColumnType,
       headerName: 'Дата рождения',
       width: 150,
-      valueGetter: (value) => {
-        return formatDateValue(value || '', 'dd.MM.yyyy')
-      },
+      editable: true,
     },
     {
       field: 'name_city',
       headerName: 'Город',
       width: 150,
+      editable: true,
+      renderEditCell: renderCitySelectEditCell,
     },
-    { field: 'memb_email', headerName: 'Email', width: 150 },
-    { field: 'tel_1', headerName: 'Телефон', width: 150 },
+    { field: 'memb_email', headerName: 'Email', width: 150, editable: true },
+    { field: 'tel_1', headerName: 'Телефон', width: 150, editable: true },
+    { field: 'tel_2', headerName: 'Телефон доп', width: 150, editable: true },
+    {
+      field: 'size_cloth',
+      headerName: 'Размер одежды',
+      width: 150,
+      editable: true,
+      type: 'singleSelect',
+      valueOptions: sizeClothOptions,
+    },
+    {
+      field: 'size_shoe',
+      headerName: 'Размер обуви',
+      width: 150,
+      editable: true,
+      type: 'singleSelect',
+      valueOptions: sizeShoeOptions,
+    },
+    { field: 'memb_city', headerName: 'memb_city', width: 0, editable: true },
   ]
+  const fieldToFocus = 'fio'
+  const columnVisibilityModel = {
+    memb_city: false,
+  }
 
-  if (isLoading) return null
+  const processRowUpdate = async (newRow) => {
+    validationSchema.validateSync(newRow, { abortEarly: false })
+    const handleSave = newRow.isNew ? handleSaveNewItem : handleSaveEditedItem
+    await handleSave(newRow)
+    queryClient.invalidateQueries({ queryKey: ['eventList'] })
+  }
+
   return (
-    <Container
-      maxWidth={false}
-      sx={{ height: '100vh', backgroundColor: { xs: '#fff', md: '#f4f4f4' }, overflowX: 'scroll' }}
-    >
-      <DataGrid rows={data} columns={columns} editMode='row' />
-    </Container>
+    <EditableTable
+      rows={rows}
+      setRows={setRows}
+      rowModesModel={rowModesModel}
+      setRowModesModel={setRowModesModel}
+      columns={columns}
+      processRowUpdate={processRowUpdate}
+      fieldToFocus={fieldToFocus}
+      columnVisibilityModel={columnVisibilityModel}
+      defaultItem={defaultItem}
+      isLoading={isLoading}
+      handleDeleteItem={handleDeleteItem}
+    />
   )
 }

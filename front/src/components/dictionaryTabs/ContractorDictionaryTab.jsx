@@ -69,33 +69,11 @@ export const ContractorDictionaryTab = () => {
   const fieldToFocus = 'cont_fio'
   const columnVisibilityModel = {}
 
-  const processRowUpdate = (newRow) => {
-    let resultRow = newRow
-    try {
-      validationSchema.validateSync(newRow, { abortEarly: false })
-      const handleSave = newRow.isNew ? handleSaveNewItem : handleSaveEditedItem
-      handleSave(newRow)
-        .then((res) => {
-          queryClient.invalidateQueries({ queryKey: ['contractorDictionary'] })
-          const updatedRow = { ...newRow, isNew: false, error: false }
-          setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)))
-          resultRow = updatedRow
-        })
-        .catch((e) => {
-          // ошибка с бэка - надо как то вывести, и оно видимо не сохранилось
-          const errorRow = { ...newRow, error: true }
-          setRows(rows.map((row) => (row.id === newRow.id ? errorRow : row)))
-          resultRow = errorRow
-          throw errorRow
-        })
-    } catch (e) {
-      const errors = e.inner.map((item) => ({ path: item.path, message: item.message }))
-      const errorRow = { ...newRow, error: true, errors }
-      setRows(rows.map((row) => (row.id === newRow.id ? errorRow : row)))
-      resultRow = errorRow
-      throw errorRow
-    }
-    return resultRow
+  const processRowUpdate = async (newRow) => {
+    validationSchema.validateSync(newRow, { abortEarly: false })
+    const handleSave = newRow.isNew ? handleSaveNewItem : handleSaveEditedItem
+    await handleSave(newRow)
+    queryClient.invalidateQueries({ queryKey: ['contractorDictionary'] })
   }
 
   return (
