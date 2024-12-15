@@ -4,10 +4,8 @@ import apiClient from '../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
 import { EditableTable } from '../EditableTable'
 import * as Yup from 'yup'
-import { dateColumnType } from '../dataGridCell/GridEditDateCell'
 import { useFetchEventMemberListForDepartment } from '../../queries/event'
 import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
-import { Grid2 } from '@mui/material'
 
 const defaultItem = {
   member_fio: '',
@@ -27,7 +25,6 @@ export const EventDepartmentMemberTable = ({ eventId, selectedDepartmentId, sele
   )
 
   const [rows, setRows] = React.useState(data)
-  // console.log('rows', rows)
   const [rowModesModel, setRowModesModel] = React.useState({})
 
   React.useEffect(() => {
@@ -35,7 +32,6 @@ export const EventDepartmentMemberTable = ({ eventId, selectedDepartmentId, sele
   }, [data])
 
   const handleSaveNewItem = (data) => {
-    //console.log('handleSaveNewItem')
     const { id, isNew, ...postedData } = data
     const apiPath = selectedDate
       ? `/api/eventList/${eventId}/department/${selectedDepartmentId}/member?selectedDate=${selectedDate}`
@@ -55,13 +51,11 @@ export const EventDepartmentMemberTable = ({ eventId, selectedDepartmentId, sele
   }
 
   const handleSaveEditedItem = React.useCallback((data) => {
-    //console.log('handleSaveEditedItem', data)
     const { id, isNew, ...postedData } = data
     return apiClient.post(`/api/eventList/${eventId}/department/${id}`, postedData)
   }, [])
 
   const renderMemberSelectEditCell = (params) => {
-    // console.log('params', params)
     const hookParams = {
       eventId,
       departmentId: selectedDepartmentId,

@@ -62,34 +62,30 @@ const validationSchema = Yup.object({
 
 export const MemberInfoPage = () => {
   const [value, setValue] = React.useState(0)
-  // console.log('value', value)
   const handleChange = (event, newValue) => {
     setValue(newValue)
   }
   const location = useLocation()
   const locationSplitted = location.pathname.split('/')
   const currentId = locationSplitted[locationSplitted.length - 1]
-  // console.log(location)
   const { isLoading, data } = useFetchMember(currentId)
-  // console.log(data)
   const {
     handleSubmit,
     formState: { errors, dirtyFields },
     control,
     reset,
   } = useForm({ defaultValues, resolver: yupResolver(validationSchema) })
-  console.log('errors', errors)
+
   useEffect(() => {
     data && reset(data)
   }, [data])
 
   const isDirty = !!Object.keys(dirtyFields).length
   const handleSave = async (data, e) => {
-    console.log('handleLogin', data)
     e.preventDefault()
     try {
       const { date_birth, date_razr, date_zeton, date_instr } = data
-      const response = await apiClient.post(`/api/memberList/${data.id}`, {
+      await apiClient.post(`/api/memberList/${data.id}`, {
         ...data,
         date_birth: date_birth ? format(date_birth, 'yyyy-MM-dd') : null,
         date_razr: date_razr ? format(date_razr, 'yyyy-MM-dd') : null,
@@ -97,7 +93,6 @@ export const MemberInfoPage = () => {
         date_instr: date_instr ? format(date_instr, 'yyyy-MM-dd') : null,
       })
       reset(data)
-      // console.log(response.data)
     } catch (error) {
       console.error(error)
     }

@@ -4,7 +4,6 @@ import apiClient from '../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
 import { EditableTable } from '../EditableTable'
 import * as Yup from 'yup'
-import { useFetchMemberList } from '../../queries/member'
 import { useFetchEventList } from '../../queries/event'
 import { dateColumnType } from '../dataGridCell/GridEditDateCell'
 import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
@@ -29,7 +28,6 @@ export const MemberAscentTab = ({ memberId }) => {
   const { isLoading, data } = useFetchMemberAscentList(memberId)
 
   const [rows, setRows] = React.useState(data)
-  // console.log('rows', rows)
   const [rowModesModel, setRowModesModel] = React.useState({})
 
   React.useEffect(() => {
@@ -37,7 +35,6 @@ export const MemberAscentTab = ({ memberId }) => {
   }, [data])
 
   const handleSaveNewItem = (data) => {
-    //console.log('handleSaveNewItem')
     const { id, isNew, ...postedData } = data
     return apiClient.put(`/api/memberList/${memberId}/ascent`, postedData)
   }
@@ -49,13 +46,11 @@ export const MemberAscentTab = ({ memberId }) => {
   }
 
   const handleSaveEditedItem = React.useCallback((data) => {
-    //console.log('handleSaveEditedItem', data)
     const { id, isNew, ...postedData } = data
     return apiClient.post(`/api/memberList/${memberId}/ascent/${id}`, postedData)
   }, [])
 
   const renderEventSelectEditCell = (params) => {
-    // console.log('params', params)
     return (
       <SelectEditInputCell
         {...params}
@@ -67,7 +62,6 @@ export const MemberAscentTab = ({ memberId }) => {
   }
 
   const renderSelectEditCell = (params) => {
-    // console.log('params', params)
     return (
       <EditCascadeSelectMenu
         {...params}
@@ -151,10 +145,6 @@ export const MemberAscentTab = ({ memberId }) => {
       headerName: 'mount_name',
       width: 0,
       editable: true,
-      // valueSetter: (value, row) => {
-      //   console.log('valueSetter', value, row)
-      //   return { ...row, mount_name_disp: value }
-      // },
     },
     { field: 'rout_comp', headerName: 'rout_comp', width: 0, editable: true },
   ]

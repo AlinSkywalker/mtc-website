@@ -13,7 +13,6 @@ export const EventDepartmentDateTable = ({
   const { isLoading, data } = useFetchEventDepartmentById(eventId, selectedDepartmentId)
 
   const [rows, setRows] = React.useState([])
-  // console.log('baseId', baseId)
   function getDatesInRange(startDate, endDate) {
     const date = new Date(startDate.getTime())
 
@@ -41,9 +40,7 @@ export const EventDepartmentDateTable = ({
   const columns = [{ field: 'date', headerName: 'Дата', width: 120 }]
   const handleRowSelectionModelChange = (newRowSelectionModel) => {
     setRowSelectionModel(newRowSelectionModel)
-    // console.log(newRowSelectionModel)
     const date = rows.find((item) => item.id == newRowSelectionModel[0])?.date
-    // console.log(date)
     onRowSelectionModelChange(date)
   }
   return (

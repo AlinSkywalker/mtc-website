@@ -69,41 +69,35 @@ const validationSchema = Yup.object({
 
 export const EventInfoPage = () => {
   const [value, setValue] = React.useState(0)
-  // console.log('value', value)
   const handleChange = (event, newValue) => {
     setValue(newValue)
   }
   const location = useLocation()
   const locationSplitted = location.pathname.split('/')
   const currentId = locationSplitted[locationSplitted.length - 1]
-  // console.log(location)
   const { isLoading, data } = useFetchEvent(currentId)
-  // console.log(data)
   const {
     handleSubmit,
     formState: { errors, dirtyFields },
     control,
     reset,
   } = useForm({ defaultValues, resolver: yupResolver(validationSchema) })
-  // console.log(errors)
   useEffect(() => {
     data && reset(data)
   }, [data])
 
   const isDirty = !!Object.keys(dirtyFields).length
   const handleSave = async (data, e) => {
-    // console.log('handleLogin', data)
     e.preventDefault()
     try {
-      const response = await apiClient.post(`/api/eventList/${data.id}`, {
+      await apiClient.post(`/api/eventList/${data.id}`, {
         ...data,
         event_start: format(data.event_start, 'yyyy-MM-dd'),
         event_finish: format(data.event_finish, 'yyyy-MM-dd'),
       })
       reset(data)
-      // console.log(response.data)
     } catch (error) {
-      // console.error(error)
+      console.error(error)
     }
   }
   const handleReset = () => {

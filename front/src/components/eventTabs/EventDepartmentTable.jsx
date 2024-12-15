@@ -29,7 +29,6 @@ export const EventDepartmentTable = ({ eventId, onRowSelectionModelChange }) => 
   const { isLoading, data } = useFetchEventDepartmentList(eventId)
 
   const [rows, setRows] = React.useState(data)
-  // console.log('rows', rows)
   const [rowModesModel, setRowModesModel] = React.useState({})
 
   React.useEffect(() => {
@@ -37,7 +36,6 @@ export const EventDepartmentTable = ({ eventId, onRowSelectionModelChange }) => 
   }, [data])
 
   const handleSaveNewItem = (data) => {
-    //console.log('handleSaveNewItem')
     const { id, isNew, ...postedData } = data
     return apiClient.put(`/api/eventList/${eventId}/department`, postedData)
   }
@@ -49,13 +47,11 @@ export const EventDepartmentTable = ({ eventId, onRowSelectionModelChange }) => 
   }
 
   const handleSaveEditedItem = React.useCallback((data) => {
-    //console.log('handleSaveEditedItem', data)
     const { id, isNew, ...postedData } = data
     return apiClient.post(`/api/eventList/${eventId}/department/${id}`, postedData)
   }, [])
 
   const renderInstructorSelectEditCell = (params) => {
-    // console.log('params', params)
     const hookParams = {
       possibleRole: 'instructor',
     }

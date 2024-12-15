@@ -54,7 +54,6 @@ function mapDictionaryData(dictionaryName, dictionaryData = []) {
 }
 
 export function EditCascadeSelectMenu(props) {
-  // console.log(props)
   const [anchorEl, setAnchorEl] = React.useState(null)
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
@@ -65,10 +64,8 @@ export function EditCascadeSelectMenu(props) {
   }
 
   const open = Boolean(anchorEl)
-  //mount_rai
   const { id, row, finishDictionary, displayField } = props
   const { region_name, rai_reg, rai_name, mount_rai, mount_name, rout_mount, rout_name } = row
-  // console.log('SelectEditInputCell props', props)
   const { data: regionData } = useFetchDictionaryByName({
     dictionaryName: 'regionDictionary',
     returnType: 'arrayType',
@@ -235,7 +232,6 @@ export function EditCascadeSelectMenu(props) {
       })
     }
   }
-  // console.log('summitAutocompleteOptions', summitAutocompleteOptions)
 
   const displayValue = row[displayField]
   let submitDisabled = !districtAutocompleteValue.id
@@ -279,7 +275,6 @@ export function EditCascadeSelectMenu(props) {
               options={regionAutocompleteOptions}
               getOptionLabel={(option) => option.name}
               onChange={(event, newValue) => {
-                // console.log('newValue', newValue)
                 handleRegionChange(newValue)
               }}
               onInputChange={(event, newInputValue) => {
@@ -297,7 +292,6 @@ export function EditCascadeSelectMenu(props) {
               options={districtAutocompleteOptions}
               getOptionLabel={(option) => option.name}
               onChange={(event, newValue) => {
-                // console.log('newValue', newValue)
                 handleDistrictChange(newValue)
               }}
               onInputChange={(event, newInputValue) => {
@@ -318,7 +312,6 @@ export function EditCascadeSelectMenu(props) {
                 options={summitAutocompleteOptions}
                 getOptionLabel={(option) => option.name}
                 onChange={(event, newValue) => {
-                  // console.log('newValue', newValue)
                   handleSummitChange(newValue)
                 }}
                 onInputChange={(event, newInputValue) => {
@@ -342,7 +335,6 @@ export function EditCascadeSelectMenu(props) {
                   option.secondary ? `${option.name} (${option.secondary})` : option.name
                 }
                 onChange={(event, newValue) => {
-                  // console.log('newValue', newValue)
                   setRouteAutocompleteValue(newValue)
                 }}
                 onInputChange={(event, newInputValue) => {

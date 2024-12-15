@@ -25,7 +25,6 @@ export const ContractorDictionaryTab = () => {
   const { isLoading, data } = useFetchContractorDictionaryList()
 
   const [rows, setRows] = React.useState(data)
-  // console.log('rows', rows)
   const [rowModesModel, setRowModesModel] = React.useState({})
 
   React.useEffect(() => {
@@ -33,7 +32,6 @@ export const ContractorDictionaryTab = () => {
   }, [data])
 
   const handleSaveNewItem = (data) => {
-    //console.log('handleSaveNewItem')
     const { id, isNew, ...postedData } = data
     return apiClient.put('/api/contractorDictionary', postedData)
   }
@@ -45,7 +43,6 @@ export const ContractorDictionaryTab = () => {
   }
 
   const handleSaveEditedItem = React.useCallback((data) => {
-    //console.log('handleSaveEditedItem', data)
     const { id, isNew, ...postedData } = data
     return apiClient.post(`/api/contractorDictionary/${id}`, postedData)
   }, [])

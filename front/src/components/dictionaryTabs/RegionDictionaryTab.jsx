@@ -19,16 +19,13 @@ export const RegionDictionaryTab = () => {
   const { isLoading, data } = useFetchRegionDictionaryList()
 
   const [rows, setRows] = React.useState(data)
-  // console.log('rows', rows)
   const [rowModesModel, setRowModesModel] = React.useState({})
-  // console.log('rowModesModel', rowModesModel)
 
   React.useEffect(() => {
     setRows(data)
   }, [data])
 
   const handleSaveNewItem = (data) => {
-    // console.log('handleSaveNewItem')
     return apiClient.put('/api/regionDictionary', {
       desc: data.region_desk,
       name: data.region_name,
@@ -42,7 +39,6 @@ export const RegionDictionaryTab = () => {
   }
 
   const handleSaveEditedItem = (data) => {
-    // console.log('handleSaveEditedItem')
     return apiClient.post(`/api/regionDictionary/${data.id}`, {
       desc: data.region_desk,
       name: data.region_name,

@@ -4,11 +4,10 @@ import { Grid2 } from '@mui/material'
 import { LaboratoryDictionaryTable } from './LaboratoryDictionaryTable'
 import { LaboratoryRouteDictionaryTable } from './LaboratoryRouteDictionaryTable'
 
-export const LaboratoryDictionaryTab = ({ eventId }) => {
+export const LaboratoryDictionaryTab = () => {
   const [selectedLaboratory, setSelectedLaboratory] = useState()
 
   const onRowSelectionModelChange = (newRowSelectionModel) => {
-    // console.log('newRowSelectionModel', newRowSelectionModel)
     setSelectedLaboratory(newRowSelectionModel[0])
   }
   return (

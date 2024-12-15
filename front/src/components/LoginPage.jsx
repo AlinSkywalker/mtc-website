@@ -20,7 +20,6 @@ const LoginPage = () => {
   const navigate = useNavigate()
   const { setIsAuthenticated, setUserInfo } = useContext(AuthContext)
   const handleLogin = (data, e) => {
-    console.log('handleLogin', data)
     e.preventDefault()
 
     const { username, password } = data
@@ -29,7 +28,6 @@ const LoginPage = () => {
       .post('/api/login', { username, password })
       .then((response) => {
         // Handle successful login
-        console.log(response.data)
         const { token, user_role, user_id } = response.data
         setIsAuthenticated(true)
         setUserInfo({ id: user_id, role: user_role })

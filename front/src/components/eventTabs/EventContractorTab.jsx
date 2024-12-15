@@ -7,7 +7,6 @@ export const EventContractorTab = ({ baseId }) => {
   const { isLoading, data } = useFetchContractorByBaseIdDictionaryList(baseId)
 
   const [rows, setRows] = React.useState(data)
-  // console.log('baseId', baseId)
 
   React.useEffect(() => {
     setRows(data)

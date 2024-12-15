@@ -24,7 +24,6 @@ export const EventSmenaTab = ({ eventId }) => {
   const { isLoading, data } = useFetchEventSmenaList(eventId)
 
   const [rows, setRows] = React.useState(data)
-  // console.log('rows', rows)
   const [rowModesModel, setRowModesModel] = React.useState({})
 
   React.useEffect(() => {
@@ -32,7 +31,6 @@ export const EventSmenaTab = ({ eventId }) => {
   }, [data])
 
   const handleSaveNewItem = (data) => {
-    //console.log('handleSaveNewItem')
     const { id, isNew, ...postedData } = data
     return apiClient.put(`/api/eventList/${eventId}/smena`, postedData)
   }
@@ -44,7 +42,6 @@ export const EventSmenaTab = ({ eventId }) => {
   }
 
   const handleSaveEditedItem = React.useCallback((data) => {
-    //console.log('handleSaveEditedItem', data)
     const { id, isNew, ...postedData } = data
     return apiClient.post(`/api/eventList/${eventId}/smena/${id}`, postedData)
   }, [])

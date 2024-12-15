@@ -23,7 +23,6 @@ export const LaboratoryDictionaryTable = ({ onRowSelectionModelChange }) => {
   const { isLoading, data } = useFetchLaboratoryDictionaryList()
 
   const [rows, setRows] = React.useState(data)
-  // console.log('rows', rows)
   const [rowModesModel, setRowModesModel] = React.useState({})
 
   React.useEffect(() => {
@@ -31,9 +30,7 @@ export const LaboratoryDictionaryTable = ({ onRowSelectionModelChange }) => {
   }, [data])
 
   const handleSaveNewItem = (data) => {
-    // console.log('handleSaveNewItem')
     const { id, isNew, ...postedData } = data
-    // postedData['rai_reg'] = postedData['rai_reg'].split('|')[0]
     return apiClient.put('/api/laboratoryDictionary', postedData)
   }
 
@@ -44,14 +41,11 @@ export const LaboratoryDictionaryTable = ({ onRowSelectionModelChange }) => {
   }
 
   const handleSaveEditedItem = React.useCallback((data) => {
-    // console.log('handleSaveEditedItem', data)
     const { id, isNew, ...postedData } = data
-    // postedData['rai_reg'] = postedData['rai_reg'].split('|')[0]
     return apiClient.post(`/api/laboratoryDictionary/${id}`, postedData)
   }, [])
 
   const renderSelectEditCell = (params) => {
-    // console.log('params', params)
     return (
       <DistrictSelectMenu {...params} dictionaryName='districtDictionary' nameField='laba_rai' />
     )

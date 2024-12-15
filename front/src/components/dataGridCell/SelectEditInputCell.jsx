@@ -54,7 +54,6 @@ function mapDictionaryData(dictionaryName, dictionaryData = []) {
 
 export function SelectEditInputCell(props) {
   const { id, value, field, hasFocus, dictionaryName, nameField, hook, hookParams, pickMap } = props
-  // console.log('SelectEditInputCell props', props)
   const queryHook = hook ? hook : useFetchDictionaryByName
   const queryHookParams = hookParams ? hookParams : { dictionaryName, returnType: 'arrayType' }
   const { isLoading, data } = queryHook(queryHookParams)
@@ -66,12 +65,10 @@ export function SelectEditInputCell(props) {
   const [inputValue, setInputValue] = React.useState(value)
 
   const dictionaryData = mapDictionaryData(dictionaryName, data)
-  // console.log('dictionaryData', dictionaryData)
   const apiRef = useGridApiContext()
   const ref = React.useRef(null)
 
   const handleChange = (newValue) => {
-    console.log('newValue', newValue)
     setAutocompleteValue(newValue)
     // children
     apiRef.current.setEditCellValue({ id, field, value: newValue?.name || '' })
@@ -104,7 +101,6 @@ export function SelectEditInputCell(props) {
       options={dictionaryData}
       getOptionLabel={(option) => option.name}
       onChange={(event, newValue) => {
-        console.log('newValue', newValue)
         handleChange(newValue)
       }}
       onInputChange={(event, newInputValue) => {

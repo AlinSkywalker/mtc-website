@@ -51,7 +51,6 @@ function mapDictionaryData(dictionaryName, dictionaryData = []) {
 }
 
 export function DistrictSelectMenu(props) {
-  // console.log(props)
   const [anchorEl, setAnchorEl] = React.useState(null)
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
@@ -62,11 +61,9 @@ export function DistrictSelectMenu(props) {
   }
 
   const open = Boolean(anchorEl)
-  //mount_rai
   const { id, row, nameField } = props
   const { region_name, rai_reg, rai_name } = row
   const initialDistrictId = row[nameField]
-  // console.log('SelectEditInputCell props', props)
   const { data: regionData } = useFetchDictionaryByName({
     dictionaryName: 'regionDictionary',
     returnType: 'arrayType',
@@ -107,7 +104,6 @@ export function DistrictSelectMenu(props) {
   }, [districtData])
 
   const handleRegionChange = (newValue) => {
-    // console.log('newValue', newValue)
     setRegionAutocompleteValue(newValue)
 
     setDistrictAutocompleteValue({ name: '', id: '', parentId: '' })
@@ -124,7 +120,6 @@ export function DistrictSelectMenu(props) {
   const ref = React.useRef(null)
 
   const handleSubmit = () => {
-    // console.log('districtAutocompleteValue', districtAutocompleteValue)
     handleClose()
     apiRef.current.setEditCellValue({
       id,
@@ -139,7 +134,6 @@ export function DistrictSelectMenu(props) {
       value: districtAutocompleteValue.name,
     })
   }
-  // console.log('districtAutocompleteOptions', districtAutocompleteOptions)
   return (
     <>
       <Grid2 container sx={{ width: '100%' }} flexWrap={'nowrap'}>
@@ -174,7 +168,6 @@ export function DistrictSelectMenu(props) {
               options={regionAutocompleteOptions}
               getOptionLabel={(option) => option.name}
               onChange={(event, newValue) => {
-                // console.log('newValue', newValue)
                 handleRegionChange(newValue)
               }}
               onInputChange={(event, newInputValue) => {
@@ -192,7 +185,6 @@ export function DistrictSelectMenu(props) {
               options={districtAutocompleteOptions}
               getOptionLabel={(option) => option.name}
               onChange={(event, newValue) => {
-                // console.log('newValue', newValue)
                 setDistrictAutocompleteValue(newValue)
               }}
               onInputChange={(event, newInputValue) => {

@@ -11,13 +11,11 @@ export const EventDepartmentTab = ({ eventId }) => {
   const [selectedDate, setSelectedDate] = useState()
 
   const onRowSelectionModelChange = (newRowSelectionModel) => {
-    // console.log('newRowSelectionModel', newRowSelectionModel)
     setSelectedDepartment(newRowSelectionModel[0])
     setSelectedDate()
   }
 
   const onRowSelectionModelDateTableChange = (newRowSelectionModel) => {
-    console.log('newRowSelectionModel', newRowSelectionModel)
     setSelectedDate(newRowSelectionModel)
   }
   return (

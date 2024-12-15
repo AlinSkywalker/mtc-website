@@ -33,19 +33,14 @@ export function MultiValueSelectEditInputCell(props) {
     row,
     displayNameField,
   } = props
-  // console.log('SelectEditInputCell props', props)
   const { isLoading, data: dictionaryData } = useFetchDictionaryByName({
     dictionaryName,
     returnType: 'objectType',
   })
-  // const dictionaryDataList
 
-  // const dictionaryData = mapDictionaryData(dictionaryName, data)
   const nameList = row[nameListField]
   const idList = row[idListField]
 
-  // console.log(nameList, idList)
-  // console.log('dictionaryData', dictionaryData, dictionaryData && Object.entries(dictionaryData))
   const apiRef = useGridApiContext()
   const ref = React.useRef(null)
 
@@ -55,7 +50,6 @@ export function MultiValueSelectEditInputCell(props) {
     const {
       target: { value },
     } = event
-    // console.log(event.target.value)
     const newPersonName = value.map((item) => dictionaryData?.[item]?.name || '')
     setPersonName(
       // On autofill we get a stringified value.
@@ -67,7 +61,6 @@ export function MultiValueSelectEditInputCell(props) {
     )
   }
   const handleWriteToRow = () => {
-    // console.log('newValue', newValue)
     // children
     apiRef.current.setEditCellValue({ id, field: displayNameField, value: personName.join(', ') })
     apiRef.current.setEditCellValue({ id, field: nameListField, value: personName })

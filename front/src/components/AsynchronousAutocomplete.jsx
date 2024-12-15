@@ -25,10 +25,8 @@ export function AsynchronousAutocomplete({ request, label, dataNameField, field,
     setOpen(false)
   }
   const handleChange = (newValue) => {
-    // console.log('newValue', newValue)
     onChange(newValue ? { id: newValue.id, [dataNameField]: newValue[dataNameField] } : null)
   }
-  // console.log('value', value)
   return (
     <Autocomplete
       fullWidth
@@ -38,7 +36,6 @@ export function AsynchronousAutocomplete({ request, label, dataNameField, field,
       onOpen={handleOpen}
       onClose={handleClose}
       onChange={(event, newValue) => {
-        // console.log('newValue', newValue)
         handleChange(newValue)
       }}
       isOptionEqualToValue={(option, value) => option.id === value.id}

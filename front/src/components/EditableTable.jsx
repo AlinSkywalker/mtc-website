@@ -5,7 +5,7 @@ import {
   GridRowModes,
   GridRowEditStartReasons,
 } from '@mui/x-data-grid'
-import { Grid2, ThemeProvider } from '@mui/material'
+import { Grid2 } from '@mui/material'
 import { DictionaryEditToolbar } from './DictionaryEditToolbar'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/DeleteOutlined'
@@ -13,6 +13,7 @@ import SaveIcon from '@mui/icons-material/Save'
 import CancelIcon from '@mui/icons-material/Close'
 import { GridActionsCellItem } from '@mui/x-data-grid'
 import './EditableTableStyles.css'
+import { useSnackbar } from 'notistack'
 
 export const EditableTable = ({
   rows,
@@ -34,16 +35,21 @@ export const EditableTable = ({
   isRowEditable = () => true,
   addButtonLabel,
 }) => {
+  const isSomeNewRow = rows?.some((item) => item.isNew)
+  const isSomeRowEditing = Object.values(rowModesModel).some(
+    (item) => item.mode == GridRowModes.Edit,
+  )
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
   const handleRowEditStart = (params, event) => {
-    // console.log('handleRowEditStart', params, event)
     if (params.reason === GridRowEditStartReasons.cellDoubleClick) {
-      // console.log('rowModesModel', rowModesModel)
+      event.defaultMuiPrevented = true
+    }
+    if (isSomeNewRow) {
       event.defaultMuiPrevented = true
     }
   }
 
   const handleRowEditStop = (params, event) => {
-    // console.log('handleRowEditStop', params, event)
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
       event.defaultMuiPrevented = true
     }
@@ -92,6 +98,10 @@ export const EditableTable = ({
 
   const handleProcessRowUpdateError = (error) => {
     console.log('error', error)
+    enqueueSnackbar('Произошла ошибка при отправке на сервер', {
+      variant: 'error',
+      autoHideDuration: 5000,
+    })
   }
   const getActions = (id) => {
     {
@@ -127,7 +137,7 @@ export const EditableTable = ({
           className='textPrimary'
           onClick={handleEditClick(id)}
           color='inherit'
-          disabled={!isRowEditable(row)}
+          disabled={!isRowEditable(row) || isSomeNewRow || isSomeRowEditing}
         />,
       ]
       if (isNew) {
@@ -149,6 +159,7 @@ export const EditableTable = ({
             label='Удалить'
             onClick={handleDeleteItem(id)}
             color='inherit'
+            disabled={(isSomeNewRow && !isNew) || isSomeRowEditing}
           />,
         )
       }
@@ -166,7 +177,6 @@ export const EditableTable = ({
     },
     ...columns,
   ]
-  // console.log('fullHeight', fullHeight)
   const tableHeight = fullHeight ? `calc(100vh - 150px)` : 400
   const disabled = addButtonDisabled
   return (
@@ -194,7 +204,7 @@ export const EditableTable = ({
                   setRowModesModel={setRowModesModel}
                   fieldToFocus={fieldToFocus}
                   defaultItem={defaultItem}
-                  disabled={disabled}
+                  disabled={disabled || isSomeNewRow || isSomeRowEditing}
                   addButtonLabel={addButtonLabel}
                 />
               )

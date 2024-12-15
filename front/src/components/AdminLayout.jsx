@@ -20,7 +20,6 @@ export const AdminLayout = ({ children }) => {
 
   useEffect(() => {
     apiClient.get('/api/current').then((response) => {
-      // console.log('response.data', response.data)
       setUserInfo({ id: response.data.id, role: response.data.role })
     })
   }, [])

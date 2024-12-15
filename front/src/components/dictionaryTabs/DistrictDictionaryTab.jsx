@@ -25,7 +25,6 @@ export const DistrictDictionaryTab = () => {
   const { isLoading, data } = useFetchDistrictDictionaryList()
 
   const [rows, setRows] = React.useState([])
-  // console.log('rows', rows)
   const [rowModesModel, setRowModesModel] = React.useState({})
 
   React.useEffect(() => {
@@ -33,9 +32,7 @@ export const DistrictDictionaryTab = () => {
   }, [data])
 
   const handleSaveNewItem = (data) => {
-    // console.log('handleSaveNewItem')
     const { id, isNew, ...postedData } = data
-    // postedData['rai_reg'] = postedData['rai_reg'].split('|')[0]
     return apiClient.put('/api/districtDictionary', postedData)
   }
 
@@ -46,14 +43,11 @@ export const DistrictDictionaryTab = () => {
   }
 
   const handleSaveEditedItem = React.useCallback((data) => {
-    // console.log('handleSaveEditedItem', data)
     const { id, isNew, ...postedData } = data
-    // postedData['rai_reg'] = postedData['rai_reg'].split('|')[0]
     return apiClient.post(`/api/districtDictionary/${id}`, postedData)
   }, [])
 
   const renderSelectEditCell = (params) => {
-    // console.log('params', params)
     return <SelectEditInputCell {...params} dictionaryName='regionDictionary' nameField='rai_reg' />
   }
 
@@ -81,7 +75,6 @@ export const DistrictDictionaryTab = () => {
     await handleSave(newRow)
     queryClient.invalidateQueries({ queryKey: ['districtDictionary'] })
   }
-  // console.log('columns1', columns)
   return (
     <EditableTable
       rows={rows}

@@ -1,8 +1,7 @@
 import React from 'react'
-import { useFetchSummitDictionaryList, useFetchDictionaryByName } from '../../queries/dictionary'
+import { useFetchSummitDictionaryList } from '../../queries/dictionary'
 import apiClient from '../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
-import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
 import { EditableTable } from '../EditableTable'
 import { DistrictSelectMenu } from '../dataGridCell/DistrictSelectMenu'
 
@@ -26,7 +25,6 @@ export const SummitDictionaryTab = () => {
   const { isLoading, data } = useFetchSummitDictionaryList()
 
   const [rows, setRows] = React.useState(data)
-  // console.log('rows', rows)
   const [rowModesModel, setRowModesModel] = React.useState({})
 
   React.useEffect(() => {
@@ -34,9 +32,7 @@ export const SummitDictionaryTab = () => {
   }, [data])
 
   const handleSaveNewItem = (data) => {
-    // console.log('handleSaveNewItem')
     const { id, isNew, ...postedData } = data
-    // postedData['rai_reg'] = postedData['rai_reg'].split('|')[0]
     return apiClient.put('/api/summitDictionary', postedData)
   }
 
@@ -47,14 +43,11 @@ export const SummitDictionaryTab = () => {
   }
 
   const handleSaveEditedItem = React.useCallback((data) => {
-    // console.log('handleSaveEditedItem', data)
     const { id, isNew, ...postedData } = data
-    // postedData['rai_reg'] = postedData['rai_reg'].split('|')[0]
     return apiClient.post(`/api/summitDictionary/${id}`, postedData)
   }, [])
 
   const renderSelectEditCell = (params) => {
-    // console.log('params', params)
     return (
       <DistrictSelectMenu {...params} dictionaryName='districtDictionary' nameField='mount_rai' />
     )

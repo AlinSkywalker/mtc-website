@@ -297,7 +297,7 @@ const dictionaryRouter = (app, passport) => {
   app.put('/laboratoryRouteDictionary', passport.authenticate('jwt', { session: false }), (req, res) => {
     const { labatr_name, labatr_typ, labatr_sl, labatr_dl, labatr_kolb, labatr_lab, labatr_desk } = req.body;
     pool.query(`INSERT INTO laba_tr (labatr_name, labatr_typ, labatr_sl,labatr_dl,labatr_kolb,labatr_lab,labatr_desk) VALUES(?,?,?,?,?,?,?)`,
-      [labatr_name, labatr_typ, labatr_sl, labatr_dl || null, labatr_kolb || null, labatr_lab, labatr_desk], (error, result) => {
+      [labatr_name, labatr_typ, labatr_sl, labatr_dl || 0, labatr_kolb || 0, labatr_lab, labatr_desk], (error, result) => {
         if (error) {
           console.log(error);
           res.status(500).json({ success: false, message: error });
@@ -315,9 +315,9 @@ const dictionaryRouter = (app, passport) => {
       labatr_sl='${labatr_sl}',
       labatr_dl=?,
       labatr_kolb=?,
-      labatr_desk='${labatr_desk}',
+      labatr_desk=?,
       updated_date=CURRENT_TIMESTAMP
-      WHERE id=${id}`, [labatr_dl || null, labatr_kolb || null], (error, result) => {
+      WHERE id=${id}`, [labatr_dl || 0, labatr_kolb || 0, labatr_desk], (error, result) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
@@ -554,6 +554,115 @@ LEFT JOIN (
       }
       res.json({ success: true });
     })
+  })
+
+  //baseHouseDictionary
+  app.get('/baseHouseDictionary/:baseId', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const { baseId } = req.params
+    pool.query(`SELECT * FROM base_fonddom WHERE basefd_base=${baseId}`, (error, result) => {
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+        return
+      }
+      res.send(result);
+    });
+  })
+  app.put('/baseHouseDictionary/', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const { basefd_name, basefd_stol, basefd_kuh, basefd_base } = req.body;
+    pool.query(`INSERT INTO base_fonddom ( basefd_name, basefd_stol, basefd_kuh,basefd_base) VALUES(?,?,?,?)`,
+      [basefd_name, basefd_stol, basefd_kuh, basefd_base], (error, result) => {
+        if (error) {
+          console.log(error);
+          res.status(500).json({ success: false, message: error });
+          return
+        }
+        res.send(result);
+      });
+  })
+  app.post('/baseHouseDictionary/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const id = req.params.id;
+    const { basefd_name, basefd_stol, basefd_kuh } = req.body;
+    pool.query(`UPDATE base_fonddom SET 
+      basefd_name='${basefd_name}',
+      basefd_stol=${basefd_stol},
+      basefd_kuh=${basefd_kuh},
+      updated_date=CURRENT_TIMESTAMP WHERE id=${id}`, (error, result) => {
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+        return
+      }
+      res.send(result);
+    });
+  })
+  app.delete('/baseHouseDictionary/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const id = req.params.id;
+    pool.query(`DELETE FROM base_fonddom WHERE id=${id}`, (error, result) => {
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+        return
+      }
+      res.send(result);
+    });
+  })
+
+  //baseHouseRoomDictionary
+  app.get('/baseHouseRoomDictionary/:baseHouseId', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const { baseHouseId } = req.params
+    pool.query(`SELECT * FROM basefd_nom WHERE basenom_fd=${baseHouseId}`, (error, result) => {
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+        return
+      }
+      res.send(result);
+    });
+  })
+  app.put('/baseHouseRoomDictionary/', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const { basenom_mest, basenom_ud, basenom_bal, basenom_sem, basenom_pod, basenom_prais, basenom_akt, basenom_fd } = req.body;
+    pool.query(`INSERT INTO basefd_nom ( basenom_mest, basenom_ud, basenom_bal, basenom_sem, basenom_pod, basenom_prais, basenom_akt,basenom_fd) 
+                VALUES(?,?,?,?,?,?,?,?)`,
+      [basenom_mest, basenom_ud, basenom_bal, basenom_sem, basenom_pod, basenom_prais, basenom_akt, basenom_fd], (error, result) => {
+        if (error) {
+          console.log(error);
+          res.status(500).json({ success: false, message: error });
+          return
+        }
+        res.send(result);
+      });
+  })
+  app.post('/baseHouseRoomDictionary/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const id = req.params.id;
+    const { basenom_mest, basenom_ud, basenom_bal, basenom_sem, basenom_pod, basenom_prais, basenom_akt } = req.body;
+    pool.query(`UPDATE basefd_nom SET 
+      basenom_mest=?,
+      basenom_ud='${basenom_ud}',
+      basenom_bal=${basenom_bal},
+      basenom_sem=${basenom_sem},
+      basenom_pod=${basenom_pod},
+      basenom_prais=?,
+      basenom_akt='${basenom_akt}',
+      updated_date=CURRENT_TIMESTAMP WHERE id=${id}`, [basenom_mest, basenom_prais], (error, result) => {
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+        return
+      }
+      res.send(result);
+    });
+  })
+  app.delete('/baseHouseRoomDictionary/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const id = req.params.id;
+    pool.query(`DELETE FROM basefd_nom WHERE id=${id}`, (error, result) => {
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+        return
+      }
+      res.send(result);
+    });
   })
 
   // cityDictionary

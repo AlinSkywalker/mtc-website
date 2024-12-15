@@ -24,12 +24,10 @@ const validationSchema = Yup.object({
 })
 
 export const LaboratoryRouteDictionaryTable = ({ selectedLaboratory }) => {
-  console.log('selectedLaboratory', selectedLaboratory)
   const queryClient = useQueryClient()
   const { isLoading, data } = useFetchLaboratoryRouteDictionaryList(selectedLaboratory)
 
   const [rows, setRows] = React.useState(data)
-  // console.log('rows', rows)
   const [rowModesModel, setRowModesModel] = React.useState({})
 
   React.useEffect(() => {
@@ -37,9 +35,7 @@ export const LaboratoryRouteDictionaryTable = ({ selectedLaboratory }) => {
   }, [data])
 
   const handleSaveNewItem = (data) => {
-    // console.log('handleSaveNewItem')
     const { id, isNew, ...postedData } = data
-    // postedData['rai_reg'] = postedData['rai_reg'].split('|')[0]
     return apiClient.put('/api/laboratoryRouteDictionary', {
       ...postedData,
       labatr_lab: selectedLaboratory,
@@ -53,9 +49,7 @@ export const LaboratoryRouteDictionaryTable = ({ selectedLaboratory }) => {
   }
 
   const handleSaveEditedItem = React.useCallback((data) => {
-    // console.log('handleSaveEditedItem', data)
     const { id, isNew, ...postedData } = data
-    // postedData['rai_reg'] = postedData['rai_reg'].split('|')[0]
     return apiClient.post(`/api/laboratoryRouteDictionary/${id}`, postedData)
   }, [])
 

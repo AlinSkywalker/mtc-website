@@ -44,9 +44,7 @@ export const EventListPage = () => {
   const handleClickName = (id) => () => {
     navigate(`/admin/event/${id}`)
   }
-  // console.log('event_name', data?.event_name)
   const [rows, setRows] = React.useState(data)
-  // console.log('rows', rows)
   const [rowModesModel, setRowModesModel] = React.useState({})
 
   React.useEffect(() => {
@@ -54,9 +52,7 @@ export const EventListPage = () => {
   }, [data])
 
   const handleSaveNewItem = (data) => {
-    // console.log('handleSaveNewItem')
     const { id, isNew, ...postedData } = data
-    // postedData['rai_reg'] = postedData['rai_reg'].split('|')[0]
     return apiClient.put('/api/eventList', postedData)
   }
 
@@ -67,20 +63,16 @@ export const EventListPage = () => {
   }
 
   const handleSaveEditedItem = React.useCallback((data) => {
-    // console.log('handleSaveEditedItem', data)
     const { id, isNew, ...postedData } = data
-    // postedData['rai_reg'] = postedData['rai_reg'].split('|')[0]
     return apiClient.post(`/api/eventList/${id}`, postedData)
   }, [])
 
   const renderBaseSelectEditCell = (params) => {
-    // console.log('params', params)
     return (
       <SelectEditInputCell {...params} dictionaryName='baseDictionary' nameField='event_base' />
     )
   }
   const renderSTSelectEditCell = (params) => {
-    // console.log('params', params)
     const hookParams = { possibleRole: 'st' }
     return (
       <SelectEditInputCell
@@ -93,7 +85,6 @@ export const EventListPage = () => {
     )
   }
   const renderOBSelectEditCell = (params) => {
-    // console.log('params', params)
     const hookParams = { possibleRole: 'ob' }
     return (
       <SelectEditInputCell
@@ -106,7 +97,6 @@ export const EventListPage = () => {
     )
   }
   const renderLink = (params) => {
-    // console.log(params)
     const link = params.value ?? ''
 
     return (

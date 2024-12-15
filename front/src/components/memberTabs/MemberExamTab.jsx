@@ -4,8 +4,6 @@ import apiClient from '../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
 import { EditableTable } from '../EditableTable'
 import * as Yup from 'yup'
-import { useFetchMemberList } from '../../queries/member'
-import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
 
 const defaultItem = {
   zach_name: '',
@@ -25,7 +23,6 @@ export const MemberExamTab = ({ memberId }) => {
   const { isLoading, data } = useFetchMemberExamList(memberId)
 
   const [rows, setRows] = React.useState(data)
-  // console.log('rows', rows)
   const [rowModesModel, setRowModesModel] = React.useState({})
 
   React.useEffect(() => {
@@ -33,7 +30,6 @@ export const MemberExamTab = ({ memberId }) => {
   }, [data])
 
   const handleSaveNewItem = (data) => {
-    //console.log('handleSaveNewItem')
     const { id, isNew, ...postedData } = data
     return apiClient.put(`/api/memberList/${memberId}/exam`, postedData)
   }
@@ -45,33 +41,9 @@ export const MemberExamTab = ({ memberId }) => {
   }
 
   const handleSaveEditedItem = React.useCallback((data) => {
-    //console.log('handleSaveEditedItem', data)
     const { id, isNew, ...postedData } = data
     return apiClient.post(`/api/memberList/${memberId}/exam/${id}`, postedData)
   }, [])
-
-  const renderE1SelectEditCell = (params) => {
-    // console.log('params', params)
-    return (
-      <SelectEditInputCell
-        {...params}
-        dictionaryName='members'
-        nameField='zach_e1'
-        hook={useFetchMemberList}
-      />
-    )
-  }
-  const renderE2SelectEditCell = (params) => {
-    // console.log('params', params)
-    return (
-      <SelectEditInputCell
-        {...params}
-        dictionaryName='members'
-        nameField='zach_e2'
-        hook={useFetchMemberList}
-      />
-    )
-  }
 
   const columns = [
     {

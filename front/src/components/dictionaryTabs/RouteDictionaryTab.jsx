@@ -5,8 +5,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { EditCascadeSelectMenu } from '../dataGridCell/EditCascadeSelectMenu'
 import { EditableTable } from '../EditableTable'
 import * as Yup from 'yup'
-import { Checkbox } from '@mui/material'
-import { useGridApiContext } from '@mui/x-data-grid'
+import { checkboxColumnType } from '../dataGridCell/GridEditCheckboxCell'
 
 const defaultItem = {
   rout_mount: '',
@@ -33,7 +32,6 @@ export const RouteDictionaryTab = () => {
   const { isLoading, data } = useFetchRouteDictionaryList()
 
   const [rows, setRows] = React.useState(data)
-  // console.log('rows', rows)
   const [rowModesModel, setRowModesModel] = React.useState({})
 
   React.useEffect(() => {
@@ -41,9 +39,7 @@ export const RouteDictionaryTab = () => {
   }, [data])
 
   const handleSaveNewItem = (data) => {
-    // console.log('handleSaveNewItem')
     const { id, isNew, ...postedData } = data
-    // postedData['rai_reg'] = postedData['rai_reg'].split('|')[0]
     return apiClient.put('/api/routeDictionary', postedData)
   }
 
@@ -54,14 +50,11 @@ export const RouteDictionaryTab = () => {
   }
 
   const handleSaveEditedItem = React.useCallback((data) => {
-    // console.log('handleSaveEditedItem', data)
     const { id, isNew, ...postedData } = data
-    // postedData['rai_reg'] = postedData['rai_reg'].split('|')[0]
     return apiClient.post(`/api/routeDictionary/${id}`, postedData)
   }, [])
 
   const renderSelectEditCell = (params) => {
-    // console.log('params', params)
     return (
       <EditCascadeSelectMenu
         {...params}
@@ -70,19 +63,6 @@ export const RouteDictionaryTab = () => {
         displayField='mount_name'
       />
     )
-  }
-  const renderCheckboxEditCell = ({ value, id, field }) => {
-    const apiRef = useGridApiContext()
-    // console.log('params', params)
-    const handleChange = (event, newValue) => {
-      console.log(event, newValue, Number(event.target.checked))
-      apiRef.current.setEditCellValue({ id, field, value: Number(event.target.checked) })
-    }
-    return <Checkbox checked={value} onChange={handleChange} />
-  }
-  const renderCheckboxCell = (params) => {
-    // console.log('params', params)
-    return <Checkbox checked={params.value} disabled />
   }
   const columns = [
     {
@@ -114,8 +94,7 @@ export const RouteDictionaryTab = () => {
       headerName: 'Зимний',
       width: 100,
       editable: true,
-      renderCell: renderCheckboxCell,
-      renderEditCell: renderCheckboxEditCell,
+      ...checkboxColumnType,
     },
     { field: 'rout_sup', headerName: 'Руководитель', width: 150, editable: true },
     { field: 'rout_per', headerName: 'Год', width: 100, editable: true },

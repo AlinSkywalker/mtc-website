@@ -7,8 +7,7 @@ import * as Yup from 'yup'
 import { dateColumnType } from '../dataGridCell/GridEditDateCell'
 import { useFetchMemberList } from '../../queries/member'
 import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
-import { Checkbox } from '@mui/material'
-import { useGridApiContext } from '@mui/x-data-grid'
+import { checkboxColumnType } from '../dataGridCell/GridEditCheckboxCell'
 
 const defaultItem = {
   eventmemb_memb: '',
@@ -28,7 +27,6 @@ export const EventMembersTab = ({ eventId }) => {
   const { isLoading, data } = useFetchEventMemberList(eventId)
 
   const [rows, setRows] = React.useState(data)
-  // console.log('rows', rows)
   const [rowModesModel, setRowModesModel] = React.useState({})
 
   React.useEffect(() => {
@@ -36,7 +34,6 @@ export const EventMembersTab = ({ eventId }) => {
   }, [data])
 
   const handleSaveNewItem = (data) => {
-    //console.log('handleSaveNewItem')
     const { id, isNew, ...postedData } = data
     return apiClient.put(`/api/eventList/${eventId}/member`, postedData)
   }
@@ -48,7 +45,6 @@ export const EventMembersTab = ({ eventId }) => {
   }
 
   const handleSaveEditedItem = React.useCallback((data) => {
-    //console.log('handleSaveEditedItem', data)
     const { id, isNew, ...postedData } = data
     return apiClient.post(`/api/eventList/${eventId}/member/${id}`, postedData)
   }, [])
@@ -67,7 +63,6 @@ export const EventMembersTab = ({ eventId }) => {
       size_shoe: 'size_shoe',
       name_city: 'name_city',
     }
-    // console.log('params', params)
     return (
       <SelectEditInputCell
         {...params}
@@ -77,19 +72,6 @@ export const EventMembersTab = ({ eventId }) => {
         pickMap={pickMap}
       />
     )
-  }
-  const renderCheckboxEditCell = ({ value, id, field }) => {
-    const apiRef = useGridApiContext()
-    // console.log('params', params)
-    const handleChange = (event, newValue) => {
-      // console.log(event, newValue, Number(event.target.checked))
-      apiRef.current.setEditCellValue({ id, field, value: Number(event.target.checked) })
-    }
-    return <Checkbox checked={value} onChange={handleChange} />
-  }
-  const renderCheckboxCell = (params) => {
-    // console.log('params', params)
-    return <Checkbox checked={params.value} disabled />
   }
 
   const columns = [
@@ -120,16 +102,14 @@ export const EventMembersTab = ({ eventId }) => {
       headerName: 'Страховка',
       width: 100,
       editable: true,
-      renderCell: renderCheckboxCell,
-      renderEditCell: renderCheckboxEditCell,
+      ...checkboxColumnType,
     },
     {
       field: 'eventmemb_nmed',
       headerName: 'Справка',
       width: 100,
       editable: true,
-      renderCell: renderCheckboxCell,
-      renderEditCell: renderCheckboxEditCell,
+      ...checkboxColumnType,
     },
     { field: 'gender', headerName: 'Пол', width: 100 },
     { field: 'tel_1', headerName: 'Телефон', width: 150 },

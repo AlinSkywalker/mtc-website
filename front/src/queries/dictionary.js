@@ -105,6 +105,26 @@ export function useFetchBaseDictionaryList() {
     },
   })
 }
+export function useFetchBaseHouseDictionaryList(baseId) {
+  return useQuery({
+    queryKey: ['baseHouseDictionary', baseId],
+    queryFn: async () => {
+      if (!baseId) return []
+      const { data } = await apiClient.get(`/api/baseHouseDictionary/${baseId}`)
+      return data
+    },
+  })
+}
+export function useFetchBaseHouseRoomDictionaryList(baseHouseId) {
+  return useQuery({
+    queryKey: ['baseHouseRoomDictionary', baseHouseId],
+    queryFn: async () => {
+      if (!baseHouseId) return []
+      const { data } = await apiClient.get(`/api/baseHouseRoomDictionary/${baseHouseId}`)
+      return data
+    },
+  })
+}
 export function useFetchCityDictionaryList() {
   return useQuery({
     queryKey: ['cityDictionary'],

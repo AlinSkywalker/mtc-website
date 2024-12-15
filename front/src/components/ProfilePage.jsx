@@ -12,7 +12,6 @@ import apiClient from '../api/api'
 export const ProfilePage = () => {
   const defaultValues = { userName: '', lastName: '', firstName: '', middleName: '' }
   const { userInfo } = useContext(AuthContext)
-  console.log('userInfo', userInfo)
   useEffect(() => {
     userInfo.id && apiClient.get(`/api/profile/${userInfo.id}`).then()
   }, [userInfo.id])
@@ -25,13 +24,11 @@ export const ProfilePage = () => {
 
   const isDirty = !!Object.keys(dirtyFields).length
   const handleSaveProfileData = async (data, e) => {
-    console.log('handleLogin', data)
     e.preventDefault()
     try {
       const { username, password } = data
       const response = await apiClient.post('/api/profile', { username, data })
       // Handle successful login
-      console.log(response.data)
     } catch (error) {
       // Handle login error
       console.error(error)

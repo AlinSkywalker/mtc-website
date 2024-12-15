@@ -51,7 +51,6 @@ function mapDictionaryData(dictionaryName, dictionaryData = []) {
 }
 
 export function MountSelectMenu(props) {
-  // console.log(props)
   const [anchorEl, setAnchorEl] = React.useState(null)
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
@@ -62,10 +61,8 @@ export function MountSelectMenu(props) {
   }
 
   const open = Boolean(anchorEl)
-  //mount_rai
   const { id, row } = props
   const { region_name, rai_reg, rai_name, mount_rai, mount_name, rout_mount } = row
-  // console.log('SelectEditInputCell props', props)
   const { data: regionData } = useFetchDictionaryByName({
     dictionaryName: 'regionDictionary',
     returnType: 'arrayType',
@@ -183,7 +180,6 @@ export function MountSelectMenu(props) {
       value: summitAutocompleteValue.name,
     })
   }
-  // console.log('summitAutocompleteOptions', summitAutocompleteOptions)
   return (
     <>
       <Grid2 container sx={{ width: '100%' }} flexWrap={'nowrap'}>
@@ -222,7 +218,6 @@ export function MountSelectMenu(props) {
               options={regionAutocompleteOptions}
               getOptionLabel={(option) => option.name}
               onChange={(event, newValue) => {
-                // console.log('newValue', newValue)
                 handleRegionChange(newValue)
               }}
               onInputChange={(event, newInputValue) => {
@@ -240,7 +235,6 @@ export function MountSelectMenu(props) {
               options={districtAutocompleteOptions}
               getOptionLabel={(option) => option.name}
               onChange={(event, newValue) => {
-                // console.log('newValue', newValue)
                 handleDistrictChange(newValue)
               }}
               onInputChange={(event, newInputValue) => {
@@ -258,7 +252,6 @@ export function MountSelectMenu(props) {
               options={summitAutocompleteOptions}
               getOptionLabel={(option) => option.name}
               onChange={(event, newValue) => {
-                // console.log('newValue', newValue)
                 setSummitAutocompleteValue(newValue)
               }}
               onInputChange={(event, newInputValue) => {

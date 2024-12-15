@@ -22,7 +22,6 @@ export const CityDictionaryTab = () => {
   const { isLoading, data } = useFetchCityDictionaryList()
 
   const [rows, setRows] = React.useState(data)
-  // console.log('rows', rows)
   const [rowModesModel, setRowModesModel] = React.useState({})
 
   React.useEffect(() => {
@@ -30,7 +29,6 @@ export const CityDictionaryTab = () => {
   }, [data])
 
   const handleSaveNewItem = (data) => {
-    //console.log('handleSaveNewItem')
     const { id, isNew, ...postedData } = data
     return apiClient.put('/api/cityDictionary', postedData)
   }
@@ -42,7 +40,6 @@ export const CityDictionaryTab = () => {
   }
 
   const handleSaveEditedItem = React.useCallback((data) => {
-    //console.log('handleSaveEditedItem', data)
     const { id, isNew, ...postedData } = data
     return apiClient.post(`/api/cityDictionary/${id}`, postedData)
   }, [])

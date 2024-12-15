@@ -16,7 +16,6 @@ import { RouteDictionaryTab } from './dictionaryTabs/RouteDictionaryTab'
 
 export const DictionaryPage = () => {
   const [value, setValue] = React.useState(0)
-  // console.log('value', value)
   const handleChange = (event, newValue) => {
     setValue(newValue)
   }

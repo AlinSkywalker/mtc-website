@@ -36,9 +36,7 @@ export const MemberListPage = () => {
   const handleClickName = (id) => () => {
     navigate(`/admin/member/${id}`)
   }
-  // console.log('event_name', data?.event_name)
   const [rows, setRows] = React.useState(data)
-  // console.log('rows', rows)
   const [rowModesModel, setRowModesModel] = React.useState({})
 
   React.useEffect(() => {
@@ -46,9 +44,7 @@ export const MemberListPage = () => {
   }, [data])
 
   const handleSaveNewItem = (data) => {
-    // console.log('handleSaveNewItem')
     const { id, isNew, ...postedData } = data
-    // postedData['rai_reg'] = postedData['rai_reg'].split('|')[0]
     return apiClient.put('/api/memberList', postedData)
   }
 
@@ -59,19 +55,15 @@ export const MemberListPage = () => {
   }
 
   const handleSaveEditedItem = React.useCallback((data) => {
-    // console.log('handleSaveEditedItem', data)
     const { id, isNew, ...postedData } = data
-    // postedData['rai_reg'] = postedData['rai_reg'].split('|')[0]
     return apiClient.post(`/api/memberList/${id}`, postedData)
   }, [])
 
   const renderCitySelectEditCell = (params) => {
-    // console.log('params', params)
     return <SelectEditInputCell {...params} dictionaryName='cityDictionary' nameField='memb_city' />
   }
 
   const renderLink = (params) => {
-    // console.log(params)
     const link = params.value ?? ''
 
     return (

@@ -12,7 +12,6 @@ const RegistrationPage = () => {
     try {
       const response = await axios.post('/api/register', { username, password })
       // Handle successful registration
-      console.log(response.data)
     } catch (error) {
       // Handle registration error
       console.error(error)
