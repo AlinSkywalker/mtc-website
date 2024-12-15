@@ -65,6 +65,17 @@ export function useFetchLaboratoryDictionaryList() {
     },
   })
 }
+export function useFetchLaboratoryRouteDictionaryList(laboratoryId) {
+  return useQuery({
+    queryKey: ['laboratoryRouteDictionary', laboratoryId],
+    queryFn: async () => {
+      if (!laboratoryId) return []
+      const { data } = await apiClient.get(`/api/laboratoryRouteDictionary/${laboratoryId}`)
+      return data
+    },
+  })
+}
+
 export function useFetchContractorDictionaryList() {
   return useQuery({
     queryKey: ['contractorDictionary'],

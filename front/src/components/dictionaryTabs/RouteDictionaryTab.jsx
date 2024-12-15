@@ -2,7 +2,7 @@ import React from 'react'
 import { useFetchRouteDictionaryList } from '../../queries/dictionary'
 import apiClient from '../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
-import { MountSelectMenu } from '../dataGridCell/MountSelectMenu'
+import { EditCascadeSelectMenu } from '../dataGridCell/EditCascadeSelectMenu'
 import { EditableTable } from '../EditableTable'
 import * as Yup from 'yup'
 import { Checkbox } from '@mui/material'
@@ -62,7 +62,14 @@ export const RouteDictionaryTab = () => {
 
   const renderSelectEditCell = (params) => {
     // console.log('params', params)
-    return <MountSelectMenu {...params} dictionaryName='summitDictionary' nameField='rout_mount' />
+    return (
+      <EditCascadeSelectMenu
+        {...params}
+        finishDictionary='summitDictionary'
+        nameField='rout_mount'
+        displayField='mount_name'
+      />
+    )
   }
   const renderCheckboxEditCell = ({ value, id, field }) => {
     const apiRef = useGridApiContext()

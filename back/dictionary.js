@@ -181,7 +181,7 @@ const dictionaryRouter = (app, passport) => {
   app.put('/routeDictionary', passport.authenticate('jwt', { session: false }), (req, res) => {
     const { rout_mount, rout_desc, rout_per, rout_sup, rout_tip, rout_comp, rout_name, rout_winter } = req.body;
     pool.query(`INSERT INTO route (rout_mount, rout_desc, rout_per, rout_sup, rout_tip, rout_comp, rout_name,rout_winter) VALUES(?,?,?,?,?,?,?,?)`,
-      [rout_mount, rout_desc, rout_per, rout_sup, rout_tip, rout_comp, rout_name, rout_winter], (error, result) => {
+      [rout_mount, rout_desc, rout_per || null, rout_sup, rout_tip, rout_comp, rout_name, rout_winter], (error, result) => {
         if (error) {
           console.log(error);
           res.status(500).json({ success: false, message: error });
@@ -194,16 +194,16 @@ const dictionaryRouter = (app, passport) => {
     const id = req.params.id;
     const { rout_mount, rout_desc, rout_per, rout_sup, rout_tip, rout_comp, rout_name, rout_winter } = req.body;
     pool.query(`UPDATE route SET 
-      rout_mount='${rout_mount}',
+      rout_mount=${rout_mount},
       rout_desc='${rout_desc}', 
-      rout_per='${rout_per}', 
+      rout_per=?, 
       rout_sup='${rout_sup}',
       rout_tip='${rout_tip}', 
       rout_comp='${rout_comp}', 
       rout_name='${rout_name}',
       rout_winter='${rout_winter}',
       updated_date=CURRENT_TIMESTAMP
-      WHERE id=${id}`, (error, result) => {
+      WHERE id=${id}`, [rout_per || null], (error, result) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
@@ -266,10 +266,70 @@ const dictionaryRouter = (app, passport) => {
       res.json({ success: true });
     })
   })
-
   app.delete('/laboratoryDictionary/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
     const id = req.params.id;
     pool.query(`DELETE FROM laba WHERE id=${id}`, (error, result) => {
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+        return
+      }
+      res.json({ success: true });
+    })
+  })
+
+  // laboratoryRouteDictionary
+  app.get('/laboratoryRouteDictionary/:laboratoryId', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const id = req.params.laboratoryId;
+    if (id === 'undefined') {
+      res.send([]);
+      return
+    }
+    pool.query(`SELECT * FROM laba_tr WHERE labatr_lab=${id}`, (error, result) => {
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+        return
+      }
+      res.send(result);
+    });
+  })
+  app.put('/laboratoryRouteDictionary', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const { labatr_name, labatr_typ, labatr_sl, labatr_dl, labatr_kolb, labatr_lab, labatr_desk } = req.body;
+    pool.query(`INSERT INTO laba_tr (labatr_name, labatr_typ, labatr_sl,labatr_dl,labatr_kolb,labatr_lab,labatr_desk) VALUES(?,?,?,?,?,?,?)`,
+      [labatr_name, labatr_typ, labatr_sl, labatr_dl || null, labatr_kolb || null, labatr_lab, labatr_desk], (error, result) => {
+        if (error) {
+          console.log(error);
+          res.status(500).json({ success: false, message: error });
+          return
+        }
+        res.json({ success: true });
+      })
+  })
+  app.post('/laboratoryRouteDictionary/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const id = req.params.id;
+    const { labatr_name, labatr_typ, labatr_sl, labatr_dl, labatr_kolb, labatr_desk } = req.body;
+    pool.query(`UPDATE laba_tr SET 
+      labatr_name='${labatr_name}',
+      labatr_typ='${labatr_typ}', 
+      labatr_sl='${labatr_sl}',
+      labatr_dl=?,
+      labatr_kolb=?,
+      labatr_desk='${labatr_desk}',
+      updated_date=CURRENT_TIMESTAMP
+      WHERE id=${id}`, [labatr_dl || null, labatr_kolb || null], (error, result) => {
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+        return
+      }
+      res.json({ success: true });
+    })
+  })
+
+  app.delete('/laboratoryRouteDictionary/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const id = req.params.id;
+    pool.query(`DELETE FROM laba_tr WHERE id=${id}`, (error, result) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });

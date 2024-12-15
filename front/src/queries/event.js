@@ -46,13 +46,26 @@ export function useFetchEventDepartmentList(eventId) {
   })
 }
 
-export function useFetchEventDepartmentMemberList(eventId, departmentId) {
+export function useFetchEventDepartmentById(eventId, departmentId) {
   return useQuery({
     queryKey: ['event', eventId, 'department', departmentId],
     queryFn: async () => {
-      const { data } = await apiClient.get(
-        `/api/eventList/${eventId}/department/${departmentId}/member`,
-      )
+      const { data } = await apiClient.get(`/api/eventList/${eventId}/department/${departmentId}`)
+      return data
+    },
+  })
+}
+
+export function useFetchEventDepartmentMemberList(eventId, departmentId, selectedDate) {
+  let fetchUrl = `/api/eventList/${eventId}/department/${departmentId}/member`
+  if (selectedDate) {
+    fetchUrl += `?selectedDate=${selectedDate}`
+  }
+  return useQuery({
+    queryKey: ['event', eventId, 'department', departmentId, 'member', selectedDate],
+    queryFn: async () => {
+      if (!eventId || !departmentId) return []
+      const { data } = await apiClient.get(fetchUrl)
       return data
     },
   })
@@ -63,6 +76,21 @@ export function useFetchEventMemberList(eventId) {
     queryKey: ['event', eventId, 'member'],
     queryFn: async () => {
       const { data } = await apiClient.get(`/api/eventList/${eventId}/member`)
+      return data
+    },
+  })
+}
+
+export function useFetchEventMemberListForDepartment({ eventId, departmentId, selectedDate }) {
+  let fetchUrl = `/api/eventList/${eventId}/memberForDepartment/${departmentId}`
+  if (selectedDate) {
+    fetchUrl += `?selectedDate=${selectedDate}`
+  }
+  return useQuery({
+    queryKey: ['event', eventId, 'memberForDepartment', departmentId],
+    queryFn: async () => {
+      if (!eventId || !departmentId) return []
+      const { data } = await apiClient.get(fetchUrl)
       return data
     },
   })

@@ -32,6 +32,7 @@ export const EditableTable = ({
   addButtonDisabled,
   isCellEditable,
   isRowEditable = () => true,
+  addButtonLabel,
 }) => {
   const handleRowEditStart = (params, event) => {
     // console.log('handleRowEditStart', params, event)
@@ -96,7 +97,7 @@ export const EditableTable = ({
     {
       const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit
       const row = rows.find((row) => row.id === id)
-      const { isNew } = row
+      const isNew = row?.isNew
       if (isInEditMode) {
         return [
           <GridActionsCellItem
@@ -165,11 +166,12 @@ export const EditableTable = ({
     },
     ...columns,
   ]
-  // console.log('columns', tableColumns)
+  // console.log('fullHeight', fullHeight)
+  const tableHeight = fullHeight ? `calc(100vh - 150px)` : 400
   const disabled = addButtonDisabled
   return (
     <Grid2 spacing={2} container flexDirection={'column'}>
-      <Grid2 item size={12} sx={{ height: fullHeight ? `calc(100vh - 150px)` : 600 }}>
+      <Grid2 item size={12} sx={{ height: tableHeight }}>
         <DataGrid
           rows={rows}
           columns={tableColumns}
@@ -193,6 +195,7 @@ export const EditableTable = ({
                   fieldToFocus={fieldToFocus}
                   defaultItem={defaultItem}
                   disabled={disabled}
+                  addButtonLabel={addButtonLabel}
                 />
               )
             },

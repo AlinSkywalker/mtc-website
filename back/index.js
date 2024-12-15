@@ -11,12 +11,15 @@ const pool = require("./mysql")
 
 const eventListRouter = require('./eventList')
 const memberListRouter = require('./memberList')
+
 const dictionaryRouter = require('./dictionary')
+
 const eventSmenaRouter = require('./eventSmena')
 const eventDepartmentRouter = require('./eventDepartment')
 const eventMemberRouter = require('./eventMember')
 
-
+const memberExamRouter = require('./memberExam')
+const memberAscentRouter = require('./memberAscent')
 
 
 const jwtOptions = {
@@ -139,6 +142,8 @@ dictionaryRouter(app, passport);
 eventSmenaRouter(app, passport);
 eventDepartmentRouter(app, passport);
 eventMemberRouter(app, passport);
+memberExamRouter(app, passport);
+memberAscentRouter(app, passport);
 
 
 app.get("*", (req, res) => {

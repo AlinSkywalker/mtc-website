@@ -8,9 +8,8 @@ import Grid from '@mui/material/Grid2'
 import Container from '@mui/material/Container'
 import apiClient from '../api/api'
 import { useFetchMember } from '../queries/member'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import { useFetchBaseDictionaryList } from '../queries/dictionary'
 import { format } from 'date-fns'
 import { AsynchronousAutocomplete } from './AsynchronousAutocomplete'
 import { CircularProgress } from '@mui/material'
@@ -19,10 +18,8 @@ import TabContext from '@mui/lab/TabContext'
 import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
 import Box from '@mui/material/Box'
-import { EventMembersTab } from './eventTabs/EventMembersTab'
-import { EventSmenaTab } from './eventTabs/EventSmenaTab'
-import { EventDepartmentTab } from './eventTabs/EventDepartmentTab'
-import { EventContractorTab } from './eventTabs/EventContractorTab'
+import { MemberExamTab } from './memberTabs/MemberExamTab'
+import { MemberAscentTab } from './memberTabs/MemberAscentTab'
 import { sizeClothOptions, sizeShoeOptions } from '../constants'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
@@ -53,6 +50,14 @@ const defaultValues = {
 
 const validationSchema = Yup.object({
   fio: Yup.string().required('Поле обязательно для заполнения'),
+  memb_email: Yup.string().matches(
+    // eslint-disable-next-line no-useless-escape
+    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+    {
+      message: 'Поле неверного формата',
+      excludeEmptyString: true,
+    },
+  ),
 })
 
 export const MemberInfoPage = () => {
@@ -107,12 +112,12 @@ export const MemberInfoPage = () => {
     {
       name: 'ascents',
       label: 'Восхождения',
-      component: <EventMembersTab eventId={currentId} />,
+      component: <MemberAscentTab memberId={currentId} />,
     },
     {
       name: 'exam',
       label: 'Зачеты',
-      component: <EventDepartmentTab eventId={currentId} />,
+      component: <MemberExamTab memberId={currentId} />,
     },
   ]
 
@@ -268,7 +273,14 @@ export const MemberInfoPage = () => {
                   name='memb_email'
                   control={control}
                   render={({ field }) => (
-                    <TextField {...field} variant='outlined' label='Email' fullWidth />
+                    <TextField
+                      {...field}
+                      variant='outlined'
+                      label='Email'
+                      fullWidth
+                      error={errors[field.name]}
+                      helperText={errors[field.name]?.message}
+                    />
                   )}
                 />
               </Grid>
@@ -402,11 +414,11 @@ export const MemberInfoPage = () => {
             ))}
           </TabList>
         </Box>
-        {/* {memberTabs.map((tab, index) => (
+        {memberTabs.map((tab, index) => (
           <TabPanel key={index} value={index} sx={{ p: '10px 0' }}>
             {value === index && tab.component}
           </TabPanel>
-        ))} */}
+        ))}
       </TabContext>
     </Container>
   )

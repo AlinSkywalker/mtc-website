@@ -30,3 +30,23 @@ export function useFetchMember(id) {
     },
   })
 }
+
+export function useFetchMemberExamList(id) {
+  return useQuery({
+    queryKey: ['member', id, 'exam'],
+    queryFn: async () => {
+      const { data } = await apiClient.get(`/api/memberList/${id}/exam`)
+      return data
+    },
+  })
+}
+
+export function useFetchMemberAscentList(id) {
+  return useQuery({
+    queryKey: ['member', id, 'ascent'],
+    queryFn: async () => {
+      const { data } = await apiClient.get(`/api/memberList/${id}/ascent`)
+      return data
+    },
+  })
+}

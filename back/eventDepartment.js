@@ -14,6 +14,17 @@ const eventDepartmentRouter = (app, passport) => {
       res.send(result);
     });
   })
+  app.get('/eventList/:eventId/department/:departmentId', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const id = req.params.departmentId;
+    pool.query(`SELECT d.*, m.fio as inst_fio FROM depart d LEFT JOIN member m on m.id=d.depart_inst WHERE d.id='${id}'`, (error, result) => {
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+        return
+      }
+      res.send(result[0]);
+    });
+  })
   // depart_event
   // depart_datef
   // depart_dates
@@ -69,47 +80,11 @@ const eventDepartmentRouter = (app, passport) => {
       res.send([]);
       return
     }
-    pool.query(`SELECT m_d.membd_memb as id, m.fio as member_fio FROM membdepart m_d
-                  LEFT JOIN eventmemb e_m ON e_m.id=m_d.membd_memb
-                  LEFT JOIN member m on m.id=e_m.eventmemb_memb
-                  WHERE m_d.membd_dep=${departmentId} 
-                  GROUP BY m_d.membd_memb`, (error, result) => {
-      if (error) {
-        console.log(error);
-        res.status(500).json({ success: false, message: error });
-        return
-      }
-      res.send(result);
-    });
-  })
-  app.put('/eventList/:eventId/department/:departmentId/member', passport.authenticate('jwt', { session: false }), (req, res) => {
-    const departmentId = req.params.departmentId;
-    const { membd_memb } = req.body;
-    pool.query(`SELECT * FROM depart WHERE id=${departmentId}`, (error, result) => {
-      if (error) {
-        console.log(error);
-        res.status(500).json({ success: false, message: error });
-        return
-      }
-      const { depart_datef, depart_dates } = result[0]
-      function getDatesInRange(startDate, endDate) {
-        const date = new Date(startDate.getTime());
-
-        const dates = [];
-
-        while (date <= endDate) {
-          dates.push(new Date(date).toISOString().substring(0, 10));
-          date.setDate(date.getDate() + 1);
-        }
-
-        return dates;
-      }
-      const dates = getDatesInRange(new Date(depart_dates), new Date(depart_datef))
-      // console.log(dates);
-      const insertValueString = dates.map(item => `(${departmentId},${membd_memb}, '${item}')`).join(', ')
-      // console.log(insertValueString);
-      pool.query(`INSERT INTO membdepart ( membd_dep, membd_memb, membd_date) 
-        VALUES ${insertValueString}`, (error, result) => {
+    if (req.query.selectedDate) {
+      pool.query(`SELECT m_d.membd_memb as id, m.fio as member_fio FROM membdepart m_d
+        LEFT JOIN eventmemb e_m ON e_m.id=m_d.membd_memb
+        LEFT JOIN member m on m.id=e_m.eventmemb_memb
+        WHERE m_d.membd_dep=${departmentId} AND m_d.membd_date='${req.query.selectedDate}'`, (error, result) => {
         if (error) {
           console.log(error);
           res.status(500).json({ success: false, message: error });
@@ -117,20 +92,156 @@ const eventDepartmentRouter = (app, passport) => {
         }
         res.send(result);
       });
-    })
+    }
+    else {
+      pool.query(`SELECT m_d.membd_memb as id, m.fio as member_fio FROM membdepart m_d
+        LEFT JOIN eventmemb e_m ON e_m.id=m_d.membd_memb
+        LEFT JOIN member m on m.id=e_m.eventmemb_memb
+        WHERE m_d.membd_dep=${departmentId} 
+        GROUP BY m_d.membd_memb`, (error, result) => {
+        if (error) {
+          console.log(error);
+          res.status(500).json({ success: false, message: error });
+          return
+        }
+        res.send(result);
+      });
+    }
+  })
+  app.put('/eventList/:eventId/department/:departmentId/member', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const departmentId = req.params.departmentId;
+    const { membd_memb } = req.body;
+    const { selectedDate } = req.query
+    if (selectedDate) {
+      pool.query(`INSERT INTO membdepart ( membd_dep, membd_memb, membd_date) 
+        VALUES (?,?,?)`, [departmentId, membd_memb, selectedDate], (error, result) => {
+        if (error) {
+          console.log(error);
+          res.status(500).json({ success: false, message: error });
+          return
+        }
+        res.send(result);
+      });
+    }
+    else {
+      pool.query(`SELECT * FROM depart WHERE id=${departmentId}`, (error, result) => {
+        if (error) {
+          console.log(error);
+          res.status(500).json({ success: false, message: error });
+          return
+        }
+        const { depart_datef, depart_dates } = result[0]
+        pool.query(`SELECT * FROM eventmemb WHERE id=${membd_memb}`, (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return
+          }
+          const { eventmemb_dates, eventmemb_datef } = result[0]
+          const departDateStart = new Date(depart_dates)
+          const departDateFinish = new Date(depart_datef)
+          const memberDateStart = new Date(eventmemb_dates)
+          const memberDateFinish = new Date(eventmemb_datef)
+          const rangeDateStart = departDateStart > memberDateStart ? departDateStart : memberDateStart
+          const rangeDateFinish = departDateFinish < memberDateFinish ? departDateFinish : memberDateFinish
+          const dates = getDatesInRange(rangeDateStart, rangeDateFinish)
+          // console.log(dates);
+          const insertValueString = dates.map(item => `(${departmentId},${membd_memb}, '${item}')`).join(', ')
+          // console.log(insertValueString);
+          pool.query(`INSERT INTO membdepart ( membd_dep, membd_memb, membd_date) 
+          VALUES ${insertValueString}`, (error, result) => {
+            if (error) {
+              console.log(error);
+              res.status(500).json({ success: false, message: error });
+              return
+            }
+            res.send(result);
+          });
+        })
+      })
+    }
   })
   app.delete('/eventList/:eventId/department/:departmentId/member/:memberId', passport.authenticate('jwt', { session: false }), (req, res) => {
     const { departmentId, memberId } = req.params;
-    pool.query(`DELETE FROM membdepart WHERE membd_dep=${departmentId} AND membd_memb=${memberId}`, (error, result) => {
-      if (error) {
-        console.log(error);
-        res.status(500).json({ success: false, message: error });
-        return
-      }
-      res.send(result);
-    });
+    const { selectedDate } = req.query
+    if (selectedDate) {
+      pool.query(`DELETE FROM membdepart 
+                  WHERE membd_dep=${departmentId} AND membd_memb=${memberId} AND membd_date='${selectedDate}'`, (error, result) => {
+        if (error) {
+          console.log(error);
+          res.status(500).json({ success: false, message: error });
+          return
+        }
+        res.send(result);
+      });
+    }
+    else {
+      pool.query(`DELETE FROM membdepart WHERE membd_dep=${departmentId} AND membd_memb=${memberId}`, (error, result) => {
+        if (error) {
+          console.log(error);
+          res.status(500).json({ success: false, message: error });
+          return
+        }
+        res.send(result);
+      });
+    }
+
+  })
+  app.get('/eventList/:eventId/memberForDepartment/:departmentId', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const { eventId, departmentId } = req.params;
+    const { selectedDate } = req.query
+
+    if (selectedDate) {
+      pool.query(`SELECT e_m.*, m.fio
+        FROM eventmemb e_m
+        LEFT JOIN member m on m.id=e_m.eventmemb_memb
+        WHERE eventmemb_even=${eventId} AND e_m.id NOT IN (SELECT membd_memb from membdepart WHERE membd_date='${selectedDate}')`, (error, result) => {
+        if (error) {
+          console.log(error);
+          res.status(500).json({ success: false, message: error });
+          return
+        }
+        res.send(result);
+      });
+    }
+    else {
+      pool.query(`SELECT * FROM depart WHERE id=${departmentId}`, (error, result) => {
+        if (error) {
+          console.log(error);
+          res.status(500).json({ success: false, message: error });
+          return
+        }
+        const { depart_datef, depart_dates } = result[0]
+        pool.query(`SELECT e_m.*, m.fio
+                      FROM eventmemb e_m
+                      LEFT JOIN member m on m.id=e_m.eventmemb_memb
+                      WHERE eventmemb_even=${eventId} AND 
+                      e_m.id NOT IN (
+                        SELECT membd_memb from membdepart 
+                        WHERE membd_date>='${depart_dates}' AND membd_date<='${depart_datef}' GROUP BY membd_memb)`, (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return
+          }
+          res.send(result);
+        });
+      })
+    }
   })
 }
 
+function getDatesInRange(startDate, endDate) {
+  const date = new Date(startDate.getTime());
+
+  const dates = [];
+
+  while (date <= endDate) {
+    dates.push(new Date(date).toISOString().substring(0, 10));
+    date.setDate(date.getDate() + 1);
+  }
+
+  return dates;
+}
 // Export the router
 module.exports = eventDepartmentRouter;

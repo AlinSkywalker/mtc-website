@@ -51,9 +51,9 @@ const eventMemberRouter = (app, passport) => {
     });
 
   })
-  app.delete('/eventList/:eventId/smena/:smenaId', passport.authenticate('jwt', { session: false }), (req, res) => {
-    const smenaId = req.params.smenaId;
-    pool.query(`DELETE FROM smena WHERE id=${smenaId}`, (error, result) => {
+  app.delete('/eventList/:eventId/member/:memberId', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const memberId = req.params.memberId;
+    pool.query(`DELETE FROM eventmemb WHERE id=${memberId}`, (error, result) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });

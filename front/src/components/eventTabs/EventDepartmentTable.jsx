@@ -91,7 +91,7 @@ export const EventDepartmentTable = ({ eventId, onRowSelectionModelChange }) => 
     {
       field: 'inst_fio',
       headerName: 'Инструктор',
-      width: 150,
+      width: 200,
       renderEditCell: renderInstructorSelectEditCell,
       editable: true,
     },

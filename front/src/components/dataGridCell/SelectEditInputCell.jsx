@@ -40,17 +40,20 @@ function mapDictionaryData(dictionaryName, dictionaryData = []) {
       case 'members':
         itemName = item.fio
         break
+      case 'events':
+        itemName = item.event_name
+        break
 
       default:
         itemName = ''
         break
     }
-    return { id: item.id, name: itemName }
+    return { id: item.id, name: itemName, item }
   })
 }
 
 export function SelectEditInputCell(props) {
-  const { id, value, field, hasFocus, dictionaryName, nameField, hook, hookParams } = props
+  const { id, value, field, hasFocus, dictionaryName, nameField, hook, hookParams, pickMap } = props
   // console.log('SelectEditInputCell props', props)
   const queryHook = hook ? hook : useFetchDictionaryByName
   const queryHookParams = hookParams ? hookParams : { dictionaryName, returnType: 'arrayType' }
@@ -73,6 +76,13 @@ export function SelectEditInputCell(props) {
     // children
     apiRef.current.setEditCellValue({ id, field, value: newValue?.name || '' })
     apiRef.current.setEditCellValue({ id, field: nameField, value: newValue?.id || '' })
+    if (pickMap) {
+      Object.keys(pickMap).forEach((item) => {
+        // apiRef.current.startCellEditMode({ id, field: item })
+        apiRef.current.setEditCellValue({ id, field: item, value: newValue?.item?.[item] })
+        // apiRef.current.stopCellEditMode({ id, field: item })
+      })
+    }
   }
 
   useEnhancedEffect(() => {

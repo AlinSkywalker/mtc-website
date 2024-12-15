@@ -52,8 +52,21 @@ export const EventMembersTab = ({ eventId }) => {
     const { id, isNew, ...postedData } = data
     return apiClient.post(`/api/eventList/${eventId}/member/${id}`, postedData)
   }, [])
-
+  // { field: 'gender', headerName: 'Пол', width: 100 },
+  // { field: 'tel_1', headerName: 'Телефон', width: 150 },
+  // { field: 'memb_email', headerName: 'email', width: 150 },
+  // { field: 'size_cloth', headerName: 'Размер одежды', width: 150 },
+  // { field: 'size_shoe', headerName: 'Размер обуви', width: 150 },
+  // { field: 'name_city', headerName: 'Город', width: 150 },
   const renderSelectEditCell = (params) => {
+    const pickMap = {
+      gender: 'gender',
+      tel_1: 'tel_1',
+      memb_email: 'memb_email',
+      size_cloth: 'size_cloth',
+      size_shoe: 'size_shoe',
+      name_city: 'name_city',
+    }
     // console.log('params', params)
     return (
       <SelectEditInputCell
@@ -61,6 +74,7 @@ export const EventMembersTab = ({ eventId }) => {
         dictionaryName='members'
         nameField='eventmemb_memb'
         hook={useFetchMemberList}
+        pickMap={pickMap}
       />
     )
   }

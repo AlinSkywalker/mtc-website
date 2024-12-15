@@ -1,104 +1,24 @@
-import React from 'react'
-import { useFetchLaboratoryDictionaryList } from '../../queries/dictionary'
-import apiClient from '../../api/api'
-import { useQueryClient } from '@tanstack/react-query'
-import { DistrictSelectMenu } from '../dataGridCell/DistrictSelectMenu'
-import { EditableTable } from '../EditableTable'
-import * as Yup from 'yup'
+import React, { useState } from 'react'
 
-const defaultItem = {
-  laba_rai: '',
-  laba_desk: '',
-  laba_name: '',
-  rai_name: '',
-}
+import { Grid2 } from '@mui/material'
+import { LaboratoryDictionaryTable } from './LaboratoryDictionaryTable'
+import { LaboratoryRouteDictionaryTable } from './LaboratoryRouteDictionaryTable'
 
-const validationSchema = Yup.object({
-  laba_rai: Yup.string().required('Поле обязательно для заполнения'),
-  laba_name: Yup.string().required('Поле обязательно для заполнения'),
-})
+export const LaboratoryDictionaryTab = ({ eventId }) => {
+  const [selectedLaboratory, setSelectedLaboratory] = useState()
 
-export const LaboratoryDictionaryTab = () => {
-  const queryClient = useQueryClient()
-  const { isLoading, data } = useFetchLaboratoryDictionaryList()
-
-  const [rows, setRows] = React.useState(data)
-  // console.log('rows', rows)
-  const [rowModesModel, setRowModesModel] = React.useState({})
-
-  React.useEffect(() => {
-    setRows(data)
-  }, [data])
-
-  const handleSaveNewItem = (data) => {
-    // console.log('handleSaveNewItem')
-    const { id, isNew, ...postedData } = data
-    // postedData['rai_reg'] = postedData['rai_reg'].split('|')[0]
-    return apiClient.put('/api/laboratoryDictionary', postedData)
+  const onRowSelectionModelChange = (newRowSelectionModel) => {
+    // console.log('newRowSelectionModel', newRowSelectionModel)
+    setSelectedLaboratory(newRowSelectionModel[0])
   }
-
-  const handleDeleteItem = (id) => () => {
-    apiClient.delete(`/api/laboratoryDictionary/${id}`).then((res) => {
-      queryClient.invalidateQueries({ queryKey: ['laboratoryDictionary'] })
-    })
-  }
-
-  const handleSaveEditedItem = React.useCallback((data) => {
-    // console.log('handleSaveEditedItem', data)
-    const { id, isNew, ...postedData } = data
-    // postedData['rai_reg'] = postedData['rai_reg'].split('|')[0]
-    return apiClient.post(`/api/laboratoryDictionary/${id}`, postedData)
-  }, [])
-
-  const renderSelectEditCell = (params) => {
-    // console.log('params', params)
-    return (
-      <DistrictSelectMenu {...params} dictionaryName='districtDictionary' nameField='laba_rai' />
-    )
-  }
-
-  const columns = [
-    { field: 'laba_name', headerName: 'Название', width: 250, editable: true },
-    { field: 'laba_desk', headerName: 'Описание', width: 350, editable: true },
-    { field: 'laba_rai', headerName: 'laba_rai', width: 0, editable: true },
-    {
-      field: 'rai_name',
-      headerName: 'Район',
-      width: 350,
-      editable: true,
-      renderEditCell: renderSelectEditCell,
-    },
-    { field: 'region_name', headerName: 'region_name', width: 0, editable: true },
-    { field: 'rai_reg', headerName: 'rai_reg', width: 0, editable: true },
-  ]
-
-  const fieldToFocus = 'laba_name'
-  const columnVisibilityModel = {
-    laba_rai: false,
-    region_name: false,
-    rai_reg: false,
-  }
-
-  const processRowUpdate = async (newRow) => {
-    validationSchema.validateSync(newRow, { abortEarly: false })
-    const handleSave = newRow.isNew ? handleSaveNewItem : handleSaveEditedItem
-    await handleSave(newRow)
-    queryClient.invalidateQueries({ queryKey: ['laboratoryDictionary'] })
-  }
-
   return (
-    <EditableTable
-      rows={rows}
-      setRows={setRows}
-      rowModesModel={rowModesModel}
-      setRowModesModel={setRowModesModel}
-      columns={columns}
-      processRowUpdate={processRowUpdate}
-      fieldToFocus={fieldToFocus}
-      columnVisibilityModel={columnVisibilityModel}
-      defaultItem={defaultItem}
-      isLoading={isLoading}
-      handleDeleteItem={handleDeleteItem}
-    />
+    <Grid2 container spacing={2} sx={{ width: '100%' }}>
+      <Grid2 item size={12}>
+        <LaboratoryDictionaryTable onRowSelectionModelChange={onRowSelectionModelChange} />
+      </Grid2>
+      <Grid2 item size={12}>
+        <LaboratoryRouteDictionaryTable selectedLaboratory={selectedLaboratory} />
+      </Grid2>
+    </Grid2>
   )
 }

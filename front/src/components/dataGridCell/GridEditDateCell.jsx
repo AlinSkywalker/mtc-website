@@ -33,7 +33,7 @@ function GridEditDateCell({ id, field, value, colDef }) {
   const apiRef = useGridApiContext()
 
   const Component = DatePicker
-  console.log('GridEditDateCell', value)
+  // console.log('GridEditDateCell', value)
   const handleChange = (newValue) => {
     apiRef.current.setEditCellValue({
       id,
