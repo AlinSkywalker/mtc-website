@@ -5,7 +5,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { EditableTable } from '../EditableTable'
 import * as Yup from 'yup'
 import { useFetchEventList } from '../../queries/event'
-import { dateColumnType } from '../dataGridCell/GridEditDateCell'
+import { dateColumnType, dateTimeColumnType } from '../dataGridCell/GridEditDateCell'
 import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
 import { EditCascadeSelectMenu } from '../dataGridCell/EditCascadeSelectMenu'
 
@@ -15,6 +15,8 @@ const defaultItem = {
   asc_date: '',
   asc_typ: '',
   mount_name_disp: '',
+  asc_times: '',
+  asc_timesf: '',
 }
 
 const validationSchema = Yup.object({
@@ -85,14 +87,14 @@ export const MemberAscentTab = ({ memberId }) => {
     {
       field: 'rout_name',
       headerName: 'Маршрут',
-      width: 150,
+      width: 180,
       renderEditCell: renderSelectEditCell,
       editable: true,
     },
     {
       field: 'rout_comp_disp',
       headerName: 'К/с',
-      width: 100,
+      width: 80,
       valueFormatter: (value, row) => {
         return row.rout_comp
       },
@@ -100,10 +102,11 @@ export const MemberAscentTab = ({ memberId }) => {
     {
       field: 'asc_date',
       ...dateColumnType,
-      headerName: 'Дата восхождения',
-      width: 150,
+      headerName: 'Дата восх.',
+      width: 120,
       editable: true,
     },
+
     {
       field: 'asc_typ',
       headerName: 'Роль',
@@ -120,10 +123,24 @@ export const MemberAscentTab = ({ memberId }) => {
     },
     {
       field: 'asc_kolu',
-      headerName: 'Количество участников',
+      headerName: 'Участников',
       width: 100,
       editable: true,
       type: 'number',
+    },
+    {
+      field: 'asc_times',
+      ...dateTimeColumnType,
+      headerName: 'Старт',
+      width: 150,
+      editable: true,
+    },
+    {
+      field: 'asc_timesf',
+      ...dateTimeColumnType,
+      headerName: 'Финиш',
+      width: 150,
+      editable: true,
     },
     {
       field: 'event_name',

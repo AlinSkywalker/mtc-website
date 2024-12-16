@@ -46,6 +46,8 @@ const defaultValues = {
   alpinstrnom: '',
   date_instr: null,
   city: { name_city: '', id: 0 },
+  ledu: 'WI2',
+  skali: '5a',
 }
 
 const validationSchema = Yup.object({
@@ -286,8 +288,9 @@ export const MemberInfoPage = () => {
               // alignItems='center'
               flexDirection='row'
               spacing={2}
+              columns={24}
             >
-              <Grid item size={1}>
+              <Grid item size={2}>
                 <Controller
                   name='alprazr'
                   control={control}
@@ -305,7 +308,7 @@ export const MemberInfoPage = () => {
                   )}
                 />
               </Grid>
-              <Grid item size={2}>
+              <Grid item size={3}>
                 <Controller
                   name='date_razr'
                   control={control}
@@ -327,7 +330,7 @@ export const MemberInfoPage = () => {
                   )}
                 />
               </Grid>
-              <Grid item size={2}>
+              <Grid item size={3}>
                 <Controller
                   name='date_zeton'
                   control={control}
@@ -340,7 +343,7 @@ export const MemberInfoPage = () => {
                   )}
                 />
               </Grid>
-              <Grid item size={1}>
+              <Grid item size={2}>
                 <Controller
                   name='alpinstr'
                   control={control}
@@ -372,7 +375,7 @@ export const MemberInfoPage = () => {
                   )}
                 />
               </Grid>
-              <Grid item size={2}>
+              <Grid item size={3}>
                 <Controller
                   name='date_instr'
                   control={control}
@@ -382,6 +385,61 @@ export const MemberInfoPage = () => {
                       {...field}
                       slotProps={{ textField: { fullWidth: true } }}
                     />
+                  )}
+                />
+              </Grid>
+              <Grid item size={2}>
+                <Controller
+                  name='skali'
+                  control={control}
+                  render={({ field }) => (
+                    <FormControl fullWidth>
+                      <InputLabel id='skaliLabel'>Уровень скалолазания</InputLabel>
+                      <Select
+                        {...field}
+                        label='Уровень скалолазания'
+                        fullWidth
+                        labelId='skaliLabel'
+                      >
+                        {[
+                          '5a',
+                          '5b',
+                          '5c',
+                          '6a',
+                          '6b',
+                          '6c',
+                          '7a',
+                          '7b',
+                          '7c',
+                          '8a',
+                          '8b',
+                          '8c',
+                          '9a',
+                        ].map((item, index) => (
+                          <MenuItem value={item} key={index}>
+                            {item}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  )}
+                />
+              </Grid>
+              <Grid item size={2}>
+                <Controller
+                  name='ledu'
+                  control={control}
+                  render={({ field }) => (
+                    <FormControl fullWidth>
+                      <InputLabel id='leduLabel'>Уровень лазания лёд</InputLabel>
+                      <Select {...field} label='Уровень лазания лёд' fullWidth labelId='leduLabel'>
+                        {['WI2', 'WI3', 'WI4', 'WI5', 'WI6', 'WI7'].map((item, index) => (
+                          <MenuItem value={item} key={index}>
+                            {item}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
                   )}
                 />
               </Grid>

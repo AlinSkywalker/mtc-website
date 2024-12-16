@@ -6,6 +6,7 @@ import { DistrictSelectMenu } from '../dataGridCell/DistrictSelectMenu'
 import { EditableTable } from '../EditableTable'
 import { MultiValueSelectEditInputCell } from '../MultiValueSelectEditInputCell'
 import * as Yup from 'yup'
+import { multilineColumnType } from '../dataGridCell/GridEditMultilineCell'
 
 const defaultItem = {
   base_rai: '',
@@ -72,7 +73,13 @@ export const BaseDictionaryTable = ({ onRowSelectionModelChange }) => {
 
   const columns = [
     { field: 'base_name', headerName: 'Название', width: 350, editable: true },
-    { field: 'base_desc', headerName: 'Описание', width: 350, editable: true },
+    {
+      field: 'base_desc',
+      headerName: 'Описание',
+      width: 350,
+      editable: true,
+      ...multilineColumnType,
+    },
     { field: 'base_adres', headerName: 'Местоположение', width: 150, editable: true },
     { field: 'base_rai', headerName: 'base_rai', width: 0, editable: true },
     {

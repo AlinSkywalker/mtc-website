@@ -30,9 +30,11 @@ const memberAscentRouter = (app, passport) => {
       asc_typ,
       asc_kolu,
       asc_ruk,
+      asc_times,
+      asc_timesf
     } = req.body;
-    pool.query(`INSERT INTO ascent ( asc_memb, asc_event, asc_route, asc_date, asc_typ,asc_kolu,asc_ruk) VALUES(?,?,?,?,?,?,?)`,
-      [id, asc_event || null, asc_route, asc_date, asc_typ, asc_kolu || null, asc_ruk], (error, result) => {
+    pool.query(`INSERT INTO ascent ( asc_memb, asc_event, asc_route, asc_date, asc_typ,asc_kolu,asc_ruk,asc_times,asc_timesf) VALUES(?,?,?,?,?,?,?,?,?)`,
+      [id, asc_event || null, asc_route, asc_date, asc_typ, asc_kolu || null, asc_ruk, asc_times, asc_timesf], (error, result) => {
         if (error) {
           console.log(error);
           res.status(500).json({ success: false, message: error });
@@ -50,6 +52,8 @@ const memberAscentRouter = (app, passport) => {
       asc_typ,
       asc_kolu,
       asc_ruk,
+      asc_times,
+      asc_timesf
     } = req.body;
     pool.query(`UPDATE ascent SET 
       asc_event=?,
@@ -58,7 +62,9 @@ const memberAscentRouter = (app, passport) => {
       asc_typ=?,
       asc_kolu=?,
       asc_ruk=?,
-      updated_date=CURRENT_TIMESTAMP WHERE id=${id}`, [asc_event || null, asc_route, asc_date, asc_typ, asc_kolu || null, asc_ruk], (error, result) => {
+      asc_times=?,
+      asc_timesf=?,
+      updated_date=CURRENT_TIMESTAMP WHERE id=${id}`, [asc_event || null, asc_route, asc_date, asc_typ, asc_kolu || null, asc_ruk, asc_times, asc_timesf], (error, result) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });

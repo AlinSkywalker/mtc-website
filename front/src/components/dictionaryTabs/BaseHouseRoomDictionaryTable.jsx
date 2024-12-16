@@ -55,6 +55,12 @@ export const BaseHouseRoomDictionaryTable = ({ selectedBase, selectedBaseHouse }
 
   const columns = [
     {
+      field: 'basenom_name',
+      headerName: 'Название',
+      width: 150,
+      editable: true,
+    },
+    {
       field: 'basenom_mest',
       headerName: 'Количество мест',
       width: 150,

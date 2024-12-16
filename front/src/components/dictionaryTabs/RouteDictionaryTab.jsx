@@ -6,6 +6,7 @@ import { EditCascadeSelectMenu } from '../dataGridCell/EditCascadeSelectMenu'
 import { EditableTable } from '../EditableTable'
 import * as Yup from 'yup'
 import { checkboxColumnType } from '../dataGridCell/GridEditCheckboxCell'
+import { multilineColumnType } from '../dataGridCell/GridEditMultilineCell'
 
 const defaultItem = {
   rout_mount: '',
@@ -24,7 +25,7 @@ const validationSchema = Yup.object({
   rout_name: Yup.string().required('Поле обязательно для заполнения'),
   rout_comp: Yup.string().required('Поле обязательно для заполнения'),
   rout_tip: Yup.string().required('Поле обязательно для заполнения'),
-  rout_winter: Yup.number().required('Поле обязательно для заполнения'),
+  // rout_winter: Yup.number().required('Поле обязательно для заполнения'),
 })
 
 export const RouteDictionaryTab = () => {
@@ -98,7 +99,13 @@ export const RouteDictionaryTab = () => {
     },
     { field: 'rout_sup', headerName: 'Руководитель', width: 150, editable: true },
     { field: 'rout_per', headerName: 'Год', width: 100, editable: true },
-    { field: 'rout_desc', headerName: 'Описание', width: 250, editable: true },
+    {
+      field: 'rout_desc',
+      headerName: 'Описание',
+      width: 250,
+      editable: true,
+      ...multilineColumnType,
+    },
     { field: 'rout_mount', headerName: 'rout_mount', width: 0, editable: true },
     { field: 'region_name', headerName: 'region_name', width: 0, editable: true },
     { field: 'rai_reg', headerName: 'rai_reg', width: 0, editable: true },

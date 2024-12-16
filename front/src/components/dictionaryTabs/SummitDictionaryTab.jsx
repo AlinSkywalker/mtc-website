@@ -4,6 +4,7 @@ import apiClient from '../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
 import { EditableTable } from '../EditableTable'
 import { DistrictSelectMenu } from '../dataGridCell/DistrictSelectMenu'
+import { multilineColumnType } from '../dataGridCell/GridEditMultilineCell'
 
 import * as Yup from 'yup'
 
@@ -55,7 +56,13 @@ export const SummitDictionaryTab = () => {
 
   const columns = [
     { field: 'mount_name', headerName: 'Название', width: 250, editable: true },
-    { field: 'mount_desc', headerName: 'Описание', width: 350, editable: true },
+    {
+      field: 'mount_desc',
+      headerName: 'Описание',
+      width: 350,
+      editable: true,
+      ...multilineColumnType,
+    },
     { field: 'mount_height', headerName: 'Высота', width: 100, editable: true, type: 'number' },
     { field: 'mount_rai', headerName: 'mount_rai', width: 0, editable: true },
     {

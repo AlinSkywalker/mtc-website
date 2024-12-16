@@ -87,9 +87,6 @@ export const LaboratoryRouteDictionaryTable = ({ selectedLaboratory }) => {
 
   return (
     <>
-      <Typography variant='h6' gutterBottom>
-        Трассы лаборатории
-      </Typography>
       <EditableTable
         rows={rows}
         setRows={setRows}

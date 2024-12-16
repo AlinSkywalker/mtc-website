@@ -25,7 +25,7 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, './build'),
-    filename: 'mountaineering-training-center/bundle.js',
+    filename: 'mountaineering-training-center/[name].[contenthash].js',
     publicPath: '/'
   },
   devServer: {

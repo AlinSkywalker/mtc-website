@@ -201,7 +201,7 @@ const dictionaryRouter = (app, passport) => {
       rout_tip='${rout_tip}', 
       rout_comp='${rout_comp}', 
       rout_name='${rout_name}',
-      rout_winter='${rout_winter}',
+      rout_winter=${rout_winter},
       updated_date=CURRENT_TIMESTAMP
       WHERE id=${id}`, [rout_per || null], (error, result) => {
       if (error) {
@@ -621,10 +621,10 @@ LEFT JOIN (
     });
   })
   app.put('/baseHouseRoomDictionary/', passport.authenticate('jwt', { session: false }), (req, res) => {
-    const { basenom_mest, basenom_ud, basenom_bal, basenom_sem, basenom_pod, basenom_prais, basenom_akt, basenom_fd } = req.body;
-    pool.query(`INSERT INTO basefd_nom ( basenom_mest, basenom_ud, basenom_bal, basenom_sem, basenom_pod, basenom_prais, basenom_akt,basenom_fd) 
-                VALUES(?,?,?,?,?,?,?,?)`,
-      [basenom_mest, basenom_ud, basenom_bal, basenom_sem, basenom_pod, basenom_prais, basenom_akt, basenom_fd], (error, result) => {
+    const { basenom_mest, basenom_ud, basenom_bal, basenom_sem, basenom_pod, basenom_prais, basenom_akt, basenom_fd, basenom_name } = req.body;
+    pool.query(`INSERT INTO basefd_nom ( basenom_mest, basenom_ud, basenom_bal, basenom_sem, basenom_pod, basenom_prais, basenom_akt,basenom_fd,basenom_name) 
+                VALUES(?,?,?,?,?,?,?,?,?)`,
+      [basenom_mest, basenom_ud, basenom_bal, basenom_sem, basenom_pod, basenom_prais, basenom_akt, basenom_fd, basenom_name], (error, result) => {
         if (error) {
           console.log(error);
           res.status(500).json({ success: false, message: error });
@@ -635,7 +635,7 @@ LEFT JOIN (
   })
   app.post('/baseHouseRoomDictionary/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
     const id = req.params.id;
-    const { basenom_mest, basenom_ud, basenom_bal, basenom_sem, basenom_pod, basenom_prais, basenom_akt } = req.body;
+    const { basenom_mest, basenom_ud, basenom_bal, basenom_sem, basenom_pod, basenom_prais, basenom_akt, basenom_name } = req.body;
     pool.query(`UPDATE basefd_nom SET 
       basenom_mest=?,
       basenom_ud='${basenom_ud}',
@@ -644,6 +644,7 @@ LEFT JOIN (
       basenom_pod=${basenom_pod},
       basenom_prais=?,
       basenom_akt='${basenom_akt}',
+      basenom_name='${basenom_name}',
       updated_date=CURRENT_TIMESTAMP WHERE id=${id}`, [basenom_mest, basenom_prais], (error, result) => {
       if (error) {
         console.log(error);

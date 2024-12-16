@@ -224,6 +224,7 @@ export const EditableTable = ({
           columnHeaderHeight={36}
           rowHeight={42}
           isCellEditable={isCellEditable}
+          disableColumnMenu
         />
       </Grid2>
     </Grid2>

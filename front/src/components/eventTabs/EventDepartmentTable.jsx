@@ -62,6 +62,7 @@ export const EventDepartmentTable = ({ eventId, onRowSelectionModelChange }) => 
         nameField='depart_inst'
         hook={useFetchMemberList}
         hookParams={hookParams}
+        secondarySource='alpinstr'
       />
     )
   }

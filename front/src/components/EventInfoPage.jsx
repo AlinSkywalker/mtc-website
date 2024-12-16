@@ -21,9 +21,9 @@ import Box from '@mui/material/Box'
 import { EventMembersTab } from './eventTabs/EventMembersTab'
 import { EventDepartmentTab } from './eventTabs/EventDepartmentTab'
 import { EventContractorTab } from './eventTabs/EventContractorTab'
+import { EventBaseTab } from './eventTabs/EventBaseTab'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
-import FormControl from '@mui/material/FormControl'
 
 const defaultValues = {
   id: 0,
@@ -128,6 +128,11 @@ export const EventInfoPage = () => {
       name: 'contractor',
       label: 'Контрагенты',
       component: <EventContractorTab baseId={data?.event_base} />,
+    },
+    {
+      name: 'base',
+      label: 'Проживание',
+      component: <EventBaseTab eventId={currentId} />,
     },
   ]
 

@@ -17,6 +17,8 @@ const dictionaryRouter = require('./dictionary')
 const eventSmenaRouter = require('./eventSmena')
 const eventDepartmentRouter = require('./eventDepartment')
 const eventMemberRouter = require('./eventMember')
+const eventBaseRouter = require('./eventBase')
+
 
 const memberExamRouter = require('./memberExam')
 const memberAscentRouter = require('./memberAscent')
@@ -138,10 +140,14 @@ app.post('/profile', passport.authenticate('jwt', { session: false }), (req, res
 
 eventListRouter(app, passport);
 memberListRouter(app, passport);
+
 dictionaryRouter(app, passport);
+
 eventSmenaRouter(app, passport);
 eventDepartmentRouter(app, passport);
 eventMemberRouter(app, passport);
+eventBaseRouter(app, passport);
+
 memberExamRouter(app, passport);
 memberAscentRouter(app, passport);
 
