@@ -6,7 +6,9 @@ const memberListRouter = (app, passport) => {
   app.get('/memberList/', passport.authenticate('jwt', { session: false }), (req, res) => {
     const { possibleRole, eventId } = req.query
     if (!possibleRole && !eventId) {
-      pool.query(`SELECT m.*, c.name_city FROM member m JOIN city c on m.memb_city=c.id`, (error, result) => {
+      pool.query(`SELECT m.*, c.name_city, ma.alprazr, ma.alpinstr FROM member m 
+                  LEFT JOIN city c on m.memb_city=c.id
+                  JOIN membalp ma on m.id=ma.id`, (error, result) => {
         if (error) {
           console.log(error);
           res.status(500).json({ success: false, message: error });
@@ -16,7 +18,7 @@ const memberListRouter = (app, passport) => {
       });
     }
     else if (eventId) {
-      pool.query(`SELECT m.*, e_m.id FROM eventmemb e_m LEFT JOIN member m on m.id=e_m.eventmemb_memb WHERE eventmemb_even='${eventId}'`, (error, result) => {
+      pool.query(`SELECT m.*, e_m.id, ma.alprazr, ma.alpinstr FROM eventmemb e_m LEFT JOIN member m on m.id=e_m.eventmemb_memb WHERE eventmemb_even='${eventId}'`, (error, result) => {
         if (error) {
           console.log(error);
           res.status(500).json({ success: false, message: error });
@@ -26,7 +28,7 @@ const memberListRouter = (app, passport) => {
       });
     }
     else if (possibleRole == 'ob') {
-      pool.query(`SELECT m.* FROM member m JOIN membalp ma on m.id=ma.id 
+      pool.query(`SELECT m.*, ma.alprazr, ma.alpinstr  FROM member m JOIN membalp ma on m.id=ma.id 
                   WHERE ma.alpinstr IS NOT NULL 
                   AND ma.alpzeton IS NOT NULL
                   `, (error, result) => {
@@ -39,7 +41,7 @@ const memberListRouter = (app, passport) => {
       });
     }
     else if (possibleRole == 'st') {
-      pool.query(`SELECT m.* FROM member m JOIN membalp ma on m.id=ma.id 
+      pool.query(`SELECT m.*, ma.alprazr, ma.alpinstr  FROM member m JOIN membalp ma on m.id=ma.id 
                   WHERE ma.alpinstr='1' OR ma.alpinstr='2'`, (error, result) => {
         if (error) {
           console.log(error);
@@ -50,7 +52,7 @@ const memberListRouter = (app, passport) => {
       });
     }
     else if (possibleRole == 'instructor') {
-      pool.query(`SELECT m.* FROM member m JOIN membalp ma on m.id=ma.id WHERE ma.alpinstr IS NOT NULL`, (error, result) => {
+      pool.query(`SELECT m.*, ma.alprazr, ma.alpinstr  FROM member m JOIN membalp ma on m.id=ma.id WHERE ma.alpinstr IS NOT NULL`, (error, result) => {
         if (error) {
           console.log(error);
           res.status(500).json({ success: false, message: error });
@@ -60,7 +62,10 @@ const memberListRouter = (app, passport) => {
       });
     }
     else {
-      pool.query(`SELECT m.*, c.name_city FROM member m JOIN city c on m.memb_city=c.id`, (error, result) => {
+      pool.query(`SELECT m.*, c.name_city, ma.alprazr, ma.alpinstr 
+                  FROM member m 
+                  LEFT JOIN city c on m.memb_city=c.id 
+                  JOIN membalp ma on m.id=ma.id`, (error, result) => {
         if (error) {
           console.log(error);
           res.status(500).json({ success: false, message: error });
@@ -70,6 +75,7 @@ const memberListRouter = (app, passport) => {
       });
     }
   })
+
   app.get('/memberList/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
     const id = req.params.id;
     pool.query(`SELECT m.*, ma.*, c.name_city FROM member m 
@@ -101,7 +107,9 @@ const memberListRouter = (app, passport) => {
       date_zeton,
       alpinstr,
       alpinstrnom,
-      date_instr
+      date_instr,
+      skali,
+      ledu
     } = req.body;
     pool.query(`INSERT INTO member ( fio,gender,date_birth,memb_city,tel_1,tel_2,memb_email,size_cloth,size_shoe) VALUES(?,?,?,?,?,?,?,?,?)`,
       [fio, gender, date_birth, memb_city, tel_1, tel_2, memb_email, size_cloth, size_shoe], (error, result) => {
@@ -111,8 +119,8 @@ const memberListRouter = (app, passport) => {
           return
         }
         const memberId = result.insertId
-        pool.query(`INSERT INTO membalp ( id, alprazr,date_razr, alpzeton,date_zeton,alpinstr,alpinstrnom,date_instr) VALUES(?,?,?,?,?,?,?,?)`,
-          [memberId, alprazr, date_razr, alpzeton, date_zeton, alpinstr, alpinstrnom, date_instr], (error, result) => {
+        pool.query(`INSERT INTO membalp ( id, alprazr,date_razr, alpzeton,date_zeton,alpinstr,alpinstrnom,date_instr,skali,ledu) VALUES(?,?,?,?,?,?,?,?,?,?)`,
+          [memberId, alprazr, date_razr, alpzeton, date_zeton, alpinstr, alpinstrnom, date_instr, skali, ledu], (error, result) => {
             if (error) {
               console.log(error);
               res.status(500).json({ success: false, message: error });
@@ -139,19 +147,21 @@ const memberListRouter = (app, passport) => {
       date_zeton,
       alpinstr,
       alpinstrnom,
-      date_instr
+      date_instr,
+      skali,
+      ledu
     } = req.body;
     pool.query(`UPDATE member SET 
-      fio='${fio}',
-      gender='${gender}',
-      date_birth='${date_birth}',
-      memb_city='${memb_city}',
-      tel_1='${tel_1}',
-      tel_2='${tel_2}',
-      memb_email='${memb_email}',
-      size_cloth='${size_cloth}',
-      size_shoe='${size_shoe}',
-      updated_date=CURRENT_TIMESTAMP WHERE id=${id}`, (error, result) => {
+      fio=?,
+      gender=?,
+      date_birth=?,
+      memb_city=?,
+      tel_1=?,
+      tel_2=?,
+      memb_email=?,
+      size_cloth=?,
+      size_shoe=?,
+      updated_date=CURRENT_TIMESTAMP WHERE id=${id}`, [fio, gender, date_birth, memb_city, tel_1, tel_2, memb_email, size_cloth, size_shoe], (error, result) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
@@ -165,7 +175,9 @@ const memberListRouter = (app, passport) => {
         alpinstr=?,
         alpinstrnom=?,
         date_instr=?,
-        updated_date=CURRENT_TIMESTAMP WHERE id=${id}`, [alprazr, date_razr, alpzeton, date_zeton, alpinstr, alpinstrnom, date_instr], (error, result) => {
+        skali=?,
+        ledu=?,
+        updated_date=CURRENT_TIMESTAMP WHERE id=${id}`, [alprazr, date_razr, alpzeton, date_zeton, alpinstr, alpinstrnom, date_instr, skali, ledu], (error, result) => {
         if (error) {
           console.log(error);
           res.status(500).json({ success: false, message: error });

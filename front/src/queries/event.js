@@ -95,3 +95,27 @@ export function useFetchEventMemberListForDepartment({ eventId, departmentId, se
     },
   })
 }
+
+export function useFetchEventBaseHouseRoomList(eventId) {
+  let fetchUrl = `/api/eventList/${eventId}/baseHouseRoom`
+  return useQuery({
+    queryKey: ['event', eventId, 'baseHouseRoom'],
+    queryFn: async () => {
+      if (!eventId) return []
+      const { data } = await apiClient.get(fetchUrl)
+      return data
+    },
+  })
+}
+
+export function useFetchBaseHouseRoomForEvent({ eventId }) {
+  let fetchUrl = `/api/eventList/${eventId}/baseHouseRoomForEvent`
+  return useQuery({
+    queryKey: ['event', eventId, 'baseHouseRoomForEvent'],
+    queryFn: async () => {
+      if (!eventId) return []
+      const { data } = await apiClient.get(fetchUrl)
+      return data
+    },
+  })
+}

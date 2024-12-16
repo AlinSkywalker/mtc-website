@@ -5,6 +5,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
 import * as Yup from 'yup'
 import { EditableTable } from '../EditableTable'
+import { multilineColumnType } from '../dataGridCell/GridEditMultilineCell'
 
 const defaultItem = {
   rai_reg: '',
@@ -54,7 +55,13 @@ export const DistrictDictionaryTab = () => {
   const columns = [
     { field: 'rai_num', headerName: 'Номер', width: 150, editable: true },
     { field: 'rai_name', headerName: 'Название', width: 350, editable: true },
-    { field: 'rai_desc', headerName: 'Описание', width: 350, editable: true },
+    {
+      field: 'rai_desc',
+      headerName: 'Описание',
+      width: 350,
+      editable: true,
+      ...multilineColumnType,
+    },
     { field: 'rai_reg', headerName: 'rai_reg', width: 0, editable: true },
     {
       field: 'region_name',

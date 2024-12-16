@@ -4,6 +4,7 @@ import apiClient from '../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
 import { EditableTable } from '../EditableTable'
 import * as Yup from 'yup'
+import { multilineColumnType } from '../dataGridCell/GridEditMultilineCell'
 
 const defaultItem = {
   region_desk: '',
@@ -52,7 +53,13 @@ export const RegionDictionaryTab = () => {
       width: 350,
       editable: true,
     },
-    { field: 'region_desk', headerName: 'Описание', width: 450, editable: true },
+    {
+      field: 'region_desk',
+      headerName: 'Описание',
+      width: 450,
+      editable: true,
+      ...multilineColumnType,
+    },
   ]
 
   const fieldToFocus = 'region_name'

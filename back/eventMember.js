@@ -21,10 +21,11 @@ const eventMemberRouter = (app, passport) => {
 
   app.put('/eventList/:eventId/member/', passport.authenticate('jwt', { session: false }), (req, res) => {
     const eventId = req.params.eventId;
-    const { eventmemb_nstrah, eventmemb_nmed, eventmemb_memb, eventmemb_dates, eventmemb_datef } = req.body;
-    pool.query(`INSERT INTO eventmemb ( eventmemb_nstrah, eventmemb_nmed, eventmemb_memb, eventmemb_dates, eventmemb_datef,eventmemb_even) 
-      VALUES(?,?,?,?,?,?)`,
-      [eventmemb_nstrah, eventmemb_nmed, eventmemb_memb, eventmemb_dates, eventmemb_datef, eventId], (error, result) => {
+    const { eventmemb_nstrah, eventmemb_nmed, eventmemb_memb, eventmemb_dates, eventmemb_datef, eventmemb_gen, eventmemb_pred, eventmemb_opl } = req.body;
+    pool.query(`INSERT INTO eventmemb 
+      ( eventmemb_nstrah, eventmemb_nmed, eventmemb_memb, eventmemb_dates, eventmemb_datef,eventmemb_even,eventmemb_gen,eventmemb_pred,eventmemb_opl) 
+      VALUES(?,?,?,?,?,?,?,?,?)`,
+      [eventmemb_nstrah, eventmemb_nmed, eventmemb_memb, eventmemb_dates, eventmemb_datef, eventId, eventmemb_gen, eventmemb_pred, eventmemb_opl], (error, result) => {
         if (error) {
           console.log(error);
           res.status(500).json({ success: false, message: error });
@@ -35,13 +36,16 @@ const eventMemberRouter = (app, passport) => {
   })
   app.post('/eventList/:eventId/member/:memberId', passport.authenticate('jwt', { session: false }), (req, res) => {
     const { memberId, eventId } = req.params;
-    const { eventmemb_nstrah, eventmemb_nmed, eventmemb_dates, eventmemb_datef } = req.body;
+    const { eventmemb_nstrah, eventmemb_nmed, eventmemb_dates, eventmemb_datef, eventmemb_gen, eventmemb_pred, eventmemb_opl } = req.body;
     pool.query(`UPDATE eventmemb SET 
       eventmemb_nstrah=${eventmemb_nstrah},
       eventmemb_nmed=${eventmemb_nmed},
       eventmemb_dates='${eventmemb_dates}',
       eventmemb_datef='${eventmemb_datef}',
-      updated_date=CURRENT_TIMESTAMP WHERE eventmemb_memb=${memberId} AND eventmemb_even=${eventId}`, (error, result) => {
+      eventmemb_gen=${eventmemb_gen},
+      eventmemb_pred=${eventmemb_pred},
+      eventmemb_opl=${eventmemb_opl},
+      updated_date=CURRENT_TIMESTAMP WHERE id=${memberId}`, (error, result) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });

@@ -8,6 +8,8 @@ import { dateColumnType } from '../dataGridCell/GridEditDateCell'
 import { useFetchMemberList } from '../../queries/member'
 import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
 import { checkboxColumnType } from '../dataGridCell/GridEditCheckboxCell'
+import { Link } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 
 const defaultItem = {
   eventmemb_memb: '',
@@ -16,6 +18,10 @@ const defaultItem = {
   eventmemb_dates: '',
   eventmemb_datef: '',
   fio: '',
+  eventmemb_gen: '',
+  eventmemb_nom: '',
+  ventmemb_pred: '',
+  eventmemb_opl: '',
 }
 
 const validationSchema = Yup.object({
@@ -28,6 +34,8 @@ export const EventMembersTab = ({ eventId }) => {
 
   const [rows, setRows] = React.useState(data)
   const [rowModesModel, setRowModesModel] = React.useState({})
+
+  const navigate = useNavigate()
 
   React.useEffect(() => {
     setRows(data)
@@ -48,12 +56,7 @@ export const EventMembersTab = ({ eventId }) => {
     const { id, isNew, ...postedData } = data
     return apiClient.post(`/api/eventList/${eventId}/member/${id}`, postedData)
   }, [])
-  // { field: 'gender', headerName: 'Пол', width: 100 },
-  // { field: 'tel_1', headerName: 'Телефон', width: 150 },
-  // { field: 'memb_email', headerName: 'email', width: 150 },
-  // { field: 'size_cloth', headerName: 'Размер одежды', width: 150 },
-  // { field: 'size_shoe', headerName: 'Размер обуви', width: 150 },
-  // { field: 'name_city', headerName: 'Город', width: 150 },
+
   const renderSelectEditCell = (params) => {
     const pickMap = {
       gender: 'gender',
@@ -70,7 +73,20 @@ export const EventMembersTab = ({ eventId }) => {
         nameField='eventmemb_memb'
         hook={useFetchMemberList}
         pickMap={pickMap}
+        secondarySource='alprazr'
       />
+    )
+  }
+  const handleClickName = (id) => () => {
+    navigate(`/admin/member/${id}`)
+  }
+  const renderLink = (params) => {
+    const link = params.value ?? ''
+
+    return (
+      <Link onClick={handleClickName(params.row.id)} sx={{ cursor: 'pointer' }}>
+        {link}
+      </Link>
     )
   }
 
@@ -79,6 +95,7 @@ export const EventMembersTab = ({ eventId }) => {
       field: 'fio',
       headerName: 'ФИО',
       width: 250,
+      renderCell: renderLink,
       renderEditCell: renderSelectEditCell,
       editable: true,
     },
@@ -111,12 +128,33 @@ export const EventMembersTab = ({ eventId }) => {
       editable: true,
       ...checkboxColumnType,
     },
-    { field: 'gender', headerName: 'Пол', width: 100 },
+    {
+      field: 'eventmemb_pred',
+      headerName: 'Предоплата',
+      width: 100,
+      editable: true,
+      type: 'number',
+    },
+    {
+      field: 'eventmemb_opl',
+      headerName: 'Оплата',
+      width: 100,
+      editable: true,
+      ...checkboxColumnType,
+    },
+    {
+      field: 'eventmemb_gen',
+      headerName: 'Проживание по полу',
+      width: 100,
+      editable: true,
+      ...checkboxColumnType,
+    },
+    { field: 'gender', headerName: 'Пол', width: 80 },
     { field: 'tel_1', headerName: 'Телефон', width: 150 },
     { field: 'memb_email', headerName: 'email', width: 150 },
-    { field: 'size_cloth', headerName: 'Размер одежды', width: 150 },
-    { field: 'size_shoe', headerName: 'Размер обуви', width: 150 },
-    { field: 'name_city', headerName: 'Город', width: 150 },
+    // { field: 'size_cloth', headerName: 'Размер одежды', width: 150 },
+    // { field: 'size_shoe', headerName: 'Размер обуви', width: 150 },
+    // { field: 'name_city', headerName: 'Город', width: 150 },
   ]
   const fieldToFocus = 'fio'
   const columnVisibilityModel = {

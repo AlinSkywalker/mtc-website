@@ -4,6 +4,7 @@ import apiClient from '../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
 import { EditableTable } from '../EditableTable'
 import * as Yup from 'yup'
+import { multilineColumnType } from '../dataGridCell/GridEditMultilineCell'
 
 const defaultItem = {
   name_city: '',
@@ -46,7 +47,13 @@ export const CityDictionaryTab = () => {
 
   const columns = [
     { field: 'name_city', headerName: 'Название', width: 250, editable: true },
-    { field: 'desc_city', headerName: 'Описание', width: 350, editable: true },
+    {
+      field: 'desc_city',
+      headerName: 'Описание',
+      width: 350,
+      editable: true,
+      ...multilineColumnType,
+    },
     { field: 'pred_city', headerName: 'Представитель', width: 350, editable: true },
     { field: 'tel_city', headerName: 'Телефон', width: 150, editable: true },
     { field: 'email', headerName: 'Email', width: 150, editable: true },

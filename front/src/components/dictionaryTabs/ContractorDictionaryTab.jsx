@@ -4,6 +4,7 @@ import apiClient from '../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
 import { EditableTable } from '../EditableTable'
 import * as Yup from 'yup'
+import { multilineColumnType } from '../dataGridCell/GridEditMultilineCell'
 
 const defaultItem = {
   cont_fio: '',
@@ -48,7 +49,13 @@ export const ContractorDictionaryTab = () => {
   }, [])
   const columns = [
     { field: 'cont_fio', headerName: 'ФИО', width: 350, editable: true },
-    { field: 'cont_desc', headerName: 'Описание', width: 350, editable: true },
+    {
+      field: 'cont_desc',
+      headerName: 'Описание',
+      width: 350,
+      editable: true,
+      ...multilineColumnType,
+    },
     {
       field: 'cont_zan',
       headerName: 'Занятие',

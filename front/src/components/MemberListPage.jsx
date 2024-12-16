@@ -20,7 +20,7 @@ const defaultItem = {
   memb_email: '',
   size_cloth: '?',
   size_shoe: '?',
-  date_birth: null,
+  date_birth: '',
 }
 
 const validationSchema = Yup.object({

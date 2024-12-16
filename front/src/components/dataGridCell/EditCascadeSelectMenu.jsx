@@ -9,6 +9,8 @@ import IconButton from '@mui/material/IconButton'
 import CreateIcon from '@mui/icons-material/KeyboardArrowDown'
 import Button from '@mui/material/Button'
 import { Box } from '@mui/material'
+import MenuItem from '@mui/material/MenuItem'
+import ListItemText from '@mui/material/ListItemText'
 
 function mapDictionaryData(dictionaryName, dictionaryData = []) {
   return dictionaryData.map((item) => {
@@ -32,11 +34,12 @@ function mapDictionaryData(dictionaryName, dictionaryData = []) {
       case 'summitDictionary':
         itemName = item.mount_name
         parentId = item.mount_rai
+        secondary = `${item.mount_height} м`
         break
       case 'routeDictionary':
         itemName = item.rout_name
         parentId = item.rout_mount
-        secondary = item.rout_comp
+        secondary = `КС: ${item.rout_comp}`
         break
       case 'contractorDictionary':
         itemName = item.cont_fio
@@ -234,9 +237,9 @@ export function EditCascadeSelectMenu(props) {
   }
 
   const displayValue = row[displayField]
-  let submitDisabled = !districtAutocompleteValue.id
-  if (finishDictionary == 'routeDictionary') submitDisabled = !routeAutocompleteValue.id
-  else if (finishDictionary == 'summitDictionary') submitDisabled = !summitAutocompleteValue.id
+  let submitDisabled = !districtAutocompleteValue?.id
+  if (finishDictionary == 'routeDictionary') submitDisabled = !routeAutocompleteValue?.id
+  else if (finishDictionary == 'summitDictionary') submitDisabled = !summitAutocompleteValue?.id
   return (
     <>
       <Grid2 container sx={{ width: '100%' }} flexWrap={'nowrap'}>
@@ -318,6 +321,18 @@ export function EditCascadeSelectMenu(props) {
                   setSummitInputValue(newInputValue)
                 }}
                 fullWidth
+                renderOption={(props, option, { selected }) => {
+                  const { key, ...optionProps } = props
+                  return (
+                    <MenuItem value={option.id} key={key} {...optionProps}>
+                      <ListItemText
+                        primary={option.name}
+                        sx={{ width: '100%', whiteSpace: 'normal' }}
+                        secondary={option.secondary}
+                      />
+                    </MenuItem>
+                  )
+                }}
               />
             )}
             {finishDictionary == 'routeDictionary' && (
@@ -341,6 +356,18 @@ export function EditCascadeSelectMenu(props) {
                   setRouteInputValue(newInputValue)
                 }}
                 fullWidth
+                renderOption={(props, option, { selected }) => {
+                  const { key, ...optionProps } = props
+                  return (
+                    <MenuItem value={option.id} key={key} {...optionProps}>
+                      <ListItemText
+                        primary={option.name}
+                        sx={{ width: '100%', whiteSpace: 'normal' }}
+                        secondary={option.secondary}
+                      />
+                    </MenuItem>
+                  )
+                }}
               />
             )}
             <Button onClick={handleSubmit} disabled={submitDisabled} variant='contained'>

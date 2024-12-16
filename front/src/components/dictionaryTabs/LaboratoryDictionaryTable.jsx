@@ -5,6 +5,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { DistrictSelectMenu } from '../dataGridCell/DistrictSelectMenu'
 import { EditableTable } from '../EditableTable'
 import * as Yup from 'yup'
+import { multilineColumnType } from '../dataGridCell/GridEditMultilineCell'
 
 const defaultItem = {
   laba_rai: '',
@@ -53,7 +54,13 @@ export const LaboratoryDictionaryTable = ({ onRowSelectionModelChange }) => {
 
   const columns = [
     { field: 'laba_name', headerName: 'Название', width: 250, editable: true },
-    { field: 'laba_desk', headerName: 'Описание', width: 350, editable: true },
+    {
+      field: 'laba_desk',
+      headerName: 'Описание',
+      width: 350,
+      editable: true,
+      ...multilineColumnType,
+    },
     { field: 'laba_rai', headerName: 'laba_rai', width: 0, editable: true },
     {
       field: 'rai_name',

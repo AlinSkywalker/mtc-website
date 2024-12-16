@@ -142,9 +142,12 @@ const eventDepartmentRouter = (app, passport) => {
           const departDateFinish = new Date(depart_datef)
           const memberDateStart = new Date(eventmemb_dates)
           const memberDateFinish = new Date(eventmemb_datef)
-          const rangeDateStart = departDateStart > memberDateStart ? departDateStart : memberDateStart
-          const rangeDateFinish = departDateFinish < memberDateFinish ? departDateFinish : memberDateFinish
+          // console.log(departDateStart, departDateFinish, memberDateStart, memberDateFinish)
+          const rangeDateStart = (departDateStart > memberDateStart) ? departDateStart : memberDateStart
+          const rangeDateFinish = (departDateFinish < memberDateFinish) ? departDateFinish : memberDateFinish
+          // console.log(rangeDateStart, rangeDateFinish)
           const dates = getDatesInRange(rangeDateStart, rangeDateFinish)
+          // console.log('dates', dates)
           // console.log(dates);
           const insertValueString = dates.map(item => `(${departmentId},${membd_memb}, '${item}')`).join(', ')
           // console.log(insertValueString);
@@ -192,9 +195,10 @@ const eventDepartmentRouter = (app, passport) => {
     const { selectedDate } = req.query
 
     if (selectedDate) {
-      pool.query(`SELECT e_m.*, m.fio
+      pool.query(`SELECT e_m.*, m.fio, ma.alprazr, ma.alpinstr
         FROM eventmemb e_m
         LEFT JOIN member m on m.id=e_m.eventmemb_memb
+        JOIN membalp ma on m.id=ma.id
         WHERE eventmemb_even=${eventId} AND e_m.id NOT IN (SELECT membd_memb from membdepart WHERE membd_date='${selectedDate}')`, (error, result) => {
         if (error) {
           console.log(error);
@@ -212,9 +216,10 @@ const eventDepartmentRouter = (app, passport) => {
           return
         }
         const { depart_datef, depart_dates } = result[0]
-        pool.query(`SELECT e_m.*, m.fio
+        pool.query(`SELECT e_m.*, m.fio, ma.alprazr, ma.alpinstr
                       FROM eventmemb e_m
                       LEFT JOIN member m on m.id=e_m.eventmemb_memb
+                      JOIN membalp ma on m.id=ma.id
                       WHERE eventmemb_even=${eventId} AND 
                       e_m.id NOT IN (
                         SELECT membd_memb from membdepart 
