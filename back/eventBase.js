@@ -67,8 +67,7 @@ const eventBaseRouter = (app, passport) => {
     pool.query(`SELECT bf_n.*, bf_d.basefd_name
                 FROM basefd_nom bf_n
                 LEFT JOIN base_fonddom bf_d on bf_d.id=bf_n.basenom_fd 
-                WHERE bf_d.basefd_base=(SELECT event_base FROM eventalp WHERE id=${eventId})
-                AND bf_n.id NOT IN (SELECT basefd FROM base_event WHERE event=${eventId})`, (error, result) => {
+                WHERE bf_d.basefd_base=(SELECT event_base FROM eventalp WHERE id=${eventId})`, (error, result) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
@@ -77,6 +76,7 @@ const eventBaseRouter = (app, passport) => {
       res.send(result);
     });
   })
+  //AND bf_n.id NOT IN (SELECT basefd FROM base_event WHERE event=${eventId})
 }
 
 // Export the router

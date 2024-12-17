@@ -32,19 +32,26 @@ const jwtOptions = {
 passport.use(new JwtStrategy(jwtOptions, function (jwt_payload, done) {
   // console.log('jwt_payload', jwt_payload)
   const token = jwt.sign(jwt_payload, jwtOptions.secretOrKey);
-  pool.query(`SELECT * FROM user_token ut RIGHT JOIN user u ON ut.user_id=u.id WHERE token='${token}'`, (error, result) => {
-    if (error) {
-      console.log(error);
-      return done(error, false);
-    }
-    const user = result[0];
-    if (user) {
-      return done(null, { ...user, token });
-    }
-    else {
-      return done(null, false);
-    }
-  });
+  if(jwt_payload.timestamp+3*24*60*60*1000 < Date.now()){
+    // pool.query(`DELETE FROM user_token WHERE token='${token}'`);
+    return done(null, false);
+  }
+  else{
+    return done(null, jwt_payload);
+  }
+  // pool.query(`SELECT * FROM user_token ut RIGHT JOIN user u ON ut.user_id=u.id WHERE token='${token}'`, (error, result) => {
+  //   if (error) {
+  //     console.log(error);
+  //     return done(error, false);
+  //   }
+  //   const user = result[0];
+  //   if (user) {
+  //     return done(null, { ...user, token });
+  //   }
+  //   else {
+  //     return done(null, false);
+  //   }
+  // });
 }));
 
 passport.serializeUser(function (user, done) {
