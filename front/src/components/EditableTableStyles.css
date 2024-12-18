@@ -6,3 +6,12 @@
   /* background-color: #cf8c8c; */
   border: 1px solid red;
 }
+.MuiInputBase-root.Mui-disabled.roTableInput{
+  color: rgba(0, 0, 0, 0.87)
+}
+.MuiInputBase-root.Mui-disabled.roTableInput input{
+  -webkit-text-fill-color: rgba(0, 0, 0, 0.87)
+}
+.eventBaseTable .MuiDataGrid-footerContainer{
+  display: none;
+}

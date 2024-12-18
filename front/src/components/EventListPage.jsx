@@ -8,6 +8,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { EditableTable } from './EditableTable'
 import * as Yup from 'yup'
 import { SelectEditInputCell } from './dataGridCell/SelectEditInputCell'
+import { EditCascadeSelectMenu } from './dataGridCell/EditCascadeSelectMenu'
 import { dateColumnType } from './dataGridCell/GridEditDateCell'
 
 const defaultItem = {
@@ -33,7 +34,7 @@ const validationSchema = Yup.object({
   st_fio: Yup.string()
     .required('Поле обязательно для заполнения')
     .notOneOf([Yup.ref('ob_fio'), null], 'ОБ не может быть СТ'),
-  base_name: Yup.string().required('Поле обязательно для заполнения'),
+  rai_name: Yup.string().required('Поле обязательно для заполнения'),
 })
 
 export const EventListPage = () => {
@@ -69,7 +70,12 @@ export const EventListPage = () => {
 
   const renderBaseSelectEditCell = (params) => {
     return (
-      <SelectEditInputCell {...params} dictionaryName='baseDictionary' nameField='event_base' />
+      <EditCascadeSelectMenu
+        {...params}
+        finishDictionary='districtDictionary'
+        nameField='event_raion'
+        displayField='rai_name'
+      />
     )
   }
   const renderSTSelectEditCell = (params) => {
@@ -129,8 +135,8 @@ export const EventListPage = () => {
       editable: true,
     },
     {
-      field: 'base_name',
-      headerName: 'Место проведения',
+      field: 'rai_name',
+      headerName: 'Район проведения',
       width: 150,
       renderEditCell: renderBaseSelectEditCell,
       editable: true,
@@ -149,13 +155,13 @@ export const EventListPage = () => {
       renderEditCell: renderOBSelectEditCell,
       editable: true,
     },
-    { field: 'event_base', headerName: 'event_base', width: 0, editable: true },
+    { field: 'event_raion', headerName: 'event_raion', width: 0, editable: true },
     { field: 'event_st', headerName: 'event_st', width: 0, editable: true },
     { field: 'event_ob', headerName: 'event_ob', width: 0, editable: true },
   ]
   const fieldToFocus = 'event_name'
   const columnVisibilityModel = {
-    event_base: false,
+    event_raion: false,
     event_st: false,
     event_ob: false,
   }

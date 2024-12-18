@@ -10,6 +10,7 @@ import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
 import { checkboxColumnType } from '../dataGridCell/GridEditCheckboxCell'
 import { Link } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
+import { GridEditInputCell } from '@mui/x-data-grid'
 
 const defaultItem = {
   eventmemb_memb: '',
@@ -150,9 +151,33 @@ export const EventMembersTab = ({ eventId }) => {
       editable: true,
       ...checkboxColumnType,
     },
-    { field: 'gender', headerName: 'Пол', width: 80 },
-    { field: 'tel_1', headerName: 'Телефон', width: 150 },
-    { field: 'memb_email', headerName: 'email', width: 150 },
+    {
+      field: 'gender',
+      headerName: 'Пол',
+      width: 80,
+      editable: true,
+      renderEditCell: (props) => (
+        <GridEditInputCell {...props} disabled className={'roTableInput'} />
+      ),
+    },
+    {
+      field: 'tel_1',
+      headerName: 'Телефон',
+      width: 150,
+      editable: true,
+      renderEditCell: (props) => (
+        <GridEditInputCell {...props} disabled className={'roTableInput'} />
+      ),
+    },
+    {
+      field: 'memb_email',
+      headerName: 'email',
+      width: 150,
+      editable: true,
+      renderEditCell: (props) => (
+        <GridEditInputCell {...props} disabled className={'roTableInput'} />
+      ),
+    },
     // { field: 'size_cloth', headerName: 'Размер одежды', width: 150 },
     // { field: 'size_shoe', headerName: 'Размер обуви', width: 150 },
     // { field: 'name_city', headerName: 'Город', width: 150 },

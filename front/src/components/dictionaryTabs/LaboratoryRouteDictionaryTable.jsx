@@ -99,7 +99,7 @@ export const LaboratoryRouteDictionaryTable = ({ selectedLaboratory }) => {
         defaultItem={defaultItem}
         isLoading={isLoading}
         handleDeleteItem={handleDeleteItem}
-        fullHeight={false}
+        height={600}
       />
     </>
   )

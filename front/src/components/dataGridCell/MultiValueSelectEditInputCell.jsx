@@ -3,7 +3,7 @@ import { unstable_useEnhancedEffect as useEnhancedEffect } from '@mui/utils'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
-import { useFetchDictionaryByName } from '../queries/dictionary'
+import { useFetchDictionaryByName } from '../../queries/dictionary'
 import { useGridApiContext } from '@mui/x-data-grid'
 import ListItemText from '@mui/material/ListItemText'
 import Checkbox from '@mui/material/Checkbox'
@@ -46,6 +46,7 @@ export function MultiValueSelectEditInputCell(props) {
 
   const [personName, setPersonName] = React.useState(nameList)
   const [personId, setPersonId] = React.useState(idList)
+
   const handleChange = (event) => {
     const {
       target: { value },
@@ -104,7 +105,3 @@ export function MultiValueSelectEditInputCell(props) {
     </FormControl>
   )
 }
-// word-wrap: break-word;
-// white-space: normal;
-// font-size: 13px;
-// color: #666;

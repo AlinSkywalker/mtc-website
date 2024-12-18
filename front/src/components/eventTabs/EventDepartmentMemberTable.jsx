@@ -124,6 +124,7 @@ export const EventDepartmentMemberTable = ({ eventId, selectedDepartmentId, sele
       isCellEditable={(params) =>
         params.field !== 'member_fio' || (params.row.isNew && params.field == 'member_fio')
       }
+      height={400}
     />
   )
 }

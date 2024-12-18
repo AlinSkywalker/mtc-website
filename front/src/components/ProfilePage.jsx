@@ -8,13 +8,13 @@ import Grid from '@mui/material/Grid2'
 import Container from '@mui/material/Container'
 import { AuthContext } from './AuthContext'
 import apiClient from '../api/api'
+import { useFetchProfile } from '../queries/profile'
 
 export const ProfilePage = () => {
-  const defaultValues = { userName: '', lastName: '', firstName: '', middleName: '' }
+  const defaultValues = { userName: '', fio: '' }
   const { userInfo } = useContext(AuthContext)
-  useEffect(() => {
-    userInfo.id && apiClient.get(`/api/profile/${userInfo.id}`).then()
-  }, [userInfo.id])
+  const { data } = useFetchProfile(userInfo.id)
+  console.log('data', data)
   const {
     handleSubmit,
     formState: { errors, dirtyFields },
@@ -22,12 +22,17 @@ export const ProfilePage = () => {
     reset,
   } = useForm({ defaultValues })
 
+  useEffect(() => {
+    data && reset(data)
+  }, [data])
+
   const isDirty = !!Object.keys(dirtyFields).length
+
   const handleSaveProfileData = async (data, e) => {
     e.preventDefault()
     try {
       const { username, password } = data
-      const response = await apiClient.post('/api/profile', { username, data })
+      const response = await apiClient.post('/api/profile', data)
       // Handle successful login
     } catch (error) {
       // Handle login error
@@ -35,7 +40,7 @@ export const ProfilePage = () => {
     }
   }
   const handleReset = () => {
-    reset(defaultValues)
+    reset(data ? data : defaultValues)
   }
 
   return (
@@ -55,7 +60,7 @@ export const ProfilePage = () => {
             >
               <Grid item>
                 <Controller
-                  name='username'
+                  name='memb_email'
                   control={control}
                   render={({ field }) => (
                     <TextField {...field} variant='outlined' label='Email' disabled />
@@ -64,26 +69,10 @@ export const ProfilePage = () => {
               </Grid>
               <Grid item>
                 <Controller
-                  name='lastName'
+                  name='fio'
                   control={control}
                   render={({ field }) => (
-                    <TextField {...field} variant='outlined' label='Фамилия' />
-                  )}
-                />
-              </Grid>
-              <Grid item>
-                <Controller
-                  name='firstName'
-                  control={control}
-                  render={({ field }) => <TextField {...field} variant='outlined' label='Имя' />}
-                />
-              </Grid>
-              <Grid item>
-                <Controller
-                  name='middleName'
-                  control={control}
-                  render={({ field }) => (
-                    <TextField {...field} variant='outlined' label='Отчество' />
+                    <TextField {...field} variant='outlined' label='Фамилия Имя Отчество' />
                   )}
                 />
               </Grid>

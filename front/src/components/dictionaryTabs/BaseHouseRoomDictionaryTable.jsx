@@ -133,7 +133,7 @@ export const BaseHouseRoomDictionaryTable = ({ selectedBase, selectedBaseHouse }
         defaultItem={defaultItem}
         isLoading={isLoading}
         handleDeleteItem={handleDeleteItem}
-        fullHeight={false}
+        height={600}
         addButtonDisabled={!selectedBaseHouse}
       />
     </>

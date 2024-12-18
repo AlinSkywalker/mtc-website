@@ -5,8 +5,8 @@ import { useQueryClient } from '@tanstack/react-query'
 import { EditableTable } from '../EditableTable'
 import * as Yup from 'yup'
 import { dateColumnType } from '../dataGridCell/GridEditDateCell'
-import { useFetchMemberList } from '../../queries/member'
 import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
+import { GridEditInputCell } from '@mui/x-data-grid'
 
 const defaultItem = {
   basenom_name: '',
@@ -51,6 +51,9 @@ export const EventBaseHouseRoomTable = ({ eventId, onRowSelectionModelChange }) 
     const hookParams = {
       eventId,
     }
+    const pickMap = {
+      basenom_mest: 'basenom_mest',
+    }
     return (
       <SelectEditInputCell
         {...params}
@@ -60,6 +63,7 @@ export const EventBaseHouseRoomTable = ({ eventId, onRowSelectionModelChange }) 
         hookParams={hookParams}
         secondarySource='basefd_name'
         secondarySourceArray={['base_name', 'basefd_name']}
+        pickMap={pickMap}
       />
     )
   }
@@ -76,6 +80,10 @@ export const EventBaseHouseRoomTable = ({ eventId, onRowSelectionModelChange }) 
       field: 'basenom_mest',
       headerName: 'Мест',
       width: 80,
+      editable: true,
+      renderEditCell: (props) => (
+        <GridEditInputCell {...props} disabled className={'roTableInput'} />
+      ),
     },
     { field: 'date_st', ...dateColumnType, headerName: 'Начало', width: 120, editable: true },
     {
@@ -115,6 +123,7 @@ export const EventBaseHouseRoomTable = ({ eventId, onRowSelectionModelChange }) 
       isLoading={isLoading}
       handleDeleteItem={handleDeleteItem}
       onRowSelectionModelChange={onRowSelectionModelChange}
+      // isCellEditable={(params) => params.field !== 'basenom_mest'}
     />
   )
 }

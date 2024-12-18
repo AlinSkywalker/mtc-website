@@ -121,6 +121,7 @@ export const EventDepartmentTable = ({ eventId, onRowSelectionModelChange }) => 
       isLoading={isLoading}
       handleDeleteItem={handleDeleteItem}
       onRowSelectionModelChange={onRowSelectionModelChange}
+      height={400}
     />
   )
 }

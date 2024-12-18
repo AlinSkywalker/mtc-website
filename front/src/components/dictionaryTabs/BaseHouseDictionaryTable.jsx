@@ -92,7 +92,7 @@ export const BaseHouseDictionaryTable = ({ onRowSelectionModelChange, selectedBa
         defaultItem={defaultItem}
         isLoading={isLoading}
         handleDeleteItem={handleDeleteItem}
-        fullHeight={false}
+        height={600}
         onRowSelectionModelChange={onRowSelectionModelChange}
         addButtonDisabled={!selectedBase}
       />

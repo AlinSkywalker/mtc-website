@@ -4,7 +4,7 @@ import apiClient from '../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
 import { DistrictSelectMenu } from '../dataGridCell/DistrictSelectMenu'
 import { EditableTable } from '../EditableTable'
-import { MultiValueSelectEditInputCell } from '../MultiValueSelectEditInputCell'
+import { MultiValueSelectEditInputCell } from '../dataGridCell/MultiValueSelectEditInputCell'
 import * as Yup from 'yup'
 import { multilineColumnType } from '../dataGridCell/GridEditMultilineCell'
 
@@ -162,7 +162,7 @@ export const BaseDictionaryTable = ({ onRowSelectionModelChange }) => {
       isLoading={isLoading}
       handleDeleteItem={handleDeleteItem}
       onRowSelectionModelChange={onRowSelectionModelChange}
-      fullHeight={false}
+      height={600}
     />
   )
 }

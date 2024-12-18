@@ -28,12 +28,13 @@ export const EditableTable = ({
   isLoading,
   handleDeleteItem,
   toolbar,
-  fullHeight = true,
+  height,
   onRowSelectionModelChange,
   addButtonDisabled,
   isCellEditable,
   isRowEditable = () => true,
   addButtonLabel,
+  className,
 }) => {
   const isSomeNewRow = rows?.some((item) => item.isNew)
   const isSomeRowEditing = Object.values(rowModesModel).some(
@@ -177,12 +178,13 @@ export const EditableTable = ({
     },
     ...columns,
   ]
-  const tableHeight = fullHeight ? `calc(100vh - 150px)` : 400
+  const tableHeight = height ? height : `calc(100vh - 150px)`
   const disabled = addButtonDisabled
   return (
     <Grid spacing={2} container flexDirection={'column'}>
       <Grid item size={12} sx={{ height: tableHeight }}>
         <DataGrid
+          className={className}
           rows={rows}
           columns={tableColumns}
           loading={isLoading}

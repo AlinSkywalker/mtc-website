@@ -100,7 +100,7 @@ export const LaboratoryDictionaryTable = ({ onRowSelectionModelChange }) => {
       defaultItem={defaultItem}
       isLoading={isLoading}
       handleDeleteItem={handleDeleteItem}
-      fullHeight={false}
+      height={600}
       onRowSelectionModelChange={onRowSelectionModelChange}
     />
   )

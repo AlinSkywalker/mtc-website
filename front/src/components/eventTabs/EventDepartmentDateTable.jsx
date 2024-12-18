@@ -44,7 +44,7 @@ export const EventDepartmentDateTable = ({
     onRowSelectionModelChange(date)
   }
   return (
-    <Grid item size={12} sx={{ height: 600 }}>
+    <Grid item size={12} sx={{ height: 400 }}>
       <DataGrid
         className='departDateTable'
         rows={rows}

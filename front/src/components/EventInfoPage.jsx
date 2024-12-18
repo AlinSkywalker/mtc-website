@@ -24,6 +24,7 @@ import { EventContractorTab } from './eventTabs/EventContractorTab'
 import { EventBaseTab } from './eventTabs/EventBaseTab'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
+import { EventBaseTable } from './EventBaseTable'
 
 const defaultValues = {
   id: 0,
@@ -40,6 +41,7 @@ const defaultValues = {
   ob: { fio: '', id: 0 },
   st: { fio: '', id: 0 },
   base: { base_name: '', id: 0 },
+  raion: { rai_name: '', id: 0 },
 }
 
 const validationSchema = Yup.object({
@@ -64,7 +66,7 @@ const validationSchema = Yup.object({
       test: (value, context) => value?.id != context.parent.ob?.id,
     })
     .required('Поле обязательно для заполнения'),
-  base: Yup.object().required('Поле обязательно для заполнения'),
+  raion: Yup.object().required('Поле обязательно для заполнения'),
 })
 
 export const EventInfoPage = () => {
@@ -106,7 +108,7 @@ export const EventInfoPage = () => {
 
   const fetchOBMembers = () => apiClient.get(`/api/memberList?possibleRole=ob`)
   const fetchSTMembers = () => apiClient.get(`/api/memberList?possibleRole=st`)
-  const fetchAllBase = () => apiClient.get(`/api/baseDictionary`)
+  const fetchAllDistrict = () => apiClient.get(`/api/districtDictionary`)
 
   const eventTabs = [
     {
@@ -151,140 +153,148 @@ export const EventInfoPage = () => {
       maxWidth={false}
       sx={{ minHeight: '100vh', backgroundColor: { xs: '#fff', md: '#f4f4f4' } }}
     >
-      <Card sx={{ minWidth: 275 }}>
-        <CardContent>
-          <form onSubmit={handleSubmit(handleSave)}>
-            <Grid
-              container
-              // justifyContent='center'
-              // alignItems='center'
-              flexDirection='row'
-              spacing={2}
-            >
-              <Grid item size={4}>
-                <Controller
-                  name='event_name'
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      variant='outlined'
-                      label='Название'
-                      fullWidth
-                      error={errors[field.name]}
-                      helperText={errors[field.name]?.message}
+      <Grid container spacing={2}>
+        <Grid item size={10}>
+          <Card sx={{ minWidth: 275 }}>
+            <CardContent>
+              <form onSubmit={handleSubmit(handleSave)}>
+                <Grid
+                  container
+                  // justifyContent='center'
+                  // alignItems='center'
+                  flexDirection='row'
+                  spacing={2}
+                >
+                  <Grid item size={4}>
+                    <Controller
+                      name='event_name'
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          variant='outlined'
+                          label='Название'
+                          fullWidth
+                          error={errors[field.name]}
+                          helperText={errors[field.name]?.message}
+                        />
+                      )}
                     />
-                  )}
-                />
-              </Grid>
-              <Grid item size={4}>
-                <Controller
-                  name='event_desc'
-                  control={control}
-                  render={({ field }) => (
-                    <TextField {...field} variant='outlined' label='Описание' fullWidth />
-                  )}
-                />
-              </Grid>
-              <Grid item size={2}>
-                <Controller
-                  name='event_start'
-                  control={control}
-                  render={({ field }) => (
-                    <DatePicker
-                      label='Дата начала'
-                      {...field}
-                      slotProps={{
-                        textField: {
-                          fullWidth: true,
-                          error: errors[field.name],
-                          helperText: errors[field.name]?.message,
-                        },
-                      }}
+                  </Grid>
+                  <Grid item size={4}>
+                    <Controller
+                      name='event_desc'
+                      control={control}
+                      render={({ field }) => (
+                        <TextField {...field} variant='outlined' label='Описание' fullWidth />
+                      )}
                     />
-                  )}
-                />
-              </Grid>
-              <Grid item size={2}>
-                <Controller
-                  name='event_finish'
-                  control={control}
-                  render={({ field }) => (
-                    <DatePicker
-                      label='Дата окончания'
-                      {...field}
-                      slotProps={{
-                        textField: {
-                          fullWidth: true,
-                          error: errors[field.name],
-                          helperText: errors[field.name]?.message,
-                        },
-                      }}
+                  </Grid>
+                  <Grid item size={2}>
+                    <Controller
+                      name='event_start'
+                      control={control}
+                      render={({ field }) => (
+                        <DatePicker
+                          label='Дата начала'
+                          {...field}
+                          slotProps={{
+                            textField: {
+                              fullWidth: true,
+                              error: errors[field.name],
+                              helperText: errors[field.name]?.message,
+                            },
+                          }}
+                        />
+                      )}
                     />
-                  )}
-                />
-              </Grid>
-              <Grid item size={3}>
-                <Controller
-                  name='ob'
-                  control={control}
-                  render={({ field }) => (
-                    <AsynchronousAutocomplete
-                      label='ОБ'
-                      request={fetchOBMembers}
-                      dataNameField='fio'
-                      field={field}
-                      errors={errors}
+                  </Grid>
+                  <Grid item size={2}>
+                    <Controller
+                      name='event_finish'
+                      control={control}
+                      render={({ field }) => (
+                        <DatePicker
+                          label='Дата окончания'
+                          {...field}
+                          slotProps={{
+                            textField: {
+                              fullWidth: true,
+                              error: errors[field.name],
+                              helperText: errors[field.name]?.message,
+                            },
+                          }}
+                        />
+                      )}
                     />
-                  )}
-                />
-              </Grid>
-              <Grid item size={3}>
-                <Controller
-                  name='st'
-                  control={control}
-                  render={({ field }) => (
-                    <AsynchronousAutocomplete
-                      label='СТ'
-                      request={fetchSTMembers}
-                      dataNameField='fio'
-                      field={field}
-                      errors={errors}
+                  </Grid>
+                  <Grid item size={3}>
+                    <Controller
+                      name='ob'
+                      control={control}
+                      render={({ field }) => (
+                        <AsynchronousAutocomplete
+                          label='ОБ'
+                          request={fetchOBMembers}
+                          dataNameField='fio'
+                          field={field}
+                          errors={errors}
+                        />
+                      )}
                     />
-                  )}
-                />
-              </Grid>
-              <Grid item size={3}>
-                <Controller
-                  name='base'
-                  control={control}
-                  render={({ field }) => (
-                    <AsynchronousAutocomplete
-                      label='База'
-                      request={fetchAllBase}
-                      dataNameField='base_name'
-                      field={field}
-                      errors={errors}
+                  </Grid>
+                  <Grid item size={3}>
+                    <Controller
+                      name='st'
+                      control={control}
+                      render={({ field }) => (
+                        <AsynchronousAutocomplete
+                          label='СТ'
+                          request={fetchSTMembers}
+                          dataNameField='fio'
+                          field={field}
+                          errors={errors}
+                        />
+                      )}
                     />
-                  )}
-                />
-              </Grid>
-            </Grid>
-            <Grid container sx={{ marginTop: 4 }}>
-              <Grid item>
-                <Button variant='text' type='button' disabled={!isDirty} onClick={handleReset}>
-                  Отменить
-                </Button>
-              </Grid>
-              <Grid item>
-                <Button variant='contained' type='submit' disabled={!isDirty}>
-                  Сохранить
-                </Button>
-              </Grid>
-            </Grid>
-          </form>
-        </CardContent>
-      </Card>
+                  </Grid>
+                  <Grid item size={3}>
+                    <Controller
+                      name='raion'
+                      control={control}
+                      render={({ field }) => (
+                        <AsynchronousAutocomplete
+                          label='Район проведения'
+                          request={fetchAllDistrict}
+                          dataNameField='rai_name'
+                          field={field}
+                          errors={errors}
+                        />
+                      )}
+                    />
+                  </Grid>
+                </Grid>
+                <Grid container sx={{ marginTop: 4 }}>
+                  <Grid item>
+                    <Button variant='text' type='button' disabled={!isDirty} onClick={handleReset}>
+                      Отменить
+                    </Button>
+                  </Grid>
+                  <Grid item>
+                    <Button variant='contained' type='submit' disabled={!isDirty}>
+                      Сохранить
+                    </Button>
+                  </Grid>
+                </Grid>
+              </form>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item size={2}>
+          <EventBaseTable eventId={currentId} />
+        </Grid>
+      </Grid>
+
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <TabList onChange={handleChange}>

@@ -26,6 +26,30 @@ export function useFetchEvent(id) {
   })
 }
 
+export function useFetchEventBaseList(eventId) {
+  let fetchUrl = `/api/eventList/${eventId}/eventBase`
+  return useQuery({
+    queryKey: ['event', eventId, 'eventBase'],
+    queryFn: async () => {
+      if (!eventId) return []
+      const { data } = await apiClient.get(fetchUrl)
+      return data
+    },
+  })
+}
+
+export function useFetchBaseForEvent({ eventId }) {
+  let fetchUrl = `/api/eventList/${eventId}/baseForEvent`
+  return useQuery({
+    queryKey: ['event', eventId, 'baseForEvent'],
+    queryFn: async () => {
+      if (!eventId) return []
+      const { data } = await apiClient.get(fetchUrl)
+      return data
+    },
+  })
+}
+
 export function useFetchEventSmenaList(eventId) {
   return useQuery({
     queryKey: ['event', eventId, 'smena'],
@@ -50,6 +74,7 @@ export function useFetchEventDepartmentById(eventId, departmentId) {
   return useQuery({
     queryKey: ['event', eventId, 'department', departmentId],
     queryFn: async () => {
+      if (!eventId || !departmentId) return []
       const { data } = await apiClient.get(`/api/eventList/${eventId}/department/${departmentId}`)
       return data
     },
