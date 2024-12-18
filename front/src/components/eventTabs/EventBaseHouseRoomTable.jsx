@@ -53,6 +53,7 @@ export const EventBaseHouseRoomTable = ({ eventId, onRowSelectionModelChange }) 
     }
     const pickMap = {
       basenom_mest: 'basenom_mest',
+      basefd_name: 'basefd_name',
     }
     return (
       <SelectEditInputCell
@@ -69,6 +70,15 @@ export const EventBaseHouseRoomTable = ({ eventId, onRowSelectionModelChange }) 
   }
 
   const columns = [
+    {
+      field: 'basefd_name',
+      headerName: 'Дом',
+      width: 120,
+      editable: true,
+      renderEditCell: (props) => (
+        <GridEditInputCell {...props} disabled className={'roTableInput'} />
+      ),
+    },
     {
       field: 'basenom_name',
       headerName: 'Номер',

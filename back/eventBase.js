@@ -97,8 +97,8 @@ const eventBaseRouter = (app, passport) => {
       pool.query(
         `SELECT b_e.*, bf_n.basenom_name, bf_n.basenom_mest, bf_d.basefd_name
                 FROM baseroom_in_event b_e 
-                LEFT JOIN basefd_nom bf_n on bf_n.id=b_e.basefd 
-                LEFT JOIN base_fonddom bf_d on bf_d.id=bf_n.basenom_fd 
+                LEFT JOIN base_house_room bf_n on bf_n.id=b_e.basefd 
+                LEFT JOIN base_house bf_d on bf_d.id=bf_n.basenom_fd 
                 
                 WHERE event='${eventId}'`,
         (error, result) => {
@@ -184,10 +184,10 @@ const eventBaseRouter = (app, passport) => {
       const { eventId } = req.params;
       pool.query(
         `SELECT bf_n.*, bf_d.basefd_name, b.base_name
-                FROM basefd_nom bf_n
-                LEFT JOIN base_fonddom bf_d on bf_d.id=bf_n.basenom_fd
+                FROM base_house_room bf_n
+                LEFT JOIN base_house bf_d on bf_d.id=bf_n.basenom_fd
                 LEFT JOIN base b on b.id=bf_d.basefd_base  
-                WHERE bf_d.basefd_base=(SELECT event_base FROM eventalp WHERE id=${eventId})`,
+                WHERE bf_d.basefd_base IN (SELECT base_m FROM base_in_eventalp WHERE event_m=${eventId})`,
         (error, result) => {
           if (error) {
             console.log(error);
@@ -291,19 +291,36 @@ const eventBaseRouter = (app, passport) => {
     "/eventList/:eventId/memberForEventRoom/:roomId",
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
-      const { eventId } = req.params;
+      const { eventId, roomId } = req.params;
       pool.query(
-        `SELECT em.*, m.fio
-                FROM eventmemb em
-                LEFT JOIN member m on m.id=em.eventmemb_memb 
-                WHERE em.eventmemb_even=${eventId}`,
+        `SELECT *
+                FROM baseroom_in_event 
+                WHERE event=${eventId} AND id=${roomId}`,
         (error, result) => {
-          if (error) {
-            console.log(error);
-            res.status(500).json({ success: false, message: error });
-            return;
-          }
-          res.send(result);
+          const { date_st, date_f } = result[0];
+          pool.query(
+            `SELECT em.id, m.fio
+FROM eventmemb em 
+LEFT JOIN member m on m.id=em.eventmemb_memb
+WHERE em.eventmemb_even=${eventId} AND em.id NOT IN (SELECT em.id 
+                    FROM eventmemb em
+                    LEFT JOIN eventmember_in_eventroom e_e ON e_e.event_per=em.id
+                    LEFT JOIN baseroom_in_event b_e ON b_e.id=e_e.base_per 
+                    WHERE em.eventmemb_even=${eventId}
+                    AND ( 
+                     NOT(
+                    	(b_e.date_st<='${date_st}' AND b_e.date_f<='${date_st}') 
+                    	OR (b_e.date_st>='${date_f}' AND b_e.date_f>='${date_f}') )
+                    ))`,
+            (error, result) => {
+              if (error) {
+                console.log(error);
+                res.status(500).json({ success: false, message: error });
+                return;
+              }
+              res.send(result);
+            }
+          );
         }
       );
     }

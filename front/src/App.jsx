@@ -110,7 +110,14 @@ const App = () => {
                       </PrivateRoute>
                     }
                   />
-
+                  <Route
+                    path='/admin/dictionary/:dictionaryType'
+                    element={
+                      <PrivateRoute>
+                        <DictionaryPage />
+                      </PrivateRoute>
+                    }
+                  />
                   <Route
                     path='/profile'
                     element={
