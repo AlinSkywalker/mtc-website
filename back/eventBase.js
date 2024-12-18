@@ -5,7 +5,7 @@ const pool = require("./mysql")
 const eventBaseRouter = (app, passport) => {
   app.get('/eventList/:eventId/baseHouseRoom/', passport.authenticate('jwt', { session: false }), (req, res) => {
     const { eventId } = req.params;
-    pool.query(`SELECT b_e.*, bf_n.basenom_name, bf_d.basefd_name
+    pool.query(`SELECT b_e.*, bf_n.basenom_name, bf_n.basenom_mest, bf_d.basefd_name
                 FROM base_event b_e 
                 LEFT JOIN basefd_nom bf_n on bf_n.id=b_e.basefd 
                 LEFT JOIN base_fonddom bf_d on bf_d.id=bf_n.basenom_fd 

@@ -7,7 +7,7 @@ import { useFetchDictionaryByName } from '../../queries/dictionary'
 import { useGridApiContext } from '@mui/x-data-grid'
 import ListItemText from '@mui/material/ListItemText'
 import Checkbox from '@mui/material/Checkbox'
-import Grid2 from '@mui/material/Grid2'
+import Grid from '@mui/material/Grid2'
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8

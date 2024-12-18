@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { Grid2 } from '@mui/material'
+import Grid from '@mui/material/Grid2'
 import { BaseDictionaryTable } from './BaseDictionaryTable'
 import { BaseHouseDictionaryTable } from './BaseHouseDictionaryTable'
 import { BaseHouseRoomDictionaryTable } from './BaseHouseRoomDictionaryTable'
@@ -17,22 +17,22 @@ export const BaseDictionaryTab = () => {
     setSelectedBaseHouse(newRowSelectionModel[0])
   }
   return (
-    <Grid2 container spacing={2} sx={{ width: '100%' }}>
-      <Grid2 item size={12}>
+    <Grid container spacing={2} sx={{ width: '100%' }}>
+      <Grid item size={12}>
         <BaseDictionaryTable onRowSelectionModelChange={onRowSelectionModelChange} />
-      </Grid2>
-      <Grid2 item size={4}>
+      </Grid>
+      <Grid item size={4}>
         <BaseHouseDictionaryTable
           selectedBase={selectedBase}
           onRowSelectionModelChange={onHouseRowSelectionModelChange}
         />
-      </Grid2>
-      <Grid2 item size={8}>
+      </Grid>
+      <Grid item size={8}>
         <BaseHouseRoomDictionaryTable
           selectedBase={selectedBase}
           selectedBaseHouse={selectedBaseHouse}
         />
-      </Grid2>
-    </Grid2>
+      </Grid>
+    </Grid>
   )
 }

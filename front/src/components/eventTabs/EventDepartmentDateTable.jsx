@@ -1,7 +1,7 @@
 import React from 'react'
 import { useFetchEventDepartmentById } from '../../queries/event'
 import { DataGrid } from '@mui/x-data-grid'
-import { Grid2 } from '@mui/material'
+import Grid from '@mui/material/Grid2'
 import './DateTableStyles.css'
 
 export const EventDepartmentDateTable = ({
@@ -44,7 +44,7 @@ export const EventDepartmentDateTable = ({
     onRowSelectionModelChange(date)
   }
   return (
-    <Grid2 item size={12} sx={{ height: 600 }}>
+    <Grid item size={12} sx={{ height: 600 }}>
       <DataGrid
         className='departDateTable'
         rows={rows}
@@ -55,6 +55,6 @@ export const EventDepartmentDateTable = ({
         onRowSelectionModelChange={handleRowSelectionModelChange}
         rowSelectionModel={rowSelectionModel}
       />
-    </Grid2>
+    </Grid>
   )
 }

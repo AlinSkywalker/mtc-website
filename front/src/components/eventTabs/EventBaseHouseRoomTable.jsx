@@ -72,6 +72,11 @@ export const EventBaseHouseRoomTable = ({ eventId, onRowSelectionModelChange }) 
       renderEditCell: renderSelectEditCell,
       editable: true,
     },
+    {
+      field: 'basenom_mest',
+      headerName: 'Мест',
+      width: 80,
+    },
     { field: 'date_st', ...dateColumnType, headerName: 'Начало', width: 120, editable: true },
     {
       field: 'date_f',

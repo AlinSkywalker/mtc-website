@@ -1,7 +1,7 @@
 import React from 'react'
 import { useFetchContractorByBaseIdDictionaryList } from '../../queries/dictionary'
 import { DataGrid } from '@mui/x-data-grid'
-import { Grid2 } from '@mui/material'
+import Grid from '@mui/material/Grid2'
 
 export const EventContractorTab = ({ baseId }) => {
   const { isLoading, data } = useFetchContractorByBaseIdDictionaryList(baseId)
@@ -27,7 +27,7 @@ export const EventContractorTab = ({ baseId }) => {
   ]
 
   return (
-    <Grid2 item size={12} sx={{ height: 600 }}>
+    <Grid item size={12} sx={{ height: 600 }}>
       <DataGrid
         rows={rows}
         columns={columns}
@@ -35,6 +35,6 @@ export const EventContractorTab = ({ baseId }) => {
         columnHeaderHeight={36}
         rowHeight={42}
       />
-    </Grid2>
+    </Grid>
   )
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import Grid2 from '@mui/material/Grid2'
+import Grid from '@mui/material/Grid2'
 import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
 import { useFetchDictionaryByName } from '../../queries/dictionary'
@@ -242,16 +242,16 @@ export function EditCascadeSelectMenu(props) {
   else if (finishDictionary == 'summitDictionary') submitDisabled = !summitAutocompleteValue?.id
   return (
     <>
-      <Grid2 container sx={{ width: '100%' }} flexWrap={'nowrap'}>
-        <Grid2 item flexGrow={2} sx={{ pl: 2, overflow: 'hidden' }}>
+      <Grid container sx={{ width: '100%' }} flexWrap={'nowrap'}>
+        <Grid item flexGrow={2} sx={{ pl: 2, overflow: 'hidden' }}>
           {displayValue}
-        </Grid2>
-        <Grid2 item flexShrink={0}>
+        </Grid>
+        <Grid item flexShrink={0}>
           <IconButton onClick={handleClick}>
             <CreateIcon />
           </IconButton>
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
 
       {/* <Button aria-describedby={'summit-select-button'} variant='contained' onClick={handleClick}>
         Open Popover
@@ -267,7 +267,7 @@ export function EditCascadeSelectMenu(props) {
         }}
       >
         <Box sx={{ width: 300, p: 2 }}>
-          <Grid2 container flexDirection={'column'} spacing={2}>
+          <Grid container flexDirection={'column'} spacing={2}>
             <Autocomplete
               id='demo-simple-select'
               value={regionAutocompleteValue}
@@ -373,7 +373,7 @@ export function EditCascadeSelectMenu(props) {
             <Button onClick={handleSubmit} disabled={submitDisabled} variant='contained'>
               Выбрать
             </Button>
-          </Grid2>
+          </Grid>
         </Box>
       </Popover>
     </>

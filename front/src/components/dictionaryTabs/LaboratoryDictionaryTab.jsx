@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { Grid2 } from '@mui/material'
+import Grid from '@mui/material/Grid2'
 import { LaboratoryDictionaryTable } from './LaboratoryDictionaryTable'
 import { LaboratoryRouteDictionaryTable } from './LaboratoryRouteDictionaryTable'
 
@@ -11,13 +11,13 @@ export const LaboratoryDictionaryTab = () => {
     setSelectedLaboratory(newRowSelectionModel[0])
   }
   return (
-    <Grid2 container spacing={2} sx={{ width: '100%' }}>
-      <Grid2 item size={12}>
+    <Grid container spacing={2} sx={{ width: '100%' }}>
+      <Grid item size={12}>
         <LaboratoryDictionaryTable onRowSelectionModelChange={onRowSelectionModelChange} />
-      </Grid2>
-      <Grid2 item size={12}>
+      </Grid>
+      <Grid item size={12}>
         <LaboratoryRouteDictionaryTable selectedLaboratory={selectedLaboratory} />
-      </Grid2>
-    </Grid2>
+      </Grid>
+    </Grid>
   )
 }

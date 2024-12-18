@@ -5,7 +5,7 @@ import {
   GridRowModes,
   GridRowEditStartReasons,
 } from '@mui/x-data-grid'
-import { Grid2 } from '@mui/material'
+import Grid from '@mui/material/Grid2'
 import { DictionaryEditToolbar } from './DictionaryEditToolbar'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/DeleteOutlined'
@@ -180,8 +180,8 @@ export const EditableTable = ({
   const tableHeight = fullHeight ? `calc(100vh - 150px)` : 400
   const disabled = addButtonDisabled
   return (
-    <Grid2 spacing={2} container flexDirection={'column'}>
-      <Grid2 item size={12} sx={{ height: tableHeight }}>
+    <Grid spacing={2} container flexDirection={'column'}>
+      <Grid item size={12} sx={{ height: tableHeight }}>
         <DataGrid
           rows={rows}
           columns={tableColumns}
@@ -226,7 +226,7 @@ export const EditableTable = ({
           isCellEditable={isCellEditable}
           disableColumnMenu
         />
-      </Grid2>
-    </Grid2>
+      </Grid>
+    </Grid>
   )
 }
