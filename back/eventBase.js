@@ -97,8 +97,8 @@ const eventBaseRouter = (app, passport) => {
       pool.query(
         `SELECT b_e.*, bf_n.basenom_name, bf_n.basenom_mest, bf_d.basefd_name
                 FROM baseroom_in_event b_e 
-                LEFT JOIN basefd_nom bf_n on bf_n.id=b_e.basefd 
-                LEFT JOIN base_fonddom bf_d on bf_d.id=bf_n.basenom_fd 
+                LEFT JOIN base_house_room bf_n on bf_n.id=b_e.basefd 
+                LEFT JOIN base_house bf_d on bf_d.id=bf_n.basenom_fd 
                 
                 WHERE event='${eventId}'`,
         (error, result) => {
@@ -184,10 +184,10 @@ const eventBaseRouter = (app, passport) => {
       const { eventId } = req.params;
       pool.query(
         `SELECT bf_n.*, bf_d.basefd_name, b.base_name
-                FROM basefd_nom bf_n
-                LEFT JOIN base_fonddom bf_d on bf_d.id=bf_n.basenom_fd
+                FROM base_house_room bf_n
+                LEFT JOIN base_house bf_d on bf_d.id=bf_n.basenom_fd
                 LEFT JOIN base b on b.id=bf_d.basefd_base  
-                WHERE bf_d.basefd_base=(SELECT event_base FROM eventalp WHERE id=${eventId})`,
+                WHERE bf_d.basefd_base IN (SELECT base_m FROM base_in_eventalp WHERE event_m=${eventId})`,
         (error, result) => {
           if (error) {
             console.log(error);

@@ -35,3 +35,9 @@ export const sizeShoeOptions = [
   '50',
   '?',
 ]
+export const warningTypes = {
+  memberPrepayment: 'memberPrepayment',
+  memberFullPayment: 'memberFullPayment',
+  ascentInTwoMemberWithoutExam: 'ascentInTwoMemberWithoutExam',
+  notFullSettlement: 'notFullSettlement',
+}
