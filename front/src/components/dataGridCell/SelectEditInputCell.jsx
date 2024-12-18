@@ -7,11 +7,21 @@ import Autocomplete from '@mui/material/Autocomplete'
 import { useFetchDictionaryByName } from '../../queries/dictionary'
 import { useGridApiContext } from '@mui/x-data-grid'
 
-function mapDictionaryData(dictionaryName, dictionaryData = [], secondarySource) {
+function mapDictionaryData(
+  dictionaryName,
+  dictionaryData = [],
+  secondarySource,
+  secondarySourceArray = [],
+) {
   return dictionaryData.map((item) => {
     let itemName = ''
     let secondary = ''
-    if (secondarySource) secondary = item[secondarySource]
+    if (secondarySourceArray.length != 0) {
+      const secondareArray = secondarySourceArray.map(
+        (secondarySourceItem) => item[secondarySourceItem],
+      )
+      secondary = secondareArray.join(', ')
+    } else if (secondarySource) secondary = item[secondarySource]
     switch (dictionaryName) {
       case 'regionDictionary':
         itemName = item.region_name
@@ -69,6 +79,7 @@ export function SelectEditInputCell(props) {
     hookParams,
     pickMap,
     secondarySource = '',
+    secondarySourceArray = [],
   } = props
   const queryHook = hook ? hook : useFetchDictionaryByName
   const queryHookParams = hookParams ? hookParams : { dictionaryName, returnType: 'arrayType' }
@@ -80,7 +91,12 @@ export function SelectEditInputCell(props) {
   })
   const [inputValue, setInputValue] = React.useState(value)
 
-  const dictionaryData = mapDictionaryData(dictionaryName, data, secondarySource)
+  const dictionaryData = mapDictionaryData(
+    dictionaryName,
+    data,
+    secondarySource,
+    secondarySourceArray,
+  )
   const apiRef = useGridApiContext()
   const ref = React.useRef(null)
 

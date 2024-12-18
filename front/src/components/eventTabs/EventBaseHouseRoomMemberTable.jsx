@@ -17,9 +17,7 @@ const defaultItem = {
 }
 
 const validationSchema = Yup.object({
-  basenom_name: Yup.string().required('Поле обязательно для заполнения'),
-  date_st: Yup.string().required('Поле обязательно для заполнения'),
-  date_f: Yup.string().required('Поле обязательно для заполнения'),
+  fio: Yup.string().required('Поле обязательно для заполнения'),
 })
 
 export const EventBaseHouseRoomMemberTable = ({ eventId, selectedBaseRoom }) => {
@@ -35,18 +33,28 @@ export const EventBaseHouseRoomMemberTable = ({ eventId, selectedBaseRoom }) => 
 
   const handleSaveNewItem = (data) => {
     const { id, isNew, ...postedData } = data
-    return apiClient.put(`/api/eventList/${eventId}/baseHouseRoomMember`, postedData)
+    return apiClient.put(`/api/eventList/${eventId}/baseHouseRoom/${selectedBaseRoom}/member`, {
+      ...postedData,
+      base_per: selectedBaseRoom,
+    })
   }
 
   const handleDeleteItem = (id) => () => {
-    apiClient.delete(`/api/eventList/${eventId}/baseHouseRoomMember/${id}`).then((res) => {
-      queryClient.invalidateQueries({ queryKey: ['event', eventId, 'baseHouseRoomMember'] })
-    })
+    apiClient
+      .delete(`/api/eventList/${eventId}/baseHouseRoom/${selectedBaseRoom}/member/${id}`)
+      .then((res) => {
+        queryClient.invalidateQueries({
+          queryKey: ['event', eventId, 'baseHouseRoomMember', selectedBaseRoom],
+        })
+      })
   }
 
   const handleSaveEditedItem = React.useCallback((data) => {
     const { id, isNew, ...postedData } = data
-    return apiClient.post(`/api/eventList/${eventId}/baseHouseRoomMember/${id}`, postedData)
+    return apiClient.post(
+      `/api/eventList/${eventId}/baseHouseRoom/${selectedBaseRoom}/member/${id}`,
+      postedData,
+    )
   }, [])
 
   const renderSelectEditCell = (params) => {
@@ -57,45 +65,39 @@ export const EventBaseHouseRoomMemberTable = ({ eventId, selectedBaseRoom }) => 
     return (
       <SelectEditInputCell
         {...params}
-        dictionaryName='member'
-        nameField='basefd'
+        dictionaryName='members'
+        nameField='event_per'
         hook={useFetchMemberForEventRoom}
         hookParams={hookParams}
-        secondarySource='basefd_name'
+        // secondarySource='basefd_name'
       />
     )
   }
 
   const columns = [
     {
-      field: 'basenom_name',
-      headerName: 'Номер',
+      field: 'fio',
+      headerName: 'Участник',
       width: 200,
       renderEditCell: renderSelectEditCell,
       editable: true,
     },
-    { field: 'date_st', ...dateColumnType, headerName: 'Начало', width: 120, editable: true },
-    {
-      field: 'date_f',
-      ...dateColumnType,
-      headerName: 'Конец',
-      width: 120,
-      editable: true,
-    },
-
-    { field: 'basefd', headerName: 'basefd', width: 0, editable: true },
+    { field: 'per_desk', headerName: 'Примечание', width: 150, editable: true },
+    { field: 'event_per', headerName: 'event_per', width: 0, editable: true },
   ]
 
-  const fieldToFocus = 'basenom_name'
+  const fieldToFocus = 'fio'
   const columnVisibilityModel = {
-    basefd: false,
+    event_per: false,
   }
 
   const processRowUpdate = async (newRow) => {
     validationSchema.validateSync(newRow, { abortEarly: false })
     const handleSave = newRow.isNew ? handleSaveNewItem : handleSaveEditedItem
     await handleSave(newRow)
-    queryClient.invalidateQueries({ queryKey: ['event', eventId, 'baseHouseRoomMember'] })
+    queryClient.invalidateQueries({
+      queryKey: ['event', eventId, 'baseHouseRoomMember', selectedBaseRoom],
+    })
   }
   if (!eventId) return null
   return (
@@ -111,6 +113,7 @@ export const EventBaseHouseRoomMemberTable = ({ eventId, selectedBaseRoom }) => 
       defaultItem={defaultItem}
       isLoading={isLoading}
       handleDeleteItem={handleDeleteItem}
+      addButtonDisabled={!selectedBaseRoom}
     />
   )
 }

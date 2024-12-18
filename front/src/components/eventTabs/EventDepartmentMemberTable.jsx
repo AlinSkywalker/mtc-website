@@ -69,6 +69,7 @@ export const EventDepartmentMemberTable = ({ eventId, selectedDepartmentId, sele
         hook={useFetchEventMemberListForDepartment}
         hookParams={hookParams}
         secondarySource='alprazr'
+        secondarySourceArray={['alprazr', 'skali', 'ledu']}
       />
     )
   }

@@ -74,6 +74,7 @@ export const EventMembersTab = ({ eventId }) => {
         hook={useFetchMemberList}
         pickMap={pickMap}
         secondarySource='alprazr'
+        secondarySourceArray={['alprazr', 'skali', 'ledu']}
       />
     )
   }

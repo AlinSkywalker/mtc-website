@@ -32,11 +32,11 @@ const jwtOptions = {
 passport.use(new JwtStrategy(jwtOptions, function (jwt_payload, done) {
   // console.log('jwt_payload', jwt_payload)
   const token = jwt.sign(jwt_payload, jwtOptions.secretOrKey);
-  if(jwt_payload.timestamp+3*24*60*60*1000 < Date.now()){
+  if (jwt_payload.iat + 3 * 24 * 60 * 60 * 1000 < Date.now()) {
     // pool.query(`DELETE FROM user_token WHERE token='${token}'`);
     return done(null, false);
   }
-  else{
+  else {
     return done(null, jwt_payload);
   }
   // pool.query(`SELECT * FROM user_token ut RIGHT JOIN user u ON ut.user_id=u.id WHERE token='${token}'`, (error, result) => {
@@ -108,7 +108,7 @@ app.post('/login', (req, res) => {
       return;
     }
 
-    const token = jwt.sign({ user_id: user.id, user_name: user.login, timestamp: Date.now() }, jwtOptions.secretOrKey);
+    const token = jwt.sign({ user_id: user.id, user_name: user.login, iat: Date.now() }, jwtOptions.secretOrKey);
     // записать в базу токен и айди пользователя
     pool.query('INSERT INTO user_token (user_id, token) VALUES(?,?)', [user.id, token], (error, result) => {
       if (error) console.log(error);

@@ -59,6 +59,7 @@ export const EventBaseHouseRoomTable = ({ eventId, onRowSelectionModelChange }) 
         hook={useFetchBaseHouseRoomForEvent}
         hookParams={hookParams}
         secondarySource='basefd_name'
+        secondarySourceArray={['base_name', 'basefd_name']}
       />
     )
   }
