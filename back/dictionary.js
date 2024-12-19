@@ -164,7 +164,8 @@ const dictionaryRouter = (app, passport) => {
       pool.query(
         `SELECT m.*, r.rai_name, r.rai_reg, reg.region_name FROM mount m 
                 LEFT JOIN raion r ON m.mount_rai=r.id
-                LEFT JOIN region reg ON r.rai_reg = reg.id`,
+                LEFT JOIN region reg ON r.rai_reg = reg.id
+                ORDER BY r.rai_num, m.mount_name`,
         (error, result) => {
           if (error) {
             console.log(error);
@@ -245,7 +246,8 @@ const dictionaryRouter = (app, passport) => {
         `SELECT r.*, m.mount_name, m.mount_rai, rai.rai_name, rai.rai_reg, reg.region_name  FROM route r 
                 LEFT JOIN mount m ON r.rout_mount=m.id
                 LEFT JOIN raion rai ON m.mount_rai=rai.id
-                LEFT JOIN region reg ON rai.rai_reg = reg.id`,
+                LEFT JOIN region reg ON rai.rai_reg = reg.id
+                ORDER BY rai.rai_num, m.mount_name, r.rout_name`,
         (error, result) => {
           if (error) {
             console.log(error);

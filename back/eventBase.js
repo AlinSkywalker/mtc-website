@@ -291,19 +291,36 @@ const eventBaseRouter = (app, passport) => {
     "/eventList/:eventId/memberForEventRoom/:roomId",
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
-      const { eventId } = req.params;
+      const { eventId, roomId } = req.params;
       pool.query(
-        `SELECT em.*, m.fio
-                FROM eventmemb em
-                LEFT JOIN member m on m.id=em.eventmemb_memb 
-                WHERE em.eventmemb_even=${eventId}`,
+        `SELECT *
+                FROM baseroom_in_event 
+                WHERE event=${eventId} AND id=${roomId}`,
         (error, result) => {
-          if (error) {
-            console.log(error);
-            res.status(500).json({ success: false, message: error });
-            return;
-          }
-          res.send(result);
+          const { date_st, date_f } = result[0];
+          pool.query(
+            `SELECT em.id, m.fio
+FROM eventmemb em 
+LEFT JOIN member m on m.id=em.eventmemb_memb
+WHERE em.eventmemb_even=${eventId} AND em.id NOT IN (SELECT em.id 
+                    FROM eventmemb em
+                    LEFT JOIN eventmember_in_eventroom e_e ON e_e.event_per=em.id
+                    LEFT JOIN baseroom_in_event b_e ON b_e.id=e_e.base_per 
+                    WHERE em.eventmemb_even=${eventId}
+                    AND ( 
+                     NOT(
+                    	(b_e.date_st<='${date_st}' AND b_e.date_f<='${date_st}') 
+                    	OR (b_e.date_st>='${date_f}' AND b_e.date_f>='${date_f}') )
+                    ))`,
+            (error, result) => {
+              if (error) {
+                console.log(error);
+                res.status(500).json({ success: false, message: error });
+                return;
+              }
+              res.send(result);
+            }
+          );
         }
       );
     }

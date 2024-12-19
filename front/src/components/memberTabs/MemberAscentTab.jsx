@@ -8,6 +8,7 @@ import { useFetchEventList } from '../../queries/event'
 import { dateColumnType, dateTimeColumnType } from '../dataGridCell/GridEditDateCell'
 import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
 import { EditCascadeSelectMenu } from '../dataGridCell/EditCascadeSelectMenu'
+import { GridEditInputCell } from '@mui/x-data-grid'
 
 const defaultItem = {
   asc_event: '',
@@ -76,13 +77,13 @@ export const MemberAscentTab = ({ memberId }) => {
 
   const columns = [
     {
-      field: 'mount_name_disp',
+      field: 'mount_name',
       headerName: 'Вершина',
       width: 250,
-      valueFormatter: (value, row) => {
-        return row.mount_name
-      },
-      // editable: true,
+      editable: true,
+      renderEditCell: (props) => (
+        <GridEditInputCell {...props} disabled className={'roTableInput'} />
+      ),
     },
     {
       field: 'rout_name',
@@ -92,12 +93,13 @@ export const MemberAscentTab = ({ memberId }) => {
       editable: true,
     },
     {
-      field: 'rout_comp_disp',
+      field: 'rout_comp',
       headerName: 'К/с',
       width: 80,
-      valueFormatter: (value, row) => {
-        return row.rout_comp
-      },
+      editable: true,
+      renderEditCell: (props) => (
+        <GridEditInputCell {...props} disabled className={'roTableInput'} />
+      ),
     },
     {
       field: 'asc_date',
@@ -157,13 +159,6 @@ export const MemberAscentTab = ({ memberId }) => {
     { field: 'rai_name', headerName: 'rai_name', width: 0, editable: true },
     { field: 'rai_reg', headerName: 'rai_reg', width: 0, editable: true },
     { field: 'region_name', headerName: 'region_name', width: 0, editable: true },
-    {
-      field: 'mount_name',
-      headerName: 'mount_name',
-      width: 0,
-      editable: true,
-    },
-    { field: 'rout_comp', headerName: 'rout_comp', width: 0, editable: true },
   ]
   const fieldToFocus = 'fio'
   const columnVisibilityModel = {
@@ -174,8 +169,8 @@ export const MemberAscentTab = ({ memberId }) => {
     rai_reg: false,
     rai_name: false,
     mount_rai: false,
-    mount_name: false,
-    rout_comp: false,
+    // mount_name: false,
+    // rout_comp: false,
   }
 
   const processRowUpdate = async (newRow) => {

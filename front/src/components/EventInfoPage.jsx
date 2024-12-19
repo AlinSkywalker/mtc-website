@@ -22,6 +22,7 @@ import { EventMembersTab } from './eventTabs/EventMembersTab'
 import { EventDepartmentTab } from './eventTabs/EventDepartmentTab'
 import { EventContractorTab } from './eventTabs/EventContractorTab'
 import { EventBaseTab } from './eventTabs/EventBaseTab'
+import { EventFilesTab } from './eventTabs/EventFilesTab'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
 import { EventBaseTable } from './EventBaseTable'
@@ -135,6 +136,11 @@ export const EventInfoPage = () => {
       name: 'base',
       label: 'Проживание',
       component: <EventBaseTab eventId={currentId} />,
+    },
+    {
+      name: 'files',
+      label: 'Файлы',
+      component: <EventFilesTab eventId={currentId} />,
     },
   ]
 

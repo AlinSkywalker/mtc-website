@@ -99,7 +99,9 @@ export const EditableTable = ({
 
   const handleProcessRowUpdateError = (error) => {
     console.log('error', error)
-    enqueueSnackbar('Произошла ошибка при отправке на сервер', {
+    let snackbarText = 'Произошла ошибка при отправке на сервер'
+    if (error?.errors && error?.errors?.length !== 0) snackbarText = 'Ошибка валидации'
+    enqueueSnackbar(snackbarText, {
       variant: 'error',
       autoHideDuration: 5000,
     })
