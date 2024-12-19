@@ -168,3 +168,14 @@ export function useFetchMemberForEventRoom({ eventId, selectedBaseRoom }) {
     },
   })
 }
+export function useFetchEventFileList(eventId) {
+  let fetchUrl = `/api/eventList/${eventId}/files`
+  return useQuery({
+    queryKey: ['event', eventId, 'files'],
+    queryFn: async () => {
+      if (!eventId) return []
+      const { data } = await apiClient.get(fetchUrl)
+      return data
+    },
+  })
+}

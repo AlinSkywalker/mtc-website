@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const session = require("express-session");
 const bodyParser = require("body-parser");
+const fileUpload = require("express-fileupload");
 
 const pool = require("./mysql");
 
@@ -18,6 +19,7 @@ const eventSmenaRouter = require("./eventSmena");
 const eventDepartmentRouter = require("./eventDepartment");
 const eventMemberRouter = require("./eventMember");
 const eventBaseRouter = require("./eventBase");
+const eventFileRouter = require("./eventFile");
 
 const memberExamRouter = require("./memberExam");
 const memberAscentRouter = require("./memberAscent");
@@ -78,6 +80,12 @@ app.use(
   })
 );
 
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(
+  fileUpload({
+    createParentPath: true,
+  })
+);
 // Passport:
 app.use(passport.initialize());
 app.use(passport.session());
@@ -203,6 +211,7 @@ eventSmenaRouter(app, passport);
 eventDepartmentRouter(app, passport);
 eventMemberRouter(app, passport);
 eventBaseRouter(app, passport);
+eventFileRouter(app, passport);
 
 memberExamRouter(app, passport);
 memberAscentRouter(app, passport);
