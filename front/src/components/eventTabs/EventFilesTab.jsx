@@ -35,7 +35,7 @@ export const EventFilesTab = ({ eventId }) => {
 
   const handleSaveNewItem = (data) => {
     const formData = new FormData()
-    formData.append('event_file', data.event_file?.[0])
+    formData.append('event_file', data.file?.[0])
     return apiClient.put(`/api/eventList/${eventId}/files`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     })
@@ -54,22 +54,22 @@ export const EventFilesTab = ({ eventId }) => {
 
   const columns = [
     {
-      field: 'event_file',
+      field: 'file_name',
       headerName: 'Файл',
       width: 250,
       editable: true,
       ...fileColumnType,
     },
-    // {
-    //   field: 'event_file',
-    //   headerName: 'Файл',
-    //   width: 0,
-    //   editable: true,
-    // },
+    {
+      field: 'file',
+      headerName: 'Файл',
+      width: 0,
+      editable: true,
+    },
   ]
-  const fieldToFocus = 'event_file'
+  const fieldToFocus = 'file_name'
   const columnVisibilityModel = {
-    // event_file: false,
+    file: false,
   }
 
   const processRowUpdate = async (newRow) => {
@@ -77,6 +77,11 @@ export const EventFilesTab = ({ eventId }) => {
     const handleSave = newRow.isNew ? handleSaveNewItem : handleSaveEditedItem
     await handleSave(newRow)
     queryClient.invalidateQueries({ queryKey: ['event', eventId, 'files'] })
+  }
+
+  const isRowEditable = (row) => {
+    if (row?.isNew) return true
+    return false
   }
 
   if (!eventId) return null
@@ -93,8 +98,9 @@ export const EventFilesTab = ({ eventId }) => {
       defaultItem={defaultItem}
       isLoading={isLoading}
       handleDeleteItem={handleDeleteItem}
+      isRowEditable={isRowEditable}
       isCellEditable={(params) =>
-        params.field !== 'fio' || (params.row.isNew && params.field == 'fio')
+        params.field !== 'file_name' || (params.row.isNew && params.field == 'file_name')
       }
     />
   )

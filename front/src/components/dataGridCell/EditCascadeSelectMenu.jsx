@@ -67,7 +67,7 @@ export function EditCascadeSelectMenu(props) {
   }
 
   const open = Boolean(anchorEl)
-  const { id, row, finishDictionary, displayField } = props
+  const { id, row, finishDictionary, displayField, fixedDistrict } = props
   const { region_name, rai_reg, rai_name, mount_rai, mount_name, rout_mount, rout_name } = row
   const { data: regionData } = useFetchDictionaryByName({
     dictionaryName: 'regionDictionary',
@@ -88,8 +88,11 @@ export function EditCascadeSelectMenu(props) {
 
   const regionMappedData = mapDictionaryData('regionDictionary', regionData)
   const districtMappedData = mapDictionaryData('districtDictionary', districtData)
-  const summitMappedData = mapDictionaryData('summitDictionary', summitData)
-  const routeMappedData = mapDictionaryData('routeDictionary', routeData)
+  const summitMappedData = mapDictionaryData(
+    'summitDictionary',
+    fixedDistrict ? summitData?.filter((item) => item.mount_rai == fixedDistrict) : summitData,
+  )
+  const routeMappedData = mapDictionaryData('routeDictionary', fixedDistrict ? [] : routeData)
 
   const [regionAutocompleteOptions, setRegionAutocompleteOptions] = useState(regionMappedData)
   const [regionAutocompleteValue, setRegionAutocompleteValue] = useState({
@@ -268,40 +271,48 @@ export function EditCascadeSelectMenu(props) {
       >
         <Box sx={{ width: 300, p: 2 }}>
           <Grid container flexDirection={'column'} spacing={2}>
-            <Autocomplete
-              id='demo-simple-select'
-              value={regionAutocompleteValue}
-              inputValue={regionInputValue}
-              size='small'
-              MenuProps={{ sx: { maxWidth: 800 } }}
-              renderInput={(params) => <TextField {...params} sx={{ height: 36, fontSize: 14 }} />}
-              options={regionAutocompleteOptions}
-              getOptionLabel={(option) => option.name}
-              onChange={(event, newValue) => {
-                handleRegionChange(newValue)
-              }}
-              onInputChange={(event, newInputValue) => {
-                setRegionInputValue(newInputValue)
-              }}
-              fullWidth
-            />
-            <Autocomplete
-              id='demo-simple-select'
-              value={districtAutocompleteValue}
-              inputValue={districtInputValue}
-              size='small'
-              MenuProps={{ sx: { maxWidth: 800 } }}
-              renderInput={(params) => <TextField {...params} sx={{ height: 36, fontSize: 14 }} />}
-              options={districtAutocompleteOptions}
-              getOptionLabel={(option) => option.name}
-              onChange={(event, newValue) => {
-                handleDistrictChange(newValue)
-              }}
-              onInputChange={(event, newInputValue) => {
-                setDistrictInputValue(newInputValue)
-              }}
-              fullWidth
-            />
+            {!fixedDistrict && (
+              <Autocomplete
+                id='demo-simple-select'
+                value={regionAutocompleteValue}
+                inputValue={regionInputValue}
+                size='small'
+                MenuProps={{ sx: { maxWidth: 800 } }}
+                renderInput={(params) => (
+                  <TextField {...params} sx={{ height: 36, fontSize: 14 }} />
+                )}
+                options={regionAutocompleteOptions}
+                getOptionLabel={(option) => option.name}
+                onChange={(event, newValue) => {
+                  handleRegionChange(newValue)
+                }}
+                onInputChange={(event, newInputValue) => {
+                  setRegionInputValue(newInputValue)
+                }}
+                fullWidth
+              />
+            )}
+            {!fixedDistrict && (
+              <Autocomplete
+                id='demo-simple-select'
+                value={districtAutocompleteValue}
+                inputValue={districtInputValue}
+                size='small'
+                MenuProps={{ sx: { maxWidth: 800 } }}
+                renderInput={(params) => (
+                  <TextField {...params} sx={{ height: 36, fontSize: 14 }} />
+                )}
+                options={districtAutocompleteOptions}
+                getOptionLabel={(option) => option.name}
+                onChange={(event, newValue) => {
+                  handleDistrictChange(newValue)
+                }}
+                onInputChange={(event, newInputValue) => {
+                  setDistrictInputValue(newInputValue)
+                }}
+                fullWidth
+              />
+            )}
             {(finishDictionary == 'routeDictionary' || finishDictionary == 'summitDictionary') && (
               <Autocomplete
                 id='summitDictionary-select'

@@ -114,6 +114,7 @@ export const EventMembersTab = ({ eventId }) => {
       headerName: 'Дата выезда',
       width: 120,
       editable: true,
+      minDate: 'eventmemb_dates',
     },
     { field: 'eventmemb_memb', headerName: 'eventmemb_memb', width: 0, editable: true },
     {

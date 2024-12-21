@@ -75,6 +75,15 @@ export function useFetchLaboratoryRouteDictionaryList(laboratoryId) {
     },
   })
 }
+export function useFetchLaboratoryForEvent({ eventId }) {
+  return useQuery({
+    queryKey: ['laboratoryDictionary'],
+    queryFn: async () => {
+      const { data } = await apiClient.get(`/api/laboratoryDictionaryForEvent/${eventId}`)
+      return data
+    },
+  })
+}
 
 export function useFetchContractorDictionaryList() {
   return useQuery({

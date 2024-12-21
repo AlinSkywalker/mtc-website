@@ -56,6 +56,9 @@ function mapDictionaryData(
       case 'events':
         itemName = item.event_name
         break
+      case 'baseHouseDictionary':
+        itemName = item.basefd_name
+        break
       case 'baseHouseRoomDictionary':
         itemName = item.basenom_name
         break

@@ -1,5 +1,9 @@
 import React from 'react'
-import { useFetchEventBaseHouseRoomList, useFetchBaseHouseRoomForEvent } from '../../queries/event'
+import {
+  useFetchEventBaseHouseRoomList,
+  useFetchBaseHouseRoomForEvent,
+  useFetchBaseHouseForEvent,
+} from '../../queries/event'
 import apiClient from '../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
 import { EditableTable } from '../EditableTable'
@@ -47,13 +51,35 @@ export const EventBaseHouseRoomTable = ({ eventId, onRowSelectionModelChange }) 
     return apiClient.post(`/api/eventList/${eventId}/baseHouseRoom/${id}`, postedData)
   }, [])
 
-  const renderSelectEditCell = (params) => {
+  const renderSelectHouseEditCell = (params) => {
     const hookParams = {
       eventId,
     }
     const pickMap = {
       basenom_mest: 'basenom_mest',
       basefd_name: 'basefd_name',
+    }
+    return (
+      <SelectEditInputCell
+        {...params}
+        dictionaryName='baseHouseDictionary'
+        nameField='basehouse_id'
+        hook={useFetchBaseHouseForEvent}
+        hookParams={hookParams}
+        secondarySource='base_name'
+        // secondarySourceArray={['base_name', 'basefd_name']}
+        // pickMap={pickMap}
+      />
+    )
+  }
+  const renderSelectEditCell = (params) => {
+    const hookParams = {
+      eventId,
+      houseId: params.row.basehouse_id,
+    }
+    const pickMap = {
+      basenom_mest: 'basenom_mest',
+      // basefd_name: 'basefd_name',
     }
     return (
       <SelectEditInputCell
@@ -75,9 +101,7 @@ export const EventBaseHouseRoomTable = ({ eventId, onRowSelectionModelChange }) 
       headerName: 'Дом',
       width: 120,
       editable: true,
-      renderEditCell: (props) => (
-        <GridEditInputCell {...props} disabled className={'roTableInput'} />
-      ),
+      renderEditCell: renderSelectHouseEditCell,
     },
     {
       field: 'basenom_name',
@@ -102,14 +126,17 @@ export const EventBaseHouseRoomTable = ({ eventId, onRowSelectionModelChange }) 
       headerName: 'Конец',
       width: 120,
       editable: true,
+      minDate: 'date_st',
     },
 
     { field: 'basefd', headerName: 'basefd', width: 0, editable: true },
+    { field: 'basehouse_id', headerName: 'basehouse_id', width: 0, editable: true },
   ]
 
   const fieldToFocus = 'basenom_name'
   const columnVisibilityModel = {
     basefd: false,
+    basehouse_id: false,
   }
 
   const processRowUpdate = async (newRow) => {

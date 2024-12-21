@@ -430,6 +430,27 @@ const dictionaryRouter = (app, passport) => {
       });
     }
   );
+  app.get(
+    "/laboratoryDictionaryForEvent/:eventId",
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+      const { eventId } = req.params
+      pool.query(
+        `SELECT l.*, r.rai_name, r.rai_reg, reg.region_name FROM laba l 
+                LEFT JOIN raion r ON l.laba_rai=r.id
+                LEFT JOIN region reg ON r.rai_reg = reg.id
+                WHERE laba_rai=(SELECT event_raion FROM eventalp WHERE id=${eventId})`,
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return;
+          }
+          res.send(result);
+        }
+      );
+    }
+  );
 
   // laboratoryRouteDictionary
   app.get(

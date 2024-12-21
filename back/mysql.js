@@ -7,6 +7,7 @@ const dbConfig = {
   database: 'mtc_db',
   insecureAuth: "true",
   dateStrings: true,
+  // timezone: 'Z',
 };
 const pool = mysql.createPool(dbConfig);
 

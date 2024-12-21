@@ -23,6 +23,8 @@ import { EventDepartmentTab } from './eventTabs/EventDepartmentTab'
 import { EventContractorTab } from './eventTabs/EventContractorTab'
 import { EventBaseTab } from './eventTabs/EventBaseTab'
 import { EventFilesTab } from './eventTabs/EventFilesTab'
+import { EventDepartmentPlansTab } from './eventTabs/EventDepartmentPlansTab'
+
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
 import { EventBaseTable } from './EventBaseTable'
@@ -122,6 +124,12 @@ export const EventInfoPage = () => {
       label: 'Отделения',
       component: <EventDepartmentTab eventId={currentId} />,
     },
+    {
+      name: 'departmentPlans',
+      label: 'Планы отделений',
+      component: <EventDepartmentPlansTab eventId={currentId} eventDistrict={data?.event_raion} />,
+    },
+
     // {
     //   name: 'smena',
     //   label: 'Смены',
@@ -130,7 +138,7 @@ export const EventInfoPage = () => {
     {
       name: 'contractor',
       label: 'Контрагенты',
-      component: <EventContractorTab baseId={data?.event_base} />,
+      component: <EventContractorTab eventId={currentId} />,
     },
     {
       name: 'base',

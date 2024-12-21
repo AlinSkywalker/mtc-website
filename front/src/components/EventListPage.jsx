@@ -133,6 +133,7 @@ export const EventListPage = () => {
       headerName: 'Дата окончания',
       width: 150,
       editable: true,
+      minDate: 'event_start',
     },
     {
       field: 'rai_name',

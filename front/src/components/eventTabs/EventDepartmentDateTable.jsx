@@ -3,6 +3,7 @@ import { useFetchEventDepartmentById } from '../../queries/event'
 import { DataGrid } from '@mui/x-data-grid'
 import Grid from '@mui/material/Grid2'
 import './DateTableStyles.css'
+import { format, parseISO } from 'date-fns'
 
 export const EventDepartmentDateTable = ({
   eventId,
@@ -37,7 +38,14 @@ export const EventDepartmentDateTable = ({
     }
   }, [data])
 
-  const columns = [{ field: 'date', headerName: 'Дата', width: 120 }]
+  const columns = [
+    {
+      field: 'date',
+      headerName: 'Дата',
+      width: 120,
+      valueFormatter: (value) => format(parseISO(value), 'dd.MM.yyyy'),
+    },
+  ]
   const handleRowSelectionModelChange = (newRowSelectionModel) => {
     setRowSelectionModel(newRowSelectionModel)
     const date = rows.find((item) => item.id == newRowSelectionModel[0])?.date

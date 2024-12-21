@@ -10,7 +10,7 @@ const eventBaseRouter = (app, passport) => {
     (req, res) => {
       const { eventId } = req.params;
       pool.query(
-        `SELECT b.*
+        `SELECT b.*, b_e.id
                 FROM base_in_eventalp b_e 
                 LEFT JOIN base b ON b.id=b_e.base_m
                 WHERE b_e.event_m='${eventId}'`,
@@ -95,7 +95,7 @@ const eventBaseRouter = (app, passport) => {
     (req, res) => {
       const { eventId } = req.params;
       pool.query(
-        `SELECT b_e.*, bf_n.basenom_name, bf_n.basenom_mest, bf_d.basefd_name
+        `SELECT b_e.*, bf_n.basenom_name, bf_n.basenom_mest, bf_d.basefd_name, bf_d.id as basehouse_id
                 FROM baseroom_in_event b_e 
                 LEFT JOIN base_house_room bf_n on bf_n.id=b_e.basefd 
                 LEFT JOIN base_house bf_d on bf_d.id=bf_n.basenom_fd 
@@ -176,18 +176,44 @@ const eventBaseRouter = (app, passport) => {
     }
   );
 
+  // Для выпадашки с домами под мероприятием
+  app.get(
+    "/eventList/:eventId/baseHouseForEvent/",
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+      const { eventId } = req.params;
+      pool.query(
+        `SELECT bf_d.*, b.base_name
+                FROM base_house bf_d
+                LEFT JOIN base b on b.id=bf_d.basefd_base  
+                WHERE bf_d.basefd_base IN (SELECT base_m FROM base_in_eventalp WHERE event_m=${eventId})`,
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return;
+          }
+          res.send(result);
+        }
+      );
+    }
+  );
+
   // Для выпадашки с номерами под мероприятием
   app.get(
     "/eventList/:eventId/baseHouseRoomForEvent/",
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
       const { eventId } = req.params;
-      pool.query(
-        `SELECT bf_n.*, bf_d.basefd_name, b.base_name
+      const { houseId } = req.query
+      let select = `SELECT bf_n.*, bf_d.basefd_name, b.base_name
                 FROM base_house_room bf_n
                 LEFT JOIN base_house bf_d on bf_d.id=bf_n.basenom_fd
                 LEFT JOIN base b on b.id=bf_d.basefd_base  
-                WHERE bf_d.basefd_base IN (SELECT base_m FROM base_in_eventalp WHERE event_m=${eventId})`,
+                WHERE bf_d.basefd_base IN (SELECT base_m FROM base_in_eventalp WHERE event_m=${eventId})`
+      if (houseId) select += ` AND bf_n.basenom_fd=${houseId}`
+      pool.query(
+        select,
         (error, result) => {
           if (error) {
             console.log(error);

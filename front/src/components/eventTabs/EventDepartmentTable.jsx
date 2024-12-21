@@ -20,8 +20,24 @@ const defaultItem = {
 const validationSchema = Yup.object({
   depart_tip: Yup.string().required('Поле обязательно для заполнения'),
   depart_name: Yup.string().required('Поле обязательно для заполнения'),
-  depart_dates: Yup.string().required('Поле обязательно для заполнения'),
-  depart_datef: Yup.string().required('Поле обязательно для заполнения'),
+  depart_dates: Yup.string()
+    .required('Поле обязательно для заполнения')
+    .test({
+      name: '1',
+      exclusive: false,
+      params: {},
+      message: 'Дата начала не может быть больше даты окончания',
+      test: (value, context) => new Date(value) <= new Date(context.parent.depart_datef),
+    }),
+  depart_datef: Yup.string()
+    .required('Поле обязательно для заполнения')
+    .test({
+      name: '2',
+      exclusive: false,
+      params: {},
+      message: 'Дата окончания не может быть меньше даты начала',
+      test: (value, context) => new Date(value) >= new Date(context.parent.depart_dates),
+    }),
 })
 
 export const EventDepartmentTable = ({ eventId, onRowSelectionModelChange }) => {
@@ -84,6 +100,7 @@ export const EventDepartmentTable = ({ eventId, onRowSelectionModelChange }) => 
       headerName: 'Финиш',
       width: 120,
       editable: true,
+      minDate: 'depart_dates',
     },
     {
       field: 'inst_fio',

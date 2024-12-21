@@ -20,6 +20,10 @@ const eventDepartmentRouter = require("./eventDepartment");
 const eventMemberRouter = require("./eventMember");
 const eventBaseRouter = require("./eventBase");
 const eventFileRouter = require("./eventFile");
+const eventContractorRouter = require("./eventContractor");
+const eventDepartmentPlanRouter = require("./eventDepartmentPlan");
+
+
 
 const memberExamRouter = require("./memberExam");
 const memberAscentRouter = require("./memberAscent");
@@ -84,6 +88,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   fileUpload({
     createParentPath: true,
+    defCharset: 'utf8',
+    defParamCharset: 'utf8'
   })
 );
 // Passport:
@@ -212,9 +218,11 @@ eventDepartmentRouter(app, passport);
 eventMemberRouter(app, passport);
 eventBaseRouter(app, passport);
 eventFileRouter(app, passport);
+eventContractorRouter(app, passport);
 
 memberExamRouter(app, passport);
 memberAscentRouter(app, passport);
+eventDepartmentPlanRouter(app, passport);
 
 app.get("*", (req, res) => {
   // console.log(req.params)

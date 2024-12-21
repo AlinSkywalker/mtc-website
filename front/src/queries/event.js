@@ -133,10 +133,23 @@ export function useFetchEventBaseHouseRoomList(eventId) {
   })
 }
 
-export function useFetchBaseHouseRoomForEvent({ eventId }) {
-  let fetchUrl = `/api/eventList/${eventId}/baseHouseRoomForEvent`
+export function useFetchBaseHouseForEvent({ eventId }) {
+  let fetchUrl = `/api/eventList/${eventId}/baseHouseForEvent`
   return useQuery({
-    queryKey: ['event', eventId, 'baseHouseRoomForEvent'],
+    queryKey: ['event', eventId, 'baseHouseForEvent'],
+    queryFn: async () => {
+      if (!eventId) return []
+      const { data } = await apiClient.get(fetchUrl)
+      return data
+    },
+  })
+}
+
+export function useFetchBaseHouseRoomForEvent({ eventId, houseId }) {
+  let fetchUrl = `/api/eventList/${eventId}/baseHouseRoomForEvent`
+  if (houseId) fetchUrl += `?houseId=${houseId}`
+  return useQuery({
+    queryKey: ['event', eventId, 'baseHouseRoomForEvent', houseId],
     queryFn: async () => {
       if (!eventId) return []
       const { data } = await apiClient.get(fetchUrl)
@@ -174,6 +187,42 @@ export function useFetchEventFileList(eventId) {
     queryKey: ['event', eventId, 'files'],
     queryFn: async () => {
       if (!eventId) return []
+      const { data } = await apiClient.get(fetchUrl)
+      return data
+    },
+  })
+}
+
+export function useFetchEventContractorList(eventId) {
+  let fetchUrl = `/api/eventList/${eventId}/contractor`
+  return useQuery({
+    queryKey: ['event', eventId, 'contractor'],
+    queryFn: async () => {
+      if (!eventId) return []
+      const { data } = await apiClient.get(fetchUrl)
+      return data
+    },
+  })
+}
+
+export function useFetchContractorForEvent({ eventId }) {
+  let fetchUrl = `/api/eventList/${eventId}/contractorForEvent`
+  return useQuery({
+    queryKey: ['event', eventId, 'contractorForEvent'],
+    queryFn: async () => {
+      if (!eventId) return []
+      const { data } = await apiClient.get(fetchUrl)
+      return data
+    },
+  })
+}
+
+export function useFetchEventDepartmentPlanList(eventId, departmentId) {
+  let fetchUrl = `/api/eventList/${eventId}/department/${departmentId}/plan`
+  return useQuery({
+    queryKey: ['event', eventId, 'department', departmentId, 'plan'],
+    queryFn: async () => {
+      if (!eventId || !departmentId) return []
       const { data } = await apiClient.get(fetchUrl)
       return data
     },

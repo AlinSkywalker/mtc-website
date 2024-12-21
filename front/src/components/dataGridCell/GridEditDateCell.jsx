@@ -62,24 +62,28 @@ function WrappedGridEditDateInput(props) {
   return <GridEditDateInput fullWidth {...InputProps} {...other} />
 }
 
-function GridEditDateCell({ id, field, value, colDef }) {
+function GridEditDateCell({ id, field, value, colDef, row }) {
   const apiRef = useGridApiContext()
-
+  // console.log('colDef', colDef.minDate)
   const Component = colDef.type === 'dateTime' ? DateTimePicker : DatePicker
   const handleChange = (newValue) => {
-    console.log('handleChange', newValue)
+    // console.log('handleChange', newValue)
+    const dateFormat = colDef.type === 'dateTime' ? 'yyyy-MM-dd HH:mm:ss' : 'yyyy-MM-dd'
     apiRef.current.setEditCellValue({
       id,
       field,
-      value: formatISO(newValue),
+      value: format(newValue, dateFormat),
     })
   }
   const pickerValue = parseISO(value || '')
+  const minDate = colDef.minDate ? new Date(row[colDef.minDate]) : undefined
+  // console.log('minDate', minDate)
   return (
     <Component
       value={pickerValue}
       onChange={handleChange}
       slots={{ textField: WrappedGridEditDateInput }}
+      minDate={minDate}
     />
   )
 }

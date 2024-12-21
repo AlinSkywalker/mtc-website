@@ -6,6 +6,7 @@ import { EditableTable } from '../EditableTable'
 import * as Yup from 'yup'
 import { useFetchEventMemberListForDepartment } from '../../queries/event'
 import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
+import { format, parseISO } from 'date-fns'
 
 const defaultItem = {
   member_fio: '',
@@ -102,7 +103,9 @@ export const EventDepartmentMemberTable = ({ eventId, selectedDepartmentId, sele
       queryKey: ['event', eventId, 'department', selectedDepartmentId, 'member', selectedDate],
     })
   }
-  const addButtonLabel = selectedDate ? `Добавить на ${selectedDate}` : 'Добавить на все даты'
+  const addButtonLabel = selectedDate
+    ? `Добавить на ${format(parseISO(selectedDate), 'dd.MM.yyyy')}`
+    : 'Добавить на все даты'
 
   if (!eventId) return null
   return (
