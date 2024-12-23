@@ -67,7 +67,7 @@ export function EditCascadeSelectMenu(props) {
   }
 
   const open = Boolean(anchorEl)
-  const { id, row, finishDictionary, displayField, fixedDistrict } = props
+  const { id, row, finishDictionary, displayField, fixedDistrict, nameField } = props
   const { region_name, rai_reg, rai_name, mount_rai, mount_name, rout_mount, rout_name } = row
   const { data: regionData } = useFetchDictionaryByName({
     dictionaryName: 'regionDictionary',
@@ -92,7 +92,7 @@ export function EditCascadeSelectMenu(props) {
     'summitDictionary',
     fixedDistrict ? summitData?.filter((item) => item.mount_rai == fixedDistrict) : summitData,
   )
-  const routeMappedData = mapDictionaryData('routeDictionary', fixedDistrict ? [] : routeData)
+  const routeMappedData = mapDictionaryData('routeDictionary', routeData)
 
   const [regionAutocompleteOptions, setRegionAutocompleteOptions] = useState(regionMappedData)
   const [regionAutocompleteValue, setRegionAutocompleteValue] = useState({
@@ -188,11 +188,12 @@ export function EditCascadeSelectMenu(props) {
   }
 
   const handleSummitChange = (newValue) => {
+    console.log('newValue', newValue)
     setSummitAutocompleteValue(newValue)
 
     setRouteAutocompleteValue({ name: '', id: '', parentId: '' })
     setRouteInputValue('')
-
+    console.log('routeMappedData', routeMappedData)
     setRouteAutocompleteOptions(
       newValue ? routeMappedData.filter((item) => item.parentId == newValue.id) : routeMappedData,
     )
@@ -236,6 +237,8 @@ export function EditCascadeSelectMenu(props) {
         field: 'rout_name',
         value: routeAutocompleteValue.name,
       })
+      if (nameField)
+        apiRef.current.setEditCellValue({ id, field: nameField, value: routeAutocompleteValue.id })
     }
   }
 

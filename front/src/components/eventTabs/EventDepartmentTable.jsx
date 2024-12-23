@@ -8,15 +8,6 @@ import { dateColumnType } from '../dataGridCell/GridEditDateCell'
 import { useFetchMemberList } from '../../queries/member'
 import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
 
-const defaultItem = {
-  depart_tip: '',
-  depart_name: '',
-  depart_dates: '',
-  depart_datef: '',
-  depart_inst: '',
-  inst_fio: '',
-}
-
 const validationSchema = Yup.object({
   depart_tip: Yup.string().required('Поле обязательно для заполнения'),
   depart_name: Yup.string().required('Поле обязательно для заполнения'),
@@ -40,7 +31,22 @@ const validationSchema = Yup.object({
     }),
 })
 
-export const EventDepartmentTable = ({ eventId, onRowSelectionModelChange }) => {
+export const EventDepartmentTable = ({
+  eventId,
+  onRowSelectionModelChange,
+  eventStart,
+  eventFinish,
+}) => {
+  const defaultItem = {
+    depart_tip: '',
+    depart_name: '',
+    depart_dates: '',
+    depart_datef: '',
+    depart_inst: '',
+    inst_fio: '',
+    event_start: eventStart,
+    event_finish: eventFinish,
+  }
   const queryClient = useQueryClient()
   const { isLoading, data } = useFetchEventDepartmentList(eventId)
 
@@ -93,7 +99,14 @@ export const EventDepartmentTable = ({ eventId, onRowSelectionModelChange }) => 
       valueOptions: ['НП1', 'НП2', 'СП1', 'СП2', 'СС', 'СМ'],
     },
     { field: 'depart_name', headerName: 'Позывной', width: 150, editable: true },
-    { field: 'depart_dates', ...dateColumnType, headerName: 'Старт', width: 120, editable: true },
+    {
+      field: 'depart_dates',
+      ...dateColumnType,
+      headerName: 'Старт',
+      width: 120,
+      editable: true,
+      minDate: 'event_start',
+    },
     {
       field: 'depart_datef',
       ...dateColumnType,

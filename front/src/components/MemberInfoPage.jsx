@@ -52,14 +52,16 @@ const defaultValues = {
 
 const validationSchema = Yup.object({
   fio: Yup.string().required('Поле обязательно для заполнения'),
-  memb_email: Yup.string().matches(
-    // eslint-disable-next-line no-useless-escape
-    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-    {
-      message: 'Поле неверного формата',
-      excludeEmptyString: true,
-    },
-  ),
+  memb_email: Yup.string()
+    .nullable(true)
+    .matches(
+      // eslint-disable-next-line no-useless-escape
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+      {
+        message: 'Поле неверного формата',
+        excludeEmptyString: true,
+      },
+    ),
 })
 
 export const MemberInfoPage = () => {

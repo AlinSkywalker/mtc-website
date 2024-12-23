@@ -6,7 +6,7 @@ import { EventDepartmentTable } from './EventDepartmentTable'
 import { EventDepartmentMemberTable } from './EventDepartmentMemberTable'
 import { EventDepartmentDateTable } from './EventDepartmentDateTable'
 
-export const EventDepartmentTab = ({ eventId }) => {
+export const EventDepartmentTab = ({ eventId, eventStart, eventFinish }) => {
   const [selectedDepartment, setSelectedDepartment] = useState()
   const [selectedDate, setSelectedDate] = useState()
 
@@ -24,6 +24,8 @@ export const EventDepartmentTab = ({ eventId }) => {
         <EventDepartmentTable
           eventId={eventId}
           onRowSelectionModelChange={onRowSelectionModelChange}
+          eventStart={eventStart}
+          eventFinish={eventFinish}
         />
       </Grid>
       <Grid item size={1}>

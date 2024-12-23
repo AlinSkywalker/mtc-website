@@ -23,6 +23,7 @@ const defaultItem = {
   eventmemb_nom: '',
   ventmemb_pred: '',
   eventmemb_opl: '',
+  eventmemb_role: 'Участник',
 }
 
 const validationSchema = Yup.object({
@@ -86,7 +87,7 @@ export const EventMembersTab = ({ eventId }) => {
     const link = params.value ?? ''
 
     return (
-      <Link onClick={handleClickName(params.row.id)} sx={{ cursor: 'pointer' }}>
+      <Link onClick={handleClickName(params.row.eventmemb_memb)} sx={{ cursor: 'pointer' }}>
         {link}
       </Link>
     )
@@ -130,6 +131,14 @@ export const EventMembersTab = ({ eventId }) => {
       width: 100,
       editable: true,
       ...checkboxColumnType,
+    },
+    {
+      field: 'eventmemb_role',
+      headerName: 'Роль',
+      width: 100,
+      editable: true,
+      type: 'singleSelect',
+      valueOptions: ['Участник', 'Инструктор', 'Волонтёр'],
     },
     {
       field: 'eventmemb_pred',

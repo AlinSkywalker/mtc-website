@@ -61,7 +61,9 @@ function WrappedGridEditDateInput(props) {
   const { InputProps, focused, ...other } = props
   return <GridEditDateInput fullWidth {...InputProps} {...other} />
 }
-
+function dateIsValid(date) {
+  return date instanceof Date && !isNaN(date)
+}
 function GridEditDateCell({ id, field, value, colDef, row }) {
   const apiRef = useGridApiContext()
   // console.log('colDef', colDef.minDate)
@@ -76,8 +78,13 @@ function GridEditDateCell({ id, field, value, colDef, row }) {
     })
   }
   const pickerValue = parseISO(value || '')
-  const minDate = colDef.minDate ? new Date(row[colDef.minDate]) : undefined
-  // console.log('minDate', minDate)
+  let minDate = undefined
+  if (colDef.minDate && row[colDef.minDate] && dateIsValid(row[colDef.minDate])) {
+    minDate = row[colDef.minDate]
+  } else if (colDef.minDate && row[colDef.minDate]) {
+    minDate = new Date(row[colDef.minDate])
+  }
+  // console.log('minDate', colDef.minDate, row[colDef.minDate])
   return (
     <Component
       value={pickerValue}

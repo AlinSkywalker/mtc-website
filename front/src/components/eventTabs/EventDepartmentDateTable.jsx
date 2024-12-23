@@ -4,6 +4,7 @@ import { DataGrid } from '@mui/x-data-grid'
 import Grid from '@mui/material/Grid2'
 import './DateTableStyles.css'
 import { format, parseISO } from 'date-fns'
+import { getDatesInRange } from '../../utils/getDatesInRange'
 
 export const EventDepartmentDateTable = ({
   eventId,
@@ -14,19 +15,7 @@ export const EventDepartmentDateTable = ({
   const { isLoading, data } = useFetchEventDepartmentById(eventId, selectedDepartmentId)
 
   const [rows, setRows] = React.useState([])
-  function getDatesInRange(startDate, endDate) {
-    const date = new Date(startDate.getTime())
 
-    const dates = []
-    let i = 0
-    while (date <= endDate) {
-      dates.push({ id: i, date: new Date(date).toISOString().substring(0, 10) })
-      date.setDate(date.getDate() + 1)
-      i++
-    }
-
-    return dates
-  }
   React.useEffect(() => {
     setRowSelectionModel([])
   }, [selectedDepartmentId])

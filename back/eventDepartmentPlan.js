@@ -1,9 +1,42 @@
 // Load the MySQL pool connection
 const pool = require("./mysql")
+const getDatesInRange = require("./getDatesInRange")
 
 // Route the app
 const eventDepartmentPlanRouter = (app, passport) => {
+  app.get('/eventList/:eventId/departments/allDepartmentPlan/', passport.authenticate('jwt', { session: false }), (req, res) => {
+    // console.log('allDepartmentPlan')
+    const { eventId, departmentId } = req.params;
+    pool.query(`SELECT * FROM eventalp WHERE id=${eventId}`, (error, result) => {
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+        return
+      }
+      // const { event_start, event_finish } = result[0]
+      // const rangeDateStart = new Date(event_start)
+      // const rangeDateFinish = new Date(event_finish)
+      // const eventDates = getDatesInRange(rangeDateStart, rangeDateFinish)
+      // const eventDatesString = eventDates.map(item => `ROW('${item}')`).join(',')
+      // console.log(eventDatesString)
+      pool.query(`SELECT dp.*, l.laba_name, r.rout_name, m.mount_name, r.rout_comp
+                  FROM depart_plan dp 
+                  LEFT JOIN laba l on l.id=dp.laba
+                  LEFT JOIN route r on r.id=dp.route
+                  LEFT JOIN mount m on m.id=r.rout_mount
+                  `, (error, result) => {
+        if (error) {
+          console.log(error);
+          res.status(500).json({ success: false, message: error });
+          return
+        }
+        res.send(result);
+      });
+    })
+
+  })
   app.get('/eventList/:eventId/department/:departmentId/plan/', passport.authenticate('jwt', { session: false }), (req, res) => {
+    // console.log('/eventList/:eventId/department/:departmentId/plan/')
     const { eventId, departmentId } = req.params;
     pool.query(`SELECT dp.*, r.rout_name, r.rout_mount, r.rout_comp, 
                 m.mount_name, m.mount_rai, rai.rai_name, rai.rai_reg, reg.region_name,
@@ -16,7 +49,7 @@ const eventDepartmentPlanRouter = (app, passport) => {
                   LEFT JOIN laba l on l.id=dp.laba
                   LEFT JOIN raion l_rai ON l.laba_rai=l_rai.id
                   LEFT JOIN region l_reg ON l_rai.rai_reg = l_reg.id
-                WHERE department='${departmentId}'`, (error, result) => {
+                WHERE department='${departmentId}' ORDER BY dp.start ASC`, (error, result) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
@@ -25,6 +58,7 @@ const eventDepartmentPlanRouter = (app, passport) => {
       res.send(result);
     });
   })
+
 
   app.put('/eventList/:eventId/department/:departmentId/plan/', passport.authenticate('jwt', { session: false }), (req, res) => {
     const { eventId, departmentId } = req.params;

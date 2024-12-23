@@ -1,0 +1,21 @@
+.depPlanCell{
+  width: 250px;
+  height: 70px;
+  border: 1px solid #ccc;
+  border-top: none;
+  border-left: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background-color: white;
+}
+.depPlanDateCell{
+  width: 120px;
+}
+.depPlanCell-inner{
+  font-size: 14px;
+}
+.depPlanTitleCell{
+  height: 40px;
+}

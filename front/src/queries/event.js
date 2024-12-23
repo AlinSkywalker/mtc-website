@@ -228,3 +228,14 @@ export function useFetchEventDepartmentPlanList(eventId, departmentId) {
     },
   })
 }
+export function useFetchEventAllDepartmentList(eventId) {
+  let fetchUrl = `/api/eventList/${eventId}/departments/allDepartmentPlan`
+  return useQuery({
+    queryKey: ['event', eventId, 'department', 'allDepartmentPlan'],
+    queryFn: async () => {
+      if (!eventId) return []
+      const { data } = await apiClient.get(fetchUrl)
+      return data
+    },
+  })
+}

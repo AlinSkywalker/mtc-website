@@ -122,12 +122,25 @@ export const EventInfoPage = () => {
     {
       name: 'department',
       label: 'Отделения',
-      component: <EventDepartmentTab eventId={currentId} />,
+      component: (
+        <EventDepartmentTab
+          eventId={currentId}
+          eventStart={data?.event_start}
+          eventFinish={data?.event_finish}
+        />
+      ),
     },
     {
       name: 'departmentPlans',
       label: 'Планы отделений',
-      component: <EventDepartmentPlansTab eventId={currentId} eventDistrict={data?.event_raion} />,
+      component: (
+        <EventDepartmentPlansTab
+          eventId={currentId}
+          eventDistrict={data?.event_raion}
+          eventStart={data?.event_start}
+          eventFinish={data?.event_finish}
+        />
+      ),
     },
 
     // {

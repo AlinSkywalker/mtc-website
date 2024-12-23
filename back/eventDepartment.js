@@ -1,6 +1,6 @@
 // Load the MySQL pool connection
 const pool = require("./mysql");
-
+const getDatesInRange = require("./getDatesInRange")
 // Route the app
 const eventDepartmentRouter = (app, passport) => {
   app.get(
@@ -9,7 +9,10 @@ const eventDepartmentRouter = (app, passport) => {
     (req, res) => {
       const eventId = req.params.eventId;
       pool.query(
-        `SELECT d.*, m.fio as inst_fio FROM depart d LEFT JOIN member m on m.id=d.depart_inst WHERE depart_event='${eventId}'`,
+        `SELECT d.*, m.fio as inst_fio, e.event_start, e.event_finish FROM depart d 
+        LEFT JOIN member m on m.id=d.depart_inst 
+        LEFT JOIN eventalp e on e.id=d.depart_event
+        WHERE depart_event='${eventId}'`,
         (error, result) => {
           if (error) {
             console.log(error);
@@ -58,8 +61,7 @@ const eventDepartmentRouter = (app, passport) => {
       } = req.body;
       pool.query(
         `INSERT INTO depart ( depart_event, depart_tip, depart_datef, depart_dates, depart_name,depart_inst) 
-      VALUES('${eventId}','${depart_tip}',CONVERT('${depart_datef}',DATETIME),CONVERT('${depart_dates}',DATETIME),'${depart_name}',${
-          depart_inst || null
+      VALUES('${eventId}','${depart_tip}',CONVERT('${depart_datef}',DATETIME),CONVERT('${depart_dates}',DATETIME),'${depart_name}',${depart_inst || null
         })`,
         (error, result) => {
           if (error) {
@@ -337,17 +339,5 @@ const eventDepartmentRouter = (app, passport) => {
   );
 };
 
-function getDatesInRange(startDate, endDate) {
-  const date = new Date(startDate.getTime());
-
-  const dates = [];
-
-  while (date <= endDate) {
-    dates.push(new Date(date).toISOString().substring(0, 10));
-    date.setDate(date.getDate() + 1);
-  }
-
-  return dates;
-}
 // Export the router
 module.exports = eventDepartmentRouter;
