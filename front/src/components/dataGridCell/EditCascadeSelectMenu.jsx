@@ -237,7 +237,17 @@ export function EditCascadeSelectMenu(props) {
         field: 'rout_name',
         value: routeAutocompleteValue.name,
       })
-      if (nameField)
+    }
+    if (nameField) {
+      if (finishDictionary == 'districtDictionary')
+        apiRef.current.setEditCellValue({
+          id,
+          field: nameField,
+          value: districtAutocompleteValue.id,
+        })
+      if (finishDictionary == 'routeDictionary')
+        apiRef.current.setEditCellValue({ id, field: nameField, value: summitAutocompleteValue.id })
+      if (finishDictionary == 'summitDictionary')
         apiRef.current.setEditCellValue({ id, field: nameField, value: routeAutocompleteValue.id })
     }
   }

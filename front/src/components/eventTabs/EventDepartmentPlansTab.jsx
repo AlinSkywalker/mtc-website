@@ -26,14 +26,14 @@ export const EventDepartmentPlansTab = ({ eventId, eventDistrict, eventStart, ev
         onChange={handleSelectDepartment}
         aria-label='text alignment'
       >
+        <ToggleButton value={'all'} aria-label='left aligned' key={0}>
+          {`ВСЕ ОТДЕЛЕНИЯ`}
+        </ToggleButton>
         {data.map((item) => (
           <ToggleButton value={item.id} aria-label='left aligned' key={item.id}>
             {`${item.depart_tip} ${item.depart_name} (${format(parseISO(item.depart_dates), 'dd.MM.yyyy')} - ${format(parseISO(item.depart_datef), 'dd.MM.yyyy')})`}
           </ToggleButton>
         ))}
-        <ToggleButton value={'all'} aria-label='left aligned' key={0}>
-          {`ВСЕ ОТДЕЛЕНИЯ`}
-        </ToggleButton>
       </ToggleButtonGroup>
       {selectedDepartment && selectedDepartment !== 'all' && (
         <Grid item size={12}>

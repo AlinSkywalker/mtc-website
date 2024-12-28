@@ -1,15 +1,20 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useFetchEventAllDepartmentList, useFetchEventDepartmentList } from '../../queries/event'
 import Grid from '@mui/material/Grid2'
 import { getDatesInRange } from '../../utils/getDatesInRange'
 import './EventAllDepartmentPlansTableStyle.css'
+import IconButton from '@mui/material/IconButton'
+import ScheduleIcon from '@mui/icons-material/Schedule'
+import Tooltip from '@mui/material/Tooltip'
 
 export const EventAllDepartmentPlansTable = ({ eventId, eventStart, eventFinish }) => {
   const { isLoading, data } = useFetchEventAllDepartmentList(eventId)
   const { data: departmentData } = useFetchEventDepartmentList(eventId)
   const dates = getDatesInRange(new Date(eventStart), new Date(eventFinish))
-  if (!data || !departmentData) return
-
+  const [isShowPast, setIsShowPast] = useState(false)
+  const handleShowPast = () => {
+    setIsShowPast((prev) => !prev)
+  }
   const renderCell = (department, date) => {
     const depPlan = data.find(
       (plan) => plan.department === department.id && plan.start === date.date,
@@ -28,14 +33,20 @@ export const EventAllDepartmentPlansTable = ({ eventId, eventStart, eventFinish 
         <Grid item sx={{ textAlign: 'center' }}>
           {planPlace}
         </Grid>
-        {/* {depPlan?.type === 'Восхождение' && <Grid item>{depPlan.mount_name}</Grid>} */}
       </Grid>
     )
   }
+  if (!data || !departmentData) return
   return (
     <Grid container sx={{ width: '100%', overflowX: 'scroll' }}>
       <Grid item sx={{ width: '100%' }} container flexDirection={'row'} className='depPlanRow'>
-        <Grid className={'depPlanCell depPlanDateCell depPlanTitleCell'}></Grid>
+        <Grid className={'depPlanCell depPlanDateCell depPlanTitleCell'}>
+          <Tooltip title='Показать прошедшие даты'>
+            <IconButton aria-label='delete' color='primary' onClick={handleShowPast}>
+              <ScheduleIcon />
+            </IconButton>
+          </Tooltip>
+        </Grid>
         {departmentData.map((department) => {
           return (
             <Grid
@@ -46,9 +57,9 @@ export const EventAllDepartmentPlansTable = ({ eventId, eventStart, eventFinish 
         })}
       </Grid>
       {dates.map((item) => {
-        const isPastDate = new Date() < new Date(item)
+        const isPastDate = new Date() > new Date(item.date)
         let rowClassName = isPastDate ? 'depPlanRow depPlanRowPast' : 'depPlanRow'
-
+        if (!isShowPast && isPastDate) return
         return (
           <Grid
             key={item.id}

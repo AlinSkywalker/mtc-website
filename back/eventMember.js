@@ -24,7 +24,7 @@ const eventMemberRouter = (app, passport) => {
     const { eventmemb_nstrah, eventmemb_nmed, eventmemb_memb, eventmemb_dates, eventmemb_datef, eventmemb_gen, eventmemb_pred, eventmemb_opl, eventmemb_role } = req.body;
     pool.query(`INSERT INTO eventmemb 
       ( eventmemb_nstrah, eventmemb_nmed, eventmemb_memb, eventmemb_dates, eventmemb_datef,eventmemb_even,eventmemb_gen,eventmemb_pred,eventmemb_opl,eventmemb_role) 
-      VALUES(?,?,?,?,?,?,?,?,?)`,
+      VALUES(?,?,?,?,?,?,?,?,?,?)`,
       [eventmemb_nstrah, eventmemb_nmed, eventmemb_memb, eventmemb_dates, eventmemb_datef, eventId, eventmemb_gen, eventmemb_pred, eventmemb_opl, eventmemb_role], (error, result) => {
         if (error) {
           console.log(error);
