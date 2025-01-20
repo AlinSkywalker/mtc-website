@@ -228,7 +228,7 @@ export function useFetchEventDepartmentPlanList(eventId, departmentId) {
     },
   })
 }
-export function useFetchEventAllDepartmentList(eventId) {
+export function useFetchEventAllDepartmentPlanList(eventId) {
   let fetchUrl = `/api/eventList/${eventId}/departments/allDepartmentPlan`
   return useQuery({
     queryKey: ['event', eventId, 'department', 'allDepartmentPlan'],

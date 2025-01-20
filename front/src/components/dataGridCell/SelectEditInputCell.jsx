@@ -27,7 +27,7 @@ function mapDictionaryData(
         itemName = item.region_name
         break
       case 'cityDictionary':
-        itemName = item.city_name
+        itemName = item.name_city
         break
       case 'districtDictionary':
         itemName = item.rai_name

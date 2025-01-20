@@ -13,17 +13,13 @@ const eventDepartmentPlanRouter = (app, passport) => {
         res.status(500).json({ success: false, message: error });
         return
       }
-      // const { event_start, event_finish } = result[0]
-      // const rangeDateStart = new Date(event_start)
-      // const rangeDateFinish = new Date(event_finish)
-      // const eventDates = getDatesInRange(rangeDateStart, rangeDateFinish)
-      // const eventDatesString = eventDates.map(item => `ROW('${item}')`).join(',')
-      // console.log(eventDatesString)
       pool.query(`SELECT dp.*, l.laba_name, r.rout_name, m.mount_name, r.rout_comp
                   FROM depart_plan dp 
+                  LEFT JOIN depart d ON dp.department=d.id
                   LEFT JOIN laba l on l.id=dp.laba
                   LEFT JOIN route r on r.id=dp.route
                   LEFT JOIN mount m on m.id=r.rout_mount
+                  WHERE d.depart_event=${eventId}
                   `, (error, result) => {
         if (error) {
           console.log(error);

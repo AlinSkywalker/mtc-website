@@ -1,13 +1,15 @@
 import React, { useState } from 'react'
-import { useFetchEventAllDepartmentPlanList, useFetchEventDepartmentList } from '../../queries/event'
+import {
+  useFetchEventAllDepartmentPlanList,
+  useFetchEventDepartmentList,
+} from '../../queries/event'
 import Grid from '@mui/material/Grid2'
 import { getDatesInRange } from '../../utils/getDatesInRange'
 import './EventAllDepartmentPlansTableStyle.css'
-import IconButton from '@mui/material/IconButton'
-import ScheduleIcon from '@mui/icons-material/Schedule'
-import Tooltip from '@mui/material/Tooltip'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
 
-export const EventAllDepartmentPlansTable = ({ eventId, eventStart, eventFinish }) => {
+export const EventDepartmentPlanJournalTab = ({ eventId, eventStart, eventFinish }) => {
   const { isLoading, data } = useFetchEventAllDepartmentPlanList(eventId)
   const { data: departmentData } = useFetchEventDepartmentList(eventId)
   const dates = getDatesInRange(new Date(eventStart), new Date(eventFinish))
@@ -36,16 +38,21 @@ export const EventAllDepartmentPlansTable = ({ eventId, eventStart, eventFinish 
       </Grid>
     )
   }
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toLocaleString('ru-RU').substring(0, 10),
+  )
   if (!data || !departmentData) return
   return (
     <Grid container sx={{ width: '100%', overflowX: 'scroll' }}>
       <Grid item sx={{ width: '100%' }} container flexDirection={'row'} className='depPlanRow'>
         <Grid className={'depPlanCell depPlanDateCell depPlanTitleCell'}>
-          <Tooltip title='Показать прошедшие даты'>
-            <IconButton aria-label='delete' color='primary' onClick={handleShowPast}>
-              <ScheduleIcon />
-            </IconButton>
-          </Tooltip>
+          <Select label='Пол' fullWidth onChange={setSelectedDate} value={selectedDate}>
+            {dates.map((item, index) => (
+              <MenuItem value={item.date} key={index}>
+                {item.date.substring(0, 5)}
+              </MenuItem>
+            ))}
+          </Select>
         </Grid>
         {departmentData.map((department) => {
           return (
@@ -69,7 +76,7 @@ export const EventAllDepartmentPlansTable = ({ eventId, eventStart, eventFinish 
             flexDirection={'row'}
             className={rowClassName}
           >
-            <Grid className={'depPlanCell depPlanDateCell'}>{item.date.substring(0, 5)}</Grid>
+            <Grid className={'depPlanCell depPlanDateCell'}>{item.date}</Grid>
             {departmentData.map((department) => renderCell(department, item))}
           </Grid>
         )

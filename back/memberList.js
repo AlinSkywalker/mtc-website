@@ -108,8 +108,8 @@ const memberListRouter = (app, passport) => {
       const id = req.params.id;
       pool.query(
         `SELECT m.*, ma.*, c.name_city FROM member m 
-                  LEFT JOIN membalp ma on ma.id=m.id
-                  LEFT JOIN city c on c.id=m.memb_city
+                  JOIN membalp ma ON ma.id=m.id
+                  LEFT JOIN city c ON c.id=m.memb_city
                   WHERE m.id=${id}`,
         (error, result) => {
           if (error) {
@@ -152,8 +152,8 @@ const memberListRouter = (app, passport) => {
         [
           fio,
           gender,
-          date_birth,
-          memb_city,
+          date_birth||null,
+          memb_city||null,
           tel_1,
           tel_2,
           memb_email,

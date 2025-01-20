@@ -4,7 +4,7 @@ export function getDatesInRange(startDate, endDate) {
   const dates = []
   let i = 0
   while (date <= endDate) {
-    dates.push({ id: i, date: new Date(date).toISOString().substring(0, 10) })
+    dates.push({ id: i, date: new Date(date).toLocaleString('ru-RU').substring(0, 10) })
     date.setDate(date.getDate() + 1)
     i++
   }

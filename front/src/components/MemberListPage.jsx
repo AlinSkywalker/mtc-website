@@ -50,7 +50,7 @@ export const MemberListPage = () => {
 
   const handleDeleteItem = (id) => () => {
     apiClient.delete(`/api/memberList/${id}`).then((res) => {
-      queryClient.invalidateQueries({ queryKey: ['eventList'] })
+      queryClient.invalidateQueries({ queryKey: ['memberList'] })
     })
   }
 
@@ -80,7 +80,8 @@ export const MemberListPage = () => {
       renderCell: renderLink,
       editable: true,
     },
-    { field: 'gender', headerName: 'Пол', width: 100, editable: true },
+    { field: 'gender', headerName: 'Пол', width: 100, editable: true,type: 'singleSelect',
+      valueOptions: ['М','Ж'] },
     {
       field: 'date_birth',
       ...dateColumnType,
@@ -125,7 +126,7 @@ export const MemberListPage = () => {
     validationSchema.validateSync(newRow, { abortEarly: false })
     const handleSave = newRow.isNew ? handleSaveNewItem : handleSaveEditedItem
     await handleSave(newRow)
-    queryClient.invalidateQueries({ queryKey: ['eventList'] })
+    queryClient.invalidateQueries({ queryKey: ['memberList'] })
   }
 
   return (
