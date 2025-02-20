@@ -64,7 +64,7 @@ export const DictionaryPage = () => {
   const location = useLocation()
   const locationSplitted = location.pathname.split('/')
   const currentDictionary = locationSplitted[locationSplitted.length - 1]
-  // console.log('currentDictionary', currentDictionary)
+
   const [value, setValue] = React.useState(
     currentDictionary !== 'dictionary'
       ? dictionaryTabs.findIndex((item) => item.name == currentDictionary)

@@ -22,6 +22,7 @@ const defaultItem = {
   ob_fio: '',
   st_fio: '',
   base_name: '',
+  price: null,
 }
 
 const validationSchema = Yup.object({
@@ -156,6 +157,7 @@ export const EventListPage = () => {
       renderEditCell: renderOBSelectEditCell,
       editable: true,
     },
+    { field: 'price', headerName: 'Цена мероприятия', width: 150, editable: true, type: 'number' },
     { field: 'event_raion', headerName: 'event_raion', width: 0, editable: true },
     { field: 'event_st', headerName: 'event_st', width: 0, editable: true },
     { field: 'event_ob', headerName: 'event_ob', width: 0, editable: true },

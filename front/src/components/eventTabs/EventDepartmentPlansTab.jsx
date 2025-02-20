@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import Grid from '@mui/material/Grid2'
 import { useFetchEventDepartmentList } from '../../queries/event'
@@ -13,6 +13,9 @@ export const EventDepartmentPlansTab = ({ eventId, eventDistrict, eventStart, ev
 
   const { isLoading, data } = useFetchEventDepartmentList(eventId)
 
+  const selectedDepartmentStartDate = useMemo(() => {
+    return data?.find((item) => item.id === selectedDepartment)?.depart_dates
+  }, [selectedDepartment, data])
   const handleSelectDepartment = (event, newValue) => {
     setSelectedDepartment(newValue)
   }
@@ -41,6 +44,7 @@ export const EventDepartmentPlansTab = ({ eventId, eventDistrict, eventStart, ev
             eventId={eventId}
             departmentId={selectedDepartment}
             eventDistrict={eventDistrict}
+            departmentStartDate={selectedDepartmentStartDate}
           />
         </Grid>
       )}

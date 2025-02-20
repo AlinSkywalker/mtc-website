@@ -74,7 +74,7 @@ const LoginPage = () => {
                     name='password'
                     control={control}
                     render={({ field }) => (
-                      <TextField {...field} variant='outlined' label='Пароль' />
+                      <TextField {...field} variant='outlined' label='Пароль' type='password' />
                     )}
                   />
                 </Grid>

@@ -22,8 +22,7 @@ const eventBaseRouter = require("./eventBase");
 const eventFileRouter = require("./eventFile");
 const eventContractorRouter = require("./eventContractor");
 const eventDepartmentPlanRouter = require("./eventDepartmentPlan");
-
-
+const eventDepartmentPlanJournalRouter = require("./eventDepartmentPlanJournal");
 
 const memberExamRouter = require("./memberExam");
 const memberAscentRouter = require("./memberAscent");
@@ -88,8 +87,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   fileUpload({
     createParentPath: true,
-    defCharset: 'utf8',
-    defParamCharset: 'utf8'
+    defCharset: "utf8",
+    defParamCharset: "utf8",
   })
 );
 // Passport:
@@ -181,7 +180,10 @@ app.get(
   (req, res) => {
     const id = req.params.id;
     pool.query(
-      `SELECT * FROM mtc_db.user u RIGHT JOIN member m on m.user_id=u.id WHERE u.id=${id}`,
+      `SELECT u.*, m.*, c.name_city FROM mtc_db.user u 
+      RIGHT JOIN member m on m.user_id=u.id 
+      LEFT JOIN city c on c.id=m.memb_city
+      WHERE u.id=${id}`,
       (error, result) => {
         if (error) {
           console.log(error);
@@ -223,6 +225,7 @@ eventContractorRouter(app, passport);
 memberExamRouter(app, passport);
 memberAscentRouter(app, passport);
 eventDepartmentPlanRouter(app, passport);
+eventDepartmentPlanJournalRouter(app, passport);
 
 app.get("*", (req, res) => {
   // console.log(req.params)

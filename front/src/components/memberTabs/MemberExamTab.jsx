@@ -4,6 +4,7 @@ import apiClient from '../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
 import { EditableTable } from '../EditableTable'
 import * as Yup from 'yup'
+import { dateColumnType } from '../dataGridCell/GridEditDateCell'
 
 const defaultItem = {
   zach_name: '',
@@ -11,6 +12,7 @@ const defaultItem = {
   zach_e2: '',
   zach_e1: '',
   zach_grade: '',
+  zach_date: null,
 }
 
 const validationSchema = Yup.object({
@@ -77,6 +79,13 @@ export const MemberExamTab = ({ memberId }) => {
       field: 'zach_e2',
       headerName: 'Экзаменатор 2',
       width: 200,
+      editable: true,
+    },
+    {
+      field: 'zach_date',
+      ...dateColumnType,
+      headerName: 'Дата зачета',
+      width: 120,
       editable: true,
     },
     { field: 'zach_note', headerName: 'Заметки', width: 350, editable: true },

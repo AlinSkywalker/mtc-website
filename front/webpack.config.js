@@ -1,5 +1,5 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
   entry: path.resolve(__dirname, './src/index.js'),
@@ -13,11 +13,8 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [
-          'style-loader',
-          'css-loader'
-        ]
-      }
+        use: ['style-loader', 'css-loader'],
+      },
     ],
   },
   resolve: {
@@ -26,7 +23,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, './build'),
     filename: 'mountaineering-training-center/[name].[contenthash].js',
-    publicPath: '/'
+    publicPath: '/',
   },
   devServer: {
     static: {
@@ -45,7 +42,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, "public", "index.html"),
+      template: path.join(__dirname, 'public', 'index.html'),
     }),
   ],
-};
+}

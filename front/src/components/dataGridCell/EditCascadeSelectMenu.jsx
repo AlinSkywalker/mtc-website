@@ -188,12 +188,10 @@ export function EditCascadeSelectMenu(props) {
   }
 
   const handleSummitChange = (newValue) => {
-    console.log('newValue', newValue)
     setSummitAutocompleteValue(newValue)
 
     setRouteAutocompleteValue({ name: '', id: '', parentId: '' })
     setRouteInputValue('')
-    console.log('routeMappedData', routeMappedData)
     setRouteAutocompleteOptions(
       newValue ? routeMappedData.filter((item) => item.parentId == newValue.id) : routeMappedData,
     )
@@ -246,9 +244,9 @@ export function EditCascadeSelectMenu(props) {
           value: districtAutocompleteValue.id,
         })
       if (finishDictionary == 'routeDictionary')
-        apiRef.current.setEditCellValue({ id, field: nameField, value: summitAutocompleteValue.id })
-      if (finishDictionary == 'summitDictionary')
         apiRef.current.setEditCellValue({ id, field: nameField, value: routeAutocompleteValue.id })
+      if (finishDictionary == 'summitDictionary')
+        apiRef.current.setEditCellValue({ id, field: nameField, value: summitAutocompleteValue.id })
     }
   }
 

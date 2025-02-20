@@ -434,7 +434,7 @@ const dictionaryRouter = (app, passport) => {
     "/laboratoryDictionaryForEvent/:eventId",
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
-      const { eventId } = req.params
+      const { eventId } = req.params;
       pool.query(
         `SELECT l.*, r.rai_name, r.rai_reg, reg.region_name FROM laba l 
                 LEFT JOIN raion r ON l.laba_rai=r.id
@@ -1050,14 +1050,17 @@ LEFT JOIN (
     "/cityDictionary/",
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
-      pool.query(`SELECT * FROM city`, (error, result) => {
-        if (error) {
-          console.log(error);
-          res.status(500).json({ success: false, message: error });
-          return;
+      pool.query(
+        `SELECT * FROM city ORDER BY name_city ASC`,
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return;
+          }
+          res.send(result);
         }
-        res.send(result);
-      });
+      );
     }
   );
   app.put(
@@ -1116,6 +1119,34 @@ LEFT JOIN (
           return;
         }
         res.send(result);
+      });
+    }
+  );
+
+  app.get(
+    "/trainingProgram",
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+      pool.query(`SELECT * FROM progr_pod`, (error, resultAll) => {
+        if (error) {
+          console.log(error);
+          res.status(500).json({ success: false, message: error });
+          return;
+        }
+        pool.query(
+          `SELECT prog_razd FROM progr_pod GROUP BY prog_razd`,
+          (error, resultUnique) => {
+            if (error) {
+              console.log(error);
+              res.status(500).json({ success: false, message: error });
+              return;
+            }
+            res.send({
+              data: resultAll,
+              razdelList: resultUnique.map((item) => item.prog_razd),
+            });
+          }
+        );
       });
     }
   );

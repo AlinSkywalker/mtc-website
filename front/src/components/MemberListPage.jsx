@@ -9,6 +9,7 @@ import * as Yup from 'yup'
 import { SelectEditInputCell } from './dataGridCell/SelectEditInputCell'
 import { dateColumnType } from './dataGridCell/GridEditDateCell'
 import { sizeClothOptions, sizeShoeOptions } from '../constants'
+import { checkboxColumnType } from './dataGridCell/GridEditCheckboxCell'
 
 const defaultItem = {
   fio: '',
@@ -21,6 +22,7 @@ const defaultItem = {
   size_cloth: '?',
   size_shoe: '?',
   date_birth: '',
+  memb: 0,
 }
 
 const validationSchema = Yup.object({
@@ -80,8 +82,14 @@ export const MemberListPage = () => {
       renderCell: renderLink,
       editable: true,
     },
-    { field: 'gender', headerName: 'Пол', width: 100, editable: true,type: 'singleSelect',
-      valueOptions: ['М','Ж'] },
+    {
+      field: 'gender',
+      headerName: 'Пол',
+      width: 100,
+      editable: true,
+      type: 'singleSelect',
+      valueOptions: ['М', 'Ж'],
+    },
     {
       field: 'date_birth',
       ...dateColumnType,
@@ -114,6 +122,13 @@ export const MemberListPage = () => {
       editable: true,
       type: 'singleSelect',
       valueOptions: sizeShoeOptions,
+    },
+    {
+      field: 'memb',
+      headerName: 'Член клуба',
+      width: 100,
+      editable: true,
+      ...checkboxColumnType,
     },
     { field: 'memb_city', headerName: 'memb_city', width: 0, editable: true },
   ]

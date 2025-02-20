@@ -211,7 +211,6 @@ const eventDepartmentRouter = (app, passport) => {
                 const departDateFinish = new Date(depart_datef);
                 const memberDateStart = new Date(eventmemb_dates);
                 const memberDateFinish = new Date(eventmemb_datef);
-                // console.log(departDateStart, departDateFinish, memberDateStart, memberDateFinish)
                 const rangeDateStart =
                   departDateStart > memberDateStart
                     ? departDateStart
@@ -220,14 +219,10 @@ const eventDepartmentRouter = (app, passport) => {
                   departDateFinish < memberDateFinish
                     ? departDateFinish
                     : memberDateFinish;
-                // console.log(rangeDateStart, rangeDateFinish)
                 const dates = getDatesInRange(rangeDateStart, rangeDateFinish);
-                // console.log('dates', dates)
-                // console.log(dates);
                 const insertValueString = dates
                   .map((item) => `(${departmentId},${membd_memb}, '${item}')`)
                   .join(", ");
-                // console.log(insertValueString);
                 pool.query(
                   `INSERT INTO member_in_depart ( membd_dep, membd_memb, membd_date) 
           VALUES ${insertValueString}`,

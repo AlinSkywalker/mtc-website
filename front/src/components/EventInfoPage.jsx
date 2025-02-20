@@ -24,6 +24,8 @@ import { EventContractorTab } from './eventTabs/EventContractorTab'
 import { EventBaseTab } from './eventTabs/EventBaseTab'
 import { EventFilesTab } from './eventTabs/EventFilesTab'
 import { EventDepartmentPlansTab } from './eventTabs/EventDepartmentPlansTab'
+import { EventDepartmentPlanJournalTab } from './eventTabs/EventDepartmentPlanJournalTab'
+import { EventStatisticsTab } from './eventTabs/EventStatisticsTab'
 
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
@@ -45,6 +47,7 @@ const defaultValues = {
   st: { fio: '', id: 0 },
   base: { base_name: '', id: 0 },
   raion: { rai_name: '', id: 0 },
+  price: null,
 }
 
 const validationSchema = Yup.object({
@@ -142,7 +145,17 @@ export const EventInfoPage = () => {
         />
       ),
     },
-
+    {
+      name: 'departmentPlansJournal',
+      label: 'Журнал связи',
+      component: (
+        <EventDepartmentPlanJournalTab
+          eventId={currentId}
+          eventStart={data?.event_start}
+          eventFinish={data?.event_finish}
+        />
+      ),
+    },
     // {
     //   name: 'smena',
     //   label: 'Смены',
@@ -162,6 +175,11 @@ export const EventInfoPage = () => {
       name: 'files',
       label: 'Файлы',
       component: <EventFilesTab eventId={currentId} />,
+    },
+    {
+      name: 'statistics',
+      label: 'Статистика',
+      component: <EventStatisticsTab eventId={currentId} />,
     },
   ]
 
@@ -296,6 +314,23 @@ export const EventInfoPage = () => {
                           dataNameField='rai_name'
                           field={field}
                           errors={errors}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item size={2}>
+                    <Controller
+                      name='price'
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          variant='outlined'
+                          label='Цена мероприятия'
+                          fullWidth
+                          error={errors[field.name]}
+                          helperText={errors[field.name]?.message}
+                          type='number'
                         />
                       )}
                     />

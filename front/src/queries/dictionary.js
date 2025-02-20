@@ -143,3 +143,13 @@ export function useFetchCityDictionaryList() {
     },
   })
 }
+
+export function useFetchTrainingProgram() {
+  return useQuery({
+    queryKey: ['trainingProgram'],
+    queryFn: async () => {
+      const { data } = await apiClient.get(`/api/trainingProgram`)
+      return data
+    },
+  })
+}

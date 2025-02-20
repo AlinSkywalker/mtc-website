@@ -239,3 +239,27 @@ export function useFetchEventAllDepartmentPlanList(eventId) {
     },
   })
 }
+
+export function useFetchEventAllDepartmentPlanJournalList(eventId, date) {
+  let fetchUrl = `/api/eventList/${eventId}/departments/allDepartmentPlanJournal/${date}`
+  return useQuery({
+    queryKey: ['event', eventId, 'department', 'allDepartmentPlanJournal', date],
+    queryFn: async () => {
+      if (!eventId || !date) return []
+      const { data } = await apiClient.get(fetchUrl)
+      return data
+    },
+  })
+}
+
+export function useFetchEventStatistics(eventId) {
+  let fetchUrl = `/api/eventList/${eventId}/statistics`
+  return useQuery({
+    queryKey: ['event', eventId, 'statistics'],
+    queryFn: async () => {
+      if (!eventId) return []
+      const { data } = await apiClient.get(fetchUrl)
+      return data
+    },
+  })
+}

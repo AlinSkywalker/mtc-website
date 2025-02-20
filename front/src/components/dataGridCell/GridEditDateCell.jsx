@@ -66,10 +66,8 @@ function dateIsValid(date) {
 }
 function GridEditDateCell({ id, field, value, colDef, row }) {
   const apiRef = useGridApiContext()
-  // console.log('colDef', colDef.minDate)
   const Component = colDef.type === 'dateTime' ? DateTimePicker : DatePicker
   const handleChange = (newValue) => {
-    // console.log('handleChange', newValue)
     const dateFormat = colDef.type === 'dateTime' ? 'yyyy-MM-dd HH:mm:ss' : 'yyyy-MM-dd'
     apiRef.current.setEditCellValue({
       id,
@@ -84,7 +82,6 @@ function GridEditDateCell({ id, field, value, colDef, row }) {
   } else if (colDef.minDate && row[colDef.minDate]) {
     minDate = new Date(row[colDef.minDate])
   }
-  // console.log('minDate', colDef.minDate, row[colDef.minDate])
   return (
     <Component
       value={pickerValue}

@@ -13,7 +13,8 @@ const memberListRouter = (app, passport) => {
           `SELECT m.*, c.name_city, ma.alprazr, ma.alpinstr, ma.skali, ma.ledu   
                   FROM member m 
                   LEFT JOIN city c on m.memb_city=c.id
-                  JOIN membalp ma on m.id=ma.id`,
+                  JOIN membalp ma on m.id=ma.id
+                  ORDER BY m.fio ASC`,
           (error, result) => {
             if (error) {
               console.log(error);
@@ -29,7 +30,8 @@ const memberListRouter = (app, passport) => {
                   FROM eventmemb e_m 
                   LEFT JOIN member m on m.id=e_m.eventmemb_memb
                   JOIN membalp ma on m.id=ma.id 
-                  WHERE eventmemb_even='${eventId}'`,
+                  WHERE eventmemb_even='${eventId}'
+                  ORDER BY m.fio ASC`,
           (error, result) => {
             if (error) {
               console.log(error);
@@ -46,7 +48,7 @@ const memberListRouter = (app, passport) => {
                   JOIN membalp ma on m.id=ma.id 
                   WHERE ma.alpinstr IS NOT NULL 
                   AND ma.alpzeton IS NOT NULL
-                  `,
+                  ORDER BY m.fio ASC`,
           (error, result) => {
             if (error) {
               console.log(error);
@@ -59,7 +61,7 @@ const memberListRouter = (app, passport) => {
       } else if (possibleRole == "st") {
         pool.query(
           `SELECT m.*, ma.alprazr, ma.alpinstr, ma.skali, ma.ledu    FROM member m JOIN membalp ma on m.id=ma.id 
-                  WHERE ma.alpinstr='1' OR ma.alpinstr='2'`,
+                  WHERE ma.alpinstr='1' OR ma.alpinstr='2' ORDER BY m.fio ASC`,
           (error, result) => {
             if (error) {
               console.log(error);
@@ -72,7 +74,7 @@ const memberListRouter = (app, passport) => {
       } else if (possibleRole == "instructor") {
         pool.query(
           `SELECT m.*, ma.alprazr, ma.alpinstr, ma.skali, ma.ledu  
-                  FROM member m JOIN membalp ma on m.id=ma.id WHERE ma.alpinstr IS NOT NULL`,
+                  FROM member m JOIN membalp ma on m.id=ma.id WHERE ma.alpinstr IS NOT NULL ORDER BY m.fio ASC`,
           (error, result) => {
             if (error) {
               console.log(error);
@@ -87,7 +89,8 @@ const memberListRouter = (app, passport) => {
           `SELECT m.*, c.name_city, ma.alprazr, ma.alpinstr 
                   FROM member m 
                   LEFT JOIN city c on m.memb_city=c.id 
-                  JOIN membalp ma on m.id=ma.id`,
+                  JOIN membalp ma on m.id=ma.id
+                  ORDER BY m.fio ASC`,
           (error, result) => {
             if (error) {
               console.log(error);
@@ -146,19 +149,21 @@ const memberListRouter = (app, passport) => {
         date_instr,
         skali,
         ledu,
+        memb,
       } = req.body;
       pool.query(
-        `INSERT INTO member ( fio,gender,date_birth,memb_city,tel_1,tel_2,memb_email,size_cloth,size_shoe) VALUES(?,?,?,?,?,?,?,?,?)`,
+        `INSERT INTO member ( fio,gender,date_birth,memb_city,tel_1,tel_2,memb_email,size_cloth,size_shoe,memb) VALUES(?,?,?,?,?,?,?,?,?,?)`,
         [
           fio,
           gender,
-          date_birth||null,
-          memb_city||null,
+          date_birth || null,
+          memb_city || null,
           tel_1,
           tel_2,
           memb_email,
           size_cloth,
           size_shoe,
+          memb,
         ],
         (error, result) => {
           if (error) {
@@ -218,6 +223,7 @@ const memberListRouter = (app, passport) => {
         date_instr,
         skali,
         ledu,
+        memb,
       } = req.body;
       pool.query(
         `UPDATE member SET 
@@ -230,6 +236,7 @@ const memberListRouter = (app, passport) => {
       memb_email=?,
       size_cloth=?,
       size_shoe=?,
+      memb=?,
       updated_date=CURRENT_TIMESTAMP WHERE id=${id}`,
         [
           fio,
@@ -241,6 +248,7 @@ const memberListRouter = (app, passport) => {
           memb_email,
           size_cloth,
           size_shoe,
+          memb,
         ],
         (error, result) => {
           if (error) {

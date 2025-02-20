@@ -9,15 +9,11 @@ import { useFetchLaboratoryForEvent } from '../../queries/dictionary'
 import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
 import { EditCascadeSelectMenu } from '../dataGridCell/EditCascadeSelectMenu'
 import { checkboxColumnType } from '../dataGridCell/GridEditCheckboxCell'
-
-const defaultItem = {
-  route: '',
-  start: '',
-  ob_agreement: 0,
-  ascplan_ruk: '',
-  type: '',
-  laba: '',
-}
+import { EditTrainingProgramMenu } from '../dataGridCell/EditTrainingProgramMenu'
+import { Button } from '@mui/material'
+import DialogTitle from '@mui/material/DialogTitle'
+import Dialog from '@mui/material/Dialog'
+import Grid2 from '@mui/material/Grid2'
 
 const validationSchema = Yup.object({
   type: Yup.string().required('Поле обязательно для заполнения'),
@@ -42,8 +38,30 @@ const validationSchema = Yup.object({
     }),
 })
 
-export const EventDepartmentPlansTable = ({ eventId, departmentId, eventDistrict }) => {
+export const EventDepartmentPlansTable = ({
+  eventId,
+  departmentId,
+  eventDistrict,
+  departmentStartDate,
+  departmentEndDate,
+}) => {
   const queryClient = useQueryClient()
+
+  const defaultItem = {
+    route: '',
+    start: '',
+    ob_agreement: 0,
+    // ascplan_ruk: '',
+    type: '',
+    laba: '',
+    departmentStartDate,
+    departmentEndDate,
+    progp: '',
+    prog_tem: '',
+  }
+
+  const [open, setOpen] = React.useState(false)
+
   const { isLoading, data } = useFetchEventDepartmentPlanList(eventId, departmentId)
 
   const [rows, setRows] = React.useState(data)
@@ -102,15 +120,69 @@ export const EventDepartmentPlansTable = ({ eventId, departmentId, eventDistrict
     )
   }
 
+  const renderProgpSelectEditCell = (params) => {
+    return <EditTrainingProgramMenu {...params} nameField='progp' displayField='prog_tem' />
+  }
+  const handleAcceptDay = (params) => () => {
+    apiClient
+      .post(`/api/eventList/${eventId}/department/${departmentId}/plan/${params.row.id}/accept`)
+      .then((res) => {
+        queryClient.invalidateQueries({
+          queryKey: ['event', eventId, 'department', departmentId, 'plan'],
+        })
+      })
+  }
+  const renderAcceptButtonCell = (params) => {
+    const buttonElement = React.useRef(null)
+    if (params.row.type !== 'Восхождение') {
+      return <></>
+    }
+    return (
+      <Button
+        size='small'
+        variant='contained'
+        onClick={handleAcceptDay(params)}
+        ref={buttonElement}
+        disabled={params.row.accepted}
+      >
+        Зачесть
+      </Button>
+    )
+  }
+
+  const handleClickOpen = () => {
+    setOpen(true)
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+  }
+
+  const renderEstimateButtonCell = (params) => {
+    const buttonElement = React.useRef(null)
+    return (
+      <Button size='small' variant='contained' onClick={handleClickOpen} ref={buttonElement}>
+        Оценка
+      </Button>
+    )
+  }
+
   const columns = [
-    { field: 'start', ...dateColumnType, headerName: 'Дата', width: 120, editable: true },
+    {
+      field: 'start',
+      ...dateColumnType,
+      headerName: 'Дата',
+      width: 120,
+      editable: true,
+      minDate: 'departmentStartDate',
+    },
     {
       field: 'type',
       headerName: 'Тип',
       width: 120,
       editable: true,
       type: 'singleSelect',
-      valueOptions: ['Восхождение', 'Занятие', 'Отдых'],
+      valueOptions: ['Заезд', 'Подход/отход', 'Восхождение', 'Занятие', 'Отдых', 'Отъезд'],
     },
     {
       field: 'rout_name',
@@ -118,6 +190,10 @@ export const EventDepartmentPlansTable = ({ eventId, departmentId, eventDistrict
       width: 200,
       renderEditCell: renderRouteSelectEditCell,
       editable: true,
+      valueGetter: (value, row) => {
+        if (value) return `${value} (${row.rout_comp}, ${row.mount_name})`
+        else return value
+      },
     },
     {
       field: 'laba_name',
@@ -127,13 +203,32 @@ export const EventDepartmentPlansTable = ({ eventId, departmentId, eventDistrict
       editable: true,
     },
     {
+      field: 'prog_tem',
+      headerName: 'Программа подготовки',
+      width: 200,
+      renderEditCell: renderProgpSelectEditCell,
+      editable: true,
+    },
+    {
       field: 'ob_agreement',
       headerName: 'Согл ОБ',
       width: 150,
       editable: true,
       ...checkboxColumnType,
     },
-
+    {
+      field: 'accept_day',
+      headerName: '',
+      width: 120,
+      renderCell: renderAcceptButtonCell,
+    },
+    {
+      field: 'estimate_day',
+      headerName: '',
+      width: 120,
+      renderCell: renderEstimateButtonCell,
+    },
+    { field: 'progp', headerName: 'progp', width: 0, editable: true },
     { field: 'laba', headerName: 'laba', width: 0, editable: true },
     { field: 'route', headerName: 'route', width: 0, editable: true },
     { field: 'rout_mount', headerName: 'rout_mount', width: 0, editable: true },
@@ -158,6 +253,7 @@ export const EventDepartmentPlansTable = ({ eventId, departmentId, eventDistrict
     l_rai_name: false,
     l_rai_reg: false,
     l_region_name: false,
+    progp: false,
   }
 
   const processRowUpdate = async (newRow) => {
@@ -170,20 +266,26 @@ export const EventDepartmentPlansTable = ({ eventId, departmentId, eventDistrict
   }
   if (!eventId) return null
   return (
-    <EditableTable
-      rows={rows}
-      setRows={setRows}
-      rowModesModel={rowModesModel}
-      setRowModesModel={setRowModesModel}
-      columns={columns}
-      processRowUpdate={processRowUpdate}
-      fieldToFocus={fieldToFocus}
-      columnVisibilityModel={columnVisibilityModel}
-      defaultItem={defaultItem}
-      isLoading={isLoading}
-      handleDeleteItem={handleDeleteItem}
-      height={400}
-      addButtonDisabled={!departmentId}
-    />
+    <>
+      <EditableTable
+        rows={rows}
+        setRows={setRows}
+        rowModesModel={rowModesModel}
+        setRowModesModel={setRowModesModel}
+        columns={columns}
+        processRowUpdate={processRowUpdate}
+        fieldToFocus={fieldToFocus}
+        columnVisibilityModel={columnVisibilityModel}
+        defaultItem={defaultItem}
+        isLoading={isLoading}
+        handleDeleteItem={handleDeleteItem}
+        height={400}
+        addButtonDisabled={!departmentId}
+      />
+      <Dialog onClose={handleClose} open={open}>
+        <DialogTitle>Оценка</DialogTitle>
+        <Grid2></Grid2>
+      </Dialog>
+    </>
   )
 }

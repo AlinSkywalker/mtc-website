@@ -23,9 +23,10 @@ const memberExamRouter = (app, passport) => {
       zach_e2,
       zach_e1,
       zach_grade,
+      zach_date
     } = req.body;
-    pool.query(`INSERT INTO membalpzach ( zachmemb, zach_name, zach_note, zach_e2, zach_e1, zach_grade) VALUES(?,?,?,?,?,?)`,
-      [id, zach_name, zach_note, zach_e2, zach_e1, zach_grade], (error, result) => {
+    pool.query(`INSERT INTO membalpzach ( zachmemb, zach_name, zach_note, zach_e2, zach_e1, zach_grade,zach_date) VALUES(?,?,?,?,?,?,?)`,
+      [id, zach_name, zach_note, zach_e2, zach_e1, zach_grade,zach_date||null], (error, result) => {
         if (error) {
           console.log(error);
           res.status(500).json({ success: false, message: error });
@@ -42,6 +43,7 @@ const memberExamRouter = (app, passport) => {
       zach_e2,
       zach_e1,
       zach_grade,
+      zach_date,
     } = req.body;
     pool.query(`UPDATE membalpzach SET 
       zach_name=?,
@@ -49,7 +51,8 @@ const memberExamRouter = (app, passport) => {
       zach_e2=?,
       zach_e1=?,
       zach_grade=?,
-      updated_date=CURRENT_TIMESTAMP WHERE id=${id}`, [zach_name, zach_note, zach_e2, zach_e1, zach_grade], (error, result) => {
+      zach_date=?,
+      updated_date=CURRENT_TIMESTAMP WHERE id=${id}`, [zach_name, zach_note, zach_e2, zach_e1, zach_grade, zach_date||null], (error, result) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });

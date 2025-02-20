@@ -1,11 +1,15 @@
 import React, { useState } from 'react'
-import { useFetchEventAllDepartmentPlanList, useFetchEventDepartmentList } from '../../queries/event'
+import {
+  useFetchEventAllDepartmentPlanList,
+  useFetchEventDepartmentList,
+} from '../../queries/event'
 import Grid from '@mui/material/Grid2'
 import { getDatesInRange } from '../../utils/getDatesInRange'
 import './EventAllDepartmentPlansTableStyle.css'
 import IconButton from '@mui/material/IconButton'
 import ScheduleIcon from '@mui/icons-material/Schedule'
 import Tooltip from '@mui/material/Tooltip'
+import { formatISO } from 'date-fns'
 
 export const EventAllDepartmentPlansTable = ({ eventId, eventStart, eventFinish }) => {
   const { isLoading, data } = useFetchEventAllDepartmentPlanList(eventId)
@@ -16,9 +20,7 @@ export const EventAllDepartmentPlansTable = ({ eventId, eventStart, eventFinish 
     setIsShowPast((prev) => !prev)
   }
   const renderCell = (department, date) => {
-    const depPlan = data.find(
-      (plan) => plan.department === department.id && plan.start === date.date,
-    )
+    const depPlan = data.find((plan) => plan.department === department.id && plan.start === date)
     let planPlace = ''
     if (depPlan?.type === 'Занятие') {
       planPlace = depPlan.laba_name
@@ -57,7 +59,9 @@ export const EventAllDepartmentPlansTable = ({ eventId, eventStart, eventFinish 
         })}
       </Grid>
       {dates.map((item) => {
-        const isPastDate = new Date() > new Date(item.date)
+        const parts = item.date.match(/(\d+)/g)
+        const itemDate = new Date(parts[2], parts[1] - 1, parts[0])
+        const isPastDate = new Date() > itemDate
         let rowClassName = isPastDate ? 'depPlanRow depPlanRowPast' : 'depPlanRow'
         if (!isShowPast && isPastDate) return
         return (
@@ -70,7 +74,9 @@ export const EventAllDepartmentPlansTable = ({ eventId, eventStart, eventFinish 
             className={rowClassName}
           >
             <Grid className={'depPlanCell depPlanDateCell'}>{item.date.substring(0, 5)}</Grid>
-            {departmentData.map((department) => renderCell(department, item))}
+            {departmentData.map((department) =>
+              renderCell(department, formatISO(itemDate, { representation: 'date' })),
+            )}
           </Grid>
         )
       })}
