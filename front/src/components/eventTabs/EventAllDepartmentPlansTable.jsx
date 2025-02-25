@@ -22,7 +22,11 @@ export const EventAllDepartmentPlansTable = ({ eventId, eventStart, eventFinish 
   const renderCell = (department, date) => {
     const depPlan = data.find((plan) => plan.department === department.id && plan.start === date)
     let planPlace = ''
-    if (depPlan?.type === 'Занятие') {
+    if (
+      depPlan?.type === 'Занятие' ||
+      depPlan?.type === 'Отдых' ||
+      depPlan?.type === 'Подход/отход'
+    ) {
       planPlace = depPlan.laba_name
     } else if (depPlan?.type === 'Восхождение') {
       planPlace = `${depPlan.rout_name}(${depPlan.rout_comp}) - ${depPlan.mount_name}`

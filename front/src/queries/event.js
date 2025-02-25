@@ -70,6 +70,18 @@ export function useFetchEventDepartmentList(eventId) {
   })
 }
 
+export function useFetchEventDepartmentWithPlanAtDateList(eventId, date) {
+  return useQuery({
+    queryKey: ['event', eventId, 'departmentsWithPlan', date],
+    queryFn: async () => {
+      const { data } = await apiClient.get(
+        `/api/eventList/${eventId}/departments/departmentWithPlan/${date}`,
+      )
+      return data
+    },
+  })
+}
+
 export function useFetchEventDepartmentById(eventId, departmentId) {
   return useQuery({
     queryKey: ['event', eventId, 'department', departmentId],

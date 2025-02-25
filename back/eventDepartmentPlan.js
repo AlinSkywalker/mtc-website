@@ -40,6 +40,28 @@ const eventDepartmentPlanRouter = (app, passport) => {
     }
   );
   app.get(
+    "/eventList/:eventId/departments/departmentWithPlan/:date",
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+      const { eventId, date } = req.params;
+      pool.query(
+        `SELECT d.*
+              FROM depart_plan dp 
+              LEFT JOIN depart d ON dp.department=d.id
+              WHERE d.depart_event=${eventId} AND dp.start='${date}'
+              `,
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return;
+          }
+          res.send(result);
+        }
+      );
+    }
+  );
+  app.get(
     "/eventList/:eventId/department/:departmentId/plan/",
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
@@ -184,12 +206,12 @@ const eventDepartmentPlanRouter = (app, passport) => {
               }
               let loopError = false;
               let memberCount = result.length;
-              if (
-                result.includes(depart_inst) &&
-                ["НП1", "НП2", "СП1", "СП2"].includes(depart_tip)
-              ) {
-                memberCount = memberCount - 1;
-              }
+              // if (
+              //   result.includes(depart_inst) &&
+              //   ["НП1", "НП2", "СП1", "СП2"].includes(depart_tip)
+              // ) {
+              //   memberCount = memberCount - 1;
+              // }
               const queries = [];
               result.forEach((resultItem) => {
                 const { id: memberId } = resultItem;
@@ -197,9 +219,7 @@ const eventDepartmentPlanRouter = (app, passport) => {
                 const query = new Promise((resolve, reject) => {
                   pool.query(
                     `INSERT INTO ascent (asc_event, asc_memb, asc_route, asc_date, asc_typ, asc_kolu)
-                        SELECT ${eventId}, ${memberId}, ${route}, '${start}', 'Участник', ${
-                      depart_inst || null
-                    } WHERE NOT EXISTS (
+                        SELECT ${eventId}, ${memberId}, ${route}, '${start}', 'Участник', ${memberCount} WHERE NOT EXISTS (
                         SELECT 1 FROM ascent WHERE asc_memb = ${memberId} AND asc_route = ${route} AND asc_date='${start}'
                     );`,
                     (error, result) => {

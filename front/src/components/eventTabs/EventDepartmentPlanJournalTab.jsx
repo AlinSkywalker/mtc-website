@@ -1,8 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import {
-  useFetchEventAllDepartmentPlanJournalList,
-  useFetchEventDepartmentList,
-} from '../../queries/event'
+import React, { useEffect, useMemo, useState } from 'react'
+import { useFetchEventDepartmentWithPlanAtDateList } from '../../queries/event'
 import Grid from '@mui/material/Grid2'
 import { getDatesInRange } from '../../utils/getDatesInRange'
 import './EventAllDepartmentPlansTableStyle.css'
@@ -10,35 +7,50 @@ import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import { Button, Popover } from '@mui/material'
 import apiClient from '../../api/api'
-import IconButton from '@mui/material/IconButton'
 import FormControl from '@mui/material/FormControl'
-import EditIcon from '@mui/icons-material/Edit'
 import { formatISO, parse, format } from 'date-fns'
+import Card from '@mui/material/Card'
+import CardActions from '@mui/material/CardActions'
+import CardContent from '@mui/material/CardContent'
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
+import { EventDepartmentPlanJournalCell } from './EventDepartmentPlanJournalCell'
 
 export const EventDepartmentPlanJournalTab = ({ eventId, eventStart, eventFinish }) => {
-  // пока пусть в заголовке будут все отделения,
-  // но потом нужно будет наверно сделать только отделения, у которых выбранная дата входит в даты отделения
-  const { data: departmentData } = useFetchEventDepartmentList(eventId)
+  // в заголовке те отделения, у которых есть план на дату
   const dates = getDatesInRange(new Date(eventStart), new Date(eventFinish))
-  // console.log('dates', dates)
+
   const [selectedDate, setSelectedDate] = useState(new Date())
-  // console.log('selectedDate', selectedDate)
-  // const { isLoading, data } = useFetchEventAllDepartmentPlanJournalList(
-  //   eventId,
-  //   formatISO(selectedDate, { representation: 'date' }),
-  // )
+
+  const formatDateToServer = (date) => {
+    return formatISO(date, { representation: 'date' })
+  }
+  const formatDateTimeToServer = (date) => {
+    return format(date, 'yyyy-MM-dd HH:mm:ss')
+  }
+  const selectedDateServerFormat = useMemo(() => formatDateToServer(selectedDate), [selectedDate])
+
+  const { data: departmentData } = useFetchEventDepartmentWithPlanAtDateList(
+    eventId,
+    formatDateToServer(selectedDate),
+  )
 
   const [journalData, setJournalData] = useState({})
 
-  useEffect(() => {
+  const fetchJournalData = () => {
     apiClient
       .get(
-        `/api/eventList/${eventId}/departments/allDepartmentPlanJournal/${formatISO(selectedDate, { representation: 'date' })}`,
+        `/api/eventList/${eventId}/departments/allDepartmentPlanJournal/${selectedDateServerFormat}`,
       )
       .then((data) => {
         setJournalData(data.data)
       })
+  }
+
+  useEffect(() => {
+    fetchJournalData()
   }, [selectedDate])
+
+  const [newJournalTime, setNewJournalTime] = useState()
 
   const [anchorEl, setAnchorEl] = React.useState(null)
   const handleClick = (event) => {
@@ -49,64 +61,32 @@ export const EventDepartmentPlanJournalTab = ({ eventId, eventStart, eventFinish
   }
   const open = Boolean(anchorEl)
 
-  const [anchorElJournalItem, setAnchorElJournalItem] = React.useState(null)
-  const handleClickJournalItem = (event) => {
-    setAnchorElJournalItem(event.currentTarget)
-  }
-  const handleCloseJournalItem = () => {
-    setAnchorElJournalItem(null)
-  }
-  const openJournalItem = Boolean(anchorElJournalItem)
-
   const renderCell = (department, journalItem, date) => {
-    const departmentJournalItem = journalItem[department.id]
-    // console.log('departmentJournalItem', departmentJournalItem)
-    // let planPlace = ''
-    // if (depPlan?.type === 'Занятие') {
-    //   planPlace = depPlan.laba_name
-    // } else if (depPlan?.type === 'Восхождение') {
-    //   planPlace = `${depPlan.rout_name}(${depPlan.rout_comp}) - ${depPlan.mount_name}`
-    // }
-    if (!departmentJournalItem)
-      return (
-        <Grid key={department.id} className={'depPlanCell depPlanCell-inner'}>
-          <IconButton color='primary' onClick={handleClickJournalItem}>
-            <EditIcon />
-          </IconButton>
-        </Grid>
-      )
     return (
-      <Grid key={department.id} className={'depPlanCell depPlanCell-inner'}>
-        {/* <Grid item sx={{ fontWeight: 'bold' }}>
-          {depPlan?.type}
-        </Grid> */}
-        <Grid item sx={{ textAlign: 'center' }}>
-          {departmentJournalItem.direction}
-          {departmentJournalItem.place_fact}
-          {departmentJournalItem.place_plan}
-          {departmentJournalItem.plan}
-        </Grid>
-        <IconButton color='primary' onClick={handleClickJournalItem}>
-          <EditIcon />
-        </IconButton>
-        <Popover
-          open={openJournalItem}
-          anchorEl={anchorElJournalItem}
-          onClose={handleCloseJournalItem}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
-        >
-          поля для редактирования записи в журнале
-          <Button onClick={handleAddJournalItem}>Сохранить</Button>
-        </Popover>
-      </Grid>
+      <EventDepartmentPlanJournalCell
+        department={department}
+        journalItem={journalItem}
+        date={date}
+        eventId={eventId}
+        fetchJournalData={fetchJournalData}
+      />
     )
   }
-  const handleAddJournalItem = () => {}
+
+  const handleAddJournalTime = () => {
+    apiClient
+      .post(
+        `/api/eventList/${eventId}/departments/allDepartmentPlanJournal/${selectedDateServerFormat}/addPlanJournalTime`,
+        { dateTime: formatDateTimeToServer(newJournalTime) },
+      )
+      .then((data) => {
+        handleClose()
+        setNewJournalTime()
+        fetchJournalData()
+      })
+  }
   if (!journalData || !departmentData) return
-  // console.log('format(selectedDate, dd.MM)', format(selectedDate, 'dd.MM'))
+
   return (
     <Grid container sx={{ width: '100%', overflowX: 'scroll' }}>
       <Grid>
@@ -143,42 +123,56 @@ export const EventDepartmentPlanJournalTab = ({ eventId, eventStart, eventFinish
         {Object.entries(journalData).map(([key, item]) => {
           return (
             <Grid
-              key={item.id}
+              key={key}
               item
               sx={{ width: '100%' }}
               container
               flexDirection={'row'}
               className='depPlanRow'
             >
-              <Grid className={'depPlanCell depPlanDateCell'}>{key.substring(11)}</Grid>
+              <Grid className={'depPlanCell depPlanDateCell depPlanJournalCell'}>
+                {key.substring(11)}
+              </Grid>
               {departmentData.map((department) => renderCell(department, item, key))}
             </Grid>
           )
         })}
-        <Grid
-          key='addNew'
-          item
-          sx={{ width: '100%' }}
-          container
-          flexDirection={'row'}
-          className='depPlanRowNew'
-          alignContent='center'
-          justifyContent='center'
-        >
-          <Button onClick={handleClick}>Добавить время связи</Button>
-          <Popover
-            open={open}
-            anchorEl={anchorEl}
-            onClose={handleClose}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'left',
-            }}
+        {departmentData.length !== 0 && (
+          <Grid
+            key='addNew'
+            item
+            sx={{ width: '100%' }}
+            container
+            flexDirection={'row'}
+            className='depPlanRowNew'
+            alignContent='center'
+            justifyContent='center'
           >
-            поля для добавления нового времени связи возможно форма
-            <Button onClick={handleAddJournalItem}>Добавить</Button>
-          </Popover>
-        </Grid>
+            <Button onClick={handleClick}>Добавить время связи</Button>
+            <Popover
+              open={open}
+              anchorEl={anchorEl}
+              onClose={handleClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+            >
+              <Card>
+                <CardContent>
+                  <DateTimePicker
+                    label='Новая дата связи'
+                    value={newJournalTime}
+                    onChange={(newValue) => setNewJournalTime(newValue)}
+                  />
+                </CardContent>
+                <CardActions>
+                  <Button onClick={handleAddJournalTime}>Сохранить</Button>
+                </CardActions>
+              </Card>
+            </Popover>
+          </Grid>
+        )}
       </Grid>
     </Grid>
   )
