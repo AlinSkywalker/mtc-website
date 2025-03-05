@@ -91,7 +91,16 @@ const dictionaryRouter = (app, passport) => {
             res.status(500).json({ success: false, message: error });
             return;
           }
-          res.send(result);
+          const returnType = req.query.returnType;
+          if (returnType == "objectType") {
+            const newResult = {};
+            result.forEach((item) => {
+              newResult[item.id] = { ...item, name: item.rai_name, parent: item.region_name };
+            });
+            res.send(newResult);
+          } else {
+            res.send(result);
+          }
         }
       );
     }
@@ -439,7 +448,7 @@ const dictionaryRouter = (app, passport) => {
         `SELECT l.*, r.rai_name, r.rai_reg, reg.region_name FROM laba l 
                 LEFT JOIN raion r ON l.laba_rai=r.id
                 LEFT JOIN region reg ON r.rai_reg = reg.id
-                WHERE laba_rai=(SELECT event_raion FROM eventalp WHERE id=${eventId})`,
+                WHERE laba_rai IN (SELECT raion_m FROM eventalp_in_raion WHERE event_m=${eventId})`,
         (error, result) => {
           if (error) {
             console.log(error);
@@ -728,8 +737,8 @@ LEFT JOIN (
             return;
           }
           const fullResult = result.map((item) => {
-            const contr_name_list = item.contr_names.split("||");
-            const contr_id_list = item.contr_ids
+            const contr_name_list = item.contr_names?.split("||") || [];
+            const contr_id_list = (item.contr_ids || '')
               .split("||")
               .map((item) => Number(item));
             const cont_fio = contr_name_list.join(", ");
@@ -1141,10 +1150,22 @@ LEFT JOIN (
               res.status(500).json({ success: false, message: error });
               return;
             }
-            res.send({
-              data: resultAll,
-              razdelList: resultUnique.map((item) => item.prog_razd),
-            });
+            const returnType = req.query.returnType;
+            if (returnType == "objectType") {
+              const newResult = {};
+              resultAll.forEach((item) => {
+                newResult[item.id] = { ...item, name: item.prog_tem, parent: item.prog_razd };
+              });
+              res.send({
+                data: newResult,
+                razdelList: resultUnique.map((item) => item.prog_razd),
+              });
+            } else {
+              res.send(
+                resultAll,
+              );
+            }
+
           }
         );
       });

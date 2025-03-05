@@ -80,6 +80,17 @@ const eventDepartmentPlanRouter = (app, passport) => {
                   LEFT JOIN raion l_rai ON l.laba_rai=l_rai.id
                   LEFT JOIN region l_reg ON l_rai.rai_reg = l_reg.id
                   LEFT JOIN progr_pod pp ON dp.progp = pp.id
+                  LEFT JOIN (
+                    SELECT
+                      e_r.event_m,
+                      GROUP_CONCAT(r.rai_name SEPARATOR '||') as raion_names,
+                      GROUP_CONCAT(r.id SEPARATOR '||') as raion_ids
+                    FROM
+                      eventalp_in_raion e_r
+                    LEFT JOIN raion r on
+                      r.id = e_r.raion_m
+                    GROUP BY
+                      e_r.event_m) e_r on e_r.event_m = e.id
                 WHERE department='${departmentId}' ORDER BY dp.start ASC`,
         (error, result) => {
           if (error) {

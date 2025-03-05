@@ -10,6 +10,7 @@ import * as Yup from 'yup'
 import { SelectEditInputCell } from './dataGridCell/SelectEditInputCell'
 import { EditCascadeSelectMenu } from './dataGridCell/EditCascadeSelectMenu'
 import { dateColumnType } from './dataGridCell/GridEditDateCell'
+import { MultiValueSelecWithGroupingtEditInputCell } from './dataGridCell/MultiValueSelecWithGroupingtEditInputCell'
 
 const defaultItem = {
   event_name: '',
@@ -79,6 +80,20 @@ export const EventListPage = () => {
       />
     )
   }
+  const renderRaionSelectEditCell = (params) => {
+    return (
+      <MultiValueSelecWithGroupingtEditInputCell
+        {...params}
+        dictionaryName='districtDictionary'
+        nameListField='raion_name_list'
+        idListField='raion_id_list'
+        displayNameField='raion_name'
+        groupByField='region_name'
+        labelField='rai_name'
+      />
+    )
+  }
+
   const renderSTSelectEditCell = (params) => {
     const hookParams = { possibleRole: 'st' }
     return (
@@ -136,11 +151,18 @@ export const EventListPage = () => {
       editable: true,
       minDate: 'event_start',
     },
+    // {
+    //   field: 'rai_name',
+    //   headerName: 'Район проведения',
+    //   width: 150,
+    //   renderEditCell: renderBaseSelectEditCell,
+    //   editable: true,
+    // },
     {
-      field: 'rai_name',
+      field: 'raion_name',
       headerName: 'Район проведения',
-      width: 150,
-      renderEditCell: renderBaseSelectEditCell,
+      width: 250,
+      renderEditCell: renderRaionSelectEditCell,
       editable: true,
     },
     {
@@ -161,12 +183,16 @@ export const EventListPage = () => {
     { field: 'event_raion', headerName: 'event_raion', width: 0, editable: true },
     { field: 'event_st', headerName: 'event_st', width: 0, editable: true },
     { field: 'event_ob', headerName: 'event_ob', width: 0, editable: true },
+    { field: 'raion_id_list', headerName: 'raion_id_list', width: 0, editable: true },
+    { field: 'raion_name_list', headerName: 'raion_name_list', width: 0, editable: true },
   ]
   const fieldToFocus = 'event_name'
   const columnVisibilityModel = {
     event_raion: false,
     event_st: false,
     event_ob: false,
+    raion_id_list: false,
+    raion_name_list: false,
   }
 
   const processRowUpdate = async (newRow) => {

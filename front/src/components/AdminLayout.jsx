@@ -13,6 +13,7 @@ import { AuthContext } from './AuthContext'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import apiClient from '../api/api'
+import MtcImage from '../assets/mtc.png'
 
 export const AdminLayout = ({ children }) => {
   const [anchorEl, setAnchorEl] = React.useState(null)
@@ -91,13 +92,15 @@ export const AdminLayout = ({ children }) => {
     <Grid>
       <AppBar position='static'>
         <Toolbar>
-          <IconButton size='large' edge='start' color='inherit' aria-label='menu' sx={{ mr: 2 }}>
+          {/* <IconButton size='large' edge='start' color='inherit' aria-label='menu' sx={{ mr: 2 }}>
             <MenuIcon />
-          </IconButton>
-          <Typography variant='h6' component='div' sx={{ mr: 2 }}>
+          </IconButton> */}
+          {/* <Typography variant='h6' component='div' sx={{ mr: 2 }}>
             ЦАП
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: 'flex' }}>
+          </Typography> */}
+          {/* <MtcImage /> */}
+          <img src={MtcImage} alt='torchlight in the sky' height='55px' />
+          <Box sx={{ flexGrow: 1, display: 'flex', marginLeft: 3 }}>
             {pages.map((page) => (
               <Button
                 key={page.name}

@@ -90,7 +90,9 @@ export function EditCascadeSelectMenu(props) {
   const districtMappedData = mapDictionaryData('districtDictionary', districtData)
   const summitMappedData = mapDictionaryData(
     'summitDictionary',
-    fixedDistrict ? summitData?.filter((item) => item.mount_rai == fixedDistrict) : summitData,
+    fixedDistrict
+      ? summitData?.filter((item) => fixedDistrict.includes(item.mount_rai))
+      : summitData,
   )
   const routeMappedData = mapDictionaryData('routeDictionary', routeData)
 

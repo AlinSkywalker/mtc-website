@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 
 export function useFetchDictionaryByName({ dictionaryName, returnType }) {
   return useQuery({
-    queryKey: [dictionaryName],
+    queryKey: [dictionaryName, returnType],
     queryFn: async () => {
       const { data } = await apiClient.get(`/api/${dictionaryName}?returnType=${returnType}`)
       return data

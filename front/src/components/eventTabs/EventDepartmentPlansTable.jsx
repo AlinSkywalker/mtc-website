@@ -1,5 +1,8 @@
 import React from 'react'
-import { useFetchEventDepartmentPlanList } from '../../queries/event'
+import {
+  useFetchEventDepartmentPlanList,
+  useFetchEventDepartmentMemberList,
+} from '../../queries/event'
 import apiClient from '../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
 import { EditableTable } from '../EditableTable'
@@ -14,6 +17,11 @@ import { Button } from '@mui/material'
 import DialogTitle from '@mui/material/DialogTitle'
 import Dialog from '@mui/material/Dialog'
 import Grid2 from '@mui/material/Grid2'
+import IconButton from '@mui/material/IconButton'
+import CloseIcon from '@mui/icons-material/Close'
+import DialogContent from '@mui/material/DialogContent'
+import DialogActions from '@mui/material/DialogActions'
+import { MultiValueSelecWithGroupingtEditInputCell } from '../dataGridCell/MultiValueSelecWithGroupingtEditInputCell'
 
 const validationSchema = Yup.object({
   type: Yup.string().required('Поле обязательно для заполнения'),
@@ -61,8 +69,14 @@ export const EventDepartmentPlansTable = ({
   }
 
   const [open, setOpen] = React.useState(false)
+  const [selectedDate, setSelectedDate] = React.useState()
 
   const { isLoading, data } = useFetchEventDepartmentPlanList(eventId, departmentId)
+  const { data: selectedDateDepartmentMembers } = useFetchEventDepartmentMemberList(
+    eventId,
+    departmentId,
+    selectedDate,
+  )
 
   const [rows, setRows] = React.useState(data)
   const [rowModesModel, setRowModesModel] = React.useState({})
@@ -132,6 +146,21 @@ export const EventDepartmentPlansTable = ({
         })
       })
   }
+
+  const renderProgramSelectEditCell = (params) => {
+    return (
+      <MultiValueSelecWithGroupingtEditInputCell
+        {...params}
+        dictionaryName='trainingProgram'
+        nameListField='program_name_list'
+        idListField='program_id_list'
+        displayNameField='program_name'
+        groupByField='prog_razd'
+        labelField='prog_tem'
+      />
+    )
+  }
+
   const renderAcceptButtonCell = (params) => {
     const buttonElement = React.useRef(null)
     if (params.row.type !== 'Восхождение') {
@@ -150,8 +179,10 @@ export const EventDepartmentPlansTable = ({
     )
   }
 
-  const handleClickOpen = () => {
+  const handleClickOpen = (clickDate) => () => {
     setOpen(true)
+    console.log('clickDate', clickDate)
+    setSelectedDate(clickDate)
   }
 
   const handleClose = () => {
@@ -161,7 +192,12 @@ export const EventDepartmentPlansTable = ({
   const renderEstimateButtonCell = (params) => {
     const buttonElement = React.useRef(null)
     return (
-      <Button size='small' variant='contained' onClick={handleClickOpen} ref={buttonElement}>
+      <Button
+        size='small'
+        variant='contained'
+        onClick={handleClickOpen(params.row.start)}
+        ref={buttonElement}
+      >
         Оценка
       </Button>
     )
@@ -210,6 +246,13 @@ export const EventDepartmentPlansTable = ({
       editable: true,
     },
     {
+      field: 'program_name',
+      headerName: 'Программа подготовки',
+      width: 250,
+      renderEditCell: renderProgramSelectEditCell,
+      editable: true,
+    },
+    {
       field: 'ob_agreement',
       headerName: 'Согл ОБ',
       width: 150,
@@ -239,6 +282,8 @@ export const EventDepartmentPlansTable = ({
     { field: 'l_rai_name', headerName: 'rai_name', width: 0, editable: true },
     { field: 'l_rai_reg', headerName: 'rai_reg', width: 0, editable: true },
     { field: 'l_region_name', headerName: 'region_name', width: 0, editable: true },
+    { field: 'program_id_list', headerName: 'program_id_list', width: 0, editable: true },
+    { field: 'program_name_list', headerName: 'program_name_list', width: 0, editable: true },
   ]
 
   const fieldToFocus = 'depart_tip'
@@ -264,7 +309,7 @@ export const EventDepartmentPlansTable = ({
       queryKey: ['event', eventId, 'department', departmentId, 'plan'],
     })
   }
-  if (!eventId) return null
+  if (!eventId || !departmentId) return null
   return (
     <>
       <EditableTable
@@ -284,7 +329,20 @@ export const EventDepartmentPlansTable = ({
       />
       <Dialog onClose={handleClose} open={open}>
         <DialogTitle>Оценка</DialogTitle>
-        <Grid2></Grid2>
+        <IconButton
+          aria-label='close'
+          onClick={handleClose}
+          sx={(theme) => ({
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: theme.palette.grey[500],
+          })}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent></DialogContent>
+        <Grid2>{/* {selectedDateDepartmentMembers?.map()} */}</Grid2>
       </Dialog>
     </>
   )

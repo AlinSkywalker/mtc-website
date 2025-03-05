@@ -74,7 +74,7 @@ const eventBaseRouter = (app, passport) => {
       const { eventId } = req.params;
       pool.query(
         `SELECT * FROM base
-          WHERE base_rai=(SELECT event_raion FROM eventalp WHERE id=${eventId})
+          WHERE base_rai IN (SELECT raion_m FROM eventalp_in_raion WHERE event_m=${eventId})
           AND id NOT IN (SELECT base_m FROM base_in_eventalp WHERE event_m=${eventId})`,
         (error, result) => {
           if (error) {

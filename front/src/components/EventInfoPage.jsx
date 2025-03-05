@@ -48,6 +48,7 @@ const defaultValues = {
   base: { base_name: '', id: 0 },
   raion: { rai_name: '', id: 0 },
   price: null,
+  raion_id_list: [],
 }
 
 const validationSchema = Yup.object({
@@ -139,7 +140,7 @@ export const EventInfoPage = () => {
       component: (
         <EventDepartmentPlansTab
           eventId={currentId}
-          eventDistrict={data?.event_raion}
+          eventDistrict={data?.raion_id_list}
           eventStart={data?.event_start}
           eventFinish={data?.event_finish}
         />
@@ -305,15 +306,15 @@ export const EventInfoPage = () => {
                   </Grid>
                   <Grid item size={3}>
                     <Controller
-                      name='raion'
+                      name='raion_name'
                       control={control}
                       render={({ field }) => (
-                        <AsynchronousAutocomplete
+                        <TextField
+                          {...field}
+                          variant='outlined'
                           label='Район проведения'
-                          request={fetchAllDistrict}
-                          dataNameField='rai_name'
-                          field={field}
-                          errors={errors}
+                          fullWidth
+                          disabled
                         />
                       )}
                     />
