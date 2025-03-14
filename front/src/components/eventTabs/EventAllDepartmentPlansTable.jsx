@@ -65,7 +65,9 @@ export const EventAllDepartmentPlansTable = ({ eventId, eventStart, eventFinish 
       {dates.map((item) => {
         const parts = item.date.match(/(\d+)/g)
         const itemDate = new Date(parts[2], parts[1] - 1, parts[0])
-        const isPastDate = new Date() > itemDate
+        const currentDate = new Date()
+        currentDate.setHours(0, 0, 0, 0)
+        const isPastDate = currentDate > itemDate
         let rowClassName = isPastDate ? 'depPlanRow depPlanRowPast' : 'depPlanRow'
         if (!isShowPast && isPastDate) return
         return (

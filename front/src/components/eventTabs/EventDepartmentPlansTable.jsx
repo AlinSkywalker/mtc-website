@@ -160,19 +160,39 @@ export const EventDepartmentPlansTable = ({
       />
     )
   }
+  const renderAscentHeadSelectEditCell = (params) => {
+    const hookParams = {
+      eventId,
+      departmentId: departmentId,
+      selectedDate: params.row.start,
+    }
+    return (
+      <SelectEditInputCell
+        {...params}
+        dictionaryName='departMembers'
+        nameField='ascent_head'
+        hook={useFetchEventDepartmentMemberList}
+        hookParams={hookParams}
+        // secondarySource='alprazr'
+        // secondarySourceArray={['alprazr', 'skali', 'ledu']}
+      />
+    )
+  }
 
   const renderAcceptButtonCell = (params) => {
     const buttonElement = React.useRef(null)
     if (params.row.type !== 'Восхождение') {
       return <></>
     }
+    const itemDate = new Date(params.row.start)
+    const isFutureDate = new Date() < itemDate
     return (
       <Button
         size='small'
         variant='contained'
         onClick={handleAcceptDay(params)}
         ref={buttonElement}
-        disabled={params.row.accepted}
+        disabled={params.row.accepted || isFutureDate}
       >
         Зачесть
       </Button>
@@ -232,19 +252,26 @@ export const EventDepartmentPlansTable = ({
       },
     },
     {
+      field: 'ascent_head_fio',
+      headerName: 'Руковод',
+      width: 200,
+      renderEditCell: renderAscentHeadSelectEditCell,
+      editable: true,
+    },
+    {
       field: 'laba_name',
       headerName: 'Лаборатория',
       width: 200,
       renderEditCell: renderLabaSelectEditCell,
       editable: true,
     },
-    {
-      field: 'prog_tem',
-      headerName: 'Программа подготовки',
-      width: 200,
-      renderEditCell: renderProgpSelectEditCell,
-      editable: true,
-    },
+    // {
+    //   field: 'prog_tem',
+    //   headerName: 'Программа подготовки',
+    //   width: 200,
+    //   renderEditCell: renderProgpSelectEditCell,
+    //   editable: true,
+    // },
     {
       field: 'program_name',
       headerName: 'Программа подготовки',
@@ -284,6 +311,7 @@ export const EventDepartmentPlansTable = ({
     { field: 'l_region_name', headerName: 'region_name', width: 0, editable: true },
     { field: 'program_id_list', headerName: 'program_id_list', width: 0, editable: true },
     { field: 'program_name_list', headerName: 'program_name_list', width: 0, editable: true },
+    { field: 'ascent_head', headerName: 'ascent_head', width: 0, editable: true },
   ]
 
   const fieldToFocus = 'depart_tip'
@@ -299,6 +327,9 @@ export const EventDepartmentPlansTable = ({
     l_rai_reg: false,
     l_region_name: false,
     progp: false,
+    program_id_list: false,
+    program_name_list: false,
+    ascent_head: false,
   }
 
   const processRowUpdate = async (newRow) => {

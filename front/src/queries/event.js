@@ -93,7 +93,7 @@ export function useFetchEventDepartmentById(eventId, departmentId) {
   })
 }
 
-export function useFetchEventDepartmentMemberList(eventId, departmentId, selectedDate) {
+export function useFetchEventDepartmentMemberList({ eventId, departmentId, selectedDate }) {
   let fetchUrl = `/api/eventList/${eventId}/department/${departmentId}/member`
   if (selectedDate) {
     fetchUrl += `?selectedDate=${selectedDate}`

@@ -19,11 +19,11 @@ const validationSchema = Yup.object({
 
 export const EventDepartmentMemberTable = ({ eventId, selectedDepartmentId, selectedDate }) => {
   const queryClient = useQueryClient()
-  const { isLoading, data } = useFetchEventDepartmentMemberList(
+  const { isLoading, data } = useFetchEventDepartmentMemberList({
     eventId,
-    selectedDepartmentId,
+    departmentId: selectedDepartmentId,
     selectedDate,
-  )
+  })
 
   const [rows, setRows] = React.useState(data)
   const [rowModesModel, setRowModesModel] = React.useState({})

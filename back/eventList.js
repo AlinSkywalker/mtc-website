@@ -34,7 +34,8 @@ const eventListRouter = (app, passport) => {
           }
           const fullResult = result.map((item) => {
             const raion_name_list = item.raion_names?.split("||");
-            const raion_id_list = item.raion_ids?.split("||")
+            const raion_id_list = item.raion_ids
+              ?.split("||")
               .map((item) => Number(item));
             const raion_name = raion_name_list?.join(", ");
             return { ...item, raion_name_list, raion_id_list, raion_name };
@@ -56,7 +57,7 @@ const eventListRouter = (app, passport) => {
         event_st,
         event_ob,
         event_desc,
-        raion_id_list
+        raion_id_list,
       } = req.body;
       pool.query(
         `INSERT INTO eventalp (event_name, event_raion, event_start,event_finish, event_st, event_ob,event_desc) 
@@ -128,9 +129,10 @@ const eventListRouter = (app, passport) => {
           }
           const { ob_fio, event_ob, st_fio, event_st, rai_name, event_raion } =
             result[0];
-          console.log(result[0])
+          // console.log(result[0])
           const raion_name_list = result[0].raion_names?.split("||");
-          const raion_id_list = result[0].raion_ids?.split("||")
+          const raion_id_list = result[0].raion_ids
+            ?.split("||")
             .map((item) => Number(item));
           const raion_name = raion_name_list?.join(", ");
           const fullResult = {
@@ -140,7 +142,7 @@ const eventListRouter = (app, passport) => {
             raion: { rai_name, id: event_raion },
             raion_name_list,
             raion_id_list,
-            raion_name
+            raion_name,
           };
           res.send(fullResult);
         }
@@ -161,7 +163,7 @@ const eventListRouter = (app, passport) => {
         event_ob,
         event_desc,
         price,
-        raion_id_list
+        raion_id_list,
       } = req.body;
       const eventRaionValues = raion_id_list
         .map((item) => `(${id},${item})`)

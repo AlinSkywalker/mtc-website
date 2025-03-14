@@ -22,6 +22,7 @@ function mapDictionaryData(
       )
       secondary = secondareArray.join(', ')
     } else if (secondarySource) secondary = item[secondarySource]
+    let id = item.id
     switch (dictionaryName) {
       case 'regionDictionary':
         itemName = item.region_name
@@ -56,6 +57,10 @@ function mapDictionaryData(
       case 'events':
         itemName = item.event_name
         break
+      case 'departMembers':
+        id = item.member_id
+        itemName = item.member_fio
+        break
       case 'baseHouseDictionary':
         itemName = item.basefd_name
         break
@@ -66,7 +71,7 @@ function mapDictionaryData(
         itemName = ''
         break
     }
-    return { id: item.id, name: itemName, item, secondary }
+    return { id, name: itemName, item, secondary }
   })
 }
 

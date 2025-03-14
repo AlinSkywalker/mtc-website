@@ -1,6 +1,6 @@
 // Load the MySQL pool connection
 const pool = require("./mysql");
-const getDatesInRange = require("./getDatesInRange")
+const getDatesInRange = require("./getDatesInRange");
 // Route the app
 const eventDepartmentRouter = (app, passport) => {
   app.get(
@@ -12,7 +12,8 @@ const eventDepartmentRouter = (app, passport) => {
         `SELECT d.*, m.fio as inst_fio, e.event_start, e.event_finish FROM depart d 
         LEFT JOIN member m on m.id=d.depart_inst 
         LEFT JOIN eventalp e on e.id=d.depart_event
-        WHERE depart_event='${eventId}'`,
+        WHERE depart_event='${eventId}'
+        ORDER BY d.depart_dates ASC`,
         (error, result) => {
           if (error) {
             console.log(error);
@@ -61,7 +62,8 @@ const eventDepartmentRouter = (app, passport) => {
       } = req.body;
       pool.query(
         `INSERT INTO depart ( depart_event, depart_tip, depart_datef, depart_dates, depart_name,depart_inst) 
-      VALUES('${eventId}','${depart_tip}',CONVERT('${depart_datef}',DATETIME),CONVERT('${depart_dates}',DATETIME),'${depart_name}',${depart_inst || null
+      VALUES('${eventId}','${depart_tip}',CONVERT('${depart_datef}',DATETIME),CONVERT('${depart_dates}',DATETIME),'${depart_name}',${
+          depart_inst || null
         })`,
         (error, result) => {
           if (error) {
@@ -135,7 +137,7 @@ const eventDepartmentRouter = (app, passport) => {
       }
       if (req.query.selectedDate) {
         pool.query(
-          `SELECT m_d.membd_memb as id, m.fio as member_fio FROM member_in_depart m_d
+          `SELECT m_d.membd_memb as id, m.fio as member_fio, m.id as member_id FROM member_in_depart m_d
         LEFT JOIN eventmemb e_m ON e_m.id=m_d.membd_memb
         LEFT JOIN member m on m.id=e_m.eventmemb_memb
         WHERE m_d.membd_dep=${departmentId} AND m_d.membd_date='${req.query.selectedDate}'`,

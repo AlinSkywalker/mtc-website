@@ -70,27 +70,28 @@ const eventDepartmentPlanRouter = (app, passport) => {
         `SELECT dp.*, r.rout_name, r.rout_mount, r.rout_comp, 
                 m.mount_name, m.mount_rai, rai.rai_name, rai.rai_reg, reg.region_name,
                 l.laba_name, l.laba_rai, l_rai.rai_name as l_rai_name, l_rai.rai_reg  as l_rai_reg, l_reg.region_name as l_region_name,
-                pp.prog_tem, pp.prog_razd
+                pp.prog_tem, pp.prog_razd, mem.fio as ascent_head_fio, pp_dp.program_names , pp_dp.program_ids
                 FROM depart_plan dp
                   LEFT JOIN route r on r.id=dp.route
                   LEFT JOIN mount m on m.id=r.rout_mount
-                  LEFT JOIN raion rai ON m.mount_rai=rai.id
-                  LEFT JOIN region reg ON rai.rai_reg = reg.id
+                  LEFT JOIN raion rai ON rai.id = m.mount_rai
+                  LEFT JOIN region reg ON reg.id = rai.rai_reg
                   LEFT JOIN laba l on l.id=dp.laba
-                  LEFT JOIN raion l_rai ON l.laba_rai=l_rai.id
-                  LEFT JOIN region l_reg ON l_rai.rai_reg = l_reg.id
-                  LEFT JOIN progr_pod pp ON dp.progp = pp.id
+                  LEFT JOIN raion l_rai ON l_rai.id = l.laba_rai
+                  LEFT JOIN region l_reg ON l_reg.id = l_rai.rai_reg
+                  LEFT JOIN progr_pod pp ON pp.id = dp.progp
+                  LEFT JOIN member mem ON mem.id = dp.ascent_head
                   LEFT JOIN (
                     SELECT
-                      e_r.event_m,
-                      GROUP_CONCAT(r.rai_name SEPARATOR '||') as raion_names,
-                      GROUP_CONCAT(r.id SEPARATOR '||') as raion_ids
+                      pp_dp.depart_plan,
+                      GROUP_CONCAT(pp.prog_tem SEPARATOR '||') as program_names,
+                      GROUP_CONCAT(pp.id SEPARATOR '||') as program_ids
                     FROM
-                      eventalp_in_raion e_r
-                    LEFT JOIN raion r on
-                      r.id = e_r.raion_m
+                      progrp_in_depart_plan pp_dp
+                    LEFT JOIN progr_pod pp on
+                      pp.id = pp_dp.progr_p
                     GROUP BY
-                      e_r.event_m) e_r on e_r.event_m = e.id
+                      pp_dp.depart_plan) pp_dp on pp_dp.depart_plan = dp.id
                 WHERE department='${departmentId}' ORDER BY dp.start ASC`,
         (error, result) => {
           if (error) {
@@ -98,7 +99,20 @@ const eventDepartmentPlanRouter = (app, passport) => {
             res.status(500).json({ success: false, message: error });
             return;
           }
-          res.send(result);
+          const fullResult = result.map((item) => {
+            const program_name_list = item.program_names?.split("||") || [];
+            const program_id_list = (item.program_ids?.split("||") || []).map(
+              (item) => Number(item)
+            );
+            const program_name = program_name_list?.join(", ");
+            return {
+              ...item,
+              program_name_list,
+              program_id_list,
+              program_name,
+            };
+          });
+          res.send(fullResult);
         }
       );
     }
@@ -109,11 +123,12 @@ const eventDepartmentPlanRouter = (app, passport) => {
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
       const { eventId, departmentId } = req.params;
-      const { route, start, ob_agreement, type, laba, progp } = req.body;
+      const { route, start, ob_agreement, type, laba, progp, ascent_head } =
+        req.body;
       pool.query(
         `INSERT INTO depart_plan 
-      ( department, route, start, ob_agreement,type,laba,progp) 
-      VALUES(?,?,?,?,?,?,?)`,
+      ( department, route, start, ob_agreement,type,laba,progp,ascent_head) 
+      VALUES(?,?,?,?,?,?,?,?)`,
         [
           departmentId,
           route || null,
@@ -122,6 +137,7 @@ const eventDepartmentPlanRouter = (app, passport) => {
           type,
           laba || null,
           progp || null,
+          ascent_head || null,
         ],
         (error, result) => {
           if (error) {
@@ -139,7 +155,8 @@ const eventDepartmentPlanRouter = (app, passport) => {
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
       const { id } = req.params;
-      const { route, start, ob_agreement, type, laba, progp } = req.body;
+      const { route, start, ob_agreement, type, laba, progp, ascent_head } =
+        req.body;
       pool.query(
         `UPDATE depart_plan SET 
       route=?,
@@ -148,8 +165,17 @@ const eventDepartmentPlanRouter = (app, passport) => {
       type=?,
       laba=?,
       progp=?,
+      ascent_head=?,
       updated_date=CURRENT_TIMESTAMP WHERE id=${id}`,
-        [route || null, start, ob_agreement, type, laba || null, progp || null],
+        [
+          route || null,
+          start,
+          ob_agreement,
+          type,
+          laba || null,
+          progp || null,
+          ascent_head || null,
+        ],
         (error, result) => {
           if (error) {
             console.log(error);
@@ -203,7 +229,7 @@ const eventDepartmentPlanRouter = (app, passport) => {
             res.status(500).json({ success: false, message: error });
             return;
           }
-          const { route, start, depart_inst, depart_tip } = result[0];
+          const { route, start, depart_inst, ascent_head } = result[0];
           pool.query(
             `SELECT m.id FROM member_in_depart m_in_d
             LEFT JOIN eventmemb em ON em.id=m_in_d.membd_memb
@@ -226,11 +252,16 @@ const eventDepartmentPlanRouter = (app, passport) => {
               const queries = [];
               result.forEach((resultItem) => {
                 const { id: memberId } = resultItem;
-                const role = "Участник";
+                let role = "Участник";
+                if (memberId === depart_inst) {
+                  role = "Инструктор";
+                } else if (memberId === ascent_head) {
+                  role = "Руководитель";
+                }
                 const query = new Promise((resolve, reject) => {
                   pool.query(
                     `INSERT INTO ascent (asc_event, asc_memb, asc_route, asc_date, asc_typ, asc_kolu)
-                        SELECT ${eventId}, ${memberId}, ${route}, '${start}', 'Участник', ${memberCount} WHERE NOT EXISTS (
+                        SELECT ${eventId}, ${memberId}, ${route}, '${start}', '${role}', ${memberCount} WHERE NOT EXISTS (
                         SELECT 1 FROM ascent WHERE asc_memb = ${memberId} AND asc_route = ${route} AND asc_date='${start}'
                     );`,
                     (error, result) => {
