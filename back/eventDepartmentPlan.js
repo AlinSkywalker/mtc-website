@@ -123,8 +123,16 @@ const eventDepartmentPlanRouter = (app, passport) => {
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
       const { eventId, departmentId } = req.params;
-      const { route, start, ob_agreement, type, laba, progp, ascent_head } =
-        req.body;
+      const {
+        route,
+        start,
+        ob_agreement,
+        type,
+        laba,
+        progp,
+        ascent_head,
+        program_id_list,
+      } = req.body;
       pool.query(
         `INSERT INTO depart_plan 
       ( department, route, start, ob_agreement,type,laba,progp,ascent_head) 
@@ -145,7 +153,25 @@ const eventDepartmentPlanRouter = (app, passport) => {
             res.status(500).json({ success: false, message: error });
             return;
           }
-          res.send(result);
+          const planId = result.insertId;
+          if (program_id_list && program_id_list?.length !== 0) {
+            const planProgramValues = program_id_list
+              .map((item) => `(${planId},${item})`)
+              .join(", ");
+            pool.query(
+              `INSERT INTO progrp_in_depart_plan (depart_plan, progr_p) VALUES ${planProgramValues}`,
+              (error, result) => {
+                if (error) {
+                  console.log(error);
+                  res.status(500).json({ success: false, message: error });
+                  return;
+                }
+                res.json({ success: true });
+              }
+            );
+          } else {
+            res.json({ success: true });
+          }
         }
       );
     }
@@ -155,8 +181,19 @@ const eventDepartmentPlanRouter = (app, passport) => {
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
       const { id } = req.params;
-      const { route, start, ob_agreement, type, laba, progp, ascent_head } =
-        req.body;
+      const {
+        route,
+        start,
+        ob_agreement,
+        type,
+        laba,
+        progp,
+        ascent_head,
+        program_id_list,
+      } = req.body;
+      const planProgramValues = program_id_list
+        ?.map((item) => `(${id},${item})`)
+        .join(", ");
       pool.query(
         `UPDATE depart_plan SET 
       route=?,
@@ -182,7 +219,31 @@ const eventDepartmentPlanRouter = (app, passport) => {
             res.status(500).json({ success: false, message: error });
             return;
           }
-          res.send(result);
+          pool.query(
+            `DELETE FROM progrp_in_depart_plan WHERE depart_plan=${id}`,
+            (error, result) => {
+              if (error) {
+                console.log(error);
+                res.status(500).json({ success: false, message: error });
+                return;
+              }
+              if (program_id_list && program_id_list?.length !== 0) {
+                pool.query(
+                  `INSERT INTO progrp_in_depart_plan (depart_plan, progr_p) VALUES ${planProgramValues}`,
+                  (error, result) => {
+                    if (error) {
+                      console.log(error);
+                      res.status(500).json({ success: false, message: error });
+                      return;
+                    }
+                    res.json({ success: true });
+                  }
+                );
+              } else {
+                res.json({ success: true });
+              }
+            }
+          );
         }
       );
     }
@@ -203,6 +264,23 @@ const eventDepartmentPlanRouter = (app, passport) => {
     }
   );
   app.post(
+    "/eventList/:eventId/department/:departmentId/plan/:id/unaccepted",
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+      const { id } = req.params;
+      pool.query(
+        `UPDATE depart_plan dp SET accepted=1,updated_date=CURRENT_TIMESTAMP WHERE dp.id='${id}'`,
+        (error, result) => {
+          if (error) {
+            res.status(500).json({ success: false, message: error });
+            return;
+          }
+          res.send("done");
+        }
+      );
+    }
+  );
+  app.post(
     "/eventList/:eventId/department/:departmentId/plan/:id/accept",
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
@@ -211,7 +289,7 @@ const eventDepartmentPlanRouter = (app, passport) => {
         `SELECT dp.*, r.rout_name, r.rout_mount, r.rout_comp, 
                 m.mount_name, m.mount_rai, rai.rai_name, rai.rai_reg, reg.region_name,
                 l.laba_name, l.laba_rai, l_rai.rai_name as l_rai_name, l_rai.rai_reg  as l_rai_reg, l_reg.region_name as l_region_name,
-                pp.prog_tem, pp.prog_razd, d.depart_inst, d.depart_tip
+                pp.prog_tem, pp.prog_razd, d.depart_inst, d.depart_tip, mem.fio as ascent_head_fio
                 FROM depart_plan dp
                   LEFT JOIN route r on r.id=dp.route
                   LEFT JOIN mount m on m.id=r.rout_mount
@@ -222,6 +300,7 @@ const eventDepartmentPlanRouter = (app, passport) => {
                   LEFT JOIN region l_reg ON l_rai.rai_reg = l_reg.id
                   LEFT JOIN progr_pod pp ON dp.progp = pp.id
                   LEFT JOIN depart d ON d.id = dp.department
+                  LEFT JOIN member mem ON mem.id = dp.ascent_head
                 WHERE dp.id='${id}' ORDER BY dp.start ASC`,
         (error, result) => {
           if (error) {
@@ -229,7 +308,8 @@ const eventDepartmentPlanRouter = (app, passport) => {
             res.status(500).json({ success: false, message: error });
             return;
           }
-          const { route, start, depart_inst, ascent_head } = result[0];
+          const { route, start, depart_inst, ascent_head, ascent_head_fio } =
+            result[0];
           pool.query(
             `SELECT m.id FROM member_in_depart m_in_d
             LEFT JOIN eventmemb em ON em.id=m_in_d.membd_memb
@@ -260,8 +340,10 @@ const eventDepartmentPlanRouter = (app, passport) => {
                 }
                 const query = new Promise((resolve, reject) => {
                   pool.query(
-                    `INSERT INTO ascent (asc_event, asc_memb, asc_route, asc_date, asc_typ, asc_kolu)
-                        SELECT ${eventId}, ${memberId}, ${route}, '${start}', '${role}', ${memberCount} WHERE NOT EXISTS (
+                    `INSERT INTO ascent (asc_event, asc_memb, asc_route, asc_date, asc_typ, asc_kolu, asc_ruk)
+                        SELECT ${eventId}, ${memberId}, ${route}, '${start}', '${role}', ${memberCount}, ${
+                      ascent_head_fio || null
+                    } WHERE NOT EXISTS (
                         SELECT 1 FROM ascent WHERE asc_memb = ${memberId} AND asc_route = ${route} AND asc_date='${start}'
                     );`,
                     (error, result) => {

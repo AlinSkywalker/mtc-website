@@ -98,8 +98,7 @@ export const AdminLayout = ({ children }) => {
           {/* <Typography variant='h6' component='div' sx={{ mr: 2 }}>
             ЦАП
           </Typography> */}
-          {/* <MtcImage /> */}
-          <img src={MtcImage} alt='torchlight in the sky' height='55px' />
+          <img src={MtcImage} alt='ЦАП' height='55px' />
           <Box sx={{ flexGrow: 1, display: 'flex', marginLeft: 3 }}>
             {pages.map((page) => (
               <Button

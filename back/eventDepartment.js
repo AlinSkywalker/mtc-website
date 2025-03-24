@@ -334,6 +334,51 @@ const eventDepartmentRouter = (app, passport) => {
       }
     }
   );
+
+  app.get(
+    "/eventList/:eventId/departments/allDepartmentMembers/",
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+      const { eventId } = req.params;
+      pool.query(
+        `SELECT * FROM eventalp WHERE id=${eventId}`,
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return;
+          }
+          pool.query(
+            `SELECT m_i_d.*, m.fio
+                  FROM member_in_depart m_i_d
+                  LEFT JOIN depart d ON d.id=m_i_d.membd_dep
+                  LEFT JOIN eventmemb em ON em.id=m_i_d.membd_memb
+                  LEFT JOIN member m ON m.id=em.eventmemb_memb
+                  WHERE d.depart_event=${eventId}
+                  ORDER BY membd_date ASC
+                  `,
+            (error, result) => {
+              if (error) {
+                console.log(error);
+                res.status(500).json({ success: false, message: error });
+                return;
+              }
+              const fullResult = {};
+              result.forEach((item) => {
+                const deptMembers =
+                  fullResult[item.membd_date]?.[item.membd_dep] || [];
+                fullResult[item.membd_date] = {
+                  ...fullResult[item.membd_date],
+                  [item.membd_dep]: [...deptMembers, item.fio],
+                };
+              });
+              res.send(fullResult);
+            }
+          );
+        }
+      );
+    }
+  );
 };
 
 // Export the router

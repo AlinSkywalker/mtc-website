@@ -252,6 +252,18 @@ export function useFetchEventAllDepartmentPlanList(eventId) {
   })
 }
 
+export function useFetchEventAllDepartmentMembersList(eventId) {
+  let fetchUrl = `/api/eventList/${eventId}/departments/allDepartmentMembers`
+  return useQuery({
+    queryKey: ['event', eventId, 'department', 'allDepartmentMembers'],
+    queryFn: async () => {
+      if (!eventId) return []
+      const { data } = await apiClient.get(fetchUrl)
+      return data
+    },
+  })
+}
+
 export function useFetchEventAllDepartmentPlanJournalList(eventId, date) {
   let fetchUrl = `/api/eventList/${eventId}/departments/allDepartmentPlanJournal/${date}`
   return useQuery({

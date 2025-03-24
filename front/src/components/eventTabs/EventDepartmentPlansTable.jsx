@@ -147,6 +147,16 @@ export const EventDepartmentPlansTable = ({
       })
   }
 
+  const handleUnacceptedDay = (params) => () => {
+    apiClient
+      .post(`/api/eventList/${eventId}/department/${departmentId}/plan/${params.row.id}/unaccepted`)
+      .then((res) => {
+        queryClient.invalidateQueries({
+          queryKey: ['event', eventId, 'department', departmentId, 'plan'],
+        })
+      })
+  }
+
   const renderProgramSelectEditCell = (params) => {
     return (
       <MultiValueSelecWithGroupingtEditInputCell
@@ -187,21 +197,32 @@ export const EventDepartmentPlansTable = ({
     const itemDate = new Date(params.row.start)
     const isFutureDate = new Date() < itemDate
     return (
-      <Button
-        size='small'
-        variant='contained'
-        onClick={handleAcceptDay(params)}
-        ref={buttonElement}
-        disabled={params.row.accepted || isFutureDate}
-      >
-        Зачесть
-      </Button>
+      <>
+        <Button
+          size='small'
+          variant='contained'
+          onClick={handleAcceptDay(params)}
+          ref={buttonElement}
+          disabled={params.row.accepted || isFutureDate}
+        >
+          Зачесть
+        </Button>
+        <Button
+          size='small'
+          variant='contained'
+          onClick={handleUnacceptedDay(params)}
+          ref={buttonElement}
+          disabled={params.row.accepted || isFutureDate}
+        >
+          Не зачесть
+        </Button>
+      </>
     )
   }
 
   const handleClickOpen = (clickDate) => () => {
     setOpen(true)
-    console.log('clickDate', clickDate)
+    // console.log('clickDate', clickDate)
     setSelectedDate(clickDate)
   }
 
@@ -282,14 +303,14 @@ export const EventDepartmentPlansTable = ({
     {
       field: 'ob_agreement',
       headerName: 'Согл ОБ',
-      width: 150,
+      width: 120,
       editable: true,
       ...checkboxColumnType,
     },
     {
       field: 'accept_day',
       headerName: '',
-      width: 120,
+      width: 220,
       renderCell: renderAcceptButtonCell,
     },
     {
