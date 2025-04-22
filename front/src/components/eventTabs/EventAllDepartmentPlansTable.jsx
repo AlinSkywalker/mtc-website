@@ -45,7 +45,14 @@ export const EventAllDepartmentPlansTable = ({ eventId, eventStart, eventFinish 
   if (!data || !departmentData) return
   return (
     <Grid container sx={{ width: '100%', overflowX: 'scroll' }}>
-      <Grid item sx={{ width: '100%' }} container flexDirection={'row'} className='depPlanRow'>
+      <Grid
+        item
+        sx={{ width: '100%' }}
+        container
+        flexDirection={'row'}
+        className='depPlanRow'
+        flexWrap='nowrap'
+      >
         <Grid className={'depPlanCell depPlanDateCell depPlanTitleCell'}>
           <Tooltip title='Показать прошедшие даты'>
             <IconButton aria-label='delete' color='primary' onClick={handleShowPast}>
@@ -78,6 +85,7 @@ export const EventAllDepartmentPlansTable = ({ eventId, eventStart, eventFinish 
             container
             flexDirection={'row'}
             className={rowClassName}
+            flexWrap='nowrap'
           >
             <Grid className={'depPlanCell depPlanDateCell'}>{item.date.substring(0, 5)}</Grid>
             {departmentData.map((department) =>

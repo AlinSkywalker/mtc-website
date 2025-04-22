@@ -27,6 +27,7 @@ import { EventDepartmentPlansTab } from './eventTabs/EventDepartmentPlansTab'
 import { EventDepartmentPlanJournalTab } from './eventTabs/EventDepartmentPlanJournalTab'
 import { EventStatisticsTab } from './eventTabs/EventStatisticsTab'
 import { EventAllDepartmentMembersTab } from './eventTabs/EventAllDepartmentMembersTab'
+import { EventProtocolTab } from './eventTabs/EventProtocolTab'
 
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
@@ -193,6 +194,11 @@ export const EventInfoPage = () => {
       name: 'statistics',
       label: 'Статистика',
       component: <EventStatisticsTab eventId={currentId} />,
+    },
+    {
+      name: 'protocol',
+      label: 'Протокол',
+      component: <EventProtocolTab eventId={currentId} />,
     },
   ]
 

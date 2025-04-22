@@ -203,7 +203,7 @@ export const EventDepartmentPlansTable = ({
           variant='contained'
           onClick={handleAcceptDay(params)}
           ref={buttonElement}
-          disabled={params.row.accepted || isFutureDate}
+          disabled={!!params.row.accepted || isFutureDate}
         >
           Зачесть
         </Button>
@@ -212,7 +212,7 @@ export const EventDepartmentPlansTable = ({
           variant='contained'
           onClick={handleUnacceptedDay(params)}
           ref={buttonElement}
-          disabled={params.row.accepted || isFutureDate}
+          disabled={!!params.row.accepted || isFutureDate}
         >
           Не зачесть
         </Button>

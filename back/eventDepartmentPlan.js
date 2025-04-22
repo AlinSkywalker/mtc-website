@@ -269,7 +269,7 @@ const eventDepartmentPlanRouter = (app, passport) => {
     (req, res) => {
       const { id } = req.params;
       pool.query(
-        `UPDATE depart_plan dp SET accepted=1,updated_date=CURRENT_TIMESTAMP WHERE dp.id='${id}'`,
+        `UPDATE depart_plan dp SET accepted='Не зачтено',updated_date=CURRENT_TIMESTAMP WHERE dp.id='${id}'`,
         (error, result) => {
           if (error) {
             res.status(500).json({ success: false, message: error });
@@ -341,9 +341,7 @@ const eventDepartmentPlanRouter = (app, passport) => {
                 const query = new Promise((resolve, reject) => {
                   pool.query(
                     `INSERT INTO ascent (asc_event, asc_memb, asc_route, asc_date, asc_typ, asc_kolu, asc_ruk)
-                        SELECT ${eventId}, ${memberId}, ${route}, '${start}', '${role}', ${memberCount}, ${
-                      ascent_head_fio || null
-                    } WHERE NOT EXISTS (
+                        SELECT ${eventId}, ${memberId}, ${route}, '${start}', '${role}', ${memberCount}, '${ascent_head_fio}' WHERE NOT EXISTS (
                         SELECT 1 FROM ascent WHERE asc_memb = ${memberId} AND asc_route = ${route} AND asc_date='${start}'
                     );`,
                     (error, result) => {
@@ -360,7 +358,7 @@ const eventDepartmentPlanRouter = (app, passport) => {
               Promise.all(queries)
                 .then(() => {
                   pool.query(
-                    `UPDATE depart_plan dp SET accepted=1,updated_date=CURRENT_TIMESTAMP WHERE dp.id='${id}'`,
+                    `UPDATE depart_plan dp SET accepted='Зачтено',updated_date=CURRENT_TIMESTAMP WHERE dp.id='${id}'`,
                     (error, result) => {
                       if (error) {
                         res

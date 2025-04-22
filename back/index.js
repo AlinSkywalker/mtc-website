@@ -23,6 +23,7 @@ const eventFileRouter = require("./eventFile");
 const eventContractorRouter = require("./eventContractor");
 const eventDepartmentPlanRouter = require("./eventDepartmentPlan");
 const eventDepartmentPlanJournalRouter = require("./eventDepartmentPlanJournal");
+const eventProtocolRouter = require("./eventProtocol");
 
 const memberExamRouter = require("./memberExam");
 const memberAscentRouter = require("./memberAscent");
@@ -210,22 +211,26 @@ app.post(
   }
 );
 
-eventListRouter(app, passport);
-memberListRouter(app, passport);
+
+
 
 dictionaryRouter(app, passport);
 
+eventListRouter(app, passport);
 eventSmenaRouter(app, passport);
 eventDepartmentRouter(app, passport);
 eventMemberRouter(app, passport);
 eventBaseRouter(app, passport);
 eventFileRouter(app, passport);
 eventContractorRouter(app, passport);
-
-memberExamRouter(app, passport);
-memberAscentRouter(app, passport);
 eventDepartmentPlanRouter(app, passport);
 eventDepartmentPlanJournalRouter(app, passport);
+eventProtocolRouter(app, passport);
+
+memberListRouter(app, passport);
+memberExamRouter(app, passport);
+memberAscentRouter(app, passport);
+
 
 app.get("*", (req, res) => {
   // console.log(req.params)

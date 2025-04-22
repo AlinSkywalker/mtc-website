@@ -287,3 +287,14 @@ export function useFetchEventStatistics(eventId) {
     },
   })
 }
+export function useFetchEventProtocol(eventId) {
+  let fetchUrl = `/api/eventList/${eventId}/protocol`
+  return useQuery({
+    queryKey: ['event', eventId, 'protocol'],
+    queryFn: async () => {
+      if (!eventId) return []
+      const { data } = await apiClient.get(fetchUrl)
+      return data
+    },
+  })
+}

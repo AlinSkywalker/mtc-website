@@ -24,12 +24,15 @@ export const EventAllDepartmentMembersTable = ({ eventId, eventStart, eventFinis
     const depMembers = data[date]?.[department.id] || []
 
     return (
-      <Grid key={department.id} className={'depPlanCell depPlanCell-inner'}>
+      <Grid key={department.id} className={'depPlanCell depPlanCell-inner depMembersCell'}>
         <Grid item sx={{ textAlign: 'center' }}>
           {depMembers.map((item, index) => (
-            <Typography variant='caption' key={index}>
-              {item}
-            </Typography>
+            <>
+              <Typography variant='caption' key={index}>
+                {item}
+              </Typography>
+              <br />
+            </>
           ))}
         </Grid>
       </Grid>
@@ -38,47 +41,59 @@ export const EventAllDepartmentMembersTable = ({ eventId, eventStart, eventFinis
   if (!data || !departmentData) return
   return (
     <Grid container sx={{ width: '100%', overflowX: 'scroll' }}>
-      <Grid item sx={{ width: '100%' }} container flexDirection={'row'} className='depPlanRow'>
-        <Grid className={'depPlanCell depPlanDateCell depPlanTitleCell'}>
-          <Tooltip title='Показать прошедшие даты'>
-            <IconButton aria-label='delete' color='primary' onClick={handleShowPast}>
-              <ScheduleIcon />
-            </IconButton>
-          </Tooltip>
+      <Grid>
+        <Grid
+          item
+          sx={{ width: '100%' }}
+          container
+          flexDirection={'row'}
+          className='depPlanRow'
+          flexWrap='nowrap'
+        >
+          <Grid className={'depPlanCell depPlanDateCell depPlanTitleCell'}>
+            <Tooltip title='Показать прошедшие даты'>
+              <IconButton aria-label='delete' color='primary' onClick={handleShowPast}>
+                <ScheduleIcon />
+              </IconButton>
+            </Tooltip>
+          </Grid>
+          {departmentData.map((department) => {
+            return (
+              <Grid
+                key={department.id}
+                className={'depPlanCell depPlanTitleCell depMembersCell'}
+              >{`${department.depart_tip} ${department.depart_name}`}</Grid>
+            )
+          })}
         </Grid>
-        {departmentData.map((department) => {
+        {dates.map((item) => {
+          const parts = item.date.match(/(\d+)/g)
+          const itemDate = new Date(parts[2], parts[1] - 1, parts[0])
+          const currentDate = new Date()
+          currentDate.setHours(0, 0, 0, 0)
+          const isPastDate = currentDate > itemDate
+          let rowClassName = isPastDate ? 'depPlanRow depPlanRowPast' : 'depPlanRow'
+          if (!isShowPast && isPastDate) return
           return (
             <Grid
-              key={department.id}
-              className={'depPlanCell depPlanTitleCell'}
-            >{`${department.depart_tip} ${department.depart_name}`}</Grid>
+              key={item.id}
+              item
+              sx={{ width: '100%' }}
+              container
+              flexDirection={'row'}
+              className={rowClassName}
+              flexWrap='nowrap'
+            >
+              <Grid className={'depPlanCell depPlanDateCell depMembersCell'}>
+                {item.date.substring(0, 5)}
+              </Grid>
+              {departmentData.map((department) =>
+                renderCell(department, formatISO(itemDate, { representation: 'date' })),
+              )}
+            </Grid>
           )
         })}
       </Grid>
-      {dates.map((item) => {
-        const parts = item.date.match(/(\d+)/g)
-        const itemDate = new Date(parts[2], parts[1] - 1, parts[0])
-        const currentDate = new Date()
-        currentDate.setHours(0, 0, 0, 0)
-        const isPastDate = currentDate > itemDate
-        let rowClassName = isPastDate ? 'depPlanRow depPlanRowPast' : 'depPlanRow'
-        if (!isShowPast && isPastDate) return
-        return (
-          <Grid
-            key={item.id}
-            item
-            sx={{ width: '100%' }}
-            container
-            flexDirection={'row'}
-            className={rowClassName}
-          >
-            <Grid className={'depPlanCell depPlanDateCell'}>{item.date.substring(0, 5)}</Grid>
-            {departmentData.map((department) =>
-              renderCell(department, formatISO(itemDate, { representation: 'date' })),
-            )}
-          </Grid>
-        )
-      })}
     </Grid>
   )
 }

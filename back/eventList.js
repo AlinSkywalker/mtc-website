@@ -235,6 +235,25 @@ const eventListRouter = (app, passport) => {
       queries.push(
         new Promise((resolve, reject) => {
           pool.query(
+            `SELECT count(*) as result_count FROM eventmemb em
+                        WHERE em.eventmemb_even=${id}`,
+            (error, result) => {
+              if (error) {
+                reject(error);
+              } else {
+                resolve({
+                  id: "total_members",
+                  statistics: "Количество участников",
+                  result: result[0].result_count,
+                });
+              }
+            }
+          );
+        })
+      );
+      queries.push(
+        new Promise((resolve, reject) => {
+          pool.query(
             `SELECT size_cloth, count(em.id) as result_count FROM eventmemb em
                         LEFT JOIN member m on m.id=em.eventmemb_memb
                         WHERE em.eventmemb_even=${id}
@@ -339,6 +358,31 @@ const eventListRouter = (app, passport) => {
                   id: "country",
                   statistics: "Страны участников",
                   result: result.length,
+                });
+              }
+            }
+          );
+        })
+      );
+      queries.push(
+        new Promise((resolve, reject) => {
+          pool.query(
+            `SELECT r.rout_comp, count(dp.id) as result_count FROM depart_plan dp
+                        LEFT JOIN depart d on d.id=dp.department
+                        LEFT JOIN route r on r.id=dp.route
+                        WHERE d.depart_event=${id} AND dp.type='Восхождение' AND dp.accepted='Зачтено' 
+                        GROUP BY r.rout_comp
+                        ORDER BY r.rout_comp ASC`,
+            (error, result) => {
+              if (error) {
+                reject(error);
+              } else {
+                resolve({
+                  id: "rout_count",
+                  statistics: "Схожено маршрутов",
+                  result: result
+                    .map((item) => `${item.rout_comp}(${item.result_count})`)
+                    .join(", "),
                 });
               }
             }

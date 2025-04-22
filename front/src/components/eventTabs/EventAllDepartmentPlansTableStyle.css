@@ -10,8 +10,9 @@
   flex-direction: column;
   background-color: white;
 }
-.depPlanDateCell{
+.MuiGrid2-root.depPlanDateCell{
   width: 120px;
+  min-width: 120px;
   border-left: 1px solid #ccc;
 }
 .depPlanCell-inner{
@@ -31,4 +32,16 @@
 }
 .depPlanJournalCell{
   height: 90px;
+}
+.MuiGrid2-root.depMembersCell{
+  width: 300px;
+  min-width: 300px;
+  height: 125px;
+}
+.MuiGrid2-root.depPlanDateCell.depMembersCell{
+  width: 120px;
+  min-width: 120px;
+}
+.depMembersCell.depPlanTitleCell{
+  height: 40px;
 }
