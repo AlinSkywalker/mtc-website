@@ -3,7 +3,7 @@ import {
   useFetchEventAllDepartmentPlanList,
   useFetchEventDepartmentList,
 } from '../../queries/event'
-import Grid from '@mui/material/Grid2'
+import Grid from '@mui/material/Grid'
 import { getDatesInRange } from '../../utils/getDatesInRange'
 import './EventAllDepartmentPlansTableStyle.css'
 import IconButton from '@mui/material/IconButton'

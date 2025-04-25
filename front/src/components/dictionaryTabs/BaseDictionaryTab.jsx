@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import Grid from '@mui/material/Grid2'
+import Grid from '@mui/material/Grid'
 import { BaseDictionaryTable } from './BaseDictionaryTable'
 import { BaseHouseDictionaryTable } from './BaseHouseDictionaryTable'
 import { BaseHouseRoomDictionaryTable } from './BaseHouseRoomDictionaryTable'

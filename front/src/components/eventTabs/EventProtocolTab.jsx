@@ -1,6 +1,6 @@
 import React from 'react'
 import { useFetchEventProtocol } from '../../queries/event'
-import Grid2 from '@mui/material/Grid2'
+import Grid from '@mui/material/Grid'
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid'
 
 function CustomToolbar() {
@@ -46,7 +46,7 @@ export const EventProtocolTab = ({ eventId }) => {
 
   if (!eventId) return null
   return (
-    <Grid2 item size={12} sx={{ height: 400 }}>
+    <Grid item size={12} sx={{ height: 400 }}>
       <DataGrid
         rows={rows}
         columns={columns}
@@ -57,6 +57,6 @@ export const EventProtocolTab = ({ eventId }) => {
           toolbar: CustomToolbar,
         }}
       />
-    </Grid2>
+    </Grid>
   )
 }

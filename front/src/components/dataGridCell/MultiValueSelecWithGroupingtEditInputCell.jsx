@@ -13,7 +13,7 @@ import Paper from '@mui/material/Paper'
 import IconButton from '@mui/material/IconButton'
 import CreateIcon from '@mui/icons-material/KeyboardArrowDown'
 import Button from '@mui/material/Button'
-import Grid from '@mui/material/Grid2'
+import Grid from '@mui/material/Grid'
 import Popover from '@mui/material/Popover'
 import Box from '@mui/material/Box'
 

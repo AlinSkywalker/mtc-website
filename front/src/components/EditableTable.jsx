@@ -5,7 +5,7 @@ import {
   GridRowModes,
   GridRowEditStartReasons,
 } from '@mui/x-data-grid'
-import Grid from '@mui/material/Grid2'
+import Grid from '@mui/material/Grid'
 import { DictionaryEditToolbar } from './DictionaryEditToolbar'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/DeleteOutlined'

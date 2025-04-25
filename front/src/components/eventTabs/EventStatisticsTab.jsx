@@ -1,7 +1,7 @@
 import React from 'react'
 import { useFetchEventStatistics } from '../../queries/event'
 import { DataGrid } from '@mui/x-data-grid'
-import Grid2 from '@mui/material/Grid2'
+import Grid from '@mui/material/Grid'
 
 export const EventStatisticsTab = ({ eventId }) => {
   const { isLoading, data } = useFetchEventStatistics(eventId)
@@ -23,7 +23,7 @@ export const EventStatisticsTab = ({ eventId }) => {
 
   if (!eventId) return null
   return (
-    <Grid2 item size={12} sx={{ height: 400 }}>
+    <Grid item size={12} sx={{ height: 400 }}>
       <DataGrid
         className='departDateTable'
         rows={rows}
@@ -32,6 +32,6 @@ export const EventStatisticsTab = ({ eventId }) => {
         columnHeaderHeight={36}
         rowHeight={42}
       />
-    </Grid2>
+    </Grid>
   )
 }

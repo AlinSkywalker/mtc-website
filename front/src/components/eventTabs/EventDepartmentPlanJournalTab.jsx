@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { useFetchEventDepartmentWithPlanAtDateList } from '../../queries/event'
-import Grid from '@mui/material/Grid2'
+import Grid from '@mui/material/Grid'
 import { getDatesInRange } from '../../utils/getDatesInRange'
 import './EventAllDepartmentPlansTableStyle.css'
 import Select from '@mui/material/Select'

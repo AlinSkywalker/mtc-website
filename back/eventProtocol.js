@@ -14,11 +14,7 @@ const eventProtocolRouter = (app, passport) => {
 				    ELSE 'Участник'
 				END AS role,
                 s.sub_name, m.mount_name, r.rout_name, r.rout_comp,r.rout_tip ,
-                CASE
-				    WHEN dp.ascent_head IS NOT NULL AND  dp.ascent_head <> ''
-				        THEN 'в сп. гр.'
-				    ELSE 'в уч. гр.'
-				END AS group_type, dp.start 
+                'в уч. гр.' AS group_type, dp.start 
                 FROM mtc_db.depart_plan dp
                   LEFT JOIN mtc_db.route r on r.id=dp.route
                   LEFT JOIN mtc_db.mount m on m.id=r.rout_mount

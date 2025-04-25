@@ -1,22 +1,28 @@
 import React from 'react'
 import { useFetchEventDepartmentById } from '../../queries/event'
 import { DataGrid } from '@mui/x-data-grid'
-import Grid from '@mui/material/Grid2'
+import Grid from '@mui/material/Grid'
 import './DateTableStyles.css'
-import { format, parse, parseISO } from 'date-fns'
+import { format, parse } from 'date-fns'
 import { getDatesInRange } from '../../utils/getDatesInRange'
+
+const emptyRowSelection = {
+  type: 'include',
+  ids: new Set([0]),
+}
 
 export const EventDepartmentDateTable = ({
   eventId,
   selectedDepartmentId,
   onRowSelectionModelChange,
 }) => {
-  const [rowSelectionModel, setRowSelectionModel] = React.useState([])
+  const [rowSelectionModel, setRowSelectionModel] = React.useState(emptyRowSelection)
   const { isLoading, data } = useFetchEventDepartmentById(eventId, selectedDepartmentId)
 
   const [rows, setRows] = React.useState([])
+
   React.useEffect(() => {
-    setRowSelectionModel([])
+    setRowSelectionModel(emptyRowSelection)
   }, [selectedDepartmentId])
 
   React.useEffect(() => {
@@ -31,15 +37,21 @@ export const EventDepartmentDateTable = ({
       field: 'date',
       headerName: 'Дата',
       width: 120,
-      // valueFormatter: (value) => value.substring(0, 5),
     },
   ]
+
   const handleRowSelectionModelChange = (newRowSelectionModel) => {
+
     setRowSelectionModel(newRowSelectionModel)
-    const date = rows.find((item) => item.id == newRowSelectionModel[0])?.date
+    let newDate = ''
+    newRowSelectionModel.ids.forEach(item => {
+      newDate = item
+    })
+    const date = rows.find((item) => item.id == newDate)?.date
     const formattedDate = date ? format(parse(date, 'dd.MM.yyyy', new Date()), 'yyyy-MM-dd') : ''
     onRowSelectionModelChange(formattedDate)
   }
+
   return (
     <Grid item size={12} sx={{ height: 400 }}>
       <DataGrid

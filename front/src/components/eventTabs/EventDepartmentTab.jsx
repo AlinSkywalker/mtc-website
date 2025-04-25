@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import Grid from '@mui/material/Grid2'
+import Grid from '@mui/material/Grid'
 
 import { EventDepartmentTable } from './EventDepartmentTable'
 import { EventDepartmentMemberTable } from './EventDepartmentMemberTable'
@@ -11,7 +11,11 @@ export const EventDepartmentTab = ({ eventId, eventStart, eventFinish }) => {
   const [selectedDate, setSelectedDate] = useState()
 
   const onRowSelectionModelChange = (newRowSelectionModel) => {
-    setSelectedDepartment(newRowSelectionModel[0])
+    let newId = ''
+    newRowSelectionModel.ids.forEach(item => {
+      newId = item
+    })
+    setSelectedDepartment(newId)
     setSelectedDate()
   }
 

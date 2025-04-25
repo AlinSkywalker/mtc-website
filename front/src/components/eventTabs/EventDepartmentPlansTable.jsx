@@ -16,7 +16,7 @@ import { EditTrainingProgramMenu } from '../dataGridCell/EditTrainingProgramMenu
 import { Button } from '@mui/material'
 import DialogTitle from '@mui/material/DialogTitle'
 import Dialog from '@mui/material/Dialog'
-import Grid2 from '@mui/material/Grid2'
+import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 import DialogContent from '@mui/material/DialogContent'
@@ -394,7 +394,7 @@ export const EventDepartmentPlansTable = ({
           <CloseIcon />
         </IconButton>
         <DialogContent></DialogContent>
-        <Grid2>{/* {selectedDateDepartmentMembers?.map()} */}</Grid2>
+        <Grid>{/* {selectedDateDepartmentMembers?.map()} */}</Grid>
       </Dialog>
     </>
   )

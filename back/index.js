@@ -232,7 +232,7 @@ memberExamRouter(app, passport);
 memberAscentRouter(app, passport);
 
 
-app.get("*", (req, res) => {
+app.get(/(.*)/, (req, res) => {
   // console.log(req.params)
   res.status(404).send("PAGE NOT FOUND");
 });

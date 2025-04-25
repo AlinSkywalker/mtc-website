@@ -1,6 +1,6 @@
 import React from 'react'
 import { useGridApiContext } from '@mui/x-data-grid'
-import { Link, Grid2 as Grid } from '@mui/material'
+import { Link, Grid } from '@mui/material'
 import apiClient from '../../api/api'
 
 export const fileColumnType = {
