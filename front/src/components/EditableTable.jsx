@@ -153,7 +153,7 @@ export const EditableTable = ({
             color='inherit'
           />,
         )
-      } else {
+      } else if (handleDeleteItem) {
         actions.push(
           <GridActionsCellItem
             key={2}
@@ -183,7 +183,7 @@ export const EditableTable = ({
   const disabled = addButtonDisabled
   return (
     <Grid spacing={2} container flexDirection={'column'}>
-      <Grid item size={12} sx={{ height: tableHeight }}>
+      <Grid size={12} sx={{ height: tableHeight }}>
         <DataGrid
           className={className}
           rows={rows}
@@ -197,6 +197,7 @@ export const EditableTable = ({
           processRowUpdate={handleProcessRowUpdate}
           onProcessRowUpdateError={handleProcessRowUpdateError}
           onRowSelectionModelChange={onRowSelectionModelChange}
+          showToolbar
           slots={{
             toolbar: () => {
               return toolbar ? (

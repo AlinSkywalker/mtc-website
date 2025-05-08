@@ -59,7 +59,14 @@ const GridEditDateInput = styled(InputBase)({
 
 function WrappedGridEditDateInput(props) {
   const { InputProps, focused, ...other } = props
-  return <GridEditDateInput fullWidth {...InputProps} {...other} />
+  return (
+    <GridEditDateInput
+      fullWidth
+      {...InputProps}
+      {...other}
+      enableAccessibleFieldDOMStructure={false}
+    />
+  )
 }
 function dateIsValid(date) {
   return date instanceof Date && !isNaN(date)
@@ -86,6 +93,7 @@ function GridEditDateCell({ id, field, value, colDef, row }) {
     <Component
       value={pickerValue}
       onChange={handleChange}
+      enableAccessibleFieldDOMStructure={false}
       slots={{ textField: WrappedGridEditDateInput }}
       minDate={minDate}
     />

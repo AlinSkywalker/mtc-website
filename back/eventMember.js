@@ -9,7 +9,8 @@ const eventMemberRouter = (app, passport) => {
                 FROM eventmemb e_m 
                 LEFT JOIN member m on m.id=e_m.eventmemb_memb 
                 LEFT JOIN city c on m.memb_city=c.id
-                WHERE eventmemb_even='${eventId}'`, (error, result) => {
+                WHERE eventmemb_even='${eventId}'
+                ORDER BY m.fio ASC`, (error, result) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });

@@ -1,7 +1,7 @@
 import React from 'react'
 import { GridRowModes, Toolbar } from '@mui/x-data-grid'
 import AddIcon from '@mui/icons-material/Add'
-import { Button } from '@mui/material'
+import { Button, Grid } from '@mui/material'
 
 export const DictionaryEditToolbar = (props) => {
   const {
@@ -24,9 +24,11 @@ export const DictionaryEditToolbar = (props) => {
 
   return (
     <Toolbar>
-      <Button color='primary' startIcon={<AddIcon />} onClick={handleClick} disabled={disabled}>
-        {addButtonLabel ? addButtonLabel : 'Добавить'}
-      </Button>
+      <Grid sx={{ flexGrow: 1 }}>
+        <Button color='primary' startIcon={<AddIcon />} onClick={handleClick} disabled={disabled}>
+          {addButtonLabel ? addButtonLabel : 'Добавить'}
+        </Button>
+      </Grid>
     </Toolbar>
   )
 }

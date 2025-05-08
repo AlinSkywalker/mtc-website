@@ -2,8 +2,8 @@ const mysql = require('mysql2');
 
 const dbConfig = {
   host: '109.120.142.80',
-  user: 'alinsky_remote',
-  password: 'fHreL67ZT',
+  user: process.env.MTC_DB_USER,
+  password: process.env.MTC_DB_PASSWORD,
   database: 'mtc_db',
   insecureAuth: "true",
   dateStrings: true,

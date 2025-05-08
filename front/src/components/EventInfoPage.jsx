@@ -15,7 +15,7 @@ import { AsynchronousAutocomplete } from './AsynchronousAutocomplete'
 import { CircularProgress } from '@mui/material'
 import Tab from '@mui/material/Tab'
 import TabContext from '@mui/lab/TabContext'
-import TabList from '@mui/lab/TabList'
+import Tabs from '@mui/material/Tabs'
 import TabPanel from '@mui/lab/TabPanel'
 import Box from '@mui/material/Box'
 import { EventMembersTab } from './eventTabs/EventMembersTab'
@@ -378,11 +378,11 @@ export const EventInfoPage = () => {
 
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <TabList onChange={handleChange}>
+          <Tabs onChange={handleChange} variant='scrollable' scrollButtons='auto' value={value}>
             {eventTabs.map((tab, index) => (
               <Tab key={index} label={tab.label} value={index} />
             ))}
-          </TabList>
+          </Tabs>
         </Box>
         {eventTabs.map((tab, index) => (
           <TabPanel key={index} value={index} sx={{ p: '10px 0' }}>

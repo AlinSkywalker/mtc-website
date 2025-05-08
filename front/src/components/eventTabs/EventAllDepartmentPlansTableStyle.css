@@ -1,4 +1,4 @@
-.depPlanCell{
+.depPlanCell {
   width: 250px;
   height: 80px;
   border: 1px solid #ccc;
@@ -9,39 +9,53 @@
   justify-content: center;
   flex-direction: column;
   background-color: white;
+  flex-shrink: 0;
 }
-.MuiGrid2-root.depPlanDateCell{
+
+.MuiGrid2-root.depPlanDateCell {
   width: 120px;
   min-width: 120px;
   border-left: 1px solid #ccc;
 }
-.depPlanCell-inner{
+
+.depPlanCell-inner {
   font-size: 14px;
 }
-.depPlanTitleCell{
+
+.depPlanTitleCell {
   height: 40px;
 }
-.depPlanRowPast{
+
+.depPlanRowPast {
   color: #aaa
 }
-.depPlanRowNew{
+
+.depPlanRowNew {
   height: 50px;
   background-color: white;
   border: 1px solid #ccc;
   border-top: none;
 }
-.depPlanJournalCell{
+
+.depPlanJournalCell {
   height: 90px;
 }
-.MuiGrid2-root.depMembersCell{
+
+.MuiGrid2-root.depMembersCell {
   width: 300px;
   min-width: 300px;
   height: 125px;
 }
-.MuiGrid2-root.depPlanDateCell.depMembersCell{
+
+.MuiGrid2-root.depPlanDateCell.depMembersCell {
   width: 120px;
   min-width: 120px;
 }
-.depMembersCell.depPlanTitleCell{
+
+.depMembersCell.depPlanTitleCell {
   height: 40px;
+}
+
+.depMembersCell {
+  height: 160px;
 }

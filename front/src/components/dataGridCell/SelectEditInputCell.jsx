@@ -67,6 +67,10 @@ function mapDictionaryData(
       case 'baseHouseRoomDictionary':
         itemName = item.basenom_name
         break
+      case 'department':
+        itemName = `${item.depart_tip} ${item.depart_name}`
+        if (secondarySource == 'date') secondary = `${item.depart_dates} - ${item.depart_datef}`
+        break
       default:
         itemName = ''
         break
