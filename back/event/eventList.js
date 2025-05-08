@@ -1,5 +1,5 @@
 // Load the MySQL pool connection
-const pool = require("./mysql");
+const pool = require("../mysql");
 
 // Route the app
 const eventListRouter = (app, passport) => {

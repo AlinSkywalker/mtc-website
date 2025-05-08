@@ -53,7 +53,7 @@ export const EventDepartmentDateTable = ({
   }
 
   return (
-    <Grid item size={12} sx={{ height: 400 }}>
+    <Grid size={12} sx={{ height: 400 }}>
       <DataGrid
         className='departDateTable'
         rows={rows}

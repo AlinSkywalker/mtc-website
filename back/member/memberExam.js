@@ -1,5 +1,5 @@
 // Load the MySQL pool connection
-const pool = require("./mysql")
+const pool = require("../mysql")
 
 // Route the app
 const memberExamRouter = (app, passport) => {
@@ -26,7 +26,7 @@ const memberExamRouter = (app, passport) => {
       zach_date
     } = req.body;
     pool.query(`INSERT INTO membalpzach ( zachmemb, zach_name, zach_note, zach_e2, zach_e1, zach_grade,zach_date) VALUES(?,?,?,?,?,?,?)`,
-      [id, zach_name, zach_note, zach_e2, zach_e1, zach_grade,zach_date||null], (error, result) => {
+      [id, zach_name, zach_note, zach_e2, zach_e1, zach_grade, zach_date || null], (error, result) => {
         if (error) {
           console.log(error);
           res.status(500).json({ success: false, message: error });
@@ -52,7 +52,7 @@ const memberExamRouter = (app, passport) => {
       zach_e1=?,
       zach_grade=?,
       zach_date=?,
-      updated_date=CURRENT_TIMESTAMP WHERE id=${id}`, [zach_name, zach_note, zach_e2, zach_e1, zach_grade, zach_date||null], (error, result) => {
+      updated_date=CURRENT_TIMESTAMP WHERE id=${id}`, [zach_name, zach_note, zach_e2, zach_e1, zach_grade, zach_date || null], (error, result) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });

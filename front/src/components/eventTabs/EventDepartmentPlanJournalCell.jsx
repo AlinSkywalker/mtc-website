@@ -46,9 +46,9 @@ export const EventDepartmentPlanJournalCell = ({
     // console.log('departmentJournalItem', departmentJournalItem)
     const apiMethod = departmentJournalItem
       ? apiClient.post(
-          `/api/eventList/${eventId}/departments/planJournal/${departmentJournalItem.id}`,
-          postData,
-        )
+        `/api/eventList/${eventId}/departments/planJournal/${departmentJournalItem.id}`,
+        postData,
+      )
       : apiClient.put(`/api/eventList/${eventId}/departments/planJournal`, putData)
     apiMethod.then((data) => {
       handleCloseJournalItem()
@@ -63,7 +63,7 @@ export const EventDepartmentPlanJournalCell = ({
       wrap='nowrap'
     >
       {departmentJournalItem && (
-        <Grid item sx={{ textAlign: 'center' }} flexGrow={1}>
+        <Grid sx={{ textAlign: 'center' }} flexGrow={1}>
           Направление:
           {departmentJournalItem.direction}
           <br />
@@ -74,7 +74,7 @@ export const EventDepartmentPlanJournalCell = ({
           {departmentJournalItem.place_plan}
         </Grid>
       )}
-      <Grid item sx={{ textAlign: 'center' }}>
+      <Grid sx={{ textAlign: 'center' }}>
         <IconButton
           color='primary'
           onClick={handleClickJournalItem(

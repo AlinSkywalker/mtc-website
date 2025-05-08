@@ -10,23 +10,29 @@ const fileUpload = require("express-fileupload");
 
 const pool = require("./mysql");
 
-const eventListRouter = require("./eventList");
-const memberListRouter = require("./memberList");
+const baseDictionaryRouter = require("./dictionary/baseDictionary");
+const cityDictionaryRouter = require("./dictionary/cityDictionary");
+const contractorDictionaryRouter = require("./dictionary/contractorDictionary");
+const districtDictionaryRouter = require("./dictionary/districtDictionary");
+const laboratoryDictionaryRouter = require("./dictionary/laboratoryDictionary");
+const regionDictionaryRouter = require("./dictionary/regionDictionary");
+const routeDictionaryRouter = require("./dictionary/routeDictionary");
+const summitDictionaryRouter = require("./dictionary/summitDictionary");
 
-const dictionaryRouter = require("./dictionary");
+const eventListRouter = require("./event/eventList");
+const eventSmenaRouter = require("./event/eventSmena");
+const eventDepartmentRouter = require("./event/eventDepartment");
+const eventMemberRouter = require("./event/eventMember");
+const eventBaseRouter = require("./event/eventBase");
+const eventFileRouter = require("./event/eventFile");
+const eventContractorRouter = require("./event/eventContractor");
+const eventDepartmentPlanRouter = require("./event/eventDepartmentPlan");
+const eventDepartmentPlanJournalRouter = require("./event/eventDepartmentPlanJournal");
+const eventProtocolRouter = require("./event/eventProtocol");
 
-const eventSmenaRouter = require("./eventSmena");
-const eventDepartmentRouter = require("./eventDepartment");
-const eventMemberRouter = require("./eventMember");
-const eventBaseRouter = require("./eventBase");
-const eventFileRouter = require("./eventFile");
-const eventContractorRouter = require("./eventContractor");
-const eventDepartmentPlanRouter = require("./eventDepartmentPlan");
-const eventDepartmentPlanJournalRouter = require("./eventDepartmentPlanJournal");
-const eventProtocolRouter = require("./eventProtocol");
-
-const memberExamRouter = require("./memberExam");
-const memberAscentRouter = require("./memberAscent");
+const memberListRouter = require("./member/memberList");
+const memberExamRouter = require("./member/memberExam");
+const memberAscentRouter = require("./member/memberAscent");
 
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -211,10 +217,14 @@ app.post(
   }
 );
 
-
-
-
-dictionaryRouter(app, passport);
+baseDictionaryRouter(app, passport);
+cityDictionaryRouter(app, passport);
+contractorDictionaryRouter(app, passport);
+districtDictionaryRouter(app, passport);
+laboratoryDictionaryRouter(app, passport);
+regionDictionaryRouter(app, passport);
+routeDictionaryRouter(app, passport);
+summitDictionaryRouter(app, passport);
 
 eventListRouter(app, passport);
 eventSmenaRouter(app, passport);

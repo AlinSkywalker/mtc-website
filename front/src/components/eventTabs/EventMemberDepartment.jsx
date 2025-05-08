@@ -172,7 +172,7 @@ export const EventMemberDepartment = ({ eventId }) => {
 
   return (
     <Grid container>
-      <Grid item size={5} sx={{ height: 600 }}>
+      <Grid size={5} sx={{ height: 600 }}>
         <DataGrid
           rows={membersRows}
           columns={membersColumns}
@@ -186,7 +186,7 @@ export const EventMemberDepartment = ({ eventId }) => {
           }}
         />
       </Grid>
-      <Grid item size={7}>
+      <Grid size={7}>
         <EditableTable
           rows={rows}
           setRows={setRows}

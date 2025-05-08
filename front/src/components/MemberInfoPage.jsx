@@ -146,7 +146,7 @@ export const MemberInfoPage = () => {
               spacing={2}
               sx={{ marginBottom: 4 }}
             >
-              <Grid item size={4}>
+              <Grid size={4}>
                 <Controller
                   name='fio'
                   control={control}
@@ -162,7 +162,7 @@ export const MemberInfoPage = () => {
                   )}
                 />
               </Grid>
-              <Grid item size={1}>
+              <Grid size={1}>
                 <Controller
                   name='gender'
                   control={control}
@@ -180,7 +180,7 @@ export const MemberInfoPage = () => {
                   )}
                 />
               </Grid>
-              <Grid item size={2}>
+              <Grid size={2}>
                 <Controller
                   name='date_birth'
                   control={control}
@@ -193,7 +193,7 @@ export const MemberInfoPage = () => {
                   )}
                 />
               </Grid>
-              <Grid item size={1}>
+              <Grid size={1}>
                 <Controller
                   name='size_shoe'
                   control={control}
@@ -211,7 +211,7 @@ export const MemberInfoPage = () => {
                   )}
                 />
               </Grid>
-              <Grid item size={1}>
+              <Grid size={1}>
                 <Controller
                   name='size_cloth'
                   control={control}
@@ -229,7 +229,7 @@ export const MemberInfoPage = () => {
                   )}
                 />
               </Grid>
-              <Grid item size={2}>
+              <Grid size={2}>
                 <Controller
                   name='city'
                   control={control}
@@ -244,7 +244,7 @@ export const MemberInfoPage = () => {
                   )}
                 />
               </Grid>
-              <Grid item size={2}>
+              <Grid size={2}>
                 <Controller
                   name='tel_1'
                   control={control}
@@ -253,7 +253,7 @@ export const MemberInfoPage = () => {
                   )}
                 />
               </Grid>
-              <Grid item size={2}>
+              <Grid size={2}>
                 <Controller
                   name='tel_2'
                   control={control}
@@ -267,7 +267,7 @@ export const MemberInfoPage = () => {
                   )}
                 />
               </Grid>
-              <Grid item size={2}>
+              <Grid size={2}>
                 <Controller
                   name='memb_email'
                   control={control}
@@ -292,7 +292,7 @@ export const MemberInfoPage = () => {
               spacing={2}
               columns={24}
             >
-              <Grid item size={2}>
+              <Grid size={2}>
                 <Controller
                   name='alprazr'
                   control={control}
@@ -310,7 +310,7 @@ export const MemberInfoPage = () => {
                   )}
                 />
               </Grid>
-              <Grid item size={3}>
+              <Grid size={3}>
                 <Controller
                   name='date_razr'
                   control={control}
@@ -323,7 +323,7 @@ export const MemberInfoPage = () => {
                   )}
                 />
               </Grid>
-              <Grid item size={2}>
+              <Grid size={2}>
                 <Controller
                   name='alpzeton'
                   control={control}
@@ -332,7 +332,7 @@ export const MemberInfoPage = () => {
                   )}
                 />
               </Grid>
-              <Grid item size={3}>
+              <Grid size={3}>
                 <Controller
                   name='date_zeton'
                   control={control}
@@ -345,7 +345,7 @@ export const MemberInfoPage = () => {
                   )}
                 />
               </Grid>
-              <Grid item size={2}>
+              <Grid size={2}>
                 <Controller
                   name='alpinstr'
                   control={control}
@@ -368,7 +368,7 @@ export const MemberInfoPage = () => {
                   )}
                 />
               </Grid>
-              <Grid item size={2}>
+              <Grid size={2}>
                 <Controller
                   name='alpinstrnom'
                   control={control}
@@ -377,7 +377,7 @@ export const MemberInfoPage = () => {
                   )}
                 />
               </Grid>
-              <Grid item size={3}>
+              <Grid size={3}>
                 <Controller
                   name='date_instr'
                   control={control}
@@ -390,7 +390,7 @@ export const MemberInfoPage = () => {
                   )}
                 />
               </Grid>
-              <Grid item size={2}>
+              <Grid size={2}>
                 <Controller
                   name='skali'
                   control={control}
@@ -427,7 +427,7 @@ export const MemberInfoPage = () => {
                   )}
                 />
               </Grid>
-              <Grid item size={2}>
+              <Grid size={2}>
                 <Controller
                   name='ledu'
                   control={control}
@@ -447,12 +447,12 @@ export const MemberInfoPage = () => {
               </Grid>
             </Grid>
             <Grid container sx={{ marginTop: 4 }}>
-              <Grid item>
+              <Grid>
                 <Button variant='text' type='button' disabled={!isDirty} onClick={handleReset}>
                   Отменить
                 </Button>
               </Grid>
-              <Grid item>
+              <Grid>
                 <Button variant='contained' type='submit' disabled={!isDirty}>
                   Сохранить
                 </Button>

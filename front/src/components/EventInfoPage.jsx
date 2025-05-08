@@ -49,8 +49,9 @@ const defaultValues = {
   st: { fio: '', id: 0 },
   base: { base_name: '', id: 0 },
   raion: { rai_name: '', id: 0 },
-  price: null,
+  price: '',
   raion_id_list: [],
+  raion_name: '',
 }
 
 const validationSchema = Yup.object({
@@ -218,7 +219,7 @@ export const EventInfoPage = () => {
       sx={{ minHeight: '100vh', backgroundColor: { xs: '#fff', md: '#f4f4f4' } }}
     >
       <Grid container spacing={2}>
-        <Grid item size={10}>
+        <Grid size={10}>
           <Card sx={{ minWidth: 275 }}>
             <CardContent>
               <form onSubmit={handleSubmit(handleSave)}>
@@ -229,7 +230,7 @@ export const EventInfoPage = () => {
                   flexDirection='row'
                   spacing={2}
                 >
-                  <Grid item size={4}>
+                  <Grid size={4}>
                     <Controller
                       name='event_name'
                       control={control}
@@ -245,7 +246,7 @@ export const EventInfoPage = () => {
                       )}
                     />
                   </Grid>
-                  <Grid item size={4}>
+                  <Grid size={4}>
                     <Controller
                       name='event_desc'
                       control={control}
@@ -254,7 +255,7 @@ export const EventInfoPage = () => {
                       )}
                     />
                   </Grid>
-                  <Grid item size={2}>
+                  <Grid size={2}>
                     <Controller
                       name='event_start'
                       control={control}
@@ -273,7 +274,7 @@ export const EventInfoPage = () => {
                       )}
                     />
                   </Grid>
-                  <Grid item size={2}>
+                  <Grid size={2}>
                     <Controller
                       name='event_finish'
                       control={control}
@@ -292,7 +293,7 @@ export const EventInfoPage = () => {
                       )}
                     />
                   </Grid>
-                  <Grid item size={3}>
+                  <Grid size={3}>
                     <Controller
                       name='ob'
                       control={control}
@@ -307,7 +308,7 @@ export const EventInfoPage = () => {
                       )}
                     />
                   </Grid>
-                  <Grid item size={3}>
+                  <Grid size={3}>
                     <Controller
                       name='st'
                       control={control}
@@ -322,7 +323,7 @@ export const EventInfoPage = () => {
                       )}
                     />
                   </Grid>
-                  <Grid item size={3}>
+                  <Grid size={3}>
                     <Controller
                       name='raion_name'
                       control={control}
@@ -337,7 +338,7 @@ export const EventInfoPage = () => {
                       )}
                     />
                   </Grid>
-                  <Grid item size={2}>
+                  <Grid size={2}>
                     <Controller
                       name='price'
                       control={control}
@@ -356,12 +357,12 @@ export const EventInfoPage = () => {
                   </Grid>
                 </Grid>
                 <Grid container sx={{ marginTop: 4 }}>
-                  <Grid item>
+                  <Grid>
                     <Button variant='text' type='button' disabled={!isDirty} onClick={handleReset}>
                       Отменить
                     </Button>
                   </Grid>
-                  <Grid item>
+                  <Grid>
                     <Button variant='contained' type='submit' disabled={!isDirty}>
                       Сохранить
                     </Button>
@@ -371,7 +372,7 @@ export const EventInfoPage = () => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item size={2}>
+        <Grid size={2}>
           <EventBaseTable eventId={currentId} />
         </Grid>
       </Grid>

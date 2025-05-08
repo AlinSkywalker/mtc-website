@@ -23,7 +23,7 @@ export const EventStatisticsTab = ({ eventId }) => {
 
   if (!eventId) return null
   return (
-    <Grid item size={12} sx={{ height: 400 }}>
+    <Grid size={12} sx={{ height: 400 }}>
       <DataGrid
         className='departDateTable'
         rows={rows}

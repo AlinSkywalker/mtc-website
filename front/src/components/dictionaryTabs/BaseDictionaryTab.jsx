@@ -18,16 +18,16 @@ export const BaseDictionaryTab = () => {
   }
   return (
     <Grid container spacing={2} sx={{ width: '100%' }}>
-      <Grid item size={12}>
+      <Grid size={12}>
         <BaseDictionaryTable onRowSelectionModelChange={onRowSelectionModelChange} />
       </Grid>
-      <Grid item size={4}>
+      <Grid size={4}>
         <BaseHouseDictionaryTable
           selectedBase={selectedBase}
           onRowSelectionModelChange={onHouseRowSelectionModelChange}
         />
       </Grid>
-      <Grid item size={8}>
+      <Grid size={8}>
         <BaseHouseRoomDictionaryTable
           selectedBase={selectedBase}
           selectedBaseHouse={selectedBaseHouse}

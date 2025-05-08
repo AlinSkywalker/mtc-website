@@ -90,7 +90,7 @@ export const EventDepartmentPlanJournalTab = ({ eventId, eventStart, eventFinish
   return (
     <Grid container sx={{ width: '100%', overflowX: 'scroll' }}>
       <Grid>
-        <Grid item sx={{ width: '100%' }} container flexDirection={'row'} className='depPlanRow'>
+        <Grid sx={{ width: '100%' }} container flexDirection={'row'} className='depPlanRow'>
           <Grid className={'depPlanCell depPlanDateCell depPlanTitleCell'}>
             <FormControl sx={{ m: 1, minWidth: 120 }} size='small'>
               <Select
@@ -124,7 +124,6 @@ export const EventDepartmentPlanJournalTab = ({ eventId, eventStart, eventFinish
           return (
             <Grid
               key={key}
-              item
               sx={{ width: '100%' }}
               container
               flexDirection={'row'}
@@ -140,7 +139,6 @@ export const EventDepartmentPlanJournalTab = ({ eventId, eventStart, eventFinish
         {departmentData.length !== 0 && (
           <Grid
             key='addNew'
-            item
             sx={{ width: '100%' }}
             container
             flexDirection={'row'}

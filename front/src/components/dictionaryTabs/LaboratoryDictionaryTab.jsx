@@ -12,10 +12,10 @@ export const LaboratoryDictionaryTab = () => {
   }
   return (
     <Grid container spacing={2} sx={{ width: '100%' }}>
-      <Grid item size={12}>
+      <Grid size={12}>
         <LaboratoryDictionaryTable onRowSelectionModelChange={onRowSelectionModelChange} />
       </Grid>
-      <Grid item size={12}>
+      <Grid size={12}>
         <LaboratoryRouteDictionaryTable selectedLaboratory={selectedLaboratory} />
       </Grid>
     </Grid>

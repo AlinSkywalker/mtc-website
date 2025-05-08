@@ -259,10 +259,10 @@ export function EditCascadeSelectMenu(props) {
   return (
     <>
       <Grid container sx={{ width: '100%' }} flexWrap={'nowrap'}>
-        <Grid item flexGrow={2} sx={{ pl: 2, overflow: 'hidden' }}>
+        <Grid flexGrow={2} sx={{ pl: 2, overflow: 'hidden' }}>
           {displayValue}
         </Grid>
-        <Grid item flexShrink={0}>
+        <Grid flexShrink={0}>
           <IconButton onClick={handleClick}>
             <CreateIcon />
           </IconButton>

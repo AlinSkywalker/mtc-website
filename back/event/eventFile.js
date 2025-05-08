@@ -1,5 +1,5 @@
 // Load the MySQL pool connection
-const pool = require("./mysql");
+const pool = require("../mysql");
 const CyrillicToTranslit = require('cyrillic-to-translit-js');
 const cyrillicToTranslit = new CyrillicToTranslit();
 

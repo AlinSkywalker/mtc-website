@@ -1,5 +1,5 @@
 // Load the MySQL pool connection
-const pool = require("./mysql")
+const pool = require("../mysql")
 
 // Route the app
 const memberAscentRouter = (app, passport) => {
@@ -34,7 +34,7 @@ const memberAscentRouter = (app, passport) => {
       asc_timesf
     } = req.body;
     pool.query(`INSERT INTO ascent ( asc_memb, asc_event, asc_route, asc_date, asc_typ,asc_kolu,asc_ruk,asc_times,asc_timesf) VALUES(?,?,?,?,?,?,?,?,?)`,
-      [id, asc_event || null, asc_route, asc_date, asc_typ, asc_kolu || null, asc_ruk, asc_times||null, asc_timesf||null], (error, result) => {
+      [id, asc_event || null, asc_route, asc_date, asc_typ, asc_kolu || null, asc_ruk, asc_times || null, asc_timesf || null], (error, result) => {
         if (error) {
           console.log(error);
           res.status(500).json({ success: false, message: error });
@@ -64,7 +64,7 @@ const memberAscentRouter = (app, passport) => {
       asc_ruk=?,
       asc_times=?,
       asc_timesf=?,
-      updated_date=CURRENT_TIMESTAMP WHERE id=${id}`, [asc_event || null, asc_route, asc_date, asc_typ, asc_kolu || null, asc_ruk, asc_times||null, asc_timesf||null], (error, result) => {
+      updated_date=CURRENT_TIMESTAMP WHERE id=${id}`, [asc_event || null, asc_route, asc_date, asc_typ, asc_kolu || null, asc_ruk, asc_times || null, asc_timesf || null], (error, result) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });

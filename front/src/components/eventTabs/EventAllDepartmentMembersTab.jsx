@@ -27,7 +27,7 @@ export const EventAllDepartmentMembersTab = ({ eventId, eventStart, eventFinish 
           {`Просмотр`}
         </ToggleButton>
       </ToggleButtonGroup>
-      <Grid item size={12}>
+      <Grid size={12}>
         {viewMode === 'view' && (
           <EventAllDepartmentMembersTable
             eventId={eventId}

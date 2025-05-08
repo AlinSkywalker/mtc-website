@@ -60,7 +60,7 @@ const LoginPage = () => {
                 flexDirection='column'
                 spacing={2}
               >
-                <Grid item>
+                <Grid>
                   <Controller
                     name='username'
                     control={control}
@@ -69,7 +69,7 @@ const LoginPage = () => {
                     )}
                   />
                 </Grid>
-                <Grid item>
+                <Grid>
                   <Controller
                     name='password'
                     control={control}
@@ -79,12 +79,12 @@ const LoginPage = () => {
                   />
                 </Grid>
                 {errors.exampleRequired && (
-                  <Grid item>
+                  <Grid>
                     {/* errors will return when field validation fails  */}
                     <span>This field is required</span>
                   </Grid>
                 )}
-                <Grid item>
+                <Grid>
                   <Button variant='contained' type='submit'>
                     Войти
                   </Button>

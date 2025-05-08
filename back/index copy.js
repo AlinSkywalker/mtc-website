@@ -7,7 +7,7 @@ const bcrypt = require('bcryptjs');
 const session = require('express-session')
 const bodyParser = require('body-parser');
 
-const pool = require("./mysql")
+const pool = require("../mysql")
 
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),

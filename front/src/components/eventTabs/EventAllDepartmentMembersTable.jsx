@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import {
   useFetchEventAllDepartmentMembersList,
   useFetchEventDepartmentList,
@@ -16,7 +16,8 @@ export const EventAllDepartmentMembersTable = ({ eventId, eventStart, eventFinis
   const { isLoading, data } = useFetchEventAllDepartmentMembersList(eventId)
   const { data: departmentData } = useFetchEventDepartmentList(eventId)
   const dates = getDatesInRange(new Date(eventStart), new Date(eventFinish))
-  const [isShowPast, setIsShowPast] = useState(false)
+  const isPastEvent = new Date(eventFinish) < new Date()
+  const [isShowPast, setIsShowPast] = useState(isPastEvent)
   const handleShowPast = () => {
     setIsShowPast((prev) => !prev)
   }
@@ -25,14 +26,12 @@ export const EventAllDepartmentMembersTable = ({ eventId, eventStart, eventFinis
 
     return (
       <Grid key={department.id} className={'depPlanCell depPlanCell-inner depMembersCell'}>
-        <Grid item sx={{ textAlign: 'center' }}>
+        <Grid sx={{ textAlign: 'center' }}>
           {depMembers.map((item, index) => (
-            <>
-              <Typography variant='caption' key={index}>
-                {item}
-              </Typography>
+            <Fragment key={index}>
+              <Typography variant='caption'>{item}</Typography>
               <br />
-            </>
+            </Fragment>
           ))}
         </Grid>
       </Grid>
@@ -43,7 +42,6 @@ export const EventAllDepartmentMembersTable = ({ eventId, eventStart, eventFinis
     <Grid container sx={{ width: '100%', overflowX: 'scroll' }}>
       <Grid>
         <Grid
-          item
           sx={{ width: '100%' }}
           container
           flexDirection={'row'}
@@ -77,7 +75,6 @@ export const EventAllDepartmentMembersTable = ({ eventId, eventStart, eventFinis
           return (
             <Grid
               key={item.id}
-              item
               sx={{ width: '100%' }}
               container
               flexDirection={'row'}

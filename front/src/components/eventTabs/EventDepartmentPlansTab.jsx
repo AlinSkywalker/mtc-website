@@ -39,7 +39,7 @@ export const EventDepartmentPlansTab = ({ eventId, eventDistrict, eventStart, ev
         ))}
       </ToggleButtonGroup>
       {selectedDepartment && selectedDepartment !== 'all' && (
-        <Grid item size={12}>
+        <Grid size={12}>
           <EventDepartmentPlansTable
             eventId={eventId}
             departmentId={selectedDepartment}
@@ -49,7 +49,7 @@ export const EventDepartmentPlansTab = ({ eventId, eventDistrict, eventStart, ev
         </Grid>
       )}
       {selectedDepartment && selectedDepartment === 'all' && (
-        <Grid item size={12}>
+        <Grid size={12}>
           <EventAllDepartmentPlansTable
             eventId={eventId}
             eventStart={eventStart}

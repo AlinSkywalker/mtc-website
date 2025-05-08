@@ -15,7 +15,8 @@ export const EventAllDepartmentPlansTable = ({ eventId, eventStart, eventFinish 
   const { isLoading, data } = useFetchEventAllDepartmentPlanList(eventId)
   const { data: departmentData } = useFetchEventDepartmentList(eventId)
   const dates = getDatesInRange(new Date(eventStart), new Date(eventFinish))
-  const [isShowPast, setIsShowPast] = useState(false)
+  const isPastEvent = new Date(eventFinish) < new Date()
+  const [isShowPast, setIsShowPast] = useState(isPastEvent)
   const handleShowPast = () => {
     setIsShowPast((prev) => !prev)
   }
@@ -33,12 +34,8 @@ export const EventAllDepartmentPlansTable = ({ eventId, eventStart, eventFinish 
     }
     return (
       <Grid key={department.id} className={'depPlanCell depPlanCell-inner'}>
-        <Grid item sx={{ fontWeight: 'bold' }}>
-          {depPlan?.type}
-        </Grid>
-        <Grid item sx={{ textAlign: 'center' }}>
-          {planPlace}
-        </Grid>
+        <Grid sx={{ fontWeight: 'bold' }}>{depPlan?.type}</Grid>
+        <Grid sx={{ textAlign: 'center' }}>{planPlace}</Grid>
       </Grid>
     )
   }
@@ -46,7 +43,6 @@ export const EventAllDepartmentPlansTable = ({ eventId, eventStart, eventFinish 
   return (
     <Grid container sx={{ width: '100%', overflowX: 'scroll' }}>
       <Grid
-        item
         sx={{ width: '100%' }}
         container
         flexDirection={'row'}
@@ -80,7 +76,6 @@ export const EventAllDepartmentPlansTable = ({ eventId, eventStart, eventFinish 
         return (
           <Grid
             key={item.id}
-            item
             sx={{ width: '100%' }}
             container
             flexDirection={'row'}

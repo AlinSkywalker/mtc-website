@@ -77,7 +77,7 @@ export const ProfilePage = () => {
               flexDirection='column'
               spacing={2}
             >
-              <Grid item size={4}>
+              <Grid size={4}>
                 <Controller
                   name='memb_email'
                   control={control}
@@ -86,7 +86,7 @@ export const ProfilePage = () => {
                   )}
                 />
               </Grid>
-              <Grid item size={4}>
+              <Grid size={4}>
                 <Controller
                   name='fio'
                   control={control}
@@ -100,7 +100,7 @@ export const ProfilePage = () => {
                   )}
                 />
               </Grid>
-              <Grid item size={2}>
+              <Grid size={2}>
                 <Controller
                   name='date_birth'
                   control={control}
@@ -113,7 +113,7 @@ export const ProfilePage = () => {
                   )}
                 />
               </Grid>
-              <Grid item size={1}>
+              <Grid size={1}>
                 <Controller
                   name='gender'
                   control={control}
@@ -131,7 +131,7 @@ export const ProfilePage = () => {
                   )}
                 />
               </Grid>
-              <Grid item size={1}>
+              <Grid size={1}>
                 <Controller
                   name='size_shoe'
                   control={control}
@@ -149,7 +149,7 @@ export const ProfilePage = () => {
                   )}
                 />
               </Grid>
-              <Grid item size={1}>
+              <Grid size={1}>
                 <Controller
                   name='size_cloth'
                   control={control}
@@ -167,7 +167,7 @@ export const ProfilePage = () => {
                   )}
                 />
               </Grid>
-              <Grid item size={2}>
+              <Grid size={2}>
                 <Controller
                   name='name_city'
                   control={control}
@@ -176,7 +176,7 @@ export const ProfilePage = () => {
                   )}
                 />
               </Grid>
-              <Grid item size={2}>
+              <Grid size={2}>
                 <Controller
                   name='tel_1'
                   control={control}
@@ -185,7 +185,7 @@ export const ProfilePage = () => {
                   )}
                 />
               </Grid>
-              <Grid item size={2}>
+              <Grid size={2}>
                 <Controller
                   name='tel_2'
                   control={control}
@@ -200,12 +200,12 @@ export const ProfilePage = () => {
                 />
               </Grid>
               <Grid container item>
-                <Grid item>
+                <Grid>
                   <Button variant='text' type='button' disabled={!isDirty} onClick={handleReset}>
                     Отменить
                   </Button>
                 </Grid>
-                <Grid item>
+                <Grid>
                   <Button variant='contained' type='submit' disabled={!isDirty}>
                     Сохранить
                   </Button>

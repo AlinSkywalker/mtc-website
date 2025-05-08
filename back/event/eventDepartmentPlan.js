@@ -1,6 +1,6 @@
 // Load the MySQL pool connection
-const pool = require("./mysql");
-const getDatesInRange = require("./getDatesInRange");
+const pool = require("../mysql");
+const getDatesInRange = require("../getDatesInRange");
 
 // Route the app
 const eventDepartmentPlanRouter = (app, passport) => {

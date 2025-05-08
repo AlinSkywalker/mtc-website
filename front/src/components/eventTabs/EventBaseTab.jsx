@@ -14,13 +14,13 @@ export const EventBaseTab = ({ eventId }) => {
 
   return (
     <Grid container spacing={1}>
-      <Grid item size={7}>
+      <Grid size={7}>
         <EventBaseHouseRoomTable
           eventId={eventId}
           onRowSelectionModelChange={onRowSelectionModelChange}
         />
       </Grid>
-      <Grid item size={5}>
+      <Grid size={5}>
         <EventBaseHouseRoomMemberTable eventId={eventId} selectedBaseRoom={selectedBaseRoom} />
       </Grid>
     </Grid>
