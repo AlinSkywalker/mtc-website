@@ -50,3 +50,13 @@ export function useFetchMemberAscentList(id) {
     },
   })
 }
+
+export function useFetchMemberEvent(id) {
+  return useQuery({
+    queryKey: ['member', id, 'events'],
+    queryFn: async () => {
+      const { data } = await apiClient.get(`/api/memberList/${id}/events`)
+      return data
+    },
+  })
+}

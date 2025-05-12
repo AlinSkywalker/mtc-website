@@ -20,6 +20,7 @@ import TabPanel from '@mui/lab/TabPanel'
 import Box from '@mui/material/Box'
 import { MemberExamTab } from './memberTabs/MemberExamTab'
 import { MemberAscentTab } from './memberTabs/MemberAscentTab'
+import { MemberEventTab } from './memberTabs/MemberEventTab'
 import { sizeClothOptions, sizeShoeOptions } from '../constants'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
@@ -117,6 +118,11 @@ export const MemberInfoPage = () => {
       name: 'exam',
       label: 'Зачеты',
       component: <MemberExamTab memberId={currentId} />,
+    },
+    {
+      name: 'event',
+      label: 'Мероприятия',
+      component: <MemberEventTab memberId={currentId} />,
     },
   ]
 

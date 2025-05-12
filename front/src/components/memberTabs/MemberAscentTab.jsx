@@ -140,7 +140,7 @@ export const MemberAscentTab = ({ memberId }) => {
     {
       field: 'asc_timesf',
       ...dateTimeColumnType,
-      headerName: 'Финиш',
+      headerName: 'На вершине',
       width: 150,
       editable: true,
     },

@@ -9,6 +9,10 @@ import Grid from '@mui/material/Grid'
 import { DataGrid, Toolbar } from '@mui/x-data-grid'
 import { Button, Select, MenuItem } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
+import ErrorIcon from '@mui/icons-material/Error'
+import IconButton from '@mui/material/IconButton'
+import Tooltip from '@mui/material/Tooltip'
+import { red } from '@mui/material/colors'
 
 const defaultItem = {
   member_fio: '',
@@ -24,7 +28,7 @@ export const EventMemberDepartment = ({ eventId }) => {
 
   const [rowSelectionModel, setRowSelectionModel] = React.useState(emptyRowSelection)
   const [seleсtedMember, setSelectedMember] = React.useState()
-  const [seleсtedDepartment, setSelectedDepartment] = React.useState()
+  const [seleсtedDepartment, setSelectedDepartment] = React.useState('')
   const handleRowSelectionModelChange = (newRowSelectionModel) => {
     setRowSelectionModel(newRowSelectionModel)
     let newMemberId = ''
@@ -35,7 +39,11 @@ export const EventMemberDepartment = ({ eventId }) => {
   }
 
   const { data: membersData } = useFetchEventMemberList(eventId)
+  const someMembersHasNoDepartment = React.useMemo(() => {
+    return membersData?.some((item) => !item.allDaysWithDept)
+  }, [membersData])
   const [membersRows, setMembersRows] = React.useState(membersData)
+
   React.useEffect(() => {
     setMembersRows(membersData)
   }, [membersData])
@@ -109,11 +117,28 @@ export const EventMemberDepartment = ({ eventId }) => {
     existedDept: false,
   }
 
+  const renderMemberFioCell = (params) => {
+    if (!params.row.allDaysWithDept) {
+      return (
+        <>
+          {params.row.fio}
+          <Tooltip title='У участника не указано отделение на некоторые дни'>
+            <IconButton sx={{ marginLeft: 1, color: red[500] }}>
+              <ErrorIcon />
+            </IconButton>
+          </Tooltip>
+        </>
+      )
+    } else {
+      return params.row.fio
+    }
+  }
   const membersColumns = [
     {
       field: 'fio',
       headerName: 'ФИО участника',
       width: 350,
+      renderCell: renderMemberFioCell,
     },
   ]
 
@@ -159,11 +184,11 @@ export const EventMemberDepartment = ({ eventId }) => {
         </Select>
         <Button
           color='primary'
-          startIcon={<AddIcon />}
+          startIcon={seleсtedDepartment ? <AddIcon /> : <></>}
           onClick={handelClickAddDepartment}
-          disabled={!seleсtedMember || !seleсtedDepartment}
+          disabled={!seleсtedMember}
         >
-          Добавить в отделение на все даты
+          {seleсtedDepartment ? 'Добавить в отделение на все даты' : 'Сбросить отделения'}
         </Button>
       </Grid>
     </Toolbar>
@@ -182,7 +207,21 @@ export const EventMemberDepartment = ({ eventId }) => {
           rowSelectionModel={rowSelectionModel}
           showToolbar
           slots={{
-            toolbar: () => <Toolbar />,
+            toolbar: () => (
+              <Toolbar>
+                {someMembersHasNoDepartment ? (
+                  <Grid sx={{ flexGrow: 1 }}>
+                    <Tooltip title='У некоторых участников не указано отделение на некоторые дни'>
+                      <IconButton sx={{ color: red[500] }}>
+                        <ErrorIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </Grid>
+                ) : (
+                  <></>
+                )}
+              </Toolbar>
+            ),
           }}
         />
       </Grid>

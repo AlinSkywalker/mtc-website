@@ -315,60 +315,101 @@ const eventDepartmentRouter = (app, passport) => {
 
       const { memberId } = req.params;
       const { departmentId } = req.body;
+      if (!departmentId) {
+        pool.query(
+          `DELETE FROM member_in_depart 
+            WHERE membd_memb=${memberId}`,
+          (error, result) => {
+            if (error) {
+              console.log(error);
+              res.status(500).json({ success: false, message: error });
+              return;
+            }
+            res.send(result);
+          }
+        );
+      }
+      else {
+        pool.query(
+          `SELECT * FROM depart WHERE id=${departmentId}`,
+          (error, result) => {
+            if (error) {
+              console.log(error);
+              res.status(500).json({ success: false, message: error });
+              return;
+            }
+            const { depart_datef, depart_dates } = result[0];
+            pool.query(
+              `SELECT * FROM eventmemb WHERE id=${memberId}`,
+              (error, result) => {
+                if (error) {
+                  console.log(error);
+                  res.status(500).json({ success: false, message: error });
+                  return;
+                }
+                const { eventmemb_dates, eventmemb_datef } = result[0];
+                const departDateStart = new Date(depart_dates);
+                const departDateFinish = new Date(depart_datef);
+                const memberDateStart = new Date(eventmemb_dates);
+                const memberDateFinish = new Date(eventmemb_datef);
+                const rangeDateStart =
+                  departDateStart > memberDateStart
+                    ? departDateStart
+                    : memberDateStart;
+                const rangeDateFinish =
+                  departDateFinish < memberDateFinish
+                    ? departDateFinish
+                    : memberDateFinish;
+                const dates = getDatesInRange(rangeDateStart, rangeDateFinish);
+                const insertValueString = dates
+                  .map((item) => `(${departmentId},${memberId}, '${item}')`)
+                  .join(", ");
+                //INSERT INTO ... ON DUPLICATE KEY UPDATE
+                pool.query(
+                  `INSERT INTO member_in_depart ( membd_dep, membd_memb, membd_date) 
+              VALUES ${insertValueString} ON DUPLICATE KEY UPDATE membd_dep=${departmentId}`,
+                  (error, result) => {
+                    if (error) {
+                      console.log(error);
+                      res.status(500).json({ success: false, message: error });
+                      return;
+                    }
+                    res.send(result);
+                  }
+                );
+              }
+            );
+          }
+        );
+      }
+    }
+  );
+
+  app.get(
+    "/eventList/:eventId/department/:departmentId/member",
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+      const departmentId = req.params.departmentId;
+      if (departmentId === "undefined") {
+        res.send([]);
+        return;
+      }
       pool.query(
-        `SELECT * FROM depart WHERE id=${departmentId}`,
+        `SELECT m_d.membd_memb as id, m.fio as member_fio, m.id as member_id FROM member_in_depart m_d
+        LEFT JOIN eventmemb e_m ON e_m.id=m_d.membd_memb
+        LEFT JOIN member m on m.id=e_m.eventmemb_memb
+        WHERE m_d.membd_dep=${departmentId} AND m_d.membd_date='${req.query.selectedDate}'`,
         (error, result) => {
           if (error) {
             console.log(error);
             res.status(500).json({ success: false, message: error });
             return;
           }
-          const { depart_datef, depart_dates } = result[0];
-          pool.query(
-            `SELECT * FROM eventmemb WHERE id=${memberId}`,
-            (error, result) => {
-              if (error) {
-                console.log(error);
-                res.status(500).json({ success: false, message: error });
-                return;
-              }
-              const { eventmemb_dates, eventmemb_datef } = result[0];
-              const departDateStart = new Date(depart_dates);
-              const departDateFinish = new Date(depart_datef);
-              const memberDateStart = new Date(eventmemb_dates);
-              const memberDateFinish = new Date(eventmemb_datef);
-              const rangeDateStart =
-                departDateStart > memberDateStart
-                  ? departDateStart
-                  : memberDateStart;
-              const rangeDateFinish =
-                departDateFinish < memberDateFinish
-                  ? departDateFinish
-                  : memberDateFinish;
-              const dates = getDatesInRange(rangeDateStart, rangeDateFinish);
-              const insertValueString = dates
-                .map((item) => `(${departmentId},${memberId}, '${item}')`)
-                .join(", ");
-              //INSERT INTO ... ON DUPLICATE KEY UPDATE
-              pool.query(
-                `INSERT INTO member_in_depart ( membd_dep, membd_memb, membd_date) 
-            VALUES ${insertValueString} ON DUPLICATE KEY UPDATE membd_dep=${departmentId}`,
-                (error, result) => {
-                  if (error) {
-                    console.log(error);
-                    res.status(500).json({ success: false, message: error });
-                    return;
-                  }
-                  res.send(result);
-                }
-              );
-            }
-          );
+          res.send(result);
         }
       );
+
     }
-
-
   );
 };
 

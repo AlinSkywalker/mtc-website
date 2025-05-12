@@ -5,18 +5,37 @@ const pool = require("../mysql")
 const eventMemberRouter = (app, passport) => {
   app.get('/eventList/:eventId/member/', passport.authenticate('jwt', { session: false }), (req, res) => {
     const eventId = req.params.eventId;
-    pool.query(`SELECT e_m.*, m.fio, m.gender, m.tel_1, m.memb_email, m.size_cloth, m.size_shoe, c.name_city
-                FROM eventmemb e_m 
+    pool.query(`SELECT e_m.*, m.fio, m.gender, m.tel_1, m.memb_email, m.size_cloth, m.size_shoe, c.name_city, COUNT(m_i_d.id) as days_with_dept
+                FROM eventmemb e_m
                 LEFT JOIN member m on m.id=e_m.eventmemb_memb 
                 LEFT JOIN city c on m.memb_city=c.id
+                LEFT JOIN member_in_depart m_i_d on m_i_d.membd_memb =e_m.id 
                 WHERE eventmemb_even='${eventId}'
+                GROUP BY e_m.eventmemb_memb
                 ORDER BY m.fio ASC`, (error, result) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
         return
       }
-      res.send(result);
+      const fullResult = result.map(item => {
+        const memberDays = (new Date(item.eventmemb_datef) - new Date(item.eventmemb_dates)) / (1000 * 60 * 60 * 24) + 1
+        const daysWithDept = item.days_with_dept
+        // console.log('fio', item.fio, memberDays, daysWithDept)
+        const allDaysWithDept = daysWithDept >= memberDays
+        const alerts = []
+        if (!allDaysWithDept) {
+          alerts.push('У участника не указано отделение на некоторые дни')
+        }
+        if (!item.eventmemb_pred) {
+          alerts.push('У участника не отмечена предоплата')
+        }
+        if (!item.eventmemb_opl && new Date() >= new Date(item.eventmemb_datef)) {
+          alerts.push('У участника не отмечена полная оплата')
+        }
+        return { ...item, allDaysWithDept, alerts }
+      })
+      res.send(fullResult);
     });
   })
 

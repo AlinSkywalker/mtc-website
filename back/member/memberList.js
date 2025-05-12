@@ -308,6 +308,28 @@ const memberListRouter = (app, passport) => {
       });
     }
   );
+
+  app.get(
+    "/memberList/:id/events",
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+      const id = req.params.id;
+      pool.query(
+        `SELECT e.*
+          FROM eventmemb em
+                  LEFT JOIN eventalp e ON e.id=em.eventmemb_even
+                  WHERE em.eventmemb_memb=${id}`,
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return;
+          }
+          res.send(result);
+        }
+      );
+    }
+  );
 };
 
 // Export the router

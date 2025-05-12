@@ -11,6 +11,10 @@ import { checkboxColumnType } from '../dataGridCell/GridEditCheckboxCell'
 import { Link } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { GridEditInputCell } from '@mui/x-data-grid'
+import ErrorIcon from '@mui/icons-material/Error'
+import IconButton from '@mui/material/IconButton'
+import Tooltip from '@mui/material/Tooltip'
+import { red } from '@mui/material/colors'
 
 const defaultItem = {
   eventmemb_memb: '',
@@ -24,6 +28,7 @@ const defaultItem = {
   ventmemb_pred: '',
   eventmemb_opl: '',
   eventmemb_role: 'Участник',
+  alerts: [],
 }
 
 const validationSchema = Yup.object({
@@ -92,8 +97,29 @@ export const EventMembersTab = ({ eventId }) => {
       </Link>
     )
   }
+  const renderAlerts = (params) => {
+    const alerts = params.value ?? []
+    if (alerts.length !== 0) {
+      const tooltipText = alerts.join(';')
+      return (
+        <Tooltip title={tooltipText}>
+          <IconButton sx={{ marginLeft: 1, color: red[500] }}>
+            <ErrorIcon />
+          </IconButton>
+        </Tooltip>
+      )
+    } else {
+      return params.value
+    }
+  }
 
   const columns = [
+    {
+      field: 'alerts',
+      renderCell: renderAlerts,
+      width: 80,
+      headerName: '',
+    },
     {
       field: 'fio',
       headerName: 'ФИО',

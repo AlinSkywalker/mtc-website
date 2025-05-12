@@ -1,0 +1,33 @@
+export const plansTableHiddenColumns = [
+  { field: 'progp', headerName: 'progp', width: 0, editable: true },
+  { field: 'laba', headerName: 'laba', width: 0, editable: true },
+  { field: 'route', headerName: 'route', width: 0, editable: true },
+  { field: 'rout_mount', headerName: 'rout_mount', width: 0, editable: true },
+  { field: 'mount_rai', headerName: 'mount_rai', width: 0, editable: true },
+  { field: 'rai_name', headerName: 'rai_name', width: 0, editable: true },
+  { field: 'rai_reg', headerName: 'rai_reg', width: 0, editable: true },
+  { field: 'region_name', headerName: 'region_name', width: 0, editable: true },
+  { field: 'l_rai_name', headerName: 'rai_name', width: 0, editable: true },
+  { field: 'l_rai_reg', headerName: 'rai_reg', width: 0, editable: true },
+  { field: 'l_region_name', headerName: 'region_name', width: 0, editable: true },
+  { field: 'program_id_list', headerName: 'program_id_list', width: 0, editable: true },
+  { field: 'program_name_list', headerName: 'program_name_list', width: 0, editable: true },
+  { field: 'ascent_head', headerName: 'ascent_head', width: 0, editable: true },
+]
+
+export const plansTableColumnVisibilityModel = {
+  rout_mount: false,
+  region_name: false,
+  rai_reg: false,
+  rai_name: false,
+  mount_rai: false,
+  laba: false,
+  route: false,
+  l_rai_name: false,
+  l_rai_reg: false,
+  l_region_name: false,
+  progp: false,
+  program_id_list: false,
+  program_name_list: false,
+  ascent_head: false,
+}

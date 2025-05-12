@@ -285,6 +285,7 @@ const eventDepartmentPlanRouter = (app, passport) => {
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
       const { id, departmentId, eventId } = req.params;
+      const { acceptedMember, start, finish } = req.body;
       pool.query(
         `SELECT dp.*, r.rout_name, r.rout_mount, r.rout_comp, 
                 m.mount_name, m.mount_rai, rai.rai_name, rai.rai_reg, reg.region_name,
@@ -322,16 +323,10 @@ const eventDepartmentPlanRouter = (app, passport) => {
                 return;
               }
               let loopError = false;
-              let memberCount = result.length;
-              // if (
-              //   result.includes(depart_inst) &&
-              //   ["НП1", "НП2", "СП1", "СП2"].includes(depart_tip)
-              // ) {
-              //   memberCount = memberCount - 1;
-              // }
+              let memberCount = acceptedMember.length;
+
               const queries = [];
-              result.forEach((resultItem) => {
-                const { id: memberId } = resultItem;
+              acceptedMember.forEach((memberId) => {
                 let role = "Участник";
                 if (memberId === depart_inst) {
                   role = "Инструктор";
@@ -340,9 +335,11 @@ const eventDepartmentPlanRouter = (app, passport) => {
                 }
                 const query = new Promise((resolve, reject) => {
                   pool.query(
-                    `INSERT INTO ascent (asc_event, asc_memb, asc_route, asc_date, asc_typ, asc_kolu, asc_ruk)
-                        SELECT ${eventId}, ${memberId}, ${route}, '${start}', '${role}', ${memberCount}, '${ascent_head_fio}' WHERE NOT EXISTS (
-                        SELECT 1 FROM ascent WHERE asc_memb = ${memberId} AND asc_route = ${route} AND asc_date='${start}'
+                    `INSERT INTO ascent (asc_event, asc_memb, asc_route, asc_date, asc_typ, asc_kolu, asc_ruk, asc_times, asc_timesf)
+                        SELECT ${eventId}, ${memberId}, ${route}, '${start}', '${role}', ${memberCount}, 
+                        '${ascent_head_fio}', ${start ? "'" + start + "'" : null}, ${finish ? "'" + finish + "'" : null} 
+                        WHERE NOT EXISTS (
+                          SELECT 1 FROM ascent WHERE asc_memb = ${memberId} AND asc_route = ${route} AND asc_date='${start}'
                     );`,
                     (error, result) => {
                       if (error) {

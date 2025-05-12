@@ -6,45 +6,18 @@ import {
 import apiClient from '../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
 import { EditableTable } from '../EditableTable'
-import * as Yup from 'yup'
 import { dateColumnType } from '../dataGridCell/GridEditDateCell'
 import { useFetchLaboratoryForEvent } from '../../queries/dictionary'
 import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
 import { EditCascadeSelectMenu } from '../dataGridCell/EditCascadeSelectMenu'
-import { checkboxColumnType } from '../dataGridCell/GridEditCheckboxCell'
-import { EditTrainingProgramMenu } from '../dataGridCell/EditTrainingProgramMenu'
 import { Button } from '@mui/material'
-import DialogTitle from '@mui/material/DialogTitle'
-import Dialog from '@mui/material/Dialog'
-import Grid from '@mui/material/Grid'
-import IconButton from '@mui/material/IconButton'
-import CloseIcon from '@mui/icons-material/Close'
-import DialogContent from '@mui/material/DialogContent'
-import DialogActions from '@mui/material/DialogActions'
+import { PlanAscentAcceptDayDialog } from './PlanAscentAcceptDayDialog'
 import { MultiValueSelecWithGroupingtEditInputCell } from '../dataGridCell/MultiValueSelecWithGroupingtEditInputCell'
-
-const validationSchema = Yup.object({
-  type: Yup.string().required('Поле обязательно для заполнения'),
-  start: Yup.string().required('Поле обязательно для заполнения'),
-  laba_name: Yup.string()
-    .nullable(true)
-    .test({
-      name: '2',
-      exclusive: false,
-      params: {},
-      message: 'Для занятия обязательна лаборатория',
-      test: (value, context) => value == null || !(context.parent.type == 'Занятие' && !value),
-    }),
-  rout_name: Yup.string()
-    .nullable(true)
-    .test({
-      name: '2',
-      exclusive: false,
-      params: {},
-      message: 'Для восхождения обязателен маршрут',
-      test: (value, context) => value == null || !(context.parent.type == 'Восхождение' && !value),
-    }),
-})
+import { eventDepartmentPlanValidationSchema } from '../../validations/eventDepartmentPlanValidation'
+import {
+  plansTableHiddenColumns,
+  plansTableColumnVisibilityModel,
+} from './eventDepartmentPlansTableSettings'
 
 export const EventDepartmentPlansTable = ({
   eventId,
@@ -70,13 +43,9 @@ export const EventDepartmentPlansTable = ({
 
   const [open, setOpen] = React.useState(false)
   const [selectedDate, setSelectedDate] = React.useState()
+  const [selectedPlan, setSelectedPlan] = React.useState()
 
   const { isLoading, data } = useFetchEventDepartmentPlanList(eventId, departmentId)
-  const { data: selectedDateDepartmentMembers } = useFetchEventDepartmentMemberList(
-    eventId,
-    departmentId,
-    selectedDate,
-  )
 
   const [rows, setRows] = React.useState(data)
   const [rowModesModel, setRowModesModel] = React.useState({})
@@ -134,29 +103,6 @@ export const EventDepartmentPlansTable = ({
     )
   }
 
-  const renderProgpSelectEditCell = (params) => {
-    return <EditTrainingProgramMenu {...params} nameField='progp' displayField='prog_tem' />
-  }
-  const handleAcceptDay = (params) => () => {
-    apiClient
-      .post(`/api/eventList/${eventId}/department/${departmentId}/plan/${params.row.id}/accept`)
-      .then((res) => {
-        queryClient.invalidateQueries({
-          queryKey: ['event', eventId, 'department', departmentId, 'plan'],
-        })
-      })
-  }
-
-  const handleUnacceptedDay = (params) => () => {
-    apiClient
-      .post(`/api/eventList/${eventId}/department/${departmentId}/plan/${params.row.id}/unaccepted`)
-      .then((res) => {
-        queryClient.invalidateQueries({
-          queryKey: ['event', eventId, 'department', departmentId, 'plan'],
-        })
-      })
-  }
-
   const renderProgramSelectEditCell = (params) => {
     return (
       <MultiValueSelecWithGroupingtEditInputCell
@@ -183,8 +129,6 @@ export const EventDepartmentPlansTable = ({
         nameField='ascent_head'
         hook={useFetchEventDepartmentMemberList}
         hookParams={hookParams}
-        // secondarySource='alprazr'
-        // secondarySourceArray={['alprazr', 'skali', 'ledu']}
       />
     )
   }
@@ -197,51 +141,22 @@ export const EventDepartmentPlansTable = ({
     const itemDate = new Date(params.row.start)
     const isFutureDate = new Date() < itemDate
     return (
-      <>
-        <Button
-          size='small'
-          variant='contained'
-          onClick={handleAcceptDay(params)}
-          ref={buttonElement}
-          disabled={!!params.row.accepted || isFutureDate}
-        >
-          Зачесть
-        </Button>
-        <Button
-          size='small'
-          variant='contained'
-          onClick={handleUnacceptedDay(params)}
-          ref={buttonElement}
-          disabled={!!params.row.accepted || isFutureDate}
-        >
-          Не зачесть
-        </Button>
-      </>
-    )
-  }
-
-  const handleClickOpen = (clickDate) => () => {
-    setOpen(true)
-    // console.log('clickDate', clickDate)
-    setSelectedDate(clickDate)
-  }
-
-  const handleClose = () => {
-    setOpen(false)
-  }
-
-  const renderEstimateButtonCell = (params) => {
-    const buttonElement = React.useRef(null)
-    return (
       <Button
         size='small'
         variant='contained'
-        onClick={handleClickOpen(params.row.start)}
+        onClick={handleClickOpen(params.row.start, params.row.id)}
         ref={buttonElement}
+        disabled={!!params.row.accepted || isFutureDate}
       >
-        Оценка
+        Результат
       </Button>
     )
+  }
+
+  const handleClickOpen = (clickDate, clickPlan) => () => {
+    setOpen(true)
+    setSelectedDate(clickDate)
+    setSelectedPlan(clickPlan)
   }
 
   const columns = [
@@ -286,13 +201,6 @@ export const EventDepartmentPlansTable = ({
       renderEditCell: renderLabaSelectEditCell,
       editable: true,
     },
-    // {
-    //   field: 'prog_tem',
-    //   headerName: 'Программа подготовки',
-    //   width: 200,
-    //   renderEditCell: renderProgpSelectEditCell,
-    //   editable: true,
-    // },
     {
       field: 'program_name',
       headerName: 'Программа подготовки',
@@ -301,60 +209,19 @@ export const EventDepartmentPlansTable = ({
       editable: true,
     },
     {
-      field: 'ob_agreement',
-      headerName: 'Согл ОБ',
-      width: 120,
-      editable: true,
-      ...checkboxColumnType,
-    },
-    {
       field: 'accept_day',
       headerName: '',
-      width: 220,
+      width: 125,
       renderCell: renderAcceptButtonCell,
     },
-    {
-      field: 'estimate_day',
-      headerName: '',
-      width: 120,
-      renderCell: renderEstimateButtonCell,
-    },
-    { field: 'progp', headerName: 'progp', width: 0, editable: true },
-    { field: 'laba', headerName: 'laba', width: 0, editable: true },
-    { field: 'route', headerName: 'route', width: 0, editable: true },
-    { field: 'rout_mount', headerName: 'rout_mount', width: 0, editable: true },
-    { field: 'mount_rai', headerName: 'mount_rai', width: 0, editable: true },
-    { field: 'rai_name', headerName: 'rai_name', width: 0, editable: true },
-    { field: 'rai_reg', headerName: 'rai_reg', width: 0, editable: true },
-    { field: 'region_name', headerName: 'region_name', width: 0, editable: true },
-    { field: 'l_rai_name', headerName: 'rai_name', width: 0, editable: true },
-    { field: 'l_rai_reg', headerName: 'rai_reg', width: 0, editable: true },
-    { field: 'l_region_name', headerName: 'region_name', width: 0, editable: true },
-    { field: 'program_id_list', headerName: 'program_id_list', width: 0, editable: true },
-    { field: 'program_name_list', headerName: 'program_name_list', width: 0, editable: true },
-    { field: 'ascent_head', headerName: 'ascent_head', width: 0, editable: true },
+    ...plansTableHiddenColumns,
   ]
 
   const fieldToFocus = 'depart_tip'
-  const columnVisibilityModel = {
-    rout_mount: false,
-    region_name: false,
-    rai_reg: false,
-    rai_name: false,
-    mount_rai: false,
-    laba: false,
-    route: false,
-    l_rai_name: false,
-    l_rai_reg: false,
-    l_region_name: false,
-    progp: false,
-    program_id_list: false,
-    program_name_list: false,
-    ascent_head: false,
-  }
+  const columnVisibilityModel = plansTableColumnVisibilityModel
 
   const processRowUpdate = async (newRow) => {
-    validationSchema.validateSync(newRow, { abortEarly: false })
+    eventDepartmentPlanValidationSchema.validateSync(newRow, { abortEarly: false })
     const handleSave = newRow.isNew ? handleSaveNewItem : handleSaveEditedItem
     await handleSave(newRow)
     queryClient.invalidateQueries({
@@ -379,23 +246,17 @@ export const EventDepartmentPlansTable = ({
         height={400}
         addButtonDisabled={!departmentId}
       />
-      <Dialog onClose={handleClose} open={open}>
-        <DialogTitle>Оценка</DialogTitle>
-        <IconButton
-          aria-label='close'
-          onClick={handleClose}
-          sx={(theme) => ({
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: theme.palette.grey[500],
-          })}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent></DialogContent>
-        <Grid>{/* {selectedDateDepartmentMembers?.map()} */}</Grid>
-      </Dialog>
+      {selectedDate && (
+        <PlanAscentAcceptDayDialog
+          departmentId={departmentId}
+          eventId={eventId}
+          selectedDate={selectedDate}
+          selectedPlan={selectedPlan}
+          open={open}
+          setOpen={setOpen}
+          setSelectedDate={setSelectedDate}
+        />
+      )}
     </>
   )
 }

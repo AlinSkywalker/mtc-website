@@ -118,7 +118,7 @@ export const EventDepartmentTable = ({
     {
       field: 'inst_fio',
       headerName: 'Инструктор/Тренер',
-      width: 200,
+      width: 300,
       renderEditCell: renderInstructorSelectEditCell,
       editable: true,
     },
