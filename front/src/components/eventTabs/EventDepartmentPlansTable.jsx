@@ -138,6 +138,9 @@ export const EventDepartmentPlansTable = ({
     if (params.row.type !== 'Восхождение') {
       return <></>
     }
+    if (!params.row.start) {
+      return <></>
+    }
     const itemDate = new Date(params.row.start)
     const isFutureDate = new Date() < itemDate
     return (

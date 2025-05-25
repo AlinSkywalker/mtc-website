@@ -96,7 +96,7 @@ export const EventBaseTable = ({ eventId }) => {
       defaultItem={defaultItem}
       isLoading={isLoading}
       handleDeleteItem={handleDeleteItem}
-      height={236}
+      height={221}
       className='eventBaseTable'
       isRowEditable={isRowEditable}
     />

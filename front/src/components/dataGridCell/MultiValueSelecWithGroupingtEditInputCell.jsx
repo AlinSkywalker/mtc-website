@@ -83,7 +83,7 @@ export function MultiValueSelecWithGroupingtEditInputCell(props) {
 
   return (
     <>
-      <Grid container sx={{ width: '100%' }} flexWrap={'nowrap'}>
+      <Grid container sx={{ width: '100%' }} flexWrap={'nowrap'} className='selectWithPopup'>
         <Grid flexGrow={2} sx={{ pl: 2, overflow: 'hidden' }}>
           {nameList?.join(',')}
         </Grid>

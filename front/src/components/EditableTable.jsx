@@ -185,7 +185,7 @@ export const EditableTable = ({
     <Grid spacing={2} container flexDirection={'column'}>
       <Grid size={12} sx={{ height: tableHeight }}>
         <DataGrid
-          className={className}
+          className={`editableTable ${className}`}
           rows={rows}
           columns={tableColumns}
           loading={isLoading}

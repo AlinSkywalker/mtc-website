@@ -1,17 +1,34 @@
-.MuiDataGrid-main .MuiDataGrid-cell.errorField{
+.MuiDataGrid-main .MuiDataGrid-cell.errorField {
   /* background-color: #cf8c8c; */
   border: 1px solid red;
 }
-.MuiDataGrid-main .MuiDataGrid-cell.MuiDataGrid-row--editing{
+
+.MuiDataGrid-main .MuiDataGrid-cell.MuiDataGrid-row--editing {
   /* background-color: #cf8c8c; */
   border: 1px solid red;
 }
-.MuiInputBase-root.Mui-disabled.roTableInput{
+
+.MuiInputBase-root.Mui-disabled.roTableInput {
   color: rgba(0, 0, 0, 0.87)
 }
-.MuiInputBase-root.Mui-disabled.roTableInput input{
+
+.MuiInputBase-root.Mui-disabled.roTableInput input {
   -webkit-text-fill-color: rgba(0, 0, 0, 0.87)
 }
-.eventBaseTable .MuiDataGrid-footerContainer{
+
+.eventBaseTable .MuiDataGrid-footerContainer {
   display: none;
+}
+
+.editableTable .MuiSelect-select {
+  padding: 9px 35px 8px 6px;
+}
+
+.editableTable .selectWithPopup {
+  border: 1px solid rgba(0, 0, 0, 0.27);
+  border-radius: 4px;
+}
+
+.editableTable .MuiDataGrid-columnHeaderTitle {
+  white-space: normal;
 }

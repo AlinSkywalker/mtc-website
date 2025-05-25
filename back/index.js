@@ -18,6 +18,7 @@ const laboratoryDictionaryRouter = require("./dictionary/laboratoryDictionary");
 const regionDictionaryRouter = require("./dictionary/regionDictionary");
 const routeDictionaryRouter = require("./dictionary/routeDictionary");
 const summitDictionaryRouter = require("./dictionary/summitDictionary");
+const trainingProgramRouter = require("./dictionary/trainingProgram");
 
 const eventListRouter = require("./event/eventList");
 const eventSmenaRouter = require("./event/eventSmena");
@@ -140,7 +141,7 @@ app.post("/login", (req, res) => {
       }
 
       const token = jwt.sign(
-        { user_id: user.id, user_name: user.login, iat: Date.now() },
+        { user_id: user.id, user_name: user.login, user_role: user.user_role, iat: Date.now() },
         jwtOptions.secretOrKey
       );
       // записать в базу токен и айди пользователя
@@ -176,7 +177,7 @@ app.get(
   "/current",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    // console.log('user', req.user)
+    console.log('user', req.user)
     res.send({ id: req.user.user_id, role: req.user.user_role });
   }
 );
@@ -225,6 +226,7 @@ laboratoryDictionaryRouter(app, passport);
 regionDictionaryRouter(app, passport);
 routeDictionaryRouter(app, passport);
 summitDictionaryRouter(app, passport);
+trainingProgramRouter(app, passport);
 
 eventListRouter(app, passport);
 eventSmenaRouter(app, passport);

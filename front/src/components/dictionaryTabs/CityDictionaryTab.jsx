@@ -5,6 +5,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { EditableTable } from '../EditableTable'
 import * as Yup from 'yup'
 import { multilineColumnType } from '../dataGridCell/GridEditMultilineCell'
+import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
 
 const defaultItem = {
   name_city: '',
@@ -45,6 +46,11 @@ export const CityDictionaryTab = () => {
     return apiClient.post(`/api/cityDictionary/${id}`, postedData)
   }, [])
 
+  const renderSelectEditCell = (params) => {
+    return (
+      <SelectEditInputCell {...params} dictionaryName='subektDictionary' nameField='city_sub' />
+    )
+  }
   const columns = [
     { field: 'name_city', headerName: 'Название', width: 250, editable: true },
     {
@@ -54,13 +60,21 @@ export const CityDictionaryTab = () => {
       editable: true,
       ...multilineColumnType,
     },
+    {
+      field: 'sub_name',
+      headerName: 'Регион',
+      width: 350,
+      editable: true,
+      renderEditCell: renderSelectEditCell,
+    },
     { field: 'pred_city', headerName: 'Представитель', width: 350, editable: true },
     { field: 'tel_city', headerName: 'Телефон', width: 150, editable: true },
     { field: 'email', headerName: 'Email', width: 150, editable: true },
+    { field: 'city_sub', headerName: 'city_sub', width: 0, editable: true },
   ]
 
   const fieldToFocus = 'city_name'
-  const columnVisibilityModel = {}
+  const columnVisibilityModel = { city_sub: false }
 
   const processRowUpdate = async (newRow) => {
     validationSchema.validateSync(newRow, { abortEarly: false })

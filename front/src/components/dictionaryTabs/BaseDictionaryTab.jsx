@@ -10,11 +10,19 @@ export const BaseDictionaryTab = () => {
   const [selectedBaseHouse, setSelectedBaseHouse] = useState()
 
   const onRowSelectionModelChange = (newRowSelectionModel) => {
-    setSelectedBase(newRowSelectionModel[0])
+    let newId = ''
+    newRowSelectionModel.ids.forEach(item => {
+      newId = item
+    })
+    setSelectedBase(newId)
     setSelectedBaseHouse()
   }
   const onHouseRowSelectionModelChange = (newRowSelectionModel) => {
-    setSelectedBaseHouse(newRowSelectionModel[0])
+    let newId = ''
+    newRowSelectionModel.ids.forEach(item => {
+      newId = item
+    })
+    setSelectedBaseHouse(newId)
   }
   return (
     <Grid container spacing={2} sx={{ width: '100%' }}>

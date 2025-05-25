@@ -136,6 +136,7 @@ export const MemberInfoPage = () => {
       </Container>
     )
   }
+
   return (
     <Container
       maxWidth={false}
@@ -246,6 +247,7 @@ export const MemberInfoPage = () => {
                       dataNameField='name_city'
                       field={field}
                       errors={errors}
+                      secondarySourceArray={['count_name', 'okr_name', 'sub_name']}
                     />
                   )}
                 />

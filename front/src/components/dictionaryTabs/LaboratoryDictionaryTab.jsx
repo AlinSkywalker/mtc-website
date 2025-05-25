@@ -8,7 +8,11 @@ export const LaboratoryDictionaryTab = () => {
   const [selectedLaboratory, setSelectedLaboratory] = useState()
 
   const onRowSelectionModelChange = (newRowSelectionModel) => {
-    setSelectedLaboratory(newRowSelectionModel[0])
+    let newId = ''
+    newRowSelectionModel.ids.forEach(item => {
+      newId = item
+    })
+    setSelectedLaboratory(newId)
   }
   return (
     <Grid container spacing={2} sx={{ width: '100%' }}>

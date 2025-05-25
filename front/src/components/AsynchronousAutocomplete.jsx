@@ -1,9 +1,7 @@
 import React from 'react'
-import TextField from '@mui/material/TextField'
-import Autocomplete from '@mui/material/Autocomplete'
-import CircularProgress from '@mui/material/CircularProgress'
+import { Autocomplete, CircularProgress, TextField, MenuItem, ListItemText } from '@mui/material'
 
-export function AsynchronousAutocomplete({ request, label, dataNameField, field, errors }) {
+export function AsynchronousAutocomplete({ request, label, dataNameField, field, errors, secondarySourceArray }) {
   const [open, setOpen] = React.useState(false)
   const [options, setOptions] = React.useState([])
   const [loading, setLoading] = React.useState(false)
@@ -12,13 +10,13 @@ export function AsynchronousAutocomplete({ request, label, dataNameField, field,
 
   const handleOpen = () => {
     setOpen(true)
-    ;(async () => {
-      setLoading(true)
-      const { data } = await request()
-      setLoading(false)
+      ; (async () => {
+        setLoading(true)
+        const { data } = await request()
+        setLoading(false)
 
-      setOptions(data)
-    })()
+        setOptions(data)
+      })()
   }
 
   const handleClose = () => {
@@ -26,6 +24,25 @@ export function AsynchronousAutocomplete({ request, label, dataNameField, field,
   }
   const handleChange = (newValue) => {
     onChange(newValue ? { id: newValue.id, [dataNameField]: newValue[dataNameField] } : null)
+  }
+  const renderAutocompleteOption = (props, option, { selected }) => {
+    const { key, ...optionProps } = props
+    let secondary = ''
+    if (secondarySourceArray.length != 0) {
+      const secondareArray = secondarySourceArray.map(
+        (secondarySourceItem) => option[secondarySourceItem],
+      )
+      secondary = secondareArray.join(', ')
+    }
+    return (
+      <MenuItem value={option.id} key={key} {...optionProps}>
+        <ListItemText
+          primary={option[dataNameField]}
+          sx={{ width: '100%', whiteSpace: 'normal' }}
+          secondary={secondary}
+        />
+      </MenuItem>
+    )
   }
   return (
     <Autocomplete
@@ -42,6 +59,7 @@ export function AsynchronousAutocomplete({ request, label, dataNameField, field,
       getOptionLabel={(option) => option[dataNameField]}
       options={options}
       loading={loading}
+      renderOption={renderAutocompleteOption}
       renderInput={(params) => (
         <TextField
           {...params}

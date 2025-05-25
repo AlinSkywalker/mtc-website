@@ -96,7 +96,7 @@ export const EventDepartmentTable = ({
       width: 100,
       editable: true,
       type: 'singleSelect',
-      valueOptions: ['НП1', 'НП2', 'СП1', 'СП2', 'СС', 'СМ'],
+      valueOptions: ['НП', 'СП', 'СС', 'СМ', 'ХЗ'],
     },
     { field: 'depart_name', headerName: 'Позывной', width: 150, editable: true },
     {

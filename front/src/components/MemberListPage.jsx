@@ -62,7 +62,14 @@ export const MemberListPage = () => {
   }, [])
 
   const renderCitySelectEditCell = (params) => {
-    return <SelectEditInputCell {...params} dictionaryName='cityDictionary' nameField='memb_city' />
+    return (
+      <SelectEditInputCell
+        {...params}
+        dictionaryName='cityDictionary'
+        nameField='memb_city'
+        secondarySourceArray={['count_name', 'okr_name', 'sub_name']}
+      />
+    )
   }
 
   const renderLink = (params) => {

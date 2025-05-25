@@ -95,13 +95,10 @@ export function useFetchEventDepartmentById(eventId, departmentId) {
 
 export function useFetchEventDepartmentMemberList({ eventId, departmentId, selectedDate }) {
   let fetchUrl = `/api/eventList/${eventId}/department/${departmentId}/member`
-  if (selectedDate) {
-    fetchUrl += `?selectedDate=${selectedDate}`
-  }
   return useQuery({
     queryKey: ['event', eventId, 'department', departmentId, 'member', selectedDate],
     queryFn: async () => {
-      if (!eventId || !departmentId) return []
+      if (!eventId || !departmentId || !selectedDate) return []
       const { data } = await apiClient.get(fetchUrl)
       return data
     },

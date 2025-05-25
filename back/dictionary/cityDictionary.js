@@ -9,7 +9,11 @@ const dictionaryRouter = (app, passport) => {
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
       pool.query(
-        `SELECT * FROM city ORDER BY name_city ASC`,
+        `SELECT c.*, s.sub_name, o.okr_name, ctry.count_name FROM city c
+          LEFT JOIN subekt s on s.id = c.city_sub
+          LEFT JOIN okrug o on o.id = s.sub_okr
+          LEFT JOIN country ctry on ctry.id = o.okr_count
+        ORDER BY name_city ASC`,
         (error, result) => {
           if (error) {
             console.log(error);
@@ -27,8 +31,8 @@ const dictionaryRouter = (app, passport) => {
     (req, res) => {
       const { name_city, desc_city, pred_city, tel_city, email } = req.body;
       pool.query(
-        `INSERT INTO city ( name_city, desc_city, pred_city, tel_city, email) VALUES(?,?,?,?,?)`,
-        [name_city, desc_city, pred_city, tel_city, email],
+        `INSERT INTO city ( name_city, desc_city, pred_city, tel_city, email, city_sub) VALUES(?,?,?,?,?,?)`,
+        [name_city, desc_city, pred_city, tel_city, email, city_sub || null],
         (error, result) => {
           if (error) {
             console.log(error);
@@ -45,7 +49,7 @@ const dictionaryRouter = (app, passport) => {
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
       const id = req.params.id;
-      const { name_city, desc_city, pred_city, tel_city, email } = req.body;
+      const { name_city, desc_city, pred_city, tel_city, email, city_sub } = req.body;
       pool.query(
         `UPDATE city SET 
       name_city='${name_city}',
@@ -53,6 +57,7 @@ const dictionaryRouter = (app, passport) => {
       pred_city='${pred_city}',
       tel_city='${tel_city}',
       email='${email}',
+      city_sub='${city_sub || null}',
       updated_date=CURRENT_TIMESTAMP WHERE id=${id}`,
         (error, result) => {
           if (error) {
@@ -82,45 +87,59 @@ const dictionaryRouter = (app, passport) => {
   );
 
   app.get(
-    "/trainingProgram",
+    "/countryDictionary/",
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
-      pool.query(`SELECT * FROM progr_pod`, (error, resultAll) => {
-        if (error) {
-          console.log(error);
-          res.status(500).json({ success: false, message: error });
-          return;
-        }
-        pool.query(
-          `SELECT prog_razd FROM progr_pod GROUP BY prog_razd`,
-          (error, resultUnique) => {
-            if (error) {
-              console.log(error);
-              res.status(500).json({ success: false, message: error });
-              return;
-            }
-            const returnType = req.query.returnType;
-            if (returnType == "objectType") {
-              const newResult = {};
-              resultAll.forEach((item) => {
-                newResult[item.id] = { ...item, name: item.prog_tem, parent: item.prog_razd };
-              });
-              res.send({
-                data: newResult,
-                razdelList: resultUnique.map((item) => item.prog_razd),
-              });
-            } else {
-              res.send(
-                resultAll,
-              );
-            }
-
+      pool.query(
+        `SELECT * FROM country ORDER BY count_name ASC`,
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return;
           }
-        );
-      });
+          res.send(result);
+        }
+      );
     }
   );
-};
-
+  app.get(
+    "/okrugDictionary/",
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+      pool.query(
+        `SELECT * FROM okrug ORDER BY okr_name ASC`,
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return;
+          }
+          res.send(result);
+        }
+      );
+    }
+  );
+  app.get(
+    "/subektDictionary/",
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+      pool.query(
+        `SELECT s.id, s.sub_name, o.okr_name, c.count_name FROM subekt s
+          LEFT JOIN okrug o on o.id = s.sub_okr
+          LEFT JOIN country c on c.id = o.okr_count
+          ORDER BY sub_name ASC`,
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return;
+          }
+          res.send(result);
+        }
+      );
+    }
+  );
+}
 // Export the router
 module.exports = dictionaryRouter;

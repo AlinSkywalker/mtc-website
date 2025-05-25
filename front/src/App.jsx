@@ -18,7 +18,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { ru } from 'date-fns/locale/ru'
 import theme from './api/theme'
-import { ThemeProvider } from '@mui/material'
+import { Grid, ThemeProvider } from '@mui/material'
 import { SnackbarProvider } from 'notistack'
 
 const queryClient = new QueryClient()
@@ -28,17 +28,30 @@ const PrivateRoute = ({ children }) => {
   return isAuthenticated ? <AdminLayout>{children}</AdminLayout> : <Navigate to='/login' />
 }
 
+const AdminRoute = ({ children }) => {
+  const { isAuthenticated, userInfo } = useContext(AuthContext)
+  // console.log('userInfo', userInfo)
+  if (!isAuthenticated) {
+    return <Navigate to='/login' />
+  }
+  if (userInfo.role !== 'ADMIN_ROLE') {
+    return (
+      <AdminLayout>
+        <Grid>Данная страница недоступна</Grid>
+      </AdminLayout>
+    )
+  }
+  return <AdminLayout>{children}</AdminLayout>
+  // return isAuthenticated ? <AdminLayout>{children}</AdminLayout> : <Navigate to='/login' />
+}
+
 const PublicRoute = ({ children }) => {
   return children
 }
 
 const LoginRoute = ({ children }) => {
-  const { isAuthenticated, userInfo } = useContext(AuthContext)
-  return isAuthenticated ? (
-    <Navigate to={userInfo.role == 'ADMIN_ROLE' ? '/admin' : '/profile'} />
-  ) : (
-    children
-  )
+  const { isAuthenticated } = useContext(AuthContext)
+  return isAuthenticated ? <Navigate to='/profile' /> : children
 }
 
 const App = () => {
@@ -73,49 +86,49 @@ const App = () => {
                   <Route
                     path='/admin/event'
                     element={
-                      <PrivateRoute>
+                      <AdminRoute>
                         <EventListPage />
-                      </PrivateRoute>
+                      </AdminRoute>
                     }
                   />
                   <Route
                     path='/admin/event/:id'
                     element={
-                      <PrivateRoute>
+                      <AdminRoute>
                         <EventInfoPage />
-                      </PrivateRoute>
+                      </AdminRoute>
                     }
                   />
                   <Route
                     path='/admin/member'
                     element={
-                      <PrivateRoute>
+                      <AdminRoute>
                         <MemberListPage />
-                      </PrivateRoute>
+                      </AdminRoute>
                     }
                   />
                   <Route
                     path='/admin/member/:id'
                     element={
-                      <PrivateRoute>
+                      <AdminRoute>
                         <MemberInfoPage />
-                      </PrivateRoute>
+                      </AdminRoute>
                     }
                   />
                   <Route
                     path='/admin/dictionary'
                     element={
-                      <PrivateRoute>
+                      <AdminRoute>
                         <DictionaryPage />
-                      </PrivateRoute>
+                      </AdminRoute>
                     }
                   />
                   <Route
                     path='/admin/dictionary/:dictionaryType'
                     element={
-                      <PrivateRoute>
+                      <AdminRoute>
                         <DictionaryPage />
-                      </PrivateRoute>
+                      </AdminRoute>
                     }
                   />
                   <Route

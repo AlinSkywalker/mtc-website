@@ -17,7 +17,7 @@ import MtcImage from '../assets/mtc.png'
 
 export const AdminLayout = ({ children }) => {
   const [anchorEl, setAnchorEl] = React.useState(null)
-  const { setUserInfo, setIsAuthenticated } = useContext(AuthContext)
+  const { userInfo, setUserInfo, setIsAuthenticated } = useContext(AuthContext)
 
   useEffect(() => {
     apiClient.get('/api/current').then((response) => {
@@ -47,11 +47,14 @@ export const AdminLayout = ({ children }) => {
   const handleGoToProfilePage = () => {
     navigate('/profile')
   }
-  const pages = [
-    { name: 'eventList', url: '/admin/event', label: 'Мероприятия' },
-    { name: 'memberList', url: '/admin/member', label: 'Члены клуба' },
-    { name: 'dictionary', url: '/admin/dictionary', label: 'Справочники' },
-  ]
+  const pages =
+    userInfo.role !== 'ADMIN_ROLE'
+      ? []
+      : [
+        { name: 'eventList', url: '/admin/event', label: 'Мероприятия' },
+        { name: 'memberList', url: '/admin/member', label: 'Члены клуба' },
+        { name: 'dictionary', url: '/admin/dictionary', label: 'Справочники' },
+      ]
   const handleCloseGoToPage = (page) => () => {
     navigate(page.url)
   }

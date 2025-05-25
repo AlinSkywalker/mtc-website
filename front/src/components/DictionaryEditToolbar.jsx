@@ -2,6 +2,7 @@ import React from 'react'
 import { GridRowModes, Toolbar } from '@mui/x-data-grid'
 import AddIcon from '@mui/icons-material/Add'
 import { Button, Grid } from '@mui/material'
+import { v4 } from 'uuid'
 
 export const DictionaryEditToolbar = (props) => {
   const {
@@ -14,7 +15,7 @@ export const DictionaryEditToolbar = (props) => {
   } = props
 
   const handleClick = () => {
-    const id = crypto.randomUUID()
+    const id = v4()
     setRows((oldRows) => [{ ...defaultItem, id, isNew: true }, ...oldRows])
     setRowModesModel((oldModel) => ({
       ...oldModel,

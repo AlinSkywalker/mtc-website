@@ -5,11 +5,13 @@ const pool = require("../mysql")
 const eventMemberRouter = (app, passport) => {
   app.get('/eventList/:eventId/member/', passport.authenticate('jwt', { session: false }), (req, res) => {
     const eventId = req.params.eventId;
-    pool.query(`SELECT e_m.*, m.fio, m.gender, m.tel_1, m.memb_email, m.size_cloth, m.size_shoe, c.name_city, COUNT(m_i_d.id) as days_with_dept
+    pool.query(`SELECT e_m.*, m.fio, m.gender, m.tel_1, m.memb_email, m.size_cloth, m.size_shoe, c.name_city, 
+                    COUNT(m_i_d.id) as days_with_dept, e.price
                 FROM eventmemb e_m
                 LEFT JOIN member m on m.id=e_m.eventmemb_memb 
                 LEFT JOIN city c on m.memb_city=c.id
-                LEFT JOIN member_in_depart m_i_d on m_i_d.membd_memb =e_m.id 
+                LEFT JOIN member_in_depart m_i_d on m_i_d.membd_memb =e_m.id
+                LEFT JOIN eventalp e on e.id=e_m.eventmemb_even
                 WHERE eventmemb_even='${eventId}'
                 GROUP BY e_m.eventmemb_memb
                 ORDER BY m.fio ASC`, (error, result) => {
@@ -27,11 +29,8 @@ const eventMemberRouter = (app, passport) => {
         if (!allDaysWithDept) {
           alerts.push('У участника не указано отделение на некоторые дни')
         }
-        if (!item.eventmemb_pred) {
-          alerts.push('У участника не отмечена предоплата')
-        }
-        if (!item.eventmemb_opl && new Date() >= new Date(item.eventmemb_datef)) {
-          alerts.push('У участника не отмечена полная оплата')
+        if (item.eventmemb_pred < item.price && item.eventmemb_role === 'Участник') {
+          alerts.push('У участника не полная оплата')
         }
         return { ...item, allDaysWithDept, alerts }
       })

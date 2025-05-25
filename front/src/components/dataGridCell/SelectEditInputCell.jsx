@@ -71,8 +71,12 @@ function mapDictionaryData(
         itemName = `${item.depart_tip} ${item.depart_name}`
         if (secondarySource == 'date') secondary = `${item.depart_dates} - ${item.depart_datef}`
         break
+      case 'subektDictionary':
+        itemName = `${item.count_name}, ${item.okr_name}, ${item.sub_name}`
+        break
       default:
         itemName = ''
+        secondary = ''
         break
     }
     return { id, name: itemName, item, secondary }

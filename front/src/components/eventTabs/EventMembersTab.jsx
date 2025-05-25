@@ -100,9 +100,9 @@ export const EventMembersTab = ({ eventId }) => {
   const renderAlerts = (params) => {
     const alerts = params.value ?? []
     if (alerts.length !== 0) {
-      const tooltipText = alerts.join(';')
+      const tooltipText = alerts.join(';\r\n')
       return (
-        <Tooltip title={tooltipText}>
+        <Tooltip title={<span style={{ whiteSpace: 'pre-line' }}>{tooltipText}</span>}>
           <IconButton sx={{ marginLeft: 1, color: red[500] }}>
             <ErrorIcon />
           </IconButton>
@@ -168,17 +168,10 @@ export const EventMembersTab = ({ eventId }) => {
     },
     {
       field: 'eventmemb_pred',
-      headerName: 'Предоплата',
-      width: 100,
-      editable: true,
-      type: 'number',
-    },
-    {
-      field: 'eventmemb_opl',
       headerName: 'Оплата',
       width: 100,
       editable: true,
-      ...checkboxColumnType,
+      type: 'number',
     },
     {
       field: 'eventmemb_gen',

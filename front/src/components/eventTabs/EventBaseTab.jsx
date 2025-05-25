@@ -9,9 +9,12 @@ export const EventBaseTab = ({ eventId }) => {
   const [selectedBaseRoom, setSelectedBaseRoom] = useState()
 
   const onRowSelectionModelChange = (newRowSelectionModel) => {
-    setSelectedBaseRoom(newRowSelectionModel[0])
+    let newId = ''
+    newRowSelectionModel.ids.forEach(item => {
+      newId = item
+    })
+    setSelectedBaseRoom(newId)
   }
-
   return (
     <Grid container spacing={1}>
       <Grid size={7}>

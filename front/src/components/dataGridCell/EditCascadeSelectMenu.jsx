@@ -254,11 +254,26 @@ export function EditCascadeSelectMenu(props) {
 
   const displayValue = row[displayField]
   let submitDisabled = !districtAutocompleteValue?.id
+
+  const renderOption = (props, option, { selected }) => {
+    const { key, ...optionProps } = props
+    return (
+      <MenuItem value={option.id} key={key} {...optionProps}>
+        <ListItemText
+          primary={option.name}
+          sx={{ width: '100%', whiteSpace: 'normal' }}
+          secondary={option.secondary}
+        />
+      </MenuItem>
+    )
+  }
+  const renderInput = (params) => <TextField {...params} sx={{ height: 36, fontSize: 14 }} />
+
   if (finishDictionary == 'routeDictionary') submitDisabled = !routeAutocompleteValue?.id
   else if (finishDictionary == 'summitDictionary') submitDisabled = !summitAutocompleteValue?.id
   return (
     <>
-      <Grid container sx={{ width: '100%' }} flexWrap={'nowrap'}>
+      <Grid container sx={{ width: '100%' }} flexWrap={'nowrap'} className='selectWithPopup'>
         <Grid flexGrow={2} sx={{ pl: 2, overflow: 'hidden' }}>
           {displayValue}
         </Grid>
@@ -291,9 +306,7 @@ export function EditCascadeSelectMenu(props) {
                 inputValue={regionInputValue}
                 size='small'
                 MenuProps={{ sx: { maxWidth: 800 } }}
-                renderInput={(params) => (
-                  <TextField {...params} sx={{ height: 36, fontSize: 14 }} />
-                )}
+                renderInput={renderInput}
                 options={regionAutocompleteOptions}
                 getOptionLabel={(option) => option.name}
                 onChange={(event, newValue) => {
@@ -312,9 +325,7 @@ export function EditCascadeSelectMenu(props) {
                 inputValue={districtInputValue}
                 size='small'
                 MenuProps={{ sx: { maxWidth: 800 } }}
-                renderInput={(params) => (
-                  <TextField {...params} sx={{ height: 36, fontSize: 14 }} />
-                )}
+                renderInput={renderInput}
                 options={districtAutocompleteOptions}
                 getOptionLabel={(option) => option.name}
                 onChange={(event, newValue) => {
@@ -333,9 +344,7 @@ export function EditCascadeSelectMenu(props) {
                 inputValue={summitInputValue}
                 size='small'
                 MenuProps={{ sx: { maxWidth: 800 } }}
-                renderInput={(params) => (
-                  <TextField {...params} sx={{ height: 36, fontSize: 14 }} />
-                )}
+                renderInput={renderInput}
                 options={summitAutocompleteOptions}
                 getOptionLabel={(option) => option.name}
                 onChange={(event, newValue) => {
@@ -345,18 +354,7 @@ export function EditCascadeSelectMenu(props) {
                   setSummitInputValue(newInputValue)
                 }}
                 fullWidth
-                renderOption={(props, option, { selected }) => {
-                  const { key, ...optionProps } = props
-                  return (
-                    <MenuItem value={option.id} key={key} {...optionProps}>
-                      <ListItemText
-                        primary={option.name}
-                        sx={{ width: '100%', whiteSpace: 'normal' }}
-                        secondary={option.secondary}
-                      />
-                    </MenuItem>
-                  )
-                }}
+                renderOption={renderOption}
               />
             )}
             {finishDictionary == 'routeDictionary' && (
@@ -366,9 +364,7 @@ export function EditCascadeSelectMenu(props) {
                 inputValue={routeInputValue}
                 size='small'
                 MenuProps={{ sx: { maxWidth: 800 } }}
-                renderInput={(params) => (
-                  <TextField {...params} sx={{ height: 36, fontSize: 14 }} />
-                )}
+                renderInput={renderInput}
                 options={routeAutocompleteOptions}
                 getOptionLabel={(option) =>
                   option.secondary ? `${option.name} (${option.secondary})` : option.name
@@ -380,18 +376,7 @@ export function EditCascadeSelectMenu(props) {
                   setRouteInputValue(newInputValue)
                 }}
                 fullWidth
-                renderOption={(props, option, { selected }) => {
-                  const { key, ...optionProps } = props
-                  return (
-                    <MenuItem value={option.id} key={key} {...optionProps}>
-                      <ListItemText
-                        primary={option.name}
-                        sx={{ width: '100%', whiteSpace: 'normal' }}
-                        secondary={option.secondary}
-                      />
-                    </MenuItem>
-                  )
-                }}
+                renderOption={renderOption}
               />
             )}
             <Button onClick={handleSubmit} disabled={submitDisabled} variant='contained'>
