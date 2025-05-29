@@ -246,7 +246,7 @@ export const EventDepartmentPlansTable = ({
         defaultItem={defaultItem}
         isLoading={isLoading}
         handleDeleteItem={handleDeleteItem}
-        height={400}
+        height='calc(100vh - 150px)'
         addButtonDisabled={!departmentId}
       />
       {selectedDate && (

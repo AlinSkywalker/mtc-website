@@ -34,7 +34,7 @@ export const EventDepartmentPlansTab = ({ eventId, eventDistrict, eventStart, ev
         </ToggleButton>
         {data.map((item) => (
           <ToggleButton value={item.id} aria-label='left aligned' key={item.id}>
-            {`${item.depart_tip} ${item.depart_name} (${format(parseISO(item.depart_dates), 'dd.MM.yyyy')} - ${format(parseISO(item.depart_datef), 'dd.MM.yyyy')})`}
+            {`${item.depart_tip} ${item.depart_name} (${format(parseISO(item.depart_dates), 'dd.MM')} - ${format(parseISO(item.depart_datef), 'dd.MM')})`}
           </ToggleButton>
         ))}
       </ToggleButtonGroup>

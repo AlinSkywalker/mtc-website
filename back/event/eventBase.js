@@ -95,11 +95,11 @@ const eventBaseRouter = (app, passport) => {
     (req, res) => {
       const { eventId } = req.params;
       pool.query(
-        `SELECT b_e.*, bf_n.basenom_name, bf_n.basenom_mest, bf_d.basefd_name, bf_d.id as basehouse_id
+        `SELECT b_e.*, bf_n.basenom_name, bf_n.basenom_mest, bf_d.basefd_name, bf_d.id as basehouse_id, b.base_name
                 FROM baseroom_in_event b_e 
                 LEFT JOIN base_house_room bf_n on bf_n.id=b_e.basefd 
                 LEFT JOIN base_house bf_d on bf_d.id=bf_n.basenom_fd 
-                
+                LEFT JOIN base b on b.id=bf_d.basefd_base 
                 WHERE event='${eventId}'`,
         (error, result) => {
           if (error) {

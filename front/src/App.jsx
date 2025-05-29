@@ -1,15 +1,15 @@
 // App.js
 import React, { useContext } from 'react'
 import { BrowserRouter, Route, Navigate, Routes } from 'react-router-dom'
-import LoginPage from './components/LoginPage'
-import RegistrationPage from './components/RegistrationPage'
+import LoginPage from './pages/LoginPage'
+import RegistrationPage from './pages/RegistrationPage'
 import { AdminLayout } from './components/AdminLayout'
-import { ProfilePage } from './components/ProfilePage'
-import { EventListPage } from './components/EventListPage'
-import { EventInfoPage } from './components/EventInfoPage'
-import { MemberInfoPage } from './components/MemberInfoPage'
-import { MemberListPage } from './components/MemberListPage'
-import { DictionaryPage } from './components/DictionaryPage'
+import { ProfilePage } from './pages/ProfilePage'
+import { EventListPage } from './pages/EventListPage'
+import { EventInfoPage } from './pages/EventInfoPage'
+import { MemberInfoPage } from './pages/MemberInfoPage'
+import { MemberListPage } from './pages/MemberListPage'
+import { DictionaryPage } from './pages/DictionaryPage'
 import { AuthContext } from './components/AuthContext'
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
 import { AuthProvider } from './components/AuthContext'
@@ -62,7 +62,7 @@ const App = () => {
           <SnackbarProvider>
             <CssBaseline />
             <AuthProvider>
-              <BrowserRouter basename={'/mountaineering-training-center'}>
+              <BrowserRouter>
                 <Routes>
                   <Route
                     path='/login'
@@ -92,7 +92,7 @@ const App = () => {
                     }
                   />
                   <Route
-                    path='/admin/event/:id'
+                    path='/admin/event/:id/*'
                     element={
                       <AdminRoute>
                         <EventInfoPage />

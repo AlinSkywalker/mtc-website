@@ -1,3 +1,7 @@
+Object.keys(require.cache).forEach(function (key) {
+  delete require.cache[key];
+});
+
 const express = require("express");
 const passport = require("passport");
 const JwtStrategy = require("passport-jwt").Strategy;

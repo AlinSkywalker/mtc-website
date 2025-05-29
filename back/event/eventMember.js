@@ -13,7 +13,7 @@ const eventMemberRouter = (app, passport) => {
                 LEFT JOIN member_in_depart m_i_d on m_i_d.membd_memb =e_m.id
                 LEFT JOIN eventalp e on e.id=e_m.eventmemb_even
                 WHERE eventmemb_even='${eventId}'
-                GROUP BY e_m.eventmemb_memb
+                GROUP BY e_m.id
                 ORDER BY m.fio ASC`, (error, result) => {
       if (error) {
         console.log(error);
@@ -44,7 +44,7 @@ const eventMemberRouter = (app, passport) => {
     pool.query(`INSERT INTO eventmemb 
       ( eventmemb_nstrah, eventmemb_nmed, eventmemb_memb, eventmemb_dates, eventmemb_datef,eventmemb_even,eventmemb_gen,eventmemb_pred,eventmemb_opl,eventmemb_role) 
       VALUES(?,?,?,?,?,?,?,?,?,?)`,
-      [eventmemb_nstrah, eventmemb_nmed, eventmemb_memb, eventmemb_dates, eventmemb_datef, eventId, eventmemb_gen, eventmemb_pred, eventmemb_opl, eventmemb_role], (error, result) => {
+      [eventmemb_nstrah, eventmemb_nmed, eventmemb_memb, eventmemb_dates, eventmemb_datef, eventId, eventmemb_gen, eventmemb_pred, eventmemb_opl || 0, eventmemb_role], (error, result) => {
         if (error) {
           console.log(error);
           res.status(500).json({ success: false, message: error });

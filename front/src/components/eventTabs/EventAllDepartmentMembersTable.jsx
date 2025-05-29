@@ -29,8 +29,7 @@ export const EventAllDepartmentMembersTable = ({ eventId, eventStart, eventFinis
         <Grid sx={{ textAlign: 'center' }}>
           {depMembers.map((item, index) => (
             <Fragment key={index}>
-              <Typography variant='caption'>{item}</Typography>
-              <br />
+              <Typography variant='caption' className='depMember'>{item}</Typography>
             </Fragment>
           ))}
         </Grid>
@@ -39,10 +38,10 @@ export const EventAllDepartmentMembersTable = ({ eventId, eventStart, eventFinis
   }
   if (!data || !departmentData) return
   return (
-    <Grid container sx={{ width: '100%', overflowX: 'scroll' }}>
+    <Grid container sx={{ width: '100%', overflow: 'scroll', height: 'calc(100vh - 150px)' }}>
       <Grid>
         <Grid
-          sx={{ width: '100%' }}
+          sx={{ width: '100%', position: 'sticky', top: 0 }}
           container
           flexDirection={'row'}
           className='depPlanRow'

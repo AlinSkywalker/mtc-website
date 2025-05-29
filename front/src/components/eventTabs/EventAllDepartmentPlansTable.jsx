@@ -41,9 +41,9 @@ export const EventAllDepartmentPlansTable = ({ eventId, eventStart, eventFinish 
   }
   if (!data || !departmentData) return
   return (
-    <Grid container sx={{ width: '100%', overflowX: 'scroll' }}>
+    <Grid container sx={{ width: '100%', overflow: 'scroll', height: 'calc(100vh - 150px)' }}>
       <Grid
-        sx={{ width: '100%' }}
+        sx={{ width: '100%', position: 'sticky', top: 0 }}
         container
         flexDirection={'row'}
         className='depPlanRow'

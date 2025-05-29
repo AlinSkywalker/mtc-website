@@ -7,7 +7,7 @@ import CardContent from '@mui/material/CardContent'
 import Grid from '@mui/material/Grid'
 import Container from '@mui/material/Container'
 import { useNavigate, redirect } from 'react-router-dom'
-import { AuthContext } from './AuthContext'
+import { AuthContext } from '../components/AuthContext'
 import apiClient from '../api/api'
 
 const LoginPage = () => {

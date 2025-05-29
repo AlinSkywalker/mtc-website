@@ -59,3 +59,12 @@
 .depMembersCell {
   height: 160px;
 }
+
+.depMembersCell .depMember {
+  display: block;
+  line-height: 1.46
+}
+
+/* .depPlanRow:nth-child(2) {
+  padding-top: 40px;
+} */

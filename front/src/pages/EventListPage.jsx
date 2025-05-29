@@ -5,12 +5,12 @@ import { Link } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import apiClient from '../api/api'
 import { useQueryClient } from '@tanstack/react-query'
-import { EditableTable } from './EditableTable'
+import { EditableTable } from '../components/EditableTable'
 import * as Yup from 'yup'
-import { SelectEditInputCell } from './dataGridCell/SelectEditInputCell'
-import { EditCascadeSelectMenu } from './dataGridCell/EditCascadeSelectMenu'
-import { dateColumnType } from './dataGridCell/GridEditDateCell'
-import { MultiValueSelecWithGroupingtEditInputCell } from './dataGridCell/MultiValueSelecWithGroupingtEditInputCell'
+import { SelectEditInputCell } from '../components/dataGridCell/SelectEditInputCell'
+import { EditCascadeSelectMenu } from '../components/dataGridCell/EditCascadeSelectMenu'
+import { dateColumnType } from '../components/dataGridCell/GridEditDateCell'
+import { MultiValueSelecWithGroupingtEditInputCell } from '../components/dataGridCell/MultiValueSelecWithGroupingtEditInputCell'
 
 const defaultItem = {
   event_name: '',

@@ -26,12 +26,12 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, './build'),
-    filename: 'mountaineering-training-center/[name].[contenthash].js',
+    filename: '[name].[contenthash].js',
     publicPath: '/',
   },
   devServer: {
     static: {
-      directory: path.join(__dirname, 'public/mountaineering-training-center'),
+      directory: path.join(__dirname, 'public'),
     },
     port: 9000,
     open: ['/mountaineering-training-center/login'],

@@ -2,6 +2,7 @@ import React from 'react'
 import { useFetchEventProtocol } from '../../queries/event'
 import Grid from '@mui/material/Grid'
 import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid'
+import { useParams } from 'react-router-dom'
 
 function CustomToolbar() {
   return (
@@ -17,7 +18,8 @@ function CustomToolbar() {
   )
 }
 
-export const EventProtocolTab = ({ eventId }) => {
+export const EventProtocolTab = () => {
+  const { id: eventId } = useParams()
   const { isLoading, data } = useFetchEventProtocol(eventId)
 
   const [rows, setRows] = React.useState(data)
@@ -46,7 +48,7 @@ export const EventProtocolTab = ({ eventId }) => {
 
   if (!eventId) return null
   return (
-    <Grid size={12} sx={{ height: 400 }}>
+    <Grid size={12} sx={{ height: `calc(100vh - 150px)` }}>
       <DataGrid
         rows={rows}
         columns={columns}

@@ -55,10 +55,6 @@ export const EventBaseHouseRoomTable = ({ eventId, onRowSelectionModelChange }) 
     const hookParams = {
       eventId,
     }
-    const pickMap = {
-      basenom_mest: 'basenom_mest',
-      basefd_name: 'basefd_name',
-    }
     return (
       <SelectEditInputCell
         {...params}
@@ -67,8 +63,8 @@ export const EventBaseHouseRoomTable = ({ eventId, onRowSelectionModelChange }) 
         hook={useFetchBaseHouseForEvent}
         hookParams={hookParams}
         secondarySource='base_name'
-        // secondarySourceArray={['base_name', 'basefd_name']}
-        // pickMap={pickMap}
+      // secondarySourceArray={['base_name', 'basefd_name']}
+      // pickMap={pickMap}
       />
     )
   }
@@ -102,6 +98,9 @@ export const EventBaseHouseRoomTable = ({ eventId, onRowSelectionModelChange }) 
       width: 120,
       editable: true,
       renderEditCell: renderSelectHouseEditCell,
+      valueGetter: (value, row) => {
+        return value ? `${value}, ${row.base_name}` : ''
+      }
     },
     {
       field: 'basenom_name',
@@ -160,7 +159,7 @@ export const EventBaseHouseRoomTable = ({ eventId, onRowSelectionModelChange }) 
       isLoading={isLoading}
       handleDeleteItem={handleDeleteItem}
       onRowSelectionModelChange={onRowSelectionModelChange}
-      // isCellEditable={(params) => params.field !== 'basenom_mest'}
+    // isCellEditable={(params) => params.field !== 'basenom_mest'}
     />
   )
 }

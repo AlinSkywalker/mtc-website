@@ -197,7 +197,7 @@ export const EventMemberDepartment = ({ eventId }) => {
 
   return (
     <Grid container>
-      <Grid size={5} sx={{ height: 600 }}>
+      <Grid size={5} sx={{ height: `calc(100vh - 150px)` }}>
         <DataGrid
           rows={membersRows}
           columns={membersColumns}
@@ -225,7 +225,7 @@ export const EventMemberDepartment = ({ eventId }) => {
           }}
         />
       </Grid>
-      <Grid size={7}>
+      <Grid size={7} >
         <EditableTable
           rows={rows}
           setRows={setRows}
@@ -239,7 +239,6 @@ export const EventMemberDepartment = ({ eventId }) => {
           isLoading={isLoading}
           toolbar={toolbar}
           isCellEditable={(params) => params.field !== 'membd_date'}
-          height={600}
         />
       </Grid>
     </Grid>

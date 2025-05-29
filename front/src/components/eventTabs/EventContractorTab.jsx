@@ -6,6 +6,7 @@ import { EditableTable } from '../EditableTable'
 import * as Yup from 'yup'
 import { dateColumnType } from '../dataGridCell/GridEditDateCell'
 import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
+import { useParams } from 'react-router-dom'
 
 const defaultItem = {}
 
@@ -18,7 +19,8 @@ const validationSchema = Yup.object({
   service_type: Yup.string().required('Поле обязательно для заполнения'),
 })
 
-export const EventContractorTab = ({ eventId }) => {
+export const EventContractorTab = () => {
+  const { id: eventId } = useParams()
   const queryClient = useQueryClient()
   const { isLoading, data } = useFetchEventContractorList(eventId)
 

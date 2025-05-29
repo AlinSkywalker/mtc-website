@@ -6,7 +6,7 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Grid from '@mui/material/Grid'
 import Container from '@mui/material/Container'
-import { AuthContext } from './AuthContext'
+import { AuthContext } from '../components/AuthContext'
 import apiClient from '../api/api'
 import { useFetchProfile } from '../queries/profile'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
@@ -15,7 +15,6 @@ import MenuItem from '@mui/material/MenuItem'
 import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
 import { sizeClothOptions, sizeShoeOptions } from '../constants'
-import { AsynchronousAutocomplete } from './AsynchronousAutocomplete'
 
 export const ProfilePage = () => {
   const defaultValues = {
@@ -199,7 +198,7 @@ export const ProfilePage = () => {
                   )}
                 />
               </Grid>
-              <Grid container item>
+              <Grid container>
                 <Grid>
                   <Button variant='text' type='button' disabled={!isDirty} onClick={handleReset}>
                     Отменить

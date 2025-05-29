@@ -4,13 +4,9 @@ import apiClient from '../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
 import { EditableTable } from '../EditableTable'
 import * as Yup from 'yup'
-import { dateColumnType } from '../dataGridCell/GridEditDateCell'
-import { useFetchMemberList } from '../../queries/member'
-import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
 import { fileColumnType } from '../dataGridCell/GridEditFileCell'
-import { Link } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
-import { GridEditInputCell } from '@mui/x-data-grid'
+import { useParams } from 'react-router-dom'
 
 const defaultItem = {
   event_file: '',
@@ -20,7 +16,8 @@ const validationSchema = Yup.object({
   // event_file: Yup.string().required('Поле обязательно для заполнения'),
 })
 
-export const EventFilesTab = ({ eventId }) => {
+export const EventFilesTab = () => {
+  const { id: eventId } = useParams()
   const queryClient = useQueryClient()
   const { isLoading, data } = useFetchEventFileList(eventId)
 
