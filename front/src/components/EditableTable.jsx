@@ -35,6 +35,7 @@ export const EditableTable = ({
   isRowEditable = () => true,
   addButtonLabel,
   className,
+  showPagination = true
 }) => {
   const isSomeNewRow = rows?.some((item) => item.isNew)
   const isSomeRowEditing = Object.values(rowModesModel).some(
@@ -185,7 +186,8 @@ export const EditableTable = ({
     <Grid spacing={2} container flexDirection={'column'}>
       <Grid size={12} sx={{ height: tableHeight }}>
         <DataGrid
-          className={`editableTable ${className}`}
+          disableColumnSorting
+          className={`editableTable ${className}  ${showPagination ? '' : 'withoutPagination'}`}
           rows={rows}
           columns={tableColumns}
           loading={isLoading}

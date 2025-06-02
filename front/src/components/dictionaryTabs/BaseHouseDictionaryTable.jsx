@@ -95,6 +95,7 @@ export const BaseHouseDictionaryTable = ({ onRowSelectionModelChange, selectedBa
         height={600}
         onRowSelectionModelChange={onRowSelectionModelChange}
         addButtonDisabled={!selectedBase}
+        showPagination={false}
       />
     </>
   )

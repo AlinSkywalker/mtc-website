@@ -8,6 +8,7 @@ import Tabs from '@mui/material/Tabs'
 import { EventBaseHouseRoomTable } from './EventBaseHouseRoomTable'
 import { EventBaseHouseRoomMemberTable } from './EventBaseHouseRoomMemberTable'
 import { useParams, useLocation, Route, Routes, Link } from 'react-router-dom'
+import { EventBaseSettlementTab } from './EventBaseSettlementTab'
 
 export const EventBaseTab = () => {
   const { id: eventId } = useParams()
@@ -39,24 +40,12 @@ export const EventBaseTab = () => {
       name: 'settlement',
       path: '/settlement',
       label: 'Расселение',
-      component: <></>,
+      component: <EventBaseSettlementTab />,
     },
   ]
   const currentTab = tabs.findIndex((tab) => `${basePath}${tab.path}` === location.pathname)
   return (
     <>
-      <Grid container spacing={1}>
-        <Grid size={7}>
-          <EventBaseHouseRoomTable
-            eventId={eventId}
-            onRowSelectionModelChange={onRowSelectionModelChange}
-          />
-        </Grid>
-        <Grid size={5}>
-          <EventBaseHouseRoomMemberTable eventId={eventId} selectedBaseRoom={selectedBaseRoom} />
-        </Grid>
-      </Grid>
-
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs
           value={currentTab !== -1 ? currentTab : false}

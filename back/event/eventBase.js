@@ -351,6 +351,29 @@ WHERE em.eventmemb_even=${eventId} AND em.id NOT IN (SELECT em.id
       );
     }
   );
+
+  app.get(
+    "/eventList/:eventId/fullBase",
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+      const { eventId } = req.params;
+      pool.query(
+        `SELECT b.*, b_e.id
+                FROM base_in_eventalp b_e 
+                LEFT JOIN base b ON b.id=b_e.base_m
+                WHERE b_e.event_m='${eventId}'`,
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return;
+          }
+          res.send(result);
+        }
+      );
+    }
+  );
+
 };
 
 // Export the router

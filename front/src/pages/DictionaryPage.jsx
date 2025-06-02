@@ -82,7 +82,7 @@ export const DictionaryPage = () => {
   return (
     <Container
       maxWidth={false}
-      sx={{ height: '100vh', backgroundColor: { xs: '#fff', md: '#f4f4f4' }, overflowX: 'scroll' }}
+      sx={{ height: 'calc(100vh - 70px)', backgroundColor: { xs: '#fff', md: '#f4f4f4' } }}
     >
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>

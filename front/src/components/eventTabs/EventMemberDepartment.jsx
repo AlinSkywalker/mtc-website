@@ -137,7 +137,7 @@ export const EventMemberDepartment = ({ eventId }) => {
     {
       field: 'fio',
       headerName: 'ФИО участника',
-      width: 350,
+      width: 400,
       renderCell: renderMemberFioCell,
     },
   ]

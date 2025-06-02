@@ -95,7 +95,7 @@ export const EventBaseHouseRoomTable = ({ eventId, onRowSelectionModelChange }) 
     {
       field: 'basefd_name',
       headerName: 'Дом',
-      width: 120,
+      width: 250,
       editable: true,
       renderEditCell: renderSelectHouseEditCell,
       valueGetter: (value, row) => {

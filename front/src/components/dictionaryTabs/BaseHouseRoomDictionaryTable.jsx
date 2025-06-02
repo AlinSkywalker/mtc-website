@@ -62,12 +62,11 @@ export const BaseHouseRoomDictionaryTable = ({ selectedBase, selectedBaseHouse }
     },
     {
       field: 'basenom_mest',
-      headerName: 'Количество мест',
-      width: 150,
+      headerName: 'Мест',
+      width: 80,
       editable: true,
       type: 'number',
     },
-    { field: 'basenom_prais', headerName: 'Цена', width: 150, editable: true, type: 'number' },
     {
       field: 'basenom_ud',
       headerName: 'Удобства',
@@ -79,24 +78,25 @@ export const BaseHouseRoomDictionaryTable = ({ selectedBase, selectedBaseHouse }
     {
       field: 'basenom_bal',
       headerName: 'Балкон',
-      width: 100,
+      width: 80,
       editable: true,
       ...checkboxColumnType,
     },
     {
       field: 'basenom_sem',
       headerName: 'Семейный',
-      width: 100,
+      width: 80,
       editable: true,
       ...checkboxColumnType,
     },
     {
       field: 'basenom_pod',
-      headerName: 'Возможность подселения, кроватка',
+      headerName: 'Раскладушка',
       width: 100,
       editable: true,
       ...checkboxColumnType,
     },
+    { field: 'basenom_prais', headerName: 'Цена', width: 90, editable: true, type: 'number' },
     {
       field: 'basenom_akt',
       ...dateColumnType,

@@ -95,6 +95,9 @@ export function useFetchEventDepartmentById(eventId, departmentId) {
 
 export function useFetchEventDepartmentMemberList({ eventId, departmentId, selectedDate }) {
   let fetchUrl = `/api/eventList/${eventId}/department/${departmentId}/member`
+  if (selectedDate) {
+    fetchUrl += `?selectedDate=${selectedDate}`
+  }
   return useQuery({
     queryKey: ['event', eventId, 'department', departmentId, 'member', selectedDate],
     queryFn: async () => {
@@ -315,6 +318,18 @@ export function useFetchEventProtocol(eventId) {
   let fetchUrl = `/api/eventList/${eventId}/protocol`
   return useQuery({
     queryKey: ['event', eventId, 'protocol'],
+    queryFn: async () => {
+      if (!eventId) return []
+      const { data } = await apiClient.get(fetchUrl)
+      return data
+    },
+  })
+}
+
+export function useFetchEventFullBase(eventId) {
+  let fetchUrl = `/api/eventList/${eventId}/fullBase`
+  return useQuery({
+    queryKey: ['event', eventId, 'fullBase'],
     queryFn: async () => {
       if (!eventId) return []
       const { data } = await apiClient.get(fetchUrl)

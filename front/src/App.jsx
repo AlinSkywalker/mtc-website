@@ -65,6 +65,14 @@ const App = () => {
               <BrowserRouter>
                 <Routes>
                   <Route
+                    path='/'
+                    element={
+                      <AdminRoute>
+                        <EventListPage />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
                     path='/login'
                     element={
                       <LoginRoute>
