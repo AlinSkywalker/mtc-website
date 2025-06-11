@@ -275,10 +275,11 @@ LEFT JOIN (
         basenom_akt,
         basenom_fd,
         basenom_name,
+        basenom_koi
       } = req.body;
       pool.query(
-        `INSERT INTO base_house_room ( basenom_mest, basenom_ud, basenom_bal, basenom_sem, basenom_pod, basenom_prais, basenom_akt,basenom_fd,basenom_name) 
-                VALUES(?,?,?,?,?,?,?,?,?)`,
+        `INSERT INTO base_house_room ( basenom_mest, basenom_ud, basenom_bal, basenom_sem, basenom_pod, basenom_prais, basenom_akt,basenom_fd,basenom_name,basenom_koi) 
+                VALUES(?,?,?,?,?,?,?,?,?,?)`,
         [
           basenom_mest,
           basenom_ud,
@@ -289,6 +290,7 @@ LEFT JOIN (
           basenom_akt,
           basenom_fd,
           basenom_name,
+          basenom_koi
         ],
         (error, result) => {
           if (error) {
@@ -315,6 +317,7 @@ LEFT JOIN (
         basenom_prais,
         basenom_akt,
         basenom_name,
+        basenom_koi,
       } = req.body;
       pool.query(
         `UPDATE base_house_room SET 
@@ -326,6 +329,7 @@ LEFT JOIN (
       basenom_prais=?,
       basenom_akt='${basenom_akt}',
       basenom_name='${basenom_name}',
+      basenom_koi='${basenom_koi}',
       updated_date=CURRENT_TIMESTAMP WHERE id=${id}`,
         [basenom_mest, basenom_prais],
         (error, result) => {

@@ -6,6 +6,7 @@ import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
 import { useFetchDictionaryByName } from '../../queries/dictionary'
 import { useGridApiContext } from '@mui/x-data-grid'
+import { format } from 'date-fns'
 
 function mapDictionaryData(
   dictionaryName,
@@ -69,7 +70,9 @@ function mapDictionaryData(
         break
       case 'department':
         itemName = `${item.depart_tip} ${item.depart_name}`
-        if (secondarySource == 'date') secondary = `${item.depart_dates} - ${item.depart_datef}`
+        if (secondarySource == 'date') {
+          secondary = `${format(item.depart_dates, 'dd.MM')} - ${format(item.depart_datef, 'dd.MM')}`
+        }
         break
       case 'subektDictionary':
         itemName = `${item.count_name}, ${item.okr_name}, ${item.sub_name}`
@@ -96,6 +99,7 @@ export function SelectEditInputCell(props) {
     pickMap,
     secondarySource = '',
     secondarySourceArray = [],
+    selectCallback,
   } = props
   const queryHook = hook ? hook : useFetchDictionaryByName
   const queryHookParams = hookParams ? hookParams : { dictionaryName, returnType: 'arrayType' }
@@ -131,6 +135,9 @@ export function SelectEditInputCell(props) {
         })
         // apiRef.current.stopCellEditMode({ id, field: item })
       })
+    }
+    if (selectCallback) {
+      selectCallback(id, props.row, apiRef, newValue)
     }
   }
 

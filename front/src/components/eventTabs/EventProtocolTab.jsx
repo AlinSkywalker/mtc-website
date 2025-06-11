@@ -1,20 +1,20 @@
 import React from 'react'
 import { useFetchEventProtocol } from '../../queries/event'
 import Grid from '@mui/material/Grid'
-import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid'
+import { DataGrid, ExportCsv, Toolbar, ToolbarButton } from '@mui/x-data-grid'
 import { useParams } from 'react-router-dom'
+import Tooltip from '@mui/material/Tooltip'
+import FileDownloadIcon from '@mui/icons-material/FileDownload'
 
 function CustomToolbar() {
   return (
-    <GridToolbarContainer>
-      <GridToolbarExport
-        csvOptions={{
-          fileName: 'eventProtocol',
-          delimiter: ';',
-          utf8WithBom: true,
-        }}
-      />
-    </GridToolbarContainer>
+    <Toolbar>
+      <Tooltip title='Скачать CSV'>
+        <ExportCsv render={<ToolbarButton />}>
+          <FileDownloadIcon fontSize='small' />
+        </ExportCsv>
+      </Tooltip>
+    </Toolbar>
   )
 }
 
@@ -58,6 +58,7 @@ export const EventProtocolTab = () => {
         slots={{
           toolbar: CustomToolbar,
         }}
+        showToolbar
       />
     </Grid>
   )

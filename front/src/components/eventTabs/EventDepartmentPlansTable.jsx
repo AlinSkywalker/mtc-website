@@ -39,6 +39,7 @@ export const EventDepartmentPlansTable = ({
     departmentEndDate,
     progp: '',
     prog_tem: '',
+    place: ''
   }
 
   const [open, setOpen] = React.useState(false)
@@ -111,8 +112,8 @@ export const EventDepartmentPlansTable = ({
         nameListField='program_name_list'
         idListField='program_id_list'
         displayNameField='program_name'
-        groupByField='prog_razd'
-        labelField='prog_tem'
+        // groupByField='prog_razd'
+        labelField='prog_razd'
       />
     )
   }
@@ -170,6 +171,7 @@ export const EventDepartmentPlansTable = ({
       width: 120,
       editable: true,
       minDate: 'departmentStartDate',
+      maxDate: 'departmentEndDate',
     },
     {
       field: 'type',
@@ -186,7 +188,7 @@ export const EventDepartmentPlansTable = ({
       renderEditCell: renderRouteSelectEditCell,
       editable: true,
       valueGetter: (value, row) => {
-        if (value) return `${value} (${row.rout_comp}, ${row.mount_name})`
+        if (value) return `${row.mount_name}, ${value} (${row.rout_comp})`
         else return value
       },
     },
@@ -203,6 +205,13 @@ export const EventDepartmentPlansTable = ({
       width: 200,
       renderEditCell: renderLabaSelectEditCell,
       editable: true,
+    },
+    {
+      field: 'place',
+      headerName: 'Место',
+      width: 120,
+      editable: true,
+      type: 'string',
     },
     {
       field: 'program_name',

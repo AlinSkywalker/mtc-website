@@ -104,6 +104,13 @@ export const BaseHouseRoomDictionaryTable = ({ selectedBase, selectedBaseHouse }
       width: 120,
       editable: true,
     },
+    {
+      field: 'basenom_koi',
+      headerName: 'По кроватно',
+      width: 100,
+      editable: true,
+      ...checkboxColumnType,
+    },
   ]
 
   const fieldToFocus = 'base_name'

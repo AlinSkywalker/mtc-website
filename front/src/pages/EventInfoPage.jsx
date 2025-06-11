@@ -19,6 +19,7 @@ import { EventProtocolTab } from '../components/eventTabs/EventProtocolTab'
 import { EventBaseTable } from '../components/EventBaseTable'
 import { EventInfoForm } from '../components/EventInfoForm'
 import EditIcon from '@mui/icons-material/Edit'
+import { EventManagementStuffTab } from '../components/eventTabs/EventManagementStuffTab'
 
 export const EventInfoPage = () => {
   const [isDisplayForm, setIsDisplayForm] = useState(false)
@@ -57,6 +58,12 @@ export const EventInfoPage = () => {
       component: <EventBaseTab />,
     },
     {
+      name: 'managementStaff',
+      path: `/management_staff`,
+      label: 'Руководящий состав',
+      component: <EventManagementStuffTab />,
+    },
+    {
       name: 'files',
       path: '/files',
       label: 'Файлы',
@@ -72,6 +79,12 @@ export const EventInfoPage = () => {
       name: 'protocol',
       path: `/protocol`,
       label: 'Протокол',
+      component: <EventProtocolTab />,
+    },
+    {
+      name: 'instructionLog',
+      path: `/instruction_log`,
+      label: 'Журнал распоряжений',
       component: <EventProtocolTab />,
     },
   ]

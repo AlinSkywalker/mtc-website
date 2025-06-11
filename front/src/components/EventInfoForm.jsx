@@ -191,6 +191,7 @@ export const EventInfoForm = ({ eventData: data, isLoading }) => {
                   dataNameField='fio'
                   field={field}
                   errors={errors}
+                  disabled
                 />
               )}
             />
@@ -206,6 +207,7 @@ export const EventInfoForm = ({ eventData: data, isLoading }) => {
                   dataNameField='fio'
                   field={field}
                   errors={errors}
+                  disabled
                 />
               )}
             />

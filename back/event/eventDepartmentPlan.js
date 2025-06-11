@@ -70,8 +70,9 @@ const eventDepartmentPlanRouter = (app, passport) => {
         `SELECT dp.*, r.rout_name, r.rout_mount, r.rout_comp, 
                 m.mount_name, m.mount_rai, rai.rai_name, rai.rai_reg, reg.region_name,
                 l.laba_name, l.laba_rai, l_rai.rai_name as l_rai_name, l_rai.rai_reg  as l_rai_reg, l_reg.region_name as l_region_name,
-                pp.prog_tem, pp.prog_razd, mem.fio as ascent_head_fio, pp_dp.program_names , pp_dp.program_ids
+                mem.fio as ascent_head_fio, pp_dp.program_names , pp_dp.program_ids, d.depart_dates as departmentStartDate, d.depart_datef as departmentEndDate
                 FROM depart_plan dp
+                  LEFT JOIN depart d on d.id=dp.department
                   LEFT JOIN route r on r.id=dp.route
                   LEFT JOIN mount m on m.id=r.rout_mount
                   LEFT JOIN raion rai ON rai.id = m.mount_rai
@@ -79,16 +80,15 @@ const eventDepartmentPlanRouter = (app, passport) => {
                   LEFT JOIN laba l on l.id=dp.laba
                   LEFT JOIN raion l_rai ON l_rai.id = l.laba_rai
                   LEFT JOIN region l_reg ON l_reg.id = l_rai.rai_reg
-                  LEFT JOIN progr_pod pp ON pp.id = dp.progp
                   LEFT JOIN member mem ON mem.id = dp.ascent_head
                   LEFT JOIN (
                     SELECT
                       pp_dp.depart_plan,
-                      GROUP_CONCAT(pp.prog_tem SEPARATOR '||') as program_names,
+                      GROUP_CONCAT(prog_razd SEPARATOR '||') as program_names,
                       GROUP_CONCAT(pp.id SEPARATOR '||') as program_ids
                     FROM
                       progrp_in_depart_plan pp_dp
-                    LEFT JOIN progr_pod pp on
+                    LEFT JOIN progr_pod_razd pp on
                       pp.id = pp_dp.progr_p
                     GROUP BY
                       pp_dp.depart_plan) pp_dp on pp_dp.depart_plan = dp.id
@@ -129,13 +129,13 @@ const eventDepartmentPlanRouter = (app, passport) => {
         ob_agreement,
         type,
         laba,
-        progp,
         ascent_head,
         program_id_list,
+        place
       } = req.body;
       pool.query(
         `INSERT INTO depart_plan 
-      ( department, route, start, ob_agreement,type,laba,progp,ascent_head) 
+      ( department, route, start, ob_agreement,type,laba,ascent_head,place) 
       VALUES(?,?,?,?,?,?,?,?)`,
         [
           departmentId,
@@ -144,8 +144,8 @@ const eventDepartmentPlanRouter = (app, passport) => {
           ob_agreement,
           type,
           laba || null,
-          progp || null,
           ascent_head || null,
+          place
         ],
         (error, result) => {
           if (error) {
@@ -187,9 +187,9 @@ const eventDepartmentPlanRouter = (app, passport) => {
         ob_agreement,
         type,
         laba,
-        progp,
         ascent_head,
         program_id_list,
+        place
       } = req.body;
       const planProgramValues = program_id_list
         ?.map((item) => `(${id},${item})`)
@@ -201,8 +201,8 @@ const eventDepartmentPlanRouter = (app, passport) => {
       ob_agreement=?,
       type=?,
       laba=?,
-      progp=?,
       ascent_head=?,
+      place=?,
       updated_date=CURRENT_TIMESTAMP WHERE id=${id}`,
         [
           route || null,
@@ -210,8 +210,8 @@ const eventDepartmentPlanRouter = (app, passport) => {
           ob_agreement,
           type,
           laba || null,
-          progp || null,
           ascent_head || null,
+          place
         ],
         (error, result) => {
           if (error) {
@@ -290,7 +290,7 @@ const eventDepartmentPlanRouter = (app, passport) => {
         `SELECT dp.*, r.rout_name, r.rout_mount, r.rout_comp, 
                 m.mount_name, m.mount_rai, rai.rai_name, rai.rai_reg, reg.region_name,
                 l.laba_name, l.laba_rai, l_rai.rai_name as l_rai_name, l_rai.rai_reg  as l_rai_reg, l_reg.region_name as l_region_name,
-                pp.prog_tem, pp.prog_razd, d.depart_inst, d.depart_tip, mem.fio as ascent_head_fio
+                d.depart_inst, d.depart_tip, mem.fio as ascent_head_fio
                 FROM depart_plan dp
                   LEFT JOIN route r on r.id=dp.route
                   LEFT JOIN mount m on m.id=r.rout_mount
@@ -299,7 +299,6 @@ const eventDepartmentPlanRouter = (app, passport) => {
                   LEFT JOIN laba l on l.id=dp.laba
                   LEFT JOIN raion l_rai ON l.laba_rai=l_rai.id
                   LEFT JOIN region l_reg ON l_rai.rai_reg = l_reg.id
-                  LEFT JOIN progr_pod pp ON dp.progp = pp.id
                   LEFT JOIN depart d ON d.id = dp.department
                   LEFT JOIN member mem ON mem.id = dp.ascent_head
                 WHERE dp.id='${id}' ORDER BY dp.start ASC`,

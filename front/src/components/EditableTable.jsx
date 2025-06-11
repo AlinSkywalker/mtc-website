@@ -1,11 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   DataGrid,
   GridRowEditStopReasons,
   GridRowModes,
   GridRowEditStartReasons,
 } from '@mui/x-data-grid'
-import Grid from '@mui/material/Grid'
 import { DictionaryEditToolbar } from './DictionaryEditToolbar'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/DeleteOutlined'
@@ -14,6 +13,7 @@ import CancelIcon from '@mui/icons-material/Close'
 import { GridActionsCellItem } from '@mui/x-data-grid'
 import './EditableTableStyles.css'
 import { useSnackbar } from 'notistack'
+import { Button, Grid, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material'
 
 export const EditableTable = ({
   rows,
@@ -35,8 +35,9 @@ export const EditableTable = ({
   isRowEditable = () => true,
   addButtonLabel,
   className,
-  showPagination = true
+  showPagination = true,
 }) => {
+  const [deletedItem, setDeletedItem] = useState('')
   const isSomeNewRow = rows?.some((item) => item.isNew)
   const isSomeRowEditing = Object.values(rowModesModel).some(
     (item) => item.mode == GridRowModes.Edit,
@@ -106,6 +107,32 @@ export const EditableTable = ({
       autoHideDuration: 5000,
     })
   }
+
+  const handleDeleteClick = (id) => () => {
+    setDeletedItem(id)
+  }
+  const handleNo = () => {
+    setDeletedItem('')
+  }
+  const handleYes = async () => {
+    handleDeleteItem(deletedItem)()
+    setDeletedItem('')
+  }
+  const renderConfirmDialog = () => {
+    if (deletedItem === '') {
+      return null
+    }
+    return (
+      <Dialog maxWidth='xs' open={!!deletedItem}>
+        <DialogTitle>Вы уверены?</DialogTitle>
+        <DialogContent dividers>{`Вы уверены, что хотите удалить запись?`}</DialogContent>
+        <DialogActions>
+          <Button onClick={handleNo}>Нет</Button>
+          <Button onClick={handleYes}>Да</Button>
+        </DialogActions>
+      </Dialog>
+    )
+  }
   const getActions = (id) => {
     {
       const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit
@@ -160,7 +187,7 @@ export const EditableTable = ({
             key={2}
             icon={<DeleteIcon />}
             label='Удалить'
-            onClick={handleDeleteItem(id)}
+            onClick={handleDeleteClick(id)}
             color='inherit'
             disabled={(isSomeNewRow && !isNew) || isSomeRowEditing}
           />,
@@ -184,9 +211,10 @@ export const EditableTable = ({
   const disabled = addButtonDisabled
   return (
     <Grid spacing={2} container flexDirection={'column'}>
+      {renderConfirmDialog()}
       <Grid size={12} sx={{ height: tableHeight }}>
         <DataGrid
-          disableColumnSorting
+          // disableColumnSorting
           className={`editableTable ${className}  ${showPagination ? '' : 'withoutPagination'}`}
           rows={rows}
           columns={tableColumns}
@@ -226,6 +254,7 @@ export const EditableTable = ({
               if (fieldHasError) return 'errorField'
               // if(params.row.errors)
             }
+            return ''
           }}
           columnHeaderHeight={36}
           rowHeight={42}

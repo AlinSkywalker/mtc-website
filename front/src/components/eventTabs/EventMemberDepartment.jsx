@@ -6,13 +6,14 @@ import { EditableTable } from '../EditableTable'
 import { useFetchEventDepartmentListForMember, useFetchEventMemberList } from '../../queries/event'
 import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
 import Grid from '@mui/material/Grid'
-import { DataGrid, Toolbar } from '@mui/x-data-grid'
+import { DataGrid, GridEditInputCell, Toolbar } from '@mui/x-data-grid'
 import { Button, Select, MenuItem } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import ErrorIcon from '@mui/icons-material/Error'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import { red } from '@mui/material/colors'
+import { dateColumnType } from '../dataGridCell/GridEditDateCell'
 
 const defaultItem = {
   member_fio: '',
@@ -75,7 +76,16 @@ export const EventMemberDepartment = ({ eventId }) => {
     },
     [seleсtedMember],
   )
-
+  const selectCallback = (id, row, apiRef, newValue) => {
+    if (newValue) {
+      const selectedDeptAndDayPlan = newValue.item.depart_plans[row.membd_date]
+      apiRef.current.setEditCellValue({
+        id,
+        field: 'depart_plan',
+        value: selectedDeptAndDayPlan || '',
+      })
+    }
+  }
   const renderDepartmentSelectEditCell = (params) => {
     const hookParams = {
       eventId,
@@ -90,6 +100,7 @@ export const EventMemberDepartment = ({ eventId }) => {
         hook={useFetchEventDepartmentListForMember}
         hookParams={hookParams}
         secondarySource='date'
+        selectCallback={selectCallback}
       />
     )
   }
@@ -98,7 +109,8 @@ export const EventMemberDepartment = ({ eventId }) => {
     {
       field: 'membd_date',
       headerName: 'Дата',
-      width: 250,
+      width: 150,
+      ...dateColumnType,
     },
     {
       field: 'department',
@@ -106,6 +118,15 @@ export const EventMemberDepartment = ({ eventId }) => {
       width: 300,
       renderEditCell: renderDepartmentSelectEditCell,
       editable: true,
+    },
+    {
+      field: 'depart_plan',
+      headerName: 'Планы отделения',
+      width: 250,
+      editable: true,
+      renderEditCell: (props) => (
+        <GridEditInputCell {...props} disabled className={'roTableInput'} />
+      ),
     },
     { field: 'membd_dep', headerName: 'membd_dep', width: 0, editable: true },
     { field: 'existedDept', headerName: 'existedDept', width: 0, editable: true },
@@ -225,7 +246,7 @@ export const EventMemberDepartment = ({ eventId }) => {
           }}
         />
       </Grid>
-      <Grid size={7} >
+      <Grid size={7}>
         <EditableTable
           rows={rows}
           setRows={setRows}

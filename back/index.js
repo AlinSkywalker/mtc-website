@@ -34,6 +34,8 @@ const eventContractorRouter = require("./event/eventContractor");
 const eventDepartmentPlanRouter = require("./event/eventDepartmentPlan");
 const eventDepartmentPlanJournalRouter = require("./event/eventDepartmentPlanJournal");
 const eventProtocolRouter = require("./event/eventProtocol");
+const eventManagementStuffRouter = require("./event/eventManagementStuff");
+
 
 const memberListRouter = require("./member/memberList");
 const memberExamRouter = require("./member/memberExam");
@@ -242,6 +244,7 @@ eventContractorRouter(app, passport);
 eventDepartmentPlanRouter(app, passport);
 eventDepartmentPlanJournalRouter(app, passport);
 eventProtocolRouter(app, passport);
+eventManagementStuffRouter(app, passport);
 
 memberListRouter(app, passport);
 memberExamRouter(app, passport);

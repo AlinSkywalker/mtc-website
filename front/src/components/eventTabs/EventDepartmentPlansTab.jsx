@@ -16,6 +16,9 @@ export const EventDepartmentPlansTab = ({ eventId, eventDistrict, eventStart, ev
   const selectedDepartmentStartDate = useMemo(() => {
     return data?.find((item) => item.id === selectedDepartment)?.depart_dates
   }, [selectedDepartment, data])
+  const selectedDepartmentEndDate = useMemo(() => {
+    return data?.find((item) => item.id === selectedDepartment)?.depart_datef
+  }, [selectedDepartment, data])
   const handleSelectDepartment = (event, newValue) => {
     setSelectedDepartment(newValue)
   }
@@ -45,6 +48,7 @@ export const EventDepartmentPlansTab = ({ eventId, eventDistrict, eventStart, ev
             departmentId={selectedDepartment}
             eventDistrict={eventDistrict}
             departmentStartDate={selectedDepartmentStartDate}
+            departmentEndDate={selectedDepartmentEndDate}
           />
         </Grid>
       )}

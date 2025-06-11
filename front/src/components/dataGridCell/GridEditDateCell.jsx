@@ -84,10 +84,18 @@ function GridEditDateCell({ id, field, value, colDef, row }) {
   }
   const pickerValue = parseISO(value || '')
   let minDate = undefined
+
   if (colDef.minDate && row[colDef.minDate] && dateIsValid(row[colDef.minDate])) {
     minDate = row[colDef.minDate]
   } else if (colDef.minDate && row[colDef.minDate]) {
     minDate = new Date(row[colDef.minDate])
+  }
+  let maxDate = undefined
+
+  if (colDef.maxDate && row[colDef.maxDate] && dateIsValid(row[colDef.maxDate])) {
+    maxDate = row[colDef.maxDate]
+  } else if (colDef.maxDate && row[colDef.maxDate]) {
+    maxDate = new Date(row[colDef.maxDate])
   }
   return (
     <Component
@@ -96,6 +104,7 @@ function GridEditDateCell({ id, field, value, colDef, row }) {
       enableAccessibleFieldDOMStructure={false}
       slots={{ textField: WrappedGridEditDateInput }}
       minDate={minDate}
+      maxDate={maxDate}
     />
   )
 }

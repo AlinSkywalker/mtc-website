@@ -29,6 +29,7 @@ const eventFileRouter = (app, passport) => {
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
       const { eventId } = req.params;
+      const { file_desc } = req.body;
       if (!req.files || !req.files.event_file) {
         return res.status(422).send("No files were uploaded");
       }
@@ -45,8 +46,8 @@ const eventFileRouter = (app, passport) => {
       console.log(`File Mime Type: ${uploadedFile.mimetype}`);
       // console.log(uploadedFile)
       pool.query(
-        `INSERT INTO event_files (file_name, file_path, event) 
-                  VALUES(?,?,?)`, [uploadedFile.name, newFilePath, eventId],
+        `INSERT INTO event_files (file_name, file_path, event, file_desc) 
+                  VALUES(?,?,?,?)`, [uploadedFile.name, newFilePath, eventId, file_desc],
         (error, result) => {
           if (error) {
             console.log(error);

@@ -1,5 +1,6 @@
 // Load the MySQL pool connection
 const pool = require("../mysql");
+const getDatesInRange = require("../getDatesInRange");
 
 // Route the app
 const eventListRouter = (app, passport) => {
@@ -8,11 +9,11 @@ const eventListRouter = (app, passport) => {
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
       pool.query(
-        `SELECT e.*, m_ob.fio as ob_fio, m_st.fio as st_fio, rai.rai_name, e_r.raion_names, e_r.raion_ids
+        `SELECT e.*, m_ob.fio as ob_fio, m_st.fio as st_fio, e_r.raion_names, e_r.raion_ids, m_organizer.fio as organizer_fio
             FROM eventalp e
-            LEFT JOIN raion rai on e.event_raion=rai.id
             LEFT JOIN member m_ob on e.event_ob = m_ob.id
             LEFT JOIN member m_st on e.event_st = m_st.id
+            LEFT JOIN member m_organizer on e.event_organizer = m_organizer.id
             LEFT JOIN (
                 SELECT
                   e_r.event_m,
@@ -51,22 +52,22 @@ const eventListRouter = (app, passport) => {
     (req, res) => {
       const {
         event_name,
-        event_raion,
         event_start,
         event_finish,
         event_st,
         event_ob,
         event_desc,
+        event_organizer,
         raion_id_list,
       } = req.body;
       pool.query(
-        `INSERT INTO eventalp (event_name, event_raion, event_start,event_finish, event_st, event_ob,event_desc) 
+        `INSERT INTO eventalp (event_name, event_start,event_finish, event_st, event_ob,event_organizer,event_desc) 
                   VALUES('${event_name}',
-                  ${event_raion},
                   CONVERT('${event_start}',DATETIME),
                   CONVERT('${event_finish}',DATETIME),
                   ${event_st},
                   ${event_ob},
+                  ${event_organizer || null},
                   '${event_desc}')`,
         (error, result) => {
           if (error) {
@@ -86,7 +87,25 @@ const eventListRouter = (app, passport) => {
                 res.status(500).json({ success: false, message: error });
                 return;
               }
-              res.json({ success: true });
+              const eventDateStart = new Date(event_start);
+              const eventDateFinish = new Date(event_finish);
+              const dates = getDatesInRange(eventDateStart, eventDateFinish);
+              const insertValueString = dates
+                .map((item) => `(${eventId},${event_st},${event_ob}, '${item}')`)
+                .join(", ");
+              pool.query(
+                `INSERT INTO event_management_staff ( event, st, ob, date) 
+              VALUES ${insertValueString}`,
+                (error, result) => {
+                  if (error) {
+                    console.log(error);
+                    res.status(500).json({ success: false, message: error });
+                    return;
+                  }
+                  res.json({ success: true });
+                }
+              );
+
             }
           );
         }
@@ -100,11 +119,11 @@ const eventListRouter = (app, passport) => {
     (req, res) => {
       const id = req.params.id;
       pool.query(
-        `SELECT e.*, m_ob.fio as ob_fio, m_st.fio as st_fio, rai.rai_name , e_r.raion_names, e_r.raion_ids
+        `SELECT e.*, m_ob.fio as ob_fio, m_st.fio as st_fio, e_r.raion_names, e_r.raion_ids, m_organizer.fio as organizer_fio
         FROM eventalp e 
-      LEFT JOIN raion rai on e.event_raion=rai.id
       LEFT JOIN member m_ob on e.event_ob = m_ob.id
-      LEFT JOIN member m_st on e.event_st = m_st.id 
+      LEFT JOIN member m_st on e.event_st = m_st.id
+      LEFT JOIN member m_organizer on e.event_organizer = m_organizer.id
       LEFT JOIN (
         SELECT
           e_r.event_m,
@@ -156,11 +175,11 @@ const eventListRouter = (app, passport) => {
       const id = req.params.id;
       const {
         event_name,
-        event_raion,
         event_start,
         event_finish,
         event_st,
         event_ob,
+        event_organizer,
         event_desc,
         price,
         raion_id_list,
@@ -173,9 +192,9 @@ const eventListRouter = (app, passport) => {
         event_name=?,
         event_start=?,
         event_finish=?,
-        event_raion=${event_raion},
         event_st=${event_st},
         event_ob=${event_ob},
+        event_organizer=${event_organizer || null},
         event_desc=?,
         price=?,
         updated_date=CURRENT_TIMESTAMP WHERE id=${id}`,

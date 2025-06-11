@@ -36,7 +36,7 @@ const validationSchema = Yup.object({
   st_fio: Yup.string()
     .required('Поле обязательно для заполнения')
     .notOneOf([Yup.ref('ob_fio'), null], 'ОБ не может быть СТ'),
-  rai_name: Yup.string().required('Поле обязательно для заполнения'),
+  // rai_name: Yup.string().required('Поле обязательно для заполнения'),
 })
 
 export const EventListPage = () => {
@@ -118,6 +118,17 @@ export const EventListPage = () => {
       />
     )
   }
+  const renderOrganizerSelectEditCell = (params) => {
+    return (
+      <SelectEditInputCell
+        {...params}
+        dictionaryName='members'
+        nameField='event_organizer'
+        hook={useFetchMemberList}
+      />
+    )
+  }
+
   const renderLink = (params) => {
     const link = params.value ?? ''
 
@@ -151,13 +162,6 @@ export const EventListPage = () => {
       editable: true,
       minDate: 'event_start',
     },
-    // {
-    //   field: 'rai_name',
-    //   headerName: 'Район проведения',
-    //   width: 150,
-    //   renderEditCell: renderBaseSelectEditCell,
-    //   editable: true,
-    // },
     {
       field: 'raion_name',
       headerName: 'Район проведения',
@@ -179,10 +183,19 @@ export const EventListPage = () => {
       renderEditCell: renderOBSelectEditCell,
       editable: true,
     },
+    {
+      field: 'organizer_fio',
+      headerName: 'Организатор',
+      width: 150,
+      renderEditCell: renderOrganizerSelectEditCell,
+      editable: true,
+    },
+
     { field: 'price', headerName: 'Цена мероприятия', width: 150, editable: true, type: 'number' },
     { field: 'event_raion', headerName: 'event_raion', width: 0, editable: true },
     { field: 'event_st', headerName: 'event_st', width: 0, editable: true },
     { field: 'event_ob', headerName: 'event_ob', width: 0, editable: true },
+    { field: 'event_organizer', headerName: 'event_organizer', width: 0, editable: true },
     { field: 'raion_id_list', headerName: 'raion_id_list', width: 0, editable: true },
     { field: 'raion_name_list', headerName: 'raion_name_list', width: 0, editable: true },
   ]
@@ -191,6 +204,7 @@ export const EventListPage = () => {
     event_raion: false,
     event_st: false,
     event_ob: false,
+    event_organizer: false,
     raion_id_list: false,
     raion_name_list: false,
   }
@@ -215,6 +229,10 @@ export const EventListPage = () => {
       defaultItem={defaultItem}
       isLoading={isLoading}
       handleDeleteItem={handleDeleteItem}
+      isCellEditable={(params) =>
+        (params.field !== 'st_fio' && params.field !== 'ob_fio') ||
+        (params.row.isNew && (params.field == 'st_fio' || params.field == 'ob_fio'))
+      }
     />
   )
 }

@@ -5,11 +5,11 @@ import { useQueryClient } from '@tanstack/react-query'
 import { EditableTable } from '../EditableTable'
 import * as Yup from 'yup'
 import { fileColumnType } from '../dataGridCell/GridEditFileCell'
-import { useNavigate } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 
 const defaultItem = {
   event_file: '',
+  file_desc: '',
 }
 
 const validationSchema = Yup.object({
@@ -24,8 +24,6 @@ export const EventFilesTab = () => {
   const [rows, setRows] = React.useState(data)
   const [rowModesModel, setRowModesModel] = React.useState({})
 
-  const navigate = useNavigate()
-
   React.useEffect(() => {
     setRows(data)
   }, [data])
@@ -33,6 +31,7 @@ export const EventFilesTab = () => {
   const handleSaveNewItem = (data) => {
     const formData = new FormData()
     formData.append('event_file', data.file?.[0])
+    formData.append('file_desc', data.file_desc)
     return apiClient.put(`/api/eventList/${eventId}/files`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     })
@@ -61,6 +60,12 @@ export const EventFilesTab = () => {
       field: 'file',
       headerName: 'Файл',
       width: 0,
+      editable: true,
+    },
+    {
+      field: 'file_desc',
+      headerName: 'Описание',
+      width: 300,
       editable: true,
     },
   ]

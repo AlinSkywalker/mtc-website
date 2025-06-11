@@ -1,6 +1,6 @@
 import apiClient from '../api/api'
 import { useQuery } from '@tanstack/react-query'
-import parseISO from 'date-fns/parseISO'
+import { parseISO } from 'date-fns'
 
 export function useFetchEventList() {
   return useQuery({
@@ -119,7 +119,6 @@ export function useFetchEventMemberDepartmentList({ eventId, memberId }) {
   })
 }
 
-
 export function useFetchEventMemberList(eventId) {
   return useQuery({
     queryKey: ['event', eventId, 'member'],
@@ -145,7 +144,7 @@ export function useFetchEventMemberListForDepartment({ eventId, departmentId, se
   })
 }
 
-export function useFetchEventDepartmentListForMember({ eventId, memberId, selectedDate }) {
+export function useFetchEventDepartmentListForMember({ eventId, memberId, selectedDate = '' }) {
   let fetchUrl = `/api/eventList/${eventId}/departmentForMember/${memberId}`
   if (selectedDate) {
     fetchUrl += `?selectedDate=${selectedDate}`
@@ -330,6 +329,18 @@ export function useFetchEventFullBase(eventId) {
   let fetchUrl = `/api/eventList/${eventId}/fullBase`
   return useQuery({
     queryKey: ['event', eventId, 'fullBase'],
+    queryFn: async () => {
+      if (!eventId) return []
+      const { data } = await apiClient.get(fetchUrl)
+      return data
+    },
+  })
+}
+
+export function useFetchEventManagementStaff(eventId) {
+  let fetchUrl = `/api/eventList/${eventId}/eventManagementStuff`
+  return useQuery({
+    queryKey: ['event', eventId, 'eventManagementStuff'],
     queryFn: async () => {
       if (!eventId) return []
       const { data } = await apiClient.get(fetchUrl)

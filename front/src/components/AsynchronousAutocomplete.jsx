@@ -1,7 +1,15 @@
 import React from 'react'
 import { Autocomplete, CircularProgress, TextField, MenuItem, ListItemText } from '@mui/material'
 
-export function AsynchronousAutocomplete({ request, label, dataNameField, field, errors, secondarySourceArray }) {
+export function AsynchronousAutocomplete({
+  request,
+  label,
+  dataNameField,
+  field,
+  errors,
+  secondarySourceArray,
+  disabled,
+}) {
   const [open, setOpen] = React.useState(false)
   const [options, setOptions] = React.useState([])
   const [loading, setLoading] = React.useState(false)
@@ -46,6 +54,7 @@ export function AsynchronousAutocomplete({ request, label, dataNameField, field,
   }
   return (
     <Autocomplete
+      disabled={disabled}
       fullWidth
       open={open}
       value={value}

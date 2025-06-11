@@ -134,27 +134,27 @@ export function EditCascadeSelectMenu(props) {
 
   useEffect(() => {
     let newDistrictData = districtMappedData
-    if (rai_reg) {
-      newDistrictData = newDistrictData.filter((item) => item.parentId == rai_reg)
+    if (regionAutocompleteValue.id) {
+      newDistrictData = newDistrictData.filter((item) => item.parentId == regionAutocompleteValue.id)
     }
     setDistrictAutocompleteOptions(newDistrictData)
-  }, [districtData])
+  }, [districtData, regionAutocompleteValue.id])
 
   useEffect(() => {
     let newSummitData = summitMappedData
-    if (mount_rai) {
-      newSummitData = newSummitData.filter((item) => item.parentId == mount_rai)
+    if (districtAutocompleteValue.id) {
+      newSummitData = newSummitData.filter((item) => item.parentId == districtAutocompleteValue.id)
     }
     setSummitAutocompleteOptions(newSummitData)
-  }, [summitData])
+  }, [summitData, districtAutocompleteValue.id])
 
   useEffect(() => {
     let newRouteData = routeMappedData
-    if (mount_rai) {
-      newRouteData = newRouteData.filter((item) => item.parentId == rout_mount)
+    if (summitAutocompleteValue.id) {
+      newRouteData = newRouteData.filter((item) => item.parentId == summitAutocompleteValue.id)
     }
     setRouteAutocompleteOptions(newRouteData)
-  }, [routeData])
+  }, [routeData, summitAutocompleteValue.id])
 
   const handleRegionChange = (newValue) => {
     setRegionAutocompleteValue(newValue)

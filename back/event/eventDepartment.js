@@ -1,6 +1,25 @@
 // Load the MySQL pool connection
 const pool = require("../mysql");
 const getDatesInRange = require("../getDatesInRange");
+
+const getDeptPlanDescription = (deptPlan) => {
+  const {
+    plan_type,
+    mount_name,
+    rout_name,
+    rout_comp,
+    laba_name,
+    program_names } = deptPlan
+
+  let departmentPlanDescription = String(plan_type)
+  if (plan_type === 'Восхождение') {
+    departmentPlanDescription += `, ${mount_name}, ${rout_name || ''} (${rout_comp})`
+  }
+  else if (plan_type === 'Занятие') {
+    departmentPlanDescription += `, ${laba_name || ''} (${program_names?.replace("||", ', ') || ''})`
+  }
+  return departmentPlanDescription
+}
 // Route the app
 const eventDepartmentRouter = (app, passport) => {
   app.get(
@@ -13,7 +32,9 @@ const eventDepartmentRouter = (app, passport) => {
         LEFT JOIN member m on m.id=d.depart_inst 
         LEFT JOIN eventalp e on e.id=d.depart_event
         WHERE depart_event='${eventId}'
-        ORDER BY d.depart_dates ASC`,
+        ORDER BY 
+    		CASE WHEN d.depart_tip = 'ХЗ' THEN 1 ELSE 0 END,
+    		d.depart_dates ASC`,
         (error, result) => {
           if (error) {
             console.log(error);
@@ -145,7 +166,7 @@ const eventDepartmentRouter = (app, passport) => {
                   LEFT JOIN eventmemb em ON em.id=m_i_d.membd_memb
                   LEFT JOIN member m ON m.id=em.eventmemb_memb
                   WHERE d.depart_event=${eventId}
-                  ORDER BY membd_date ASC
+                  ORDER BY membd_date ASC, m.fio ASC
                   `,
             (error, result) => {
               if (error) {
@@ -186,9 +207,25 @@ const eventDepartmentRouter = (app, passport) => {
           const { eventmemb_dates, eventmemb_datef } = result[0];
           const dates = getDatesInRange(new Date(eventmemb_dates), new Date(eventmemb_datef));
           pool.query(
-            `SELECT m_d.*, d.depart_name, d.depart_dates, d.depart_datef, d.depart_tip
+            `SELECT m_d.*, d.depart_name, d.depart_dates, d.depart_datef, d.depart_tip,
+                pp_dp.program_names, l.laba_name, m.mount_name,r.rout_name,r.rout_comp, dp.type as plan_type, dp.start
               FROM member_in_depart m_d 
               LEFT JOIN depart d on d.id = m_d.membd_dep
+              LEFT JOIN depart_plan dp on dp.department = d.id 
+              LEFT JOIN route r on r.id=dp.route
+              LEFT JOIN mount m on m.id=r.rout_mount
+              LEFT JOIN laba l on l.id=dp.laba
+              LEFT JOIN (
+                SELECT
+                  pp_dp.depart_plan,
+                  GROUP_CONCAT(prog_razd SEPARATOR '||') as program_names,
+                  GROUP_CONCAT(pp.id SEPARATOR '||') as program_ids
+                FROM
+                  progrp_in_depart_plan pp_dp
+                LEFT JOIN progr_pod_razd pp on
+                  pp.id = pp_dp.progr_p
+                GROUP BY
+                  pp_dp.depart_plan) pp_dp on pp_dp.depart_plan = dp.id
               WHERE m_d.membd_memb=${memberId}`,
             (error, result) => {
               if (error) {
@@ -200,10 +237,27 @@ const eventDepartmentRouter = (app, passport) => {
                 const existedDept = result.find(depData => depData.membd_date === date)
                 let dept
                 if (existedDept) {
+                  const { depart_dates,
+                    depart_datef,
+
+                    depart_name,
+                    depart_tip,
+
+                  } = existedDept
+
+                  const deptStart = depart_dates.substring(8, 10) + '.' + depart_dates.substring(5, 7)
+                  const deptEnd = depart_datef.substring(8, 10) + '.' + depart_datef.substring(5, 7)
+
+                  const existedDeptPlan = result.find(depData => (depData.membd_date === date && depData.start === date))
+                  let departmentPlan = ''
+                  if (existedDeptPlan) {
+                    departmentPlan = getDeptPlanDescription(existedDeptPlan)
+                  }
                   dept = {
                     ...existedDept,
-                    department: `${existedDept.depart_tip} ${existedDept.depart_name} (${existedDept.depart_dates} - ${existedDept.depart_datef})`,
-                    existedDept: true
+                    department: `${depart_tip} ${depart_name} (${deptStart} - ${deptEnd})`,
+                    existedDept: true,
+                    depart_plan: departmentPlan,
                   }
                 }
                 else {
@@ -229,16 +283,47 @@ const eventDepartmentRouter = (app, passport) => {
 
       if (selectedDate) {
         pool.query(
-          `SELECT *
-        FROM depart d
-        WHERE d.depart_event=${eventId} AND d.depart_dates<='${selectedDate}' AND d.depart_datef>='${selectedDate}'`,
+          `SELECT d.*, pp_dp.program_names, l.laba_name, m.mount_name,r.rout_name,r.rout_comp, dp.type as plan_type, dp.start
+            FROM depart d
+              LEFT JOIN depart_plan dp on dp.department = d.id 
+              LEFT JOIN route r on r.id=dp.route
+              LEFT JOIN mount m on m.id=r.rout_mount
+              LEFT JOIN laba l on l.id=dp.laba
+              LEFT JOIN (
+                SELECT
+                  pp_dp.depart_plan,
+                  GROUP_CONCAT(prog_razd SEPARATOR '||') as program_names,
+                  GROUP_CONCAT(pp.id SEPARATOR '||') as program_ids
+                FROM
+                  progrp_in_depart_plan pp_dp
+                LEFT JOIN progr_pod_razd pp on
+                  pp.id = pp_dp.progr_p
+                GROUP BY
+                  pp_dp.depart_plan) pp_dp on pp_dp.depart_plan = dp.id
+              WHERE d.depart_event=${eventId} AND d.depart_dates<='${selectedDate}' AND d.depart_datef>='${selectedDate}'`,
           (error, result) => {
             if (error) {
               console.log(error);
               res.status(500).json({ success: false, message: error });
               return;
             }
-            res.send(result);
+            let fullResult = result.reduce((accumulator, currentValue) => {
+              const id = currentValue.id
+              const {
+                start } = currentValue
+              const departmentPlanDescription = getDeptPlanDescription(currentValue)
+              const departPlans = accumulator[id]?.['depart_plans'] ?
+                { ...accumulator[id]['depart_plans'], [start]: departmentPlanDescription } :
+                {}
+              accumulator[id] = {
+                ...accumulator[id],
+                ...currentValue,
+                depart_plans: departPlans
+              }
+              return accumulator
+            }, {})
+            fullResult = Object.values(fullResult).map(item => item)
+            res.send(fullResult);
           }
         );
       } else {
