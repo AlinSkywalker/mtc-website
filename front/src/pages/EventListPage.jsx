@@ -209,9 +209,15 @@ export const EventListPage = () => {
     raion_name_list: false,
   }
 
-  const processRowUpdate = async (newRow) => {
+  const processRowUpdate = async (newRow, oldRow) => {
     validationSchema.validateSync(newRow, { abortEarly: false })
     const handleSave = newRow.isNew ? handleSaveNewItem : handleSaveEditedItem
+    if (
+      oldRow?.event_start !== newRow.event_start ||
+      oldRow?.event_finish !== newRow.event_finish
+    ) {
+      newRow = { ...newRow, isDatesChanged: true }
+    }
     await handleSave(newRow)
     queryClient.invalidateQueries({ queryKey: ['eventList'] })
   }

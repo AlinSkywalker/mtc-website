@@ -216,9 +216,15 @@ export const EventMembersTab = ({ eventId }) => {
     eventmemb_memb: false,
   }
 
-  const processRowUpdate = async (newRow) => {
+  const processRowUpdate = async (newRow, oldRow) => {
     validationSchema.validateSync(newRow, { abortEarly: false })
     const handleSave = newRow.isNew ? handleSaveNewItem : handleSaveEditedItem
+    if (
+      oldRow?.eventmemb_dates !== newRow.eventmemb_dates ||
+      oldRow?.eventmemb_datef !== newRow.eventmemb_datef
+    ) {
+      newRow = { ...newRow, isDatesChanged: true }
+    }
     await handleSave(newRow)
     queryClient.invalidateQueries({ queryKey: ['event', eventId, 'member'] })
   }

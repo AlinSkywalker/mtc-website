@@ -21,6 +21,7 @@ import Box from '@mui/material/Box'
 import { MemberExamTab } from '../components/memberTabs/MemberExamTab'
 import { MemberAscentTab } from '../components/memberTabs/MemberAscentTab'
 import { MemberEventTab } from '../components/memberTabs/MemberEventTab'
+import { MemberSportCategoryTab } from '../components/memberTabs/MemberSportCategoryTab'
 import { sizeClothOptions, sizeShoeOptions } from '../constants'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
@@ -109,6 +110,11 @@ export const MemberInfoPage = () => {
   const fetchAllCities = () => apiClient.get(`/api/cityDictionary`)
 
   const memberTabs = [
+    {
+      name: 'sportCategory',
+      label: 'Разряды/Категории',
+      component: <MemberSportCategoryTab memberId={currentId} />,
+    },
     {
       name: 'ascents',
       label: 'Восхождения',
@@ -300,38 +306,7 @@ export const MemberInfoPage = () => {
               spacing={2}
               columns={24}
             >
-              <Grid size={2}>
-                <Controller
-                  name='alprazr'
-                  control={control}
-                  render={({ field }) => (
-                    <FormControl fullWidth>
-                      <InputLabel id='alprazrLabel'>Разряд</InputLabel>
-                      <Select {...field} label='Разряд' fullWidth labelId='alprazrLabel'>
-                        {['3', '2', '1', 'КМС', 'МС', 'МСМК', 'ЗМС'].map((item, index) => (
-                          <MenuItem value={item} key={index}>
-                            {item}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  )}
-                />
-              </Grid>
-              <Grid size={3}>
-                <Controller
-                  name='date_razr'
-                  control={control}
-                  render={({ field }) => (
-                    <DatePicker
-                      label='Дата присвоения разряда'
-                      {...field}
-                      slotProps={{ textField: { fullWidth: true } }}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid size={2}>
+              <Grid size={4}>
                 <Controller
                   name='alpzeton'
                   control={control}
@@ -353,48 +328,12 @@ export const MemberInfoPage = () => {
                   )}
                 />
               </Grid>
-              <Grid size={2}>
-                <Controller
-                  name='alpinstr'
-                  control={control}
-                  render={({ field }) => (
-                    <FormControl fullWidth>
-                      <InputLabel id='alpinstrLabel'>Категория инструктор</InputLabel>
-                      <Select
-                        {...field}
-                        label='Категория инструктор'
-                        fullWidth
-                        labelId='alpinstrLabel'
-                      >
-                        {['3', '2', '1'].map((item, index) => (
-                          <MenuItem value={item} key={index}>
-                            {item}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  )}
-                />
-              </Grid>
-              <Grid size={2}>
+              <Grid size={4}>
                 <Controller
                   name='alpinstrnom'
                   control={control}
                   render={({ field }) => (
                     <TextField {...field} variant='outlined' label='Номер инструктора' fullWidth />
-                  )}
-                />
-              </Grid>
-              <Grid size={3}>
-                <Controller
-                  name='date_instr'
-                  control={control}
-                  render={({ field }) => (
-                    <DatePicker
-                      label='Дата инструктора'
-                      {...field}
-                      slotProps={{ textField: { fullWidth: true } }}
-                    />
                   )}
                 />
               </Grid>

@@ -14,12 +14,8 @@ import { Button, Grid } from '@mui/material'
 const defaultItem = {}
 
 const validationSchema = Yup.object({
-  // cont_fio: Yup.string().required('Поле обязательно для заполнения'),
-  // tarif: Yup.string().required('Поле обязательно для заполнения'),
-  // count: Yup.string().required('Поле обязательно для заполнения'),
-  // transfer: Yup.string().required('Поле обязательно для заполнения'),
-  // residence: Yup.string().required('Поле обязательно для заполнения'),
-  // service_type: Yup.string().required('Поле обязательно для заполнения'),
+  ob_fio: Yup.string().required('Поле обязательно для заполнения'),
+  st_fio: Yup.string().required('Поле обязательно для заполнения'),
 })
 
 export const EventManagementStuffTab = () => {
@@ -73,21 +69,21 @@ export const EventManagementStuffTab = () => {
     {
       field: 'date',
       ...dateColumnType,
-      headerName: 'Начало',
+      headerName: 'Дата',
       width: 120,
       editable: false,
     },
     {
       field: 'st_fio',
       headerName: 'Старший тренер',
-      width: 150,
+      width: 300,
       renderEditCell: renderSTSelectEditCell,
       editable: true,
     },
     {
       field: 'ob_fio',
       headerName: 'ОБ',
-      width: 150,
+      width: 300,
       renderEditCell: renderOBSelectEditCell,
       editable: true,
     },

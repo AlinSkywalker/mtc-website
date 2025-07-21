@@ -1,7 +1,14 @@
 // Load the MySQL pool connection
 const pool = require("../mysql");
 const CyrillicToTranslit = require('cyrillic-to-translit-js');
+const fs = require('fs');
 const cyrillicToTranslit = new CyrillicToTranslit();
+
+function getRandomNumber(min, max) {
+  min = Math.ceil(min)
+  max = Math.floor(max)
+  return Math.floor(Math.random() * (max - min) + min)
+}
 
 // Route the app
 const eventFileRouter = (app, passport) => {
@@ -36,7 +43,11 @@ const eventFileRouter = (app, passport) => {
       const uploadedFile = req.files.event_file;
       // const newFileName = cyrillicToTranslit.transform(uploadedFile.name, '_')
       // console.log('newFileName', newFileName)
-      const newFilePath = `uploads_mtc/${eventId}/${uploadedFile.name}`
+      let newFilePath = `uploads_mtc/event/${eventId}/${uploadedFile.name}`
+      if (fs.existsSync(newFilePath)) {
+        const randomNumber = getRandomNumber(0, 1000)
+        newFilePath = `uploads_mtc/event/${eventId}/${randomNumber}-${uploadedFile.name}`
+      }
 
       uploadedFile.mv(newFilePath);
       // Print information about the file to the console
@@ -76,7 +87,7 @@ const eventFileRouter = (app, passport) => {
           const filePath = result[0].file_path//.replaceAll('/', '\\')
           const fileName = result[0].file_name
           // console.log('filePath', filePath)
-          const file = `${__dirname}/${filePath}`;
+          const file = `${__dirname}/../${filePath}`;
           // console.log('file', file)
           var newFileName = encodeURIComponent(fileName);
           // console.log('newFileName', newFileName)
@@ -92,17 +103,32 @@ const eventFileRouter = (app, passport) => {
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
       const { fileId } = req.params;
+
       pool.query(
-        `DELETE FROM event_files WHERE id=${fileId}`,
+        `SELECT * FROM event_files WHERE id=${fileId}`,
         (error, result) => {
           if (error) {
             console.log(error);
             res.status(500).json({ success: false, message: error });
             return;
           }
-          res.send(result);
+          const filePath = result[0]?.file_path
+          fs.unlinkSync(filePath)
+          pool.query(
+            `DELETE FROM event_files WHERE id=${fileId}`,
+            (error, result) => {
+              if (error) {
+                console.log(error);
+                res.status(500).json({ success: false, message: error });
+                return;
+              }
+              res.send(result);
+            }
+          );
         }
       );
+
+
     }
   );
 };

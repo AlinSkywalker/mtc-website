@@ -1,8 +1,8 @@
 // App.js
 import React, { useContext } from 'react'
 import { BrowserRouter, Route, Navigate, Routes } from 'react-router-dom'
-import LoginPage from './pages/LoginPage'
-import RegistrationPage from './pages/RegistrationPage'
+import { LoginPage } from './pages/LoginPage'
+import { RegistrationPage } from './pages/RegistrationPage'
 import { AdminLayout } from './components/AdminLayout'
 import { ProfilePage } from './pages/ProfilePage'
 import { EventListPage } from './pages/EventListPage'
@@ -11,7 +11,7 @@ import { MemberInfoPage } from './pages/MemberInfoPage'
 import { MemberListPage } from './pages/MemberListPage'
 import { DictionaryPage } from './pages/DictionaryPage'
 import { AuthContext } from './components/AuthContext'
-import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AuthProvider } from './components/AuthContext'
 import CssBaseline from '@mui/material/CssBaseline'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
@@ -21,7 +21,13 @@ import theme from './api/theme'
 import { Grid, ThemeProvider } from '@mui/material'
 import { SnackbarProvider } from 'notistack'
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+})
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated } = useContext(AuthContext)

@@ -348,3 +348,16 @@ export function useFetchEventManagementStaff(eventId) {
     },
   })
 }
+
+export function useFetchEventInstructionLog(eventId) {
+  let fetchUrl = `/api/eventList/${eventId}/eventInstructionLog`
+  return useQuery({
+    queryKey: ['event', eventId, 'eventInstructionLog'],
+    queryFn: async () => {
+      if (!eventId) return []
+      const { data } = await apiClient.get(fetchUrl)
+      return data
+    },
+  })
+}
+

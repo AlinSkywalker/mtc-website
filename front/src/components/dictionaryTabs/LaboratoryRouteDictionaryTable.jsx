@@ -61,9 +61,63 @@ export const LaboratoryRouteDictionaryTable = ({ selectedLaboratory }) => {
       width: 150,
       editable: true,
       type: 'singleSelect',
-      valueOptions: ['Скала', 'Лед', 'Микст', 'Драйтул'],
+      valueOptions: ['Скала', 'Лед', 'Микст', 'Драйтул', 'ИТО'],
     },
-    { field: 'labatr_sl', headerName: 'Сложность', width: 100, editable: true },
+    {
+      field: 'labatr_sl',
+      headerName: 'Сложность',
+      width: 100,
+      editable: true,
+      type: 'singleSelect',
+      valueOptions: ({ row }) => {
+        if (!row) {
+          // The row is not available when filtering this column
+          return []
+        }
+        let values = []
+        if (row.labatr_typ === 'Скала') {
+          values = [
+            '4a',
+            '4b',
+            '4c',
+            '4c+',
+            '5a',
+            '5a+',
+            '5b',
+            '5b+',
+            '5c',
+            '5c+',
+            '6a',
+            '6a+',
+            '6b',
+            '6b+',
+            '6c',
+            '6c+',
+            '7a',
+            '7a+',
+            '7b',
+            '7b+',
+            '7c',
+            '7c+',
+            '8a',
+            '8a+',
+            '8b',
+            '8b+',
+            '8c',
+            '8c+',
+          ]
+        } else if (row.labatr_typ === 'Лед') {
+          values = ['WI2', 'WI3', 'WI4', 'WI5', 'WI6', 'WI7']
+        } else if (row.labatr_typ === 'Микст') {
+          values = ['M3', 'M4', 'M5', 'M6', 'M7', 'M8', 'M9', 'M10']
+        } else if (row.labatr_typ === 'Драйтул') {
+          values = []
+        } else if (row.labatr_typ === 'ИТО') {
+          values = ['A0', 'A1', 'A2', 'A3', 'A4', 'A5']
+        }
+        return values
+      },
+    },
     { field: 'labatr_dl', headerName: 'Протяженность', width: 100, editable: true, type: 'number' },
     {
       field: 'labatr_kolb',

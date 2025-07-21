@@ -183,6 +183,7 @@ const eventListRouter = (app, passport) => {
         event_desc,
         price,
         raion_id_list,
+        isDatesChanged,
       } = req.body;
       const eventRaionValues = raion_id_list
         .map((item) => `(${id},${item})`)
@@ -221,7 +222,49 @@ const eventListRouter = (app, passport) => {
                     res.status(500).json({ success: false, message: error });
                     return;
                   }
-                  res.json({ success: true });
+                  if (isDatesChanged) {
+                    const eventDateStart = new Date(event_start);
+                    const eventDateFinish = new Date(event_finish);
+                    const dates = getDatesInRange(eventDateStart, eventDateFinish);
+                    const queryString = dates.map(item => (`ROW ('${item}')`)).join(',')
+                    pool.query(
+                      `DELETE FROM event_management_staff
+                          WHERE event = ${id} AND date IN (SELECT * FROM (SELECT e_m_s_2.date FROM event_management_staff e_m_s_2
+                          LEFT JOIN (
+                              VALUES 
+                                 ${queryString}
+                          ) as new_dates(item) on new_dates.item= e_m_s_2.date
+                          WHERE e_m_s_2.event = ${id} and item IS NULL) as t)`,
+                      (error, result) => {
+                        if (error) {
+                          console.log(error);
+                          res.status(500).json({ success: false, message: error });
+                          return;
+                        }
+                        const queryString = dates.map(item => (`ROW (${id},'${item}')`)).join(',')
+                        pool.query(
+                          `INSERT INTO event_management_staff (event, date) 
+                            SELECT new_dates.event, item FROM 
+                              (
+                                  VALUES 
+                                  ${queryString}
+                              ) as new_dates(event, item)
+                              LEFT OUTER JOIN event_management_staff e_m_s on new_dates.item= e_m_s.date and e_m_s.event = ${id}
+                              WHERE e_m_s.date IS NULL`,
+                          (error, result) => {
+                            if (error) {
+                              console.log(error);
+                              res.status(500).json({ success: false, message: error });
+                              return;
+                            }
+                            res.json({ success: true });
+                          })
+                      })
+                  }
+                  else {
+                    res.json({ success: true });
+                  }
+
                 }
               );
             }

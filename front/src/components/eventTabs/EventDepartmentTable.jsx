@@ -125,9 +125,15 @@ export const EventDepartmentTable = ({ eventId, eventStart, eventFinish }) => {
     depart_inst: false,
   }
 
-  const processRowUpdate = async (newRow) => {
+  const processRowUpdate = async (newRow, oldRow) => {
     validationSchema.validateSync(newRow, { abortEarly: false })
     const handleSave = newRow.isNew ? handleSaveNewItem : handleSaveEditedItem
+    if (
+      oldRow?.depart_dates !== newRow.depart_dates ||
+      oldRow?.depart_datef !== newRow.depart_datef
+    ) {
+      newRow = { ...newRow, isDatesChanged: true }
+    }
     await handleSave(newRow)
     queryClient.invalidateQueries({ queryKey: ['event', eventId, 'department'] })
   }

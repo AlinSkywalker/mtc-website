@@ -36,7 +36,13 @@ export const EditableTable = ({
   addButtonLabel,
   className,
   showPagination = true,
+  additionalButton,
 }) => {
+  const [paginationModel, setPaginationModel] = React.useState({
+    pageSize: 100,
+    page: 0,
+  })
+
   const [deletedItem, setDeletedItem] = useState('')
   const isSomeNewRow = rows?.some((item) => item.isNew)
   const isSomeRowEditing = Object.values(rowModesModel).some(
@@ -79,10 +85,10 @@ export const EditableTable = ({
       setRows(rows.filter((row) => row.id !== id))
     }
   }
-  const handleProcessRowUpdate = async (newRow) => {
+  const handleProcessRowUpdate = async (newRow, oldRow) => {
     let resultRow = newRow
     try {
-      await processRowUpdate(newRow)
+      await processRowUpdate(newRow, oldRow)
 
       const updatedRow = { ...newRow, isNew: false, error: false, errors: [] }
       setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)))
@@ -240,6 +246,8 @@ export const EditableTable = ({
                   defaultItem={defaultItem}
                   disabled={disabled || isSomeNewRow || isSomeRowEditing}
                   addButtonLabel={addButtonLabel}
+                  additionalButton={additionalButton}
+                  paginationModel={paginationModel}
                 />
               )
             },
@@ -260,6 +268,8 @@ export const EditableTable = ({
           rowHeight={42}
           isCellEditable={isCellEditable}
           disableColumnMenu
+          paginationModel={paginationModel}
+          onPaginationModelChange={setPaginationModel}
         />
       </Grid>
     </Grid>

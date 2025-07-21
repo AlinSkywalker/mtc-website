@@ -15,8 +15,8 @@ export const fileColumnType = {
   // },
 }
 //, { responseType: 'blob' }
-const handleDownloadFile = (id) => async () => {
-  const response = await apiClient.get(`/api/eventList/:eventId/files/${id}`, {
+const handleDownloadFile = (id, downloadApiPath) => async () => {
+  const response = await apiClient.get(`${downloadApiPath}/${id}`, {
     responseType: 'blob',
   })
   const url = window.URL.createObjectURL(new Blob([response.data]))
@@ -34,13 +34,13 @@ const handleDownloadFile = (id) => async () => {
   document.body.appendChild(link)
   link.click()
 }
-function GridFileCell({ value, id }) {
+function GridFileCell({ value, id, colDef }) {
   // return (
   //   <form action={`/api/eventList/:eventId/files/${id}`} method='get'>
   //     <button type='submit'>{value}</button>
   //   </form>
   // )
-  return <Link onClick={handleDownloadFile(id)}>{value}</Link>
+  return <Link onClick={handleDownloadFile(id, colDef.downloadApiPath)}>{value}</Link>
 }
 
 function GridEditFileCell({ id, field, value }) {

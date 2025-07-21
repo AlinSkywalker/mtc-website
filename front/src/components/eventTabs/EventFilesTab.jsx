@@ -54,6 +54,7 @@ export const EventFilesTab = () => {
       headerName: 'Файл',
       width: 250,
       editable: true,
+      downloadApiPath: `/api/eventList/${eventId}/files`,
       ...fileColumnType,
     },
     {

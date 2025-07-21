@@ -60,3 +60,13 @@ export function useFetchMemberEvent(id) {
     },
   })
 }
+
+export function useFetchMemberSportCategoryList(id) {
+  return useQuery({
+    queryKey: ['member', id, 'sportCategory'],
+    queryFn: async () => {
+      const { data } = await apiClient.get(`/api/memberList/${id}/sportCategory`)
+      return data
+    },
+  })
+}

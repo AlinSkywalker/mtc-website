@@ -12,11 +12,19 @@ export const DictionaryEditToolbar = (props) => {
     fieldToFocus,
     disabled = false,
     addButtonLabel,
+    additionalButton,
+    paginationModel,
   } = props
 
   const handleClick = () => {
     const id = v4()
-    setRows((oldRows) => [{ ...defaultItem, id, isNew: true }, ...oldRows])
+    const { pageSize, page } = paginationModel
+    const newIndex = page * pageSize
+    setRows((oldRows) => {
+      const newRows = [...oldRows]
+      newRows.splice(newIndex, 0, { ...defaultItem, id, isNew: true })
+      return newRows
+    })
     setRowModesModel((oldModel) => ({
       ...oldModel,
       [id]: { mode: GridRowModes.Edit, fieldToFocus: fieldToFocus },
@@ -29,6 +37,7 @@ export const DictionaryEditToolbar = (props) => {
         <Button color='primary' startIcon={<AddIcon />} onClick={handleClick} disabled={disabled}>
           {addButtonLabel ? addButtonLabel : 'Добавить'}
         </Button>
+        {additionalButton}
       </Grid>
     </Toolbar>
   )

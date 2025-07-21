@@ -20,6 +20,7 @@ import { EventBaseTable } from '../components/EventBaseTable'
 import { EventInfoForm } from '../components/EventInfoForm'
 import EditIcon from '@mui/icons-material/Edit'
 import { EventManagementStuffTab } from '../components/eventTabs/EventManagementStuffTab'
+import { EventInstructionLogTab } from '../components/eventTabs/EventInstructionLogTab'
 
 export const EventInfoPage = () => {
   const [isDisplayForm, setIsDisplayForm] = useState(false)
@@ -84,8 +85,8 @@ export const EventInfoPage = () => {
     {
       name: 'instructionLog',
       path: `/instruction_log`,
-      label: 'Журнал распоряжений',
-      component: <EventProtocolTab />,
+      label: 'Книга распоряжений',
+      component: <EventInstructionLogTab />,
     },
   ]
   const currentTab = eventTabs.findIndex(

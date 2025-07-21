@@ -35,11 +35,14 @@ const eventDepartmentPlanRouter = require("./event/eventDepartmentPlan");
 const eventDepartmentPlanJournalRouter = require("./event/eventDepartmentPlanJournal");
 const eventProtocolRouter = require("./event/eventProtocol");
 const eventManagementStuffRouter = require("./event/eventManagementStuff");
+const eventInstructionLogRouter = require("./event/eventInstructionLog");
 
 
 const memberListRouter = require("./member/memberList");
 const memberExamRouter = require("./member/memberExam");
 const memberAscentRouter = require("./member/memberAscent");
+const memberSportCategoryRouter = require("./member/memberSportCategory");
+
 
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -110,9 +113,113 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.post("/register", (req, res) => {
-  const { username, password } = req.body;
-  const user = createUser(username, password);
-  res.json({ success: true, user });
+  const { email, fio, date_birth, password, gender } = req.body;
+  pool.query(
+    `SELECT * FROM user WHERE login='${email}'`,
+    (error, result) => {
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+        return;
+      }
+      const user = result[0];
+      // console.log('user', user)
+      // if (!user || !bcrypt.compareSync(password, user.password)) {
+      if (user) {
+        res
+          .status(500)
+          .json({ success: false, message: "Пользователь с таким email уже существует" });
+        return;
+      }
+      pool.query(
+        `SELECT * FROM member WHERE fio='${fio}' AND date_birth='${date_birth}'`,
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return;
+          }
+          const member = result[0];
+          if (!!member?.user_id) {
+            res
+              .status(500)
+              .json({ success: false, message: "Пользователь с таким ФИО и датой рождения уже существует" });
+            return;
+          }
+          pool.query(
+            "INSERT INTO user (login, password, user_role) VALUES(?,?, 'USER_ROLE')",
+            [email, password],
+            (error, result) => {
+              if (error) {
+                console.log(error);
+                res.status(500).json({ success: false, message: error });
+                return;
+              }
+              const userId = result.insertId
+              if (member) {
+                pool.query(
+                  `UPDATE member SET user_id=${userId} WHERE id=${member.id} AND user_id IS NULL`,
+                  (error, result) => {
+                    if (error) {
+                      console.log(error);
+                      res.status(500).json({ success: false, message: error });
+                      return;
+                    }
+                    const token = jwt.sign(
+                      { user_id: userId, user_name: email, user_role: 'USER_ROLE', iat: Date.now() },
+                      jwtOptions.secretOrKey
+                    );
+                    res.json({
+                      success: true,
+                      token,
+                      user_role: 'USER_ROLE',
+                      user_id: userId,
+                    });
+                  }
+                );
+              }
+              else {
+                pool.query(
+                  "INSERT INTO member (fio, date_birth, gender, user_id) VALUES(?,?,?,?)",
+                  [fio, date_birth, gender, userId],
+                  (error, result) => {
+                    if (error) {
+                      console.log(error);
+                      res.status(500).json({ success: false, message: error });
+                      return;
+                    }
+
+                    const newMemberId = result.insertId;
+                    pool.query(
+                      `INSERT INTO membalp ( id) VALUES(?)`,
+                      [newMemberId],
+                      (error, result) => {
+                        if (error) {
+                          console.log(error);
+                          res.status(500).json({ success: false, message: error });
+                          return;
+                        }
+                        const token = jwt.sign(
+                          { user_id: userId, user_name: email, user_role: 'USER_ROLE', iat: Date.now() },
+                          jwtOptions.secretOrKey
+                        );
+                        res.json({
+                          success: true,
+                          token,
+                          user_role: 'USER_ROLE',
+                          user_id: userId,
+                        });
+                      }
+                    );
+
+                  }
+                );
+              }
+            }
+          );
+        })
+    }
+  );
 });
 app.get(
   "/logout",
@@ -141,7 +248,7 @@ app.post("/login", (req, res) => {
       // if (!user || !bcrypt.compareSync(password, user.password)) {
       if (!user || password != user.password) {
         res
-          .status(401)
+          .status(500)
           .json({ success: false, message: "Invalid username or password" });
         return;
       }
@@ -245,10 +352,12 @@ eventDepartmentPlanRouter(app, passport);
 eventDepartmentPlanJournalRouter(app, passport);
 eventProtocolRouter(app, passport);
 eventManagementStuffRouter(app, passport);
+eventInstructionLogRouter(app, passport);
 
 memberListRouter(app, passport);
 memberExamRouter(app, passport);
 memberAscentRouter(app, passport);
+memberSportCategoryRouter(app, passport);
 
 
 app.get(/(.*)/, (req, res) => {
