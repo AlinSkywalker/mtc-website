@@ -37,6 +37,7 @@ export const EditableTable = ({
   className,
   showPagination = true,
   additionalButton,
+  readOnly,
 }) => {
   const [paginationModel, setPaginationModel] = React.useState({
     pageSize: 100,
@@ -144,6 +145,7 @@ export const EditableTable = ({
       const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit
       const row = rows.find((row) => row.id === id)
       const isNew = row?.isNew
+      if (readOnly) return []
       if (isInEditMode) {
         return [
           <GridActionsCellItem
@@ -248,6 +250,7 @@ export const EditableTable = ({
                   addButtonLabel={addButtonLabel}
                   additionalButton={additionalButton}
                   paginationModel={paginationModel}
+                  readOnly={readOnly}
                 />
               )
             },

@@ -1,6 +1,6 @@
 import React from 'react'
 import { EventListTable } from '../components/EventListTable'
 
-export const EventListPage = () => {
-  return <EventListTable readOnly={false} />
+export const ReadOnlyEventListPage = () => {
+  return <EventListTable readOnly={true} />
 }

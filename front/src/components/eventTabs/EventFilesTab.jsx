@@ -55,6 +55,7 @@ export const EventFilesTab = () => {
       width: 250,
       editable: true,
       downloadApiPath: `/api/eventList/${eventId}/files`,
+      fileCol: 'file',
       ...fileColumnType,
     },
     {

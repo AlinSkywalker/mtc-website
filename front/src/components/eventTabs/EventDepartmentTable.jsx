@@ -31,7 +31,7 @@ const validationSchema = Yup.object({
     }),
 })
 
-export const EventDepartmentTable = ({ eventId, eventStart, eventFinish }) => {
+export const EventDepartmentTable = ({ eventId, eventStart, eventFinish, readOnly }) => {
   const defaultItem = {
     depart_tip: '',
     depart_name: '',
@@ -152,6 +152,7 @@ export const EventDepartmentTable = ({ eventId, eventStart, eventFinish }) => {
       isLoading={isLoading}
       handleDeleteItem={handleDeleteItem}
       height='calc(100vh - 150px)'
+      readOnly={readOnly}
     />
   )
 }

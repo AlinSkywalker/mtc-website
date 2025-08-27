@@ -15,6 +15,7 @@ import ErrorIcon from '@mui/icons-material/Error'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import { red } from '@mui/material/colors'
+import { fileColumnType } from '../dataGridCell/GridEditFileCell'
 
 const defaultItem = {
   eventmemb_memb: '',
@@ -35,7 +36,7 @@ const validationSchema = Yup.object({
   fio: Yup.string().required('Поле обязательно для заполнения'),
 })
 
-export const EventMembersTab = ({ eventId }) => {
+export const EventMembersTab = ({ eventId, readOnly }) => {
   const queryClient = useQueryClient()
   const { isLoading, data } = useFetchEventMemberList(eventId)
 
@@ -49,8 +50,18 @@ export const EventMembersTab = ({ eventId }) => {
   }, [data])
 
   const handleSaveNewItem = (data) => {
-    const { id, isNew, ...postedData } = data
-    return apiClient.put(`/api/eventList/${eventId}/member`, postedData)
+    console.log('data', data)
+    const { id, isNew, med_file, strah_file, ...postedData } = data
+    const formData = new FormData()
+
+    for (let key in postedData) {
+      formData.append(key, postedData[key])
+    }
+    formData.append('med_file', data.med_file?.[0])
+    formData.append('strah_file', data.strah_file?.[0])
+    return apiClient.put(`/api/eventList/${eventId}/member`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
   }
 
   const handleDeleteItem = (id) => () => {
@@ -90,7 +101,7 @@ export const EventMembersTab = ({ eventId }) => {
   }
   const renderLink = (params) => {
     const link = params.value ?? ''
-
+    if (readOnly) return link
     return (
       <Link onClick={handleClickName(params.row.eventmemb_memb)} sx={{ cursor: 'pointer' }}>
         {link}
@@ -126,43 +137,45 @@ export const EventMembersTab = ({ eventId }) => {
       width: 250,
       renderCell: renderLink,
       renderEditCell: renderSelectEditCell,
-      editable: true,
+      editable: !readOnly,
     },
     {
       field: 'eventmemb_dates',
       ...dateColumnType,
       headerName: 'Дата заезда',
       width: 120,
-      editable: true,
+      editable: !readOnly,
     },
     {
       field: 'eventmemb_datef',
       ...dateColumnType,
       headerName: 'Дата выезда',
       width: 120,
-      editable: true,
+      editable: !readOnly,
       minDate: 'eventmemb_dates',
     },
-    { field: 'eventmemb_memb', headerName: 'eventmemb_memb', width: 0, editable: true },
+    { field: 'eventmemb_memb', headerName: 'eventmemb_memb', width: 0, editable: !readOnly },
     {
       field: 'eventmemb_nstrah',
       headerName: 'Страховка',
       width: 100,
-      editable: true,
+      editable: !readOnly,
       ...checkboxColumnType,
     },
     {
-      field: 'eventmemb_nmed',
+      field: 'med_file_name',
       headerName: 'Справка',
       width: 100,
-      editable: true,
-      ...checkboxColumnType,
+      editable: !readOnly,
+      downloadApiPath: `/api/eventList/${eventId}/files`,
+      fileCol: 'med_file',
+      ...fileColumnType,
     },
     {
       field: 'eventmemb_role',
       headerName: 'Роль',
       width: 100,
-      editable: true,
+      editable: !readOnly,
       type: 'singleSelect',
       valueOptions: ['Участник', 'Инструктор', 'Волонтёр'],
     },
@@ -170,21 +183,21 @@ export const EventMembersTab = ({ eventId }) => {
       field: 'eventmemb_pred',
       headerName: 'Оплата',
       width: 100,
-      editable: true,
+      editable: !readOnly,
       type: 'number',
     },
     {
       field: 'eventmemb_gen',
       headerName: 'Проживание по полу',
       width: 100,
-      editable: true,
+      editable: !readOnly,
       ...checkboxColumnType,
     },
     {
       field: 'gender',
       headerName: 'Пол',
       width: 80,
-      editable: true,
+      editable: !readOnly,
       renderEditCell: (props) => (
         <GridEditInputCell {...props} disabled className={'roTableInput'} />
       ),
@@ -193,7 +206,7 @@ export const EventMembersTab = ({ eventId }) => {
       field: 'tel_1',
       headerName: 'Телефон',
       width: 150,
-      editable: true,
+      editable: !readOnly,
       renderEditCell: (props) => (
         <GridEditInputCell {...props} disabled className={'roTableInput'} />
       ),
@@ -202,7 +215,7 @@ export const EventMembersTab = ({ eventId }) => {
       field: 'memb_email',
       headerName: 'email',
       width: 150,
-      editable: true,
+      editable: !readOnly,
       renderEditCell: (props) => (
         <GridEditInputCell {...props} disabled className={'roTableInput'} />
       ),
@@ -210,11 +223,38 @@ export const EventMembersTab = ({ eventId }) => {
     // { field: 'size_cloth', headerName: 'Размер одежды', width: 150 },
     // { field: 'size_shoe', headerName: 'Размер обуви', width: 150 },
     // { field: 'name_city', headerName: 'Город', width: 150 },
+    {
+      field: 'med_file',
+      headerName: 'Файл',
+      width: 0,
+      editable: !readOnly,
+    },
+    {
+      field: 'strah_file',
+      headerName: 'Файл',
+      width: 0,
+      editable: !readOnly,
+    },
   ]
   const fieldToFocus = 'fio'
-  const columnVisibilityModel = {
-    eventmemb_memb: false,
-  }
+  const columnVisibilityModel = readOnly
+    ? {
+      eventmemb_memb: false,
+      med_file: false,
+      strah_file: false,
+      memb_email: false,
+      tel_1: false,
+      eventmemb_gen: false,
+      eventmemb_pred: false,
+      eventmemb_nstrah: false,
+      med_file_name: false,
+      alerts: false,
+    }
+    : {
+      eventmemb_memb: false,
+      med_file: false,
+      strah_file: false,
+    }
 
   const processRowUpdate = async (newRow, oldRow) => {
     validationSchema.validateSync(newRow, { abortEarly: false })
@@ -246,6 +286,7 @@ export const EventMembersTab = ({ eventId }) => {
       isCellEditable={(params) =>
         params.field !== 'fio' || (params.row.isNew && params.field == 'fio')
       }
+      readOnly={readOnly}
     />
   )
 }

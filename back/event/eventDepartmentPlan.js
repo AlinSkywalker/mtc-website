@@ -325,11 +325,12 @@ const eventDepartmentPlanRouter = (app, passport) => {
               let memberCount = acceptedMember.length;
 
               const queries = [];
+
               acceptedMember.forEach((memberId) => {
                 let role = "Участник";
-                if (memberId === depart_inst) {
+                if (memberId == depart_inst) {
                   role = "Инструктор";
-                } else if (memberId === ascent_head) {
+                } else if (memberId == ascent_head) {
                   role = "Руководитель";
                 }
                 const query = new Promise((resolve, reject) => {

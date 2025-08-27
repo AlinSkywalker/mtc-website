@@ -66,154 +66,161 @@ export const ProfilePage = () => {
       maxWidth={false}
       sx={{ height: '100vh', backgroundColor: { xs: '#fff', md: '#f4f4f4' } }}
     >
-      <Card sx={{ minWidth: 275 }}>
-        <CardContent>
-          <form onSubmit={handleSubmit(handleSaveProfileData)}>
-            <Grid
-              container
-              justifyContent='center'
-              // alignItems='center'
-              flexDirection='column'
-              spacing={2}
-            >
-              <Grid size={4}>
-                <Controller
-                  name='memb_email'
-                  control={control}
-                  render={({ field }) => (
-                    <TextField {...field} variant='outlined' label='Email' disabled fullWidth />
-                  )}
-                />
-              </Grid>
-              <Grid size={4}>
-                <Controller
-                  name='fio'
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      variant='outlined'
-                      label='Фамилия Имя Отчество'
-                      fullWidth
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid size={2}>
-                <Controller
-                  name='date_birth'
-                  control={control}
-                  render={({ field }) => (
-                    <DatePicker
-                      label='Дата рождения'
-                      {...field}
-                      slotProps={{ textField: { fullWidth: true } }}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid size={1}>
-                <Controller
-                  name='gender'
-                  control={control}
-                  render={({ field }) => (
-                    <FormControl fullWidth>
-                      <InputLabel id='ageLabel'>Пол</InputLabel>
-                      <Select {...field} label='Пол' fullWidth labelId='ageLabel'>
-                        {['М', 'Ж'].map((item, index) => (
-                          <MenuItem value={item} key={index}>
-                            {item}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  )}
-                />
-              </Grid>
-              <Grid size={1}>
-                <Controller
-                  name='size_shoe'
-                  control={control}
-                  render={({ field }) => (
-                    <FormControl fullWidth>
-                      <InputLabel id='sizeShoeLabel'>Размер обуви</InputLabel>
-                      <Select {...field} label='Размер обуви' fullWidth labelId='sizeShoeLabel'>
-                        {sizeShoeOptions.map((item, index) => (
-                          <MenuItem value={item} key={index}>
-                            {item}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  )}
-                />
-              </Grid>
-              <Grid size={1}>
-                <Controller
-                  name='size_cloth'
-                  control={control}
-                  render={({ field }) => (
-                    <FormControl fullWidth>
-                      <InputLabel id='sizeClothLabel'>Размер одежды</InputLabel>
-                      <Select {...field} label='Размер одежды' fullWidth labelId='sizeClothLabel'>
-                        {sizeClothOptions.map((item, index) => (
-                          <MenuItem value={item} key={index}>
-                            {item}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  )}
-                />
-              </Grid>
-              <Grid size={2}>
-                <Controller
-                  name='name_city'
-                  control={control}
-                  render={({ field }) => (
-                    <TextField {...field} variant='outlined' label='Город' fullWidth disabled />
-                  )}
-                />
-              </Grid>
-              <Grid size={2}>
-                <Controller
-                  name='tel_1'
-                  control={control}
-                  render={({ field }) => (
-                    <TextField {...field} variant='outlined' label='Телефон основной' fullWidth />
-                  )}
-                />
-              </Grid>
-              <Grid size={2}>
-                <Controller
-                  name='tel_2'
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      variant='outlined'
-                      label='Телефон дополнительный'
-                      fullWidth
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid container>
+      <Grid
+        container
+        justifyContent='center'
+        alignItems='center'
+      // sx={{ width: '100%', height: '100%' }}
+      >
+        <Card sx={{ width: 400 }}>
+          <CardContent>
+            <form onSubmit={handleSubmit(handleSaveProfileData)}>
+              <Grid
+                container
+                justifyContent='center'
+                // alignItems='center'
+                flexDirection='column'
+                spacing={2}
+              >
                 <Grid>
-                  <Button variant='text' type='button' disabled={!isDirty} onClick={handleReset}>
-                    Отменить
-                  </Button>
+                  <Controller
+                    name='memb_email'
+                    control={control}
+                    render={({ field }) => (
+                      <TextField {...field} variant='outlined' label='Email' disabled fullWidth />
+                    )}
+                  />
                 </Grid>
                 <Grid>
-                  <Button variant='contained' type='submit' disabled={!isDirty}>
-                    Сохранить
-                  </Button>
+                  <Controller
+                    name='fio'
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        variant='outlined'
+                        label='Фамилия Имя Отчество'
+                        fullWidth
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid>
+                  <Controller
+                    name='date_birth'
+                    control={control}
+                    render={({ field }) => (
+                      <DatePicker
+                        label='Дата рождения'
+                        {...field}
+                        slotProps={{ textField: { fullWidth: true } }}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid>
+                  <Controller
+                    name='gender'
+                    control={control}
+                    render={({ field }) => (
+                      <FormControl fullWidth>
+                        <InputLabel id='ageLabel'>Пол</InputLabel>
+                        <Select {...field} label='Пол' fullWidth labelId='ageLabel'>
+                          {['М', 'Ж'].map((item, index) => (
+                            <MenuItem value={item} key={index}>
+                              {item}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    )}
+                  />
+                </Grid>
+                <Grid>
+                  <Controller
+                    name='size_shoe'
+                    control={control}
+                    render={({ field }) => (
+                      <FormControl fullWidth>
+                        <InputLabel id='sizeShoeLabel'>Размер обуви</InputLabel>
+                        <Select {...field} label='Размер обуви' fullWidth labelId='sizeShoeLabel'>
+                          {sizeShoeOptions.map((item, index) => (
+                            <MenuItem value={item} key={index}>
+                              {item}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    )}
+                  />
+                </Grid>
+                <Grid>
+                  <Controller
+                    name='size_cloth'
+                    control={control}
+                    render={({ field }) => (
+                      <FormControl fullWidth>
+                        <InputLabel id='sizeClothLabel'>Размер одежды</InputLabel>
+                        <Select {...field} label='Размер одежды' fullWidth labelId='sizeClothLabel'>
+                          {sizeClothOptions.map((item, index) => (
+                            <MenuItem value={item} key={index}>
+                              {item}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    )}
+                  />
+                </Grid>
+                <Grid>
+                  <Controller
+                    name='name_city'
+                    control={control}
+                    render={({ field }) => (
+                      <TextField {...field} variant='outlined' label='Город' fullWidth disabled />
+                    )}
+                  />
+                </Grid>
+                <Grid>
+                  <Controller
+                    name='tel_1'
+                    control={control}
+                    render={({ field }) => (
+                      <TextField {...field} variant='outlined' label='Телефон основной' fullWidth />
+                    )}
+                  />
+                </Grid>
+                <Grid>
+                  <Controller
+                    name='tel_2'
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        variant='outlined'
+                        label='Телефон дополнительный'
+                        fullWidth
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid container>
+                  <Grid>
+                    <Button variant='text' type='button' disabled={!isDirty} onClick={handleReset}>
+                      Отменить
+                    </Button>
+                  </Grid>
+                  <Grid>
+                    <Button variant='contained' type='submit' disabled={!isDirty}>
+                      Сохранить
+                    </Button>
+                  </Grid>
                 </Grid>
               </Grid>
-            </Grid>
-          </form>
-        </CardContent>
-      </Card>
+            </form>
+          </CardContent>
+        </Card>
+      </Grid>
     </Container>
   )
 }

@@ -20,6 +20,7 @@ import { ru } from 'date-fns/locale/ru'
 import theme from './api/theme'
 import { Grid, ThemeProvider } from '@mui/material'
 import { SnackbarProvider } from 'notistack'
+import { ReadOnlyEventListPage } from './pages/ReadOnlyEventListPage'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -153,6 +154,23 @@ const App = () => {
                       </PrivateRoute>
                     }
                     exact
+                  />
+                  <Route
+                    path='/eventList'
+                    element={
+                      <PrivateRoute>
+                        <ReadOnlyEventListPage />
+                      </PrivateRoute>
+                    }
+                  />
+
+                  <Route
+                    path='/event/:id/*'
+                    element={
+                      <PrivateRoute>
+                        <EventInfoPage readOnly={true} />
+                      </PrivateRoute>
+                    }
                   />
                 </Routes>
               </BrowserRouter>

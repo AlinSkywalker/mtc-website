@@ -10,10 +10,12 @@ import { EventAllDepartmentMembersTable } from './EventAllDepartmentMembersTable
 import { EventMemberDepartment } from './EventMemberDepartment'
 import { useLocation, Route, Routes, Link } from 'react-router-dom'
 
-export const EventDepartmentTab = ({ event }) => {
+export const EventDepartmentTab = ({ event, readOnly }) => {
   const location = useLocation()
   if (!event) return
-  const basePath = `/admin/event/${event.id}/department`
+  const basePath = readOnly
+    ? `/event/${event.id}/department`
+    : `/admin/event/${event.id}/department`
   const tabs = [
     {
       name: 'list',
@@ -24,6 +26,7 @@ export const EventDepartmentTab = ({ event }) => {
           eventId={event.id}
           eventStart={event.event_start}
           eventFinish={event.event_finish}
+          readOnly={readOnly}
         />
       ),
     },
@@ -55,10 +58,12 @@ export const EventDepartmentTab = ({ event }) => {
           eventDistrict={event.raion_id_list}
           eventStart={event.event_start}
           eventFinish={event.event_finish}
+          readOnly={readOnly}
         />
       ),
     },
   ]
+  if (readOnly) tabs.splice(1, 1)
   const currentTab = tabs.findIndex((tab) => `${basePath}${tab.path}` === location.pathname)
   return (
     <>

@@ -38,7 +38,7 @@ export const PlanAscentAcceptDayDialog = ({
   useEffect(() => {
     const membersId =
       selectedDateDepartmentMembers?.reduce(
-        (acc, item) => ({ ...acc, [item.member_id]: true }),
+        (acc, item) => ({ ...acc, [item.member_id]: true }), //member_id - id from table member
         {},
       ) || {}
     setState(membersId)

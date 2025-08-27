@@ -2,6 +2,8 @@ import React from 'react'
 import { useGridApiContext } from '@mui/x-data-grid'
 import { Link, Grid } from '@mui/material'
 import apiClient from '../../api/api'
+import IconButton from '@mui/material/IconButton'
+import DeleteIcon from '@mui/icons-material/Delete'
 
 export const fileColumnType = {
   renderCell: (params) => {
@@ -14,7 +16,7 @@ export const fileColumnType = {
   //   return value == 0 ? false : true
   // },
 }
-//, { responseType: 'blob' }
+
 const handleDownloadFile = (id, downloadApiPath) => async () => {
   const response = await apiClient.get(`${downloadApiPath}/${id}`, {
     responseType: 'blob',
@@ -35,23 +37,31 @@ const handleDownloadFile = (id, downloadApiPath) => async () => {
   link.click()
 }
 function GridFileCell({ value, id, colDef }) {
-  // return (
-  //   <form action={`/api/eventList/:eventId/files/${id}`} method='get'>
-  //     <button type='submit'>{value}</button>
-  //   </form>
-  // )
   return <Link onClick={handleDownloadFile(id, colDef.downloadApiPath)}>{value}</Link>
 }
 
-function GridEditFileCell({ id, field, value }) {
+function GridEditFileCell({ id, field, value, colDef }) {
   const apiRef = useGridApiContext()
 
   const handleFileInput = (event, newValue) => {
     const files = event.currentTarget.files
     // console.log('files', files)
-    apiRef.current.setEditCellValue({ id, field: 'file', value: files })
+    apiRef.current.setEditCellValue({ id, field: colDef.fileCol, value: files })
   }
-
+  const handleClearFile = () => {
+    apiRef.current.setEditCellValue({ id, field: colDef.fileCol, value: '' })
+    apiRef.current.setEditCellValue({ id, field, value: '' })
+  }
+  if (value) {
+    return (
+      <Grid container alignItems={'center'}>
+        <Link onClick={handleDownloadFile(id, colDef.downloadApiPath)}>{value}</Link>
+        <IconButton aria-label='delete' onClick={handleClearFile}>
+          <DeleteIcon />
+        </IconButton>
+      </Grid>
+    )
+  }
   return (
     <Grid container alignItems={'center'}>
       <input

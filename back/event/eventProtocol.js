@@ -7,12 +7,14 @@ const eventProtocolRouter = (app, passport) => {
     const eventId = req.params.eventId;
     pool.query(`SELECT mem.fio, IFNULL(mem_a.alprazr, 'б/р') AS alprazr,d.depart_inst,
                 CASE
-				    WHEN d.depart_inst = mem.id
-				        THEN 'Инструктор'
-				    WHEN dp.ascent_head = mem.id 
-				        THEN 'Руководитель'
-				    ELSE 'Участник'
-				END AS role,
+                  WHEN d.depart_inst = mem.id AND d.depart_inst<>dp.ascent_head
+                      THEN 'Участник'
+                  WHEN d.depart_inst = mem.id
+                      THEN 'Инструктор'
+                  WHEN dp.ascent_head = mem.id 
+                      THEN 'Руководитель'
+                  ELSE 'Участник'
+                  END AS role,
                 s.sub_name, m.mount_name, r.rout_name, r.rout_comp,r.rout_tip ,
                 'в уч. гр.' AS group_type, dp.start 
                 FROM mtc_db.depart_plan dp

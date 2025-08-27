@@ -22,7 +22,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import { EventManagementStuffTab } from '../components/eventTabs/EventManagementStuffTab'
 import { EventInstructionLogTab } from '../components/eventTabs/EventInstructionLogTab'
 
-export const EventInfoPage = () => {
+export const EventInfoPage = ({ readOnly = false }) => {
   const [isDisplayForm, setIsDisplayForm] = useState(false)
 
   const params = useParams()
@@ -32,19 +32,19 @@ export const EventInfoPage = () => {
 
   const { isLoading, data } = useFetchEvent(currentId)
 
-  const basePath = `/admin/event/${currentId}`
+  const basePath = readOnly ? `/event/${currentId}` : `/admin/event/${currentId}`
   const eventTabs = [
     {
       name: 'members',
       path: `/`,
       label: 'Участники',
-      component: <EventMembersTab eventId={currentId} />,
+      component: <EventMembersTab eventId={currentId} readOnly={readOnly} />,
     },
     {
       name: 'department',
       path: `/department/`,
       label: 'Отделения',
-      component: <EventDepartmentTab event={data} />,
+      component: <EventDepartmentTab event={data} readOnly={readOnly} />,
     },
     {
       name: 'contractor',
@@ -89,6 +89,26 @@ export const EventInfoPage = () => {
       component: <EventInstructionLogTab />,
     },
   ]
+  const roEventTabs = [
+    {
+      name: 'members',
+      path: `/`,
+      label: 'Участники',
+      component: <EventMembersTab eventId={currentId} readOnly={true} />,
+    },
+    {
+      name: 'department',
+      path: `/department/`,
+      label: 'Отделения',
+      component: <EventDepartmentTab event={data} readOnly={true} />,
+    },
+    {
+      name: 'protocol',
+      path: `/protocol`,
+      label: 'Протокол',
+      component: <EventProtocolTab />,
+    },
+  ]
   const currentTab = eventTabs.findIndex(
     (tab) =>
       `${basePath}${tab.path}` === location.pathname ||
@@ -108,6 +128,8 @@ export const EventInfoPage = () => {
   const handleEditClick = () => {
     setIsDisplayForm(!isDisplayForm)
   }
+
+  const tabs = readOnly ? roEventTabs : eventTabs
   return (
     <Container
       maxWidth={false}
@@ -118,7 +140,7 @@ export const EventInfoPage = () => {
           <Typography variant='h4' sx={{ paddingLeft: 2 }}>
             {data.event_name}
           </Typography>
-          <Tooltip title='Редактировать'>
+          <Tooltip title={readOnly ? 'Просмотреть' : 'Редактировать'}>
             <IconButton onClick={handleEditClick} sx={{ alignSelf: 'center' }}>
               <EditIcon />
             </IconButton>
@@ -128,11 +150,11 @@ export const EventInfoPage = () => {
           <Grid container spacing={2}>
             <Grid size={10}>
               <Card sx={{ minWidth: 275 }}>
-                <EventInfoForm eventData={data} isLoading={isLoading} />
+                <EventInfoForm eventData={data} isLoading={isLoading} readOnly={readOnly} />
               </Card>
             </Grid>
             <Grid size={2}>
-              <EventBaseTable eventId={currentId} />
+              <EventBaseTable eventId={currentId} readOnly={readOnly} />
             </Grid>
           </Grid>
         )}
@@ -144,7 +166,7 @@ export const EventInfoPage = () => {
           variant='scrollable'
           scrollButtons='auto'
         >
-          {eventTabs.map((tab, index) => (
+          {tabs.map((tab, index) => (
             <Tab key={index} label={tab.label} component={Link} to={`${basePath}${tab.path}`} />
           ))}
         </Tabs>

@@ -480,7 +480,8 @@ const eventDepartmentRouter = (app, passport) => {
         return;
       }
       pool.query(
-        `SELECT m_d.membd_memb as id, m.fio as member_fio, m.id as member_id FROM member_in_depart m_d
+        `SELECT m_d.membd_memb as id, m.fio as member_fio, m.id as member_id 
+        FROM member_in_depart m_d
         LEFT JOIN eventmemb e_m ON e_m.id=m_d.membd_memb
         LEFT JOIN member m on m.id=e_m.eventmemb_memb
         WHERE m_d.membd_dep=${departmentId} AND m_d.membd_date='${req.query.selectedDate}'`,

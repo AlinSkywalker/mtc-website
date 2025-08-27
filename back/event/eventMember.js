@@ -41,6 +41,25 @@ const eventMemberRouter = (app, passport) => {
   app.put('/eventList/:eventId/member/', passport.authenticate('jwt', { session: false }), (req, res) => {
     const eventId = req.params.eventId;
     const { eventmemb_nstrah, eventmemb_nmed, eventmemb_memb, eventmemb_dates, eventmemb_datef, eventmemb_gen, eventmemb_pred, eventmemb_opl, eventmemb_role } = req.body;
+
+    const med_file = req.files.event_file;
+    const strah_file = req.files.strah_file;
+    // const newFileName = cyrillicToTranslit.transform(uploadedFile.name, '_')
+    // console.log('newFileName', newFileName)
+    let newFilePathMed = `uploads_mtc/event/${eventId}/${med_file.name}`
+    let newFilePathStrah = `uploads_mtc/event/${eventId}/${strah_file.name}`
+    if (fs.existsSync(newFilePathMed)) {
+      const randomNumber = getRandomNumber(0, 1000)
+      newFilePathMed = `uploads_mtc/event/${eventId}/${randomNumber}-${med_file.name}`
+    }
+    if (fs.existsSync(newFilePathStrah)) {
+      const randomNumber = getRandomNumber(0, 1000)
+      newFilePathStrah = `uploads_mtc/event/${eventId}/${randomNumber}-${med_file.name}`
+    }
+
+    med_file.mv(newFilePathMed);
+    med_file.mv(newFilePathStrah);
+
     pool.query(`INSERT INTO eventmemb 
       ( eventmemb_nstrah, eventmemb_nmed, eventmemb_memb, eventmemb_dates, eventmemb_datef,eventmemb_even,eventmemb_gen,eventmemb_pred,eventmemb_opl,eventmemb_role) 
       VALUES(?,?,?,?,?,?,?,?,?,?)`,

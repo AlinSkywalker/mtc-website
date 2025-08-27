@@ -61,7 +61,7 @@ const validationSchema = Yup.object({
   raion: Yup.object().required('Поле обязательно для заполнения'),
 })
 
-export const EventInfoForm = ({ eventData: data, isLoading }) => {
+export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
 
   const {
     handleSubmit,
@@ -107,8 +107,6 @@ export const EventInfoForm = ({ eventData: data, isLoading }) => {
   }
   return (
     <CardContent>
-
-
       <form onSubmit={handleSubmit(handleSave)}>
         <Grid
           container
@@ -129,6 +127,7 @@ export const EventInfoForm = ({ eventData: data, isLoading }) => {
                   fullWidth
                   error={errors[field.name]}
                   helperText={errors[field.name]?.message}
+                  disabled={readOnly}
                 />
               )}
             />
@@ -138,7 +137,7 @@ export const EventInfoForm = ({ eventData: data, isLoading }) => {
               name='event_desc'
               control={control}
               render={({ field }) => (
-                <TextField {...field} variant='outlined' label='Описание' fullWidth />
+                <TextField {...field} variant='outlined' label='Описание' fullWidth disabled={readOnly} />
               )}
             />
           </Grid>
@@ -148,6 +147,7 @@ export const EventInfoForm = ({ eventData: data, isLoading }) => {
               control={control}
               render={({ field }) => (
                 <DatePicker
+                  disabled={readOnly}
                   label='Дата начала'
                   {...field}
                   slotProps={{
@@ -167,6 +167,7 @@ export const EventInfoForm = ({ eventData: data, isLoading }) => {
               control={control}
               render={({ field }) => (
                 <DatePicker
+                  disabled={readOnly}
                   label='Дата окончания'
                   {...field}
                   slotProps={{
@@ -240,6 +241,7 @@ export const EventInfoForm = ({ eventData: data, isLoading }) => {
                   error={errors[field.name]}
                   helperText={errors[field.name]?.message}
                   type='number'
+                  disabled={readOnly}
                 />
               )}
             />

@@ -49,7 +49,7 @@ export const AdminLayout = ({ children }) => {
   }
   const pages =
     userInfo.role !== 'ADMIN_ROLE'
-      ? []
+      ? [{ name: 'eventList', url: '/eventList', label: 'Мероприятия' }]
       : [
         { name: 'eventList', url: '/admin/event', label: 'Мероприятия' },
         { name: 'memberList', url: '/admin/member', label: 'Члены клуба' },

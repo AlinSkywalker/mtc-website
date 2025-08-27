@@ -14,7 +14,7 @@ const validationSchema = Yup.object({
   base_name: Yup.string().required('Поле обязательно для заполнения'),
 })
 
-export const EventBaseTable = ({ eventId }) => {
+export const EventBaseTable = ({ eventId, readOnly = false }) => {
   const queryClient = useQueryClient()
   const { isLoading, data } = useFetchEventBaseList(eventId)
 
@@ -99,6 +99,7 @@ export const EventBaseTable = ({ eventId }) => {
       height={221}
       className='eventBaseTable'
       isRowEditable={isRowEditable}
+      readOnly={readOnly}
     />
   )
 }

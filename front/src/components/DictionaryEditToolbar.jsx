@@ -14,6 +14,7 @@ export const DictionaryEditToolbar = (props) => {
     addButtonLabel,
     additionalButton,
     paginationModel,
+    readOnly,
   } = props
 
   const handleClick = () => {
@@ -34,9 +35,11 @@ export const DictionaryEditToolbar = (props) => {
   return (
     <Toolbar>
       <Grid sx={{ flexGrow: 1 }}>
-        <Button color='primary' startIcon={<AddIcon />} onClick={handleClick} disabled={disabled}>
-          {addButtonLabel ? addButtonLabel : 'Добавить'}
-        </Button>
+        {!readOnly && (
+          <Button color='primary' startIcon={<AddIcon />} onClick={handleClick} disabled={disabled}>
+            {addButtonLabel ? addButtonLabel : 'Добавить'}
+          </Button>
+        )}
         {additionalButton}
       </Grid>
     </Toolbar>
