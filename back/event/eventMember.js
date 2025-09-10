@@ -42,23 +42,23 @@ const eventMemberRouter = (app, passport) => {
     const eventId = req.params.eventId;
     const { eventmemb_nstrah, eventmemb_nmed, eventmemb_memb, eventmemb_dates, eventmemb_datef, eventmemb_gen, eventmemb_pred, eventmemb_opl, eventmemb_role } = req.body;
 
-    const med_file = req.files.event_file;
-    const strah_file = req.files.strah_file;
-    // const newFileName = cyrillicToTranslit.transform(uploadedFile.name, '_')
-    // console.log('newFileName', newFileName)
-    let newFilePathMed = `uploads_mtc/event/${eventId}/${med_file.name}`
-    let newFilePathStrah = `uploads_mtc/event/${eventId}/${strah_file.name}`
-    if (fs.existsSync(newFilePathMed)) {
-      const randomNumber = getRandomNumber(0, 1000)
-      newFilePathMed = `uploads_mtc/event/${eventId}/${randomNumber}-${med_file.name}`
-    }
-    if (fs.existsSync(newFilePathStrah)) {
-      const randomNumber = getRandomNumber(0, 1000)
-      newFilePathStrah = `uploads_mtc/event/${eventId}/${randomNumber}-${med_file.name}`
-    }
+    // const med_file = req.files.event_file;
+    // const strah_file = req.files.strah_file;
+    // // const newFileName = cyrillicToTranslit.transform(uploadedFile.name, '_')
+    // // console.log('newFileName', newFileName)
+    // let newFilePathMed = `uploads_mtc/event/${eventId}/${med_file.name}`
+    // let newFilePathStrah = `uploads_mtc/event/${eventId}/${strah_file.name}`
+    // if (fs.existsSync(newFilePathMed)) {
+    //   const randomNumber = getRandomNumber(0, 1000)
+    //   newFilePathMed = `uploads_mtc/event/${eventId}/${randomNumber}-${med_file.name}`
+    // }
+    // if (fs.existsSync(newFilePathStrah)) {
+    //   const randomNumber = getRandomNumber(0, 1000)
+    //   newFilePathStrah = `uploads_mtc/event/${eventId}/${randomNumber}-${med_file.name}`
+    // }
 
-    med_file.mv(newFilePathMed);
-    med_file.mv(newFilePathStrah);
+    // med_file.mv(newFilePathMed);
+    // med_file.mv(newFilePathStrah);
 
     pool.query(`INSERT INTO eventmemb 
       ( eventmemb_nstrah, eventmemb_nmed, eventmemb_memb, eventmemb_dates, eventmemb_datef,eventmemb_even,eventmemb_gen,eventmemb_pred,eventmemb_opl,eventmemb_role) 
@@ -72,6 +72,7 @@ const eventMemberRouter = (app, passport) => {
         res.send(result);
       });
   })
+
   app.post('/eventList/:eventId/member/:memberId', passport.authenticate('jwt', { session: false }), (req, res) => {
     const { memberId, eventId } = req.params;
     const { eventmemb_nstrah, eventmemb_nmed, eventmemb_dates, eventmemb_datef, eventmemb_gen, eventmemb_pred, eventmemb_opl, eventmemb_role } = req.body;

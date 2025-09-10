@@ -15,6 +15,15 @@ import MenuItem from '@mui/material/MenuItem'
 import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
 import { sizeClothOptions, sizeShoeOptions } from '../constants'
+import { MemberEventTab } from '../components/memberTabs/MemberEventTab'
+import { MemberSportCategoryTab } from '../components/memberTabs/MemberSportCategoryTab'
+import { MemberAscentTab } from '../components/memberTabs/MemberAscentTab'
+import { MemberExamTab } from '../components/memberTabs/MemberExamTab'
+import Tab from '@mui/material/Tab'
+import TabContext from '@mui/lab/TabContext'
+import Tabs from '@mui/material/Tabs'
+import TabPanel from '@mui/lab/TabPanel'
+import Box from '@mui/material/Box'
 
 export const ProfilePage = () => {
   const defaultValues = {
@@ -60,6 +69,39 @@ export const ProfilePage = () => {
   const handleReset = () => {
     reset(data ? data : defaultValues)
   }
+  const [value, setValue] = React.useState(0)
+  const handleChange = (event, newValue) => {
+    setValue(newValue)
+  }
+  const basePath = `/profile`
+  const currentMemberId = data?.id || ''
+  const tabs = [
+    {
+      name: 'sportCategory',
+      label: 'Разряды/Категории',
+      component: <MemberSportCategoryTab memberId={currentMemberId} readOnly={true} />,
+    },
+    {
+      name: 'ascents',
+      label: 'Восхождения',
+      component: <MemberAscentTab memberId={currentMemberId} readOnly={true} />,
+    },
+    {
+      name: 'exam',
+      label: 'Зачеты',
+      component: <MemberExamTab memberId={currentMemberId} readOnly={true} />,
+    },
+    {
+      name: 'event',
+      label: 'Мероприятия',
+      component: <MemberEventTab memberId={currentMemberId} />,
+    },
+  ]
+  const currentTab = tabs.findIndex(
+    (tab) =>
+      `${basePath}${tab.path}` === location.pathname ||
+      (tab.path !== '/' && location.pathname.startsWith(`${basePath}${tab.path}`)),
+  )
 
   return (
     <Container
@@ -221,6 +263,20 @@ export const ProfilePage = () => {
           </CardContent>
         </Card>
       </Grid>
+      <TabContext value={value}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <Tabs onChange={handleChange} variant='scrollable' scrollButtons='auto' value={value}>
+            {tabs.map((tab, index) => (
+              <Tab key={index} label={tab.label} value={index} />
+            ))}
+          </Tabs>
+        </Box>
+        {tabs.map((tab, index) => (
+          <TabPanel key={index} value={index} sx={{ p: '10px 0' }}>
+            {value === index && tab.component}
+          </TabPanel>
+        ))}
+      </TabContext>
     </Container>
   )
 }

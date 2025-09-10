@@ -20,7 +20,7 @@ const validationSchema = Yup.object({
   zach_grade: Yup.string().required('Поле обязательно для заполнения'),
 })
 
-export const MemberExamTab = ({ memberId }) => {
+export const MemberExamTab = ({ memberId, readOnly }) => {
   const queryClient = useQueryClient()
   const { isLoading, data } = useFetchMemberExamList(memberId)
 
@@ -52,7 +52,7 @@ export const MemberExamTab = ({ memberId }) => {
       field: 'zach_name',
       headerName: 'Зачет',
       width: 250,
-      editable: true,
+      editable: !readOnly,
       type: 'singleSelect',
       valueOptions: [
         'Оказание доврачебной помощи',
@@ -65,7 +65,7 @@ export const MemberExamTab = ({ memberId }) => {
       field: 'zach_grade',
       headerName: 'Оценка',
       width: 150,
-      editable: true,
+      editable: !readOnly,
       type: 'singleSelect',
       valueOptions: ['3', '4', '5'],
     },
@@ -73,22 +73,22 @@ export const MemberExamTab = ({ memberId }) => {
       field: 'zach_e1',
       headerName: 'Экзаменатор 1',
       width: 200,
-      editable: true,
+      editable: !readOnly,
     },
     {
       field: 'zach_e2',
       headerName: 'Экзаменатор 2',
       width: 200,
-      editable: true,
+      editable: !readOnly,
     },
     {
       field: 'zach_date',
       ...dateColumnType,
       headerName: 'Дата зачета',
       width: 120,
-      editable: true,
+      editable: !readOnly,
     },
-    { field: 'zach_note', headerName: 'Заметки', width: 350, editable: true },
+    { field: 'zach_note', headerName: 'Заметки', width: 350, editable: !readOnly },
   ]
   const fieldToFocus = 'fio'
   const columnVisibilityModel = {}
@@ -117,6 +117,7 @@ export const MemberExamTab = ({ memberId }) => {
       isCellEditable={(params) =>
         params.field !== 'fio' || (params.row.isNew && params.field == 'fio')
       }
+      readOnly={readOnly}
     />
   )
 }

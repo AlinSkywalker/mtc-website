@@ -109,7 +109,8 @@ export const EventInfoPage = ({ readOnly = false }) => {
       component: <EventProtocolTab />,
     },
   ]
-  const currentTab = eventTabs.findIndex(
+  const tabs = readOnly ? roEventTabs : eventTabs
+  const currentTab = tabs.findIndex(
     (tab) =>
       `${basePath}${tab.path}` === location.pathname ||
       (tab.path !== '/' && location.pathname.startsWith(`${basePath}${tab.path}`)),
@@ -129,7 +130,7 @@ export const EventInfoPage = ({ readOnly = false }) => {
     setIsDisplayForm(!isDisplayForm)
   }
 
-  const tabs = readOnly ? roEventTabs : eventTabs
+
   return (
     <Container
       maxWidth={false}

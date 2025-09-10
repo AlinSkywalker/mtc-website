@@ -18,7 +18,7 @@ const validationSchema = Yup.object({
   ball: Yup.string().required('Поле обязательно для заполнения'),
 })
 
-export const MemberSportCategoryTab = ({ memberId }) => {
+export const MemberSportCategoryTab = ({ memberId, readOnly }) => {
   const queryClient = useQueryClient()
   const { isLoading, data } = useFetchMemberSportCategoryList(memberId)
 
@@ -50,7 +50,7 @@ export const MemberSportCategoryTab = ({ memberId }) => {
       field: 'type',
       headerName: 'Тип',
       width: 150,
-      editable: true,
+      editable: !readOnly,
       type: 'singleSelect',
       valueOptions: ['Разряд', 'Судья', 'Инструктор'],
     },
@@ -59,13 +59,13 @@ export const MemberSportCategoryTab = ({ memberId }) => {
       ...dateColumnType,
       headerName: 'Дата присвоения',
       width: 120,
-      editable: true,
+      editable: !readOnly,
     },
     {
       field: 'ball',
       headerName: 'Разряд/Категория',
       width: 200,
-      editable: true,
+      editable: !readOnly,
     },
   ]
   const fieldToFocus = 'type'
@@ -92,6 +92,7 @@ export const MemberSportCategoryTab = ({ memberId }) => {
       defaultItem={defaultItem}
       isLoading={isLoading}
       handleDeleteItem={handleDeleteItem}
+      readOnly={readOnly}
     />
   )
 }

@@ -65,6 +65,7 @@ export function useFetchMemberSportCategoryList(id) {
   return useQuery({
     queryKey: ['member', id, 'sportCategory'],
     queryFn: async () => {
+      if (!id) return []
       const { data } = await apiClient.get(`/api/memberList/${id}/sportCategory`)
       return data
     },

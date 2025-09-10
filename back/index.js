@@ -11,6 +11,7 @@ const bcrypt = require("bcryptjs");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const fileUpload = require("express-fileupload");
+const nodemailer = require('nodemailer');
 
 const pool = require("./mysql");
 
@@ -112,6 +113,56 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+const transporter = nodemailer.createTransport({
+  host: "mail.hosting.reg.ru",
+  port: 587,
+  secure: false, // upgrade later with STARTTLS
+  auth: {
+    user: 'info@mtc-tritonn.ru', // Your Gmail email address
+    pass: 'fHreL67ZT' // Your Gmail password
+  }
+});
+const defaultMailOptions = {
+  from: {
+    name: 'ЦАП Тритонн',
+    address: 'info@mtc-tritonn.ru'
+  }
+}
+
+const sendSuccessfulRegistrationEmail = (email, callback) => {
+  const mailOptions = {
+    ...defaultMailOptions,
+    to: email, // Recipient's email address
+    subject: 'Hello from Nodemailer', // Subject line
+    text: 'This is a test email sent using Nodemailer!' // Plain text body
+  };
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log('Ошибка отправки:', error);
+    } else {
+      callback()
+    }
+  });
+}
+
+app.post("/testEmail", (req, res) => {
+  const mailOptions = {
+    ...defaultMailOptions,
+    to: 'alinskywalker@yandex.ru', // Recipient's email address
+    subject: 'Hello from Nodemailer', // Subject line
+    text: 'This is a test email sent using Nodemailer!' // Plain text body
+  };
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log('Ошибка отправки:', error);
+    } else {
+      console.log('Successful send email');
+      res.json({
+      });
+    }
+  });
+})
+
 app.post("/register", (req, res) => {
   const { email, fio, date_birth, password, gender } = req.body;
   pool.query(
@@ -169,12 +220,16 @@ app.post("/register", (req, res) => {
                       { user_id: userId, user_name: email, user_role: 'USER_ROLE', iat: Date.now() },
                       jwtOptions.secretOrKey
                     );
-                    res.json({
-                      success: true,
-                      token,
-                      user_role: 'USER_ROLE',
-                      user_id: userId,
-                    });
+
+                    sendSuccessfulRegistrationEmail(email, () => {
+                      res.json({
+                        success: true,
+                        token,
+                        user_role: 'USER_ROLE',
+                        user_id: userId,
+                      });
+                    })
+
                   }
                 );
               }
@@ -203,12 +258,15 @@ app.post("/register", (req, res) => {
                           { user_id: userId, user_name: email, user_role: 'USER_ROLE', iat: Date.now() },
                           jwtOptions.secretOrKey
                         );
-                        res.json({
-                          success: true,
-                          token,
-                          user_role: 'USER_ROLE',
-                          user_id: userId,
-                        });
+                        sendSuccessfulRegistrationEmail(email, () => {
+                          res.json({
+                            success: true,
+                            token,
+                            user_role: 'USER_ROLE',
+                            user_id: userId,
+                          });
+                        })
+
                       }
                     );
 
@@ -318,6 +376,20 @@ app.get(
 );
 app.post(
   "/profile",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    pool.query("SELECT * FROM user", (error, result) => {
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+        return;
+      }
+      res.send(result);
+    });
+  }
+);
+app.post(
+  "/confirm_email",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     pool.query("SELECT * FROM user", (error, result) => {

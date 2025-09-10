@@ -285,7 +285,7 @@ const eventDepartmentPlanRouter = (app, passport) => {
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
       const { id, departmentId, eventId } = req.params;
-      const { acceptedMember, start, finish } = req.body;
+      const { acceptedMember, start: ascent_start, finish: ascent_finish } = req.body;
       pool.query(
         `SELECT dp.*, r.rout_name, r.rout_mount, r.rout_comp, 
                 m.mount_name, m.mount_rai, rai.rai_name, rai.rai_reg, reg.region_name,
@@ -308,7 +308,7 @@ const eventDepartmentPlanRouter = (app, passport) => {
             res.status(500).json({ success: false, message: error });
             return;
           }
-          const { route, start, depart_inst, ascent_head, ascent_head_fio } =
+          const { route, start, depart_inst, ascent_head, ascent_head_fio, prev_accepted_route } =
             result[0];
           pool.query(
             `SELECT m.id FROM member_in_depart m_in_d
@@ -337,7 +337,7 @@ const eventDepartmentPlanRouter = (app, passport) => {
                   pool.query(
                     `INSERT INTO ascent (asc_event, asc_memb, asc_route, asc_date, asc_typ, asc_kolu, asc_ruk, asc_times, asc_timesf)
                         SELECT ${eventId}, ${memberId}, ${route}, '${start}', '${role}', ${memberCount}, 
-                        '${ascent_head_fio}', ${start ? "'" + start + "'" : null}, ${finish ? "'" + finish + "'" : null} 
+                        '${ascent_head_fio}', ${ascent_start ? "'" + ascent_start + "'" : null}, ${ascent_finish ? "'" + ascent_finish + "'" : null} 
                         WHERE NOT EXISTS (
                           SELECT 1 FROM ascent WHERE asc_memb = ${memberId} AND asc_route = ${route} AND asc_date='${start}'
                     );`,
@@ -352,10 +352,28 @@ const eventDepartmentPlanRouter = (app, passport) => {
                 });
                 queries.push(query);
               });
+              if (!!prev_accepted_route && prev_accepted_route !== route) {
+                const acceptedMemberString = acceptedMember.join(', ')
+                const query = new Promise((resolve, reject) => {
+                  pool.query(
+                    `DELETE FROM ascent WHERE asc_route=${prev_accepted_route} AND asc_event=${eventId} AND asc_date=${start} 
+                    AND asc_memb IN (${acceptedMemberString});`,
+                    (error, result) => {
+                      if (error) {
+                        reject(error);
+                      } else {
+                        resolve(result);
+                      }
+                    }
+                  );
+                });
+                queries.push(query);
+              }
               Promise.all(queries)
                 .then(() => {
+                  const ascentResult = acceptedMember.length === 0 ? 'Не зачтено' : 'Зачтено'
                   pool.query(
-                    `UPDATE depart_plan dp SET accepted='Зачтено',updated_date=CURRENT_TIMESTAMP WHERE dp.id='${id}'`,
+                    `UPDATE depart_plan dp SET accepted='${ascentResult}', prev_accepted_route = ${route},updated_date=CURRENT_TIMESTAMP WHERE dp.id='${id}'`,
                     (error, result) => {
                       if (error) {
                         res

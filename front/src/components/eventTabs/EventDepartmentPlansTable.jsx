@@ -39,7 +39,7 @@ export const EventDepartmentPlansTable = ({
     departmentEndDate,
     progp: '',
     prog_tem: '',
-    place: ''
+    place: '',
   }
 
   const [open, setOpen] = React.useState(false)
@@ -144,13 +144,14 @@ export const EventDepartmentPlansTable = ({
     }
     const itemDate = new Date(params.row.start)
     const isFutureDate = new Date() < itemDate
+    const isPrevAcceptedRouteEqualsRoute = params.row.route === params.row.prev_accepted_route || !params.row.prev_accepted_route
     return (
       <Button
         size='small'
         variant='contained'
         onClick={handleClickOpen(params.row.start, params.row.id)}
         ref={buttonElement}
-        disabled={!!params.row.accepted || isFutureDate}
+        disabled={(!!params.row.accepted && isPrevAcceptedRouteEqualsRoute) || isFutureDate}
       >
         Результат
       </Button>
@@ -225,6 +226,11 @@ export const EventDepartmentPlansTable = ({
       headerName: '',
       width: 125,
       renderCell: renderAcceptButtonCell,
+    },
+    {
+      field: 'accepted',
+      headerName: 'Зачтено',
+      width: 125,
     },
     ...plansTableHiddenColumns,
   ]

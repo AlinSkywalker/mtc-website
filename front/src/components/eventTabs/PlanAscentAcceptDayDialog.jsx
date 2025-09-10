@@ -14,6 +14,7 @@ import React, { useEffect } from 'react'
 import apiClient from '../../api/api'
 import { useFetchEventDepartmentMemberList } from '../../queries/event'
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
+import { format } from 'date-fns'
 
 export const PlanAscentAcceptDayDialog = ({
   eventId,
@@ -56,7 +57,13 @@ export const PlanAscentAcceptDayDialog = ({
         acceptedMember.push(id)
       }
     })
-    const postData = { acceptedMember, start, finish }
+    //  event_start: format(data.event_start, 'yyyy-MM-dd'),
+    //         event_finish: format(data.event_finish, 'yyyy-MM-dd'),
+    const postData = {
+      acceptedMember,
+      start: format(start, 'yyyy-MM-dd HH:mm:ss'),
+      finish: format(finish, 'yyyy-MM-dd HH:mm:ss'),
+    }
     apiClient
       .post(
         `/api/eventList/${eventId}/department/${departmentId}/plan/${selectedPlan}/accept`,

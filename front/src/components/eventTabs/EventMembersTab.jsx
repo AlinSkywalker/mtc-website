@@ -8,7 +8,7 @@ import { dateColumnType } from '../dataGridCell/GridEditDateCell'
 import { useFetchMemberList } from '../../queries/member'
 import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
 import { checkboxColumnType } from '../dataGridCell/GridEditCheckboxCell'
-import { Link } from '@mui/material'
+import { Button, Link } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { GridEditInputCell } from '@mui/x-data-grid'
 import ErrorIcon from '@mui/icons-material/Error'
@@ -57,8 +57,8 @@ export const EventMembersTab = ({ eventId, readOnly }) => {
     for (let key in postedData) {
       formData.append(key, postedData[key])
     }
-    formData.append('med_file', data.med_file?.[0])
-    formData.append('strah_file', data.strah_file?.[0])
+    // formData.append('med_file', data.med_file?.[0])
+    // formData.append('strah_file', data.strah_file?.[0])
     return apiClient.put(`/api/eventList/${eventId}/member`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     })
@@ -163,14 +163,21 @@ export const EventMembersTab = ({ eventId, readOnly }) => {
       ...checkboxColumnType,
     },
     {
-      field: 'med_file_name',
-      headerName: 'Справка',
+      field: 'eventmemb_nmed',
+      headerName: 'Страховка',
       width: 100,
       editable: !readOnly,
-      downloadApiPath: `/api/eventList/${eventId}/files`,
-      fileCol: 'med_file',
-      ...fileColumnType,
+      ...checkboxColumnType,
     },
+    // {
+    //   field: 'med_file_name',
+    //   headerName: 'Справка',
+    //   width: 100,
+    //   editable: !readOnly,
+    //   downloadApiPath: `/api/eventList/${eventId}/files`,
+    //   fileCol: 'med_file',
+    //   ...fileColumnType,
+    // },
     {
       field: 'eventmemb_role',
       headerName: 'Роль',
@@ -247,6 +254,7 @@ export const EventMembersTab = ({ eventId, readOnly }) => {
       eventmemb_gen: false,
       eventmemb_pred: false,
       eventmemb_nstrah: false,
+      eventmemb_nmed: false,
       med_file_name: false,
       alerts: false,
     }
@@ -270,6 +278,7 @@ export const EventMembersTab = ({ eventId, readOnly }) => {
   }
 
   if (!eventId) return null
+
   return (
     <EditableTable
       rows={rows}

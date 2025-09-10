@@ -26,7 +26,7 @@ const validationSchema = Yup.object({
   asc_typ: Yup.string().required('Поле обязательно для заполнения'),
 })
 
-export const MemberAscentTab = ({ memberId }) => {
+export const MemberAscentTab = ({ memberId, readOnly }) => {
   const queryClient = useQueryClient()
   const { isLoading, data } = useFetchMemberAscentList(memberId)
 
@@ -80,7 +80,7 @@ export const MemberAscentTab = ({ memberId }) => {
       field: 'mount_name',
       headerName: 'Вершина',
       width: 250,
-      editable: true,
+      editable: !readOnly,
       renderEditCell: (props) => (
         <GridEditInputCell {...props} disabled className={'roTableInput'} />
       ),
@@ -90,13 +90,13 @@ export const MemberAscentTab = ({ memberId }) => {
       headerName: 'Маршрут',
       width: 180,
       renderEditCell: renderSelectEditCell,
-      editable: true,
+      editable: !readOnly,
     },
     {
       field: 'rout_comp',
       headerName: 'К/с',
       width: 80,
-      editable: true,
+      editable: !readOnly,
       renderEditCell: (props) => (
         <GridEditInputCell {...props} disabled className={'roTableInput'} />
       ),
@@ -106,14 +106,14 @@ export const MemberAscentTab = ({ memberId }) => {
       ...dateColumnType,
       headerName: 'Дата восх.',
       width: 120,
-      editable: true,
+      editable: !readOnly,
     },
 
     {
       field: 'asc_typ',
       headerName: 'Роль',
       width: 150,
-      editable: true,
+      editable: !readOnly,
       type: 'singleSelect',
       valueOptions: ['Участник', 'Инструктор', 'Руководитель'],
     },
@@ -121,13 +121,13 @@ export const MemberAscentTab = ({ memberId }) => {
       field: 'asc_ruk',
       headerName: 'Руководитель',
       width: 200,
-      editable: true,
+      editable: !readOnly,
     },
     {
       field: 'asc_kolu',
       headerName: 'Участников',
       width: 100,
-      editable: true,
+      editable: !readOnly,
       type: 'number',
     },
     {
@@ -135,21 +135,21 @@ export const MemberAscentTab = ({ memberId }) => {
       ...dateTimeColumnType,
       headerName: 'Старт',
       width: 150,
-      editable: true,
+      editable: !readOnly,
     },
     {
       field: 'asc_timesf',
       ...dateTimeColumnType,
       headerName: 'На вершине',
       width: 150,
-      editable: true,
+      editable: !readOnly,
     },
     {
       field: 'event_name',
       headerName: 'Мероприятие',
       width: 150,
       renderEditCell: renderEventSelectEditCell,
-      editable: true,
+      editable: !readOnly,
     },
 
     { field: 'asc_event', headerName: 'asc_event', width: 0, editable: true },
@@ -197,6 +197,7 @@ export const MemberAscentTab = ({ memberId }) => {
       isCellEditable={(params) =>
         params.field !== 'fio' || (params.row.isNew && params.field == 'fio')
       }
+      readOnly={readOnly}
     />
   )
 }
