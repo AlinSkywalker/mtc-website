@@ -14,6 +14,7 @@ import { CircularProgress, Typography } from '@mui/material'
 
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 const defaultValues = {
   id: 0,
@@ -62,7 +63,7 @@ const validationSchema = Yup.object({
 })
 
 export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
-
+  const isMobile = useIsMobile()
   const {
     handleSubmit,
     formState: { errors, dirtyFields },
@@ -115,7 +116,7 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
           flexDirection='row'
           spacing={2}
         >
-          <Grid size={4}>
+          <Grid size={isMobile ? 12 : 4}>
             <Controller
               name='event_name'
               control={control}
@@ -132,16 +133,22 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
               )}
             />
           </Grid>
-          <Grid size={4}>
+          <Grid size={isMobile ? 12 : 4}>
             <Controller
               name='event_desc'
               control={control}
               render={({ field }) => (
-                <TextField {...field} variant='outlined' label='Описание' fullWidth disabled={readOnly} />
+                <TextField
+                  {...field}
+                  variant='outlined'
+                  label='Описание'
+                  fullWidth
+                  disabled={readOnly}
+                />
               )}
             />
           </Grid>
-          <Grid size={2}>
+          <Grid size={isMobile ? 12 : 2}>
             <Controller
               name='event_start'
               control={control}
@@ -161,7 +168,7 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
               )}
             />
           </Grid>
-          <Grid size={2}>
+          <Grid size={isMobile ? 12 : 2}>
             <Controller
               name='event_finish'
               control={control}
@@ -181,7 +188,7 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
               )}
             />
           </Grid>
-          <Grid size={3}>
+          <Grid size={isMobile ? 12 : 3}>
             <Controller
               name='ob'
               control={control}
@@ -197,7 +204,7 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
               )}
             />
           </Grid>
-          <Grid size={3}>
+          <Grid size={isMobile ? 12 : 3}>
             <Controller
               name='st'
               control={control}
@@ -213,7 +220,7 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
               )}
             />
           </Grid>
-          <Grid size={3}>
+          <Grid size={isMobile ? 12 : 3}>
             <Controller
               name='raion_name'
               control={control}
@@ -228,7 +235,7 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
               )}
             />
           </Grid>
-          <Grid size={2}>
+          <Grid size={isMobile ? 12 : 2}>
             <Controller
               name='price'
               control={control}

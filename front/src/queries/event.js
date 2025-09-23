@@ -128,7 +128,15 @@ export function useFetchEventMemberList(eventId) {
     },
   })
 }
-
+export function useFetchEventInstructorsList(eventId) {
+  return useQuery({
+    queryKey: ['event', eventId, 'instructors'],
+    queryFn: async () => {
+      const { data } = await apiClient.get(`/api/eventList/${eventId}/instructors`)
+      return data
+    },
+  })
+}
 export function useFetchEventMemberListForDepartment({ eventId, departmentId, selectedDate }) {
   let fetchUrl = `/api/eventList/${eventId}/memberForDepartment/${departmentId}`
   if (selectedDate) {
@@ -360,4 +368,3 @@ export function useFetchEventInstructionLog(eventId) {
     },
   })
 }
-

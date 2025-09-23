@@ -171,14 +171,7 @@ const memberListRouter = (app, passport) => {
           pool.query(
             `INSERT INTO membalp ( id, alpzeton,date_zeton,alpinstrnom,skali,ledu) 
             VALUES(?,?,?,?,?,?)`,
-            [
-              memberId,
-              alpzeton,
-              date_zeton,
-              alpinstrnom,
-              skali,
-              ledu,
-            ],
+            [memberId, alpzeton, date_zeton, alpinstrnom, skali, ledu],
             (error, result) => {
               if (error) {
                 console.log(error);
@@ -253,13 +246,7 @@ const memberListRouter = (app, passport) => {
         skali=?,
         ledu=?,
         updated_date=CURRENT_TIMESTAMP WHERE id=${id}`,
-            [
-              alpzeton,
-              date_zeton,
-              alpinstrnom,
-              skali,
-              ledu,
-            ],
+            [alpzeton, date_zeton, alpinstrnom, skali, ledu],
             (error, result) => {
               if (error) {
                 console.log(error);
@@ -299,7 +286,8 @@ const memberListRouter = (app, passport) => {
         `SELECT e.*
           FROM eventmemb em
                   LEFT JOIN eventalp e ON e.id=em.eventmemb_even
-                  WHERE em.eventmemb_memb=${id}`,
+                  WHERE em.eventmemb_memb=${id}
+                  ORDER BY e.event_start DESC`,
         (error, result) => {
           if (error) {
             console.log(error);

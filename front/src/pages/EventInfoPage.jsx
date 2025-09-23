@@ -19,8 +19,13 @@ import { EventProtocolTab } from '../components/eventTabs/EventProtocolTab'
 import { EventBaseTable } from '../components/EventBaseTable'
 import { EventInfoForm } from '../components/EventInfoForm'
 import EditIcon from '@mui/icons-material/Edit'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { EventManagementStuffTab } from '../components/eventTabs/EventManagementStuffTab'
 import { EventInstructionLogTab } from '../components/eventTabs/EventInstructionLogTab'
+import { useIsMobile } from '../hooks/useIsMobile'
+import { EventDistrictInfoTab } from '../components/eventTabs/EventDistrictInfoTab'
+import { EventInfoFormRO } from '../components/EventInfoFormRO'
+import { MobileEventMembersTab } from '../components/eventTabs/MobileEventMembersTab'
 
 export const EventInfoPage = ({ readOnly = false }) => {
   const [isDisplayForm, setIsDisplayForm] = useState(false)
@@ -29,6 +34,7 @@ export const EventInfoPage = ({ readOnly = false }) => {
   const { id: currentId } = params
 
   const location = useLocation()
+  const isMobile = useIsMobile()
 
   const { isLoading, data } = useFetchEvent(currentId)
 
@@ -38,7 +44,11 @@ export const EventInfoPage = ({ readOnly = false }) => {
       name: 'members',
       path: `/`,
       label: 'Участники',
-      component: <EventMembersTab eventId={currentId} readOnly={readOnly} />,
+      component: isMobile ? (
+        <MobileEventMembersTab eventId={currentId} readOnly={false} />
+      ) : (
+        <EventMembersTab eventId={currentId} readOnly={false} />
+      ),
     },
     {
       name: 'department',
@@ -94,7 +104,11 @@ export const EventInfoPage = ({ readOnly = false }) => {
       name: 'members',
       path: `/`,
       label: 'Участники',
-      component: <EventMembersTab eventId={currentId} readOnly={true} />,
+      component: isMobile ? (
+        <MobileEventMembersTab eventId={currentId} readOnly={true} />
+      ) : (
+        <EventMembersTab eventId={currentId} readOnly={true} />
+      ),
     },
     {
       name: 'department',
@@ -107,6 +121,12 @@ export const EventInfoPage = ({ readOnly = false }) => {
       path: `/protocol`,
       label: 'Протокол',
       component: <EventProtocolTab />,
+    },
+    {
+      name: 'district',
+      path: `/district`,
+      label: 'Район',
+      component: <EventDistrictInfoTab />,
     },
   ]
   const tabs = readOnly ? roEventTabs : eventTabs
@@ -130,7 +150,6 @@ export const EventInfoPage = ({ readOnly = false }) => {
     setIsDisplayForm(!isDisplayForm)
   }
 
-
   return (
     <Container
       maxWidth={false}
@@ -143,20 +162,26 @@ export const EventInfoPage = ({ readOnly = false }) => {
           </Typography>
           <Tooltip title={readOnly ? 'Просмотреть' : 'Редактировать'}>
             <IconButton onClick={handleEditClick} sx={{ alignSelf: 'center' }}>
-              <EditIcon />
+              {readOnly ? <ExpandMoreIcon /> : <EditIcon />}
             </IconButton>
           </Tooltip>
         </Grid>
         {isDisplayForm && (
           <Grid container spacing={2}>
-            <Grid size={10}>
+            <Grid size={isMobile ? 12 : 10}>
               <Card sx={{ minWidth: 275 }}>
-                <EventInfoForm eventData={data} isLoading={isLoading} readOnly={readOnly} />
+                {readOnly ? (
+                  <EventInfoFormRO eventData={data} isLoading={isLoading} readOnly={readOnly} />
+                ) : (
+                  <EventInfoForm eventData={data} isLoading={isLoading} readOnly={readOnly} />
+                )}
               </Card>
             </Grid>
-            <Grid size={2}>
-              <EventBaseTable eventId={currentId} readOnly={readOnly} />
-            </Grid>
+            {!readOnly && (
+              <Grid size={isMobile ? 12 : 2}>
+                <EventBaseTable eventId={currentId} readOnly={readOnly} />
+              </Grid>
+            )}
           </Grid>
         )}
       </Card>
@@ -166,6 +191,7 @@ export const EventInfoPage = ({ readOnly = false }) => {
           value={currentTab !== -1 ? currentTab : false}
           variant='scrollable'
           scrollButtons='auto'
+          allowScrollButtonsMobile
         >
           {tabs.map((tab, index) => (
             <Tab key={index} label={tab.label} component={Link} to={`${basePath}${tab.path}`} />

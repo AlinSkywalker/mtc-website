@@ -8,7 +8,7 @@ export function AsynchronousAutocomplete({
   field,
   errors,
   secondarySourceArray,
-  disabled,
+  disabled = false,
 }) {
   const [open, setOpen] = React.useState(false)
   const [options, setOptions] = React.useState([])
@@ -18,13 +18,13 @@ export function AsynchronousAutocomplete({
 
   const handleOpen = () => {
     setOpen(true)
-      ; (async () => {
-        setLoading(true)
-        const { data } = await request()
-        setLoading(false)
+    ;(async () => {
+      setLoading(true)
+      const { data } = await request()
+      setLoading(false)
 
-        setOptions(data)
-      })()
+      setOptions(data)
+    })()
   }
 
   const handleClose = () => {

@@ -204,17 +204,19 @@ export const EditableTable = ({
       return actions
     }
   }
-  const tableColumns = [
-    {
-      field: 'actions',
-      type: 'actions',
-      headerName: '',
-      width: 70,
-      cellClassName: 'actions',
-      getActions: ({ id }) => getActions(id),
-    },
-    ...columns,
-  ]
+  const defaultColumns = readOnly
+    ? []
+    : [
+        {
+          field: 'actions',
+          type: 'actions',
+          headerName: '',
+          width: 70,
+          cellClassName: 'actions',
+          getActions: ({ id }) => getActions(id),
+        },
+      ]
+  const tableColumns = [...defaultColumns, ...columns]
   const tableHeight = height ? height : `calc(100vh - 150px)`
   const disabled = addButtonDisabled
   return (

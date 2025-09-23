@@ -39,7 +39,7 @@ module.exports = {
     proxy: [
       {
         context: ['/api'],
-        target: 'http://localhost:3000',
+        target: 'http://0.0.0.0:3000',
         pathRewrite: { '^/api': '' },
       },
     ],

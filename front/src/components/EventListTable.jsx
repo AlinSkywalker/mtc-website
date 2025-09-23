@@ -45,7 +45,7 @@ export const EventListTable = ({ readOnly = false }) => {
 
   const handleClickName = (id) => () => {
     if (readOnly) navigate(`/event/${id}/`)
-    else navigate(`/admin/event/${id}`)
+    else navigate(`/admin/event/${id}/`)
   }
   const [rows, setRows] = React.useState(data)
   const [rowModesModel, setRowModesModel] = React.useState({})
@@ -181,7 +181,13 @@ export const EventListTable = ({ readOnly = false }) => {
       editable: !readOnly,
     },
 
-    { field: 'price', headerName: 'Цена мероприятия', width: 150, editable: !readOnly, type: 'number' },
+    {
+      field: 'price',
+      headerName: 'Цена мероприятия',
+      width: 150,
+      editable: !readOnly,
+      type: 'number',
+    },
     { field: 'event_raion', headerName: 'event_raion', width: 0, editable: !readOnly },
     { field: 'event_st', headerName: 'event_st', width: 0, editable: !readOnly },
     { field: 'event_ob', headerName: 'event_ob', width: 0, editable: !readOnly },

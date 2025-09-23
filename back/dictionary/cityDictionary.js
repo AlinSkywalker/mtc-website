@@ -29,7 +29,8 @@ const dictionaryRouter = (app, passport) => {
     "/cityDictionary/",
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
-      const { name_city, desc_city, pred_city, tel_city, email } = req.body;
+      const { name_city, desc_city, pred_city, tel_city, email, city_sub } =
+        req.body;
       pool.query(
         `INSERT INTO city ( name_city, desc_city, pred_city, tel_city, email, city_sub) VALUES(?,?,?,?,?,?)`,
         [name_city, desc_city, pred_city, tel_city, email, city_sub || null],
@@ -49,7 +50,8 @@ const dictionaryRouter = (app, passport) => {
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
       const id = req.params.id;
-      const { name_city, desc_city, pred_city, tel_city, email, city_sub } = req.body;
+      const { name_city, desc_city, pred_city, tel_city, email, city_sub } =
+        req.body;
       pool.query(
         `UPDATE city SET 
       name_city='${name_city}',
@@ -140,6 +142,6 @@ const dictionaryRouter = (app, passport) => {
       );
     }
   );
-}
+};
 // Export the router
 module.exports = dictionaryRouter;

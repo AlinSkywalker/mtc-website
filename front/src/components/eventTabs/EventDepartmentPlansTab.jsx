@@ -8,7 +8,13 @@ import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import { format, parseISO } from 'date-fns'
 
-export const EventDepartmentPlansTab = ({ eventId, eventDistrict, eventStart, eventFinish, readOnly }) => {
+export const EventDepartmentPlansTab = ({
+  eventId,
+  eventDistrict,
+  eventStart,
+  eventFinish,
+  readOnly,
+}) => {
   const [selectedDepartment, setSelectedDepartment] = useState('all')
 
   const { isLoading, data } = useFetchEventDepartmentList(eventId)
@@ -26,21 +32,24 @@ export const EventDepartmentPlansTab = ({ eventId, eventDistrict, eventStart, ev
   // if (!selectedDepartment)
   return (
     <Grid container spacing={1}>
-      <ToggleButtonGroup
-        value={selectedDepartment}
-        exclusive
-        onChange={handleSelectDepartment}
-        aria-label='text alignment'
-      >
-        <ToggleButton value={'all'} aria-label='left aligned' key={0}>
-          {`ВСЕ ОТДЕЛЕНИЯ`}
-        </ToggleButton>
-        {!readOnly && data.map((item) => (
-          <ToggleButton value={item.id} aria-label='left aligned' key={item.id}>
-            {`${item.depart_tip} ${item.depart_name} (${format(parseISO(item.depart_dates), 'dd.MM')} - ${format(parseISO(item.depart_datef), 'dd.MM')})`}
+      {!readOnly && (
+        <ToggleButtonGroup
+          value={selectedDepartment}
+          exclusive
+          onChange={handleSelectDepartment}
+          aria-label='text alignment'
+        >
+          <ToggleButton value={'all'} aria-label='left aligned' key={0}>
+            {`ВСЕ ОТДЕЛЕНИЯ`}
           </ToggleButton>
-        ))}
-      </ToggleButtonGroup>
+          {!readOnly &&
+            data.map((item) => (
+              <ToggleButton value={item.id} aria-label='left aligned' key={item.id}>
+                {`${item.depart_tip} ${item.depart_name} (${format(parseISO(item.depart_dates), 'dd.MM')} - ${format(parseISO(item.depart_datef), 'dd.MM')})`}
+              </ToggleButton>
+            ))}
+        </ToggleButtonGroup>
+      )}
       {selectedDepartment && selectedDepartment !== 'all' && (
         <Grid size={12}>
           <EventDepartmentPlansTable

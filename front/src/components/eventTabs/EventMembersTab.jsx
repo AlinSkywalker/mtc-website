@@ -50,18 +50,20 @@ export const EventMembersTab = ({ eventId, readOnly }) => {
   }, [data])
 
   const handleSaveNewItem = (data) => {
-    console.log('data', data)
-    const { id, isNew, med_file, strah_file, ...postedData } = data
-    const formData = new FormData()
+    // console.log('data', data)
+    // const { id, isNew, med_file, strah_file, ...postedData } = data
+    // const formData = new FormData()
 
-    for (let key in postedData) {
-      formData.append(key, postedData[key])
-    }
-    // formData.append('med_file', data.med_file?.[0])
-    // formData.append('strah_file', data.strah_file?.[0])
-    return apiClient.put(`/api/eventList/${eventId}/member`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    })
+    // for (let key in postedData) {
+    //   formData.append(key, postedData[key])
+    // }
+    // // formData.append('med_file', data.med_file?.[0])
+    // // formData.append('strah_file', data.strah_file?.[0])
+    // return apiClient.put(`/api/eventList/${eventId}/member`, formData, {
+    //   headers: { 'Content-Type': 'multipart/form-data' },
+    // })
+    const { id, isNew, ...postedData } = data
+    return apiClient.put(`/api/eventList/${eventId}/member`, postedData)
   }
 
   const handleDeleteItem = (id) => () => {
@@ -227,6 +229,15 @@ export const EventMembersTab = ({ eventId, readOnly }) => {
         <GridEditInputCell {...props} disabled className={'roTableInput'} />
       ),
     },
+    {
+      field: 'ball',
+      headerName: 'Разряд',
+      width: 80,
+      editable: false,
+      renderEditCell: (props) => (
+        <GridEditInputCell {...props} disabled className={'roTableInput'} />
+      ),
+    },
     // { field: 'size_cloth', headerName: 'Размер одежды', width: 150 },
     // { field: 'size_shoe', headerName: 'Размер обуви', width: 150 },
     // { field: 'name_city', headerName: 'Город', width: 150 },
@@ -246,23 +257,23 @@ export const EventMembersTab = ({ eventId, readOnly }) => {
   const fieldToFocus = 'fio'
   const columnVisibilityModel = readOnly
     ? {
-      eventmemb_memb: false,
-      med_file: false,
-      strah_file: false,
-      memb_email: false,
-      tel_1: false,
-      eventmemb_gen: false,
-      eventmemb_pred: false,
-      eventmemb_nstrah: false,
-      eventmemb_nmed: false,
-      med_file_name: false,
-      alerts: false,
-    }
+        eventmemb_memb: false,
+        med_file: false,
+        strah_file: false,
+        memb_email: false,
+        tel_1: false,
+        eventmemb_gen: false,
+        eventmemb_pred: false,
+        eventmemb_nstrah: false,
+        eventmemb_nmed: false,
+        med_file_name: false,
+        alerts: false,
+      }
     : {
-      eventmemb_memb: false,
-      med_file: false,
-      strah_file: false,
-    }
+        eventmemb_memb: false,
+        med_file: false,
+        strah_file: false,
+      }
 
   const processRowUpdate = async (newRow, oldRow) => {
     validationSchema.validateSync(newRow, { abortEarly: false })

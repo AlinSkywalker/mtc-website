@@ -1,0 +1,8 @@
+@media (max-width: 768px) {
+    .pageLink{
+       color: white;
+       text-decoration: none;
+       text-transform: uppercase;
+    }
+}
+

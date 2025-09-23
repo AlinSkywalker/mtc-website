@@ -144,14 +144,19 @@ export const EventDepartmentPlansTable = ({
     }
     const itemDate = new Date(params.row.start)
     const isFutureDate = new Date() < itemDate
-    const isPrevAcceptedRouteEqualsRoute = params.row.route === params.row.prev_accepted_route || !params.row.prev_accepted_route
+    const isPrevAcceptedRouteEqualsRoute =
+      params.row.route === params.row.prev_accepted_route || !params.row.prev_accepted_route
     return (
       <Button
         size='small'
         variant='contained'
         onClick={handleClickOpen(params.row.start, params.row.id)}
         ref={buttonElement}
-        disabled={(!!params.row.accepted && isPrevAcceptedRouteEqualsRoute) || isFutureDate}
+        disabled={
+          (!!params.row.accepted && isPrevAcceptedRouteEqualsRoute) ||
+          isFutureDate ||
+          !params.row.route
+        }
       >
         Результат
       </Button>
