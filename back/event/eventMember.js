@@ -17,7 +17,7 @@ const eventMemberRouter = (app, passport) => {
                 LEFT JOIN member_in_depart m_i_d on m_i_d.membd_memb =e_m.id
                 LEFT JOIN eventalp e on e.id=e_m.eventmemb_even
                 LEFT JOIN member_sport_category m_s_c ON m_s_c.id=
-                (SELECT id FROM member_sport_category t1 WHERE type='Разряд' and t1.member=e_m.eventmemb_memb ORDER BY date_pr DESC LIMIT 1)
+                (SELECT id FROM member_sport_category t1 WHERE type='Разряд' and t1.member=e_m.eventmemb_memb ORDER BY date_completion DESC LIMIT 1)
                 WHERE eventmemb_even='${eventId}'
                 GROUP BY e_m.id, m_s_c.ball 
                 ORDER BY m.fio ASC`,

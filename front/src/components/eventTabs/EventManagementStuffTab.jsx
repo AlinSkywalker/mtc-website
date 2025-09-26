@@ -64,6 +64,16 @@ export const EventManagementStuffTab = () => {
       />
     )
   }
+  const renderDoctorSelectEditCell = (params) => {
+    return (
+      <SelectEditInputCell
+        {...params}
+        dictionaryName='members'
+        nameField='ob'
+        hook={useFetchMemberList}
+      />
+    )
+  }
 
   const columns = [
     {
@@ -87,13 +97,22 @@ export const EventManagementStuffTab = () => {
       renderEditCell: renderOBSelectEditCell,
       editable: true,
     },
+    {
+      field: 'doctor_fio',
+      headerName: 'Врач',
+      width: 300,
+      renderEditCell: renderDoctorSelectEditCell,
+      editable: true,
+    },
     { field: 'st', headerName: 'st', width: 0, editable: true },
     { field: 'ob', headerName: 'ob', width: 0, editable: true },
+    { field: 'doctor', headerName: 'doctor', width: 0, editable: true },
   ]
   const fieldToFocus = 'cont_fio'
   const columnVisibilityModel = {
     st: false,
     ob: false,
+    doctor: false,
   }
 
   const processRowUpdate = async (newRow) => {

@@ -43,12 +43,16 @@ export const EventInfoFormRO = ({ eventData: data, isLoading }) => {
         </Grid>
         {!isMobile && <Grid size={4}></Grid>}
         <Grid size={isMobile ? 12 : 4}>
+          <Typography sx={{ fontWeight: 'bold' }}>СТ</Typography>
+          <Typography>{data.st.fio}</Typography>
+        </Grid>
+        <Grid size={isMobile ? 12 : 4}>
           <Typography sx={{ fontWeight: 'bold' }}>ОБ</Typography>
           <Typography>{data.ob.fio}</Typography>
         </Grid>
         <Grid size={isMobile ? 12 : 4}>
-          <Typography sx={{ fontWeight: 'bold' }}>СТ</Typography>
-          <Typography>{data.st.fio}</Typography>
+          <Typography sx={{ fontWeight: 'bold' }}>Врач</Typography>
+          <Typography>{data.doctor.fio}</Typography>
         </Grid>
         {!isMobile && <Grid size={4}></Grid>}
         <Grid size={isMobile ? 12 : 4}>
@@ -56,7 +60,7 @@ export const EventInfoFormRO = ({ eventData: data, isLoading }) => {
           <Typography>{data.raion_name}</Typography>
         </Grid>
         <Grid size={isMobile ? 12 : 2}>
-          <Typography sx={{ fontWeight: 'bold' }}>Цена мероприятия</Typography>
+          <Typography sx={{ fontWeight: 'bold' }}>Инструкторский сбор</Typography>
           <Typography>{price}</Typography>
         </Grid>
         <Grid size={12}>

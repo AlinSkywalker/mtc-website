@@ -6,7 +6,8 @@ const memberAscentRouter = (app, passport) => {
 
   app.get('/memberList/:memberId/ascent', passport.authenticate('jwt', { session: false }), (req, res) => {
     const id = req.params.memberId;
-    pool.query(`SELECT a.*, r.rout_name, r.rout_mount, r.rout_comp, m.mount_name,e.event_name, m.mount_rai, rai.rai_name, rai.rai_reg, reg.region_name FROM ascent a
+    pool.query(`SELECT a.*, r.rout_name, r.rout_mount, r.rout_comp, m.mount_name,e.event_name, m.mount_rai, rai.rai_name, rai.rai_reg, reg.region_name 
+                  FROM ascent a
                   LEFT JOIN route r on r.id=a.asc_route
                   LEFT JOIN mount m on m.id=r.rout_mount
                   LEFT JOIN raion rai ON m.mount_rai=rai.id

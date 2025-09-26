@@ -56,19 +56,21 @@ const eventListRouter = (app, passport) => {
         event_finish,
         event_st,
         event_ob,
+        event_doctor,
         event_desc,
         event_organizer,
         raion_id_list,
       } = req.body;
       pool.query(
-        `INSERT INTO eventalp (event_name, event_start,event_finish, event_st, event_ob,event_organizer,event_desc) 
+        `INSERT INTO eventalp (event_name, event_start,event_finish, event_st, event_ob,event_organizer,event_desc,event_doctor) 
                   VALUES('${event_name}',
                   CONVERT('${event_start}',DATETIME),
                   CONVERT('${event_finish}',DATETIME),
                   ${event_st},
                   ${event_ob},
                   ${event_organizer || null},
-                  '${event_desc}')`,
+                  '${event_desc}',
+                  ${event_doctor || null})`,
         (error, result) => {
           if (error) {
             console.log(error);
@@ -91,10 +93,13 @@ const eventListRouter = (app, passport) => {
               const eventDateFinish = new Date(event_finish);
               const dates = getDatesInRange(eventDateStart, eventDateFinish);
               const insertValueString = dates
-                .map((item) => `(${eventId},${event_st},${event_ob}, '${item}')`)
+                .map(
+                  (item) =>
+                    `(${eventId},${event_st},${event_ob}, ${event_doctor}, '${item}')`
+                )
                 .join(", ");
               pool.query(
-                `INSERT INTO event_management_staff ( event, st, ob, date) 
+                `INSERT INTO event_management_staff ( event, st, ob,doctor, date) 
               VALUES ${insertValueString}`,
                 (error, result) => {
                   if (error) {
@@ -105,7 +110,6 @@ const eventListRouter = (app, passport) => {
                   res.json({ success: true });
                 }
               );
-
             }
           );
         }
@@ -119,10 +123,11 @@ const eventListRouter = (app, passport) => {
     (req, res) => {
       const id = req.params.id;
       pool.query(
-        `SELECT e.*, m_ob.fio as ob_fio, m_st.fio as st_fio, e_r.raion_names, e_r.raion_ids, m_organizer.fio as organizer_fio
+        `SELECT e.*, m_ob.fio as ob_fio, m_st.fio as st_fio, e_r.raion_names, e_r.raion_ids, m_organizer.fio as organizer_fio, m_d.fio as doctor_fio
         FROM eventalp e 
       LEFT JOIN member m_ob on e.event_ob = m_ob.id
       LEFT JOIN member m_st on e.event_st = m_st.id
+      LEFT JOIN member m_d on e.event_doctor = m_d.id
       LEFT JOIN member m_organizer on e.event_organizer = m_organizer.id
       LEFT JOIN (
         SELECT
@@ -179,6 +184,7 @@ const eventListRouter = (app, passport) => {
         event_finish,
         event_st,
         event_ob,
+        event_doctor,
         event_organizer,
         event_desc,
         price,
@@ -195,6 +201,7 @@ const eventListRouter = (app, passport) => {
         event_finish=?,
         event_st=${event_st},
         event_ob=${event_ob},
+        event_doctor=${event_doctor || null},
         event_organizer=${event_organizer || null},
         event_desc=?,
         price=?,
@@ -225,8 +232,13 @@ const eventListRouter = (app, passport) => {
                   if (isDatesChanged) {
                     const eventDateStart = new Date(event_start);
                     const eventDateFinish = new Date(event_finish);
-                    const dates = getDatesInRange(eventDateStart, eventDateFinish);
-                    const queryString = dates.map(item => (`ROW ('${item}')`)).join(',')
+                    const dates = getDatesInRange(
+                      eventDateStart,
+                      eventDateFinish
+                    );
+                    const queryString = dates
+                      .map((item) => `ROW ('${item}')`)
+                      .join(",");
                     pool.query(
                       `DELETE FROM event_management_staff
                           WHERE event = ${id} AND date IN (SELECT * FROM (SELECT e_m_s_2.date FROM event_management_staff e_m_s_2
@@ -238,10 +250,14 @@ const eventListRouter = (app, passport) => {
                       (error, result) => {
                         if (error) {
                           console.log(error);
-                          res.status(500).json({ success: false, message: error });
+                          res
+                            .status(500)
+                            .json({ success: false, message: error });
                           return;
                         }
-                        const queryString = dates.map(item => (`ROW (${id},'${item}')`)).join(',')
+                        const queryString = dates
+                          .map((item) => `ROW (${id},'${item}')`)
+                          .join(",");
                         pool.query(
                           `INSERT INTO event_management_staff (event, date) 
                             SELECT new_dates.event, item FROM 
@@ -254,17 +270,19 @@ const eventListRouter = (app, passport) => {
                           (error, result) => {
                             if (error) {
                               console.log(error);
-                              res.status(500).json({ success: false, message: error });
+                              res
+                                .status(500)
+                                .json({ success: false, message: error });
                               return;
                             }
                             res.json({ success: true });
-                          })
-                      })
-                  }
-                  else {
+                          }
+                        );
+                      }
+                    );
+                  } else {
                     res.json({ success: true });
                   }
-
                 }
               );
             }

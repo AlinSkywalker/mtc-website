@@ -12,7 +12,7 @@ const memberSportCategoryRouter = (app, passport) => {
         `SELECT *   
                   FROM member_sport_category m 
                   WHERE m.member = ${memberId}
-                  ORDER BY m.date_pr DESC`,
+                  ORDER BY m.date_completion DESC`,
         (error, result) => {
           if (error) {
             console.log(error);
@@ -25,25 +25,24 @@ const memberSportCategoryRouter = (app, passport) => {
     }
   );
 
-
   app.put(
     "/memberList/:memberId/sportCategory",
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
       const { memberId } = req.params;
-      const {
-        type,
-        ball,
-        date_pr,
-      } = req.body;
+      const { type, ball, date_pr, date_completion, nomer_prik, gde_pris } =
+        req.body;
       pool.query(
-        `INSERT INTO member_sport_category ( member,type,ball,date_pr) 
-            VALUES(?,?,?,?)`,
+        `INSERT INTO member_sport_category ( member,type,ball,date_pr, date_completion,nomer_prik,gde_pris) 
+            VALUES(?,?,?,?,?,?,?)`,
         [
           memberId,
           type,
           ball,
-          date_pr || null
+          date_pr || null,
+          date_completion || null,
+          nomer_prik,
+          gde_pris,
         ],
         (error, result) => {
           if (error) {
@@ -61,21 +60,25 @@ const memberSportCategoryRouter = (app, passport) => {
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
       const id = req.params.id;
-      const {
-        type,
-        ball,
-        date_pr,
-      } = req.body;
+      const { type, ball, date_pr, date_completion, nomer_prik, gde_pris } =
+        req.body;
+      console.log("date_completion", date_completion);
       pool.query(
         `UPDATE member_sport_category SET 
       type=?,
       ball=?,
       date_pr=?,
+      date_completion=?,
+      nomer_prik=?,
+      gde_pris=?,
       updated_date=CURRENT_TIMESTAMP WHERE id=${id}`,
         [
           type,
           ball,
-          date_pr || null
+          date_pr || null,
+          date_completion || null,
+          nomer_prik,
+          gde_pris,
         ],
         (error, result) => {
           if (error) {
@@ -94,14 +97,17 @@ const memberSportCategoryRouter = (app, passport) => {
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
       const id = req.params.id;
-      pool.query(`DELETE FROM member_sport_category WHERE id=${id}`, (error, result) => {
-        if (error) {
-          console.log(error);
-          res.status(500).json({ success: false, message: error });
-          return;
+      pool.query(
+        `DELETE FROM member_sport_category WHERE id=${id}`,
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return;
+          }
+          res.send(result);
         }
-        res.send(result);
-      });
+      );
     }
   );
 };

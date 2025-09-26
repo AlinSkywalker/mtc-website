@@ -183,7 +183,7 @@ export const EventListTable = ({ readOnly = false }) => {
 
     {
       field: 'price',
-      headerName: 'Цена мероприятия',
+      headerName: 'Инструкторский сбор',
       width: 150,
       editable: !readOnly,
       type: 'number',

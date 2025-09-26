@@ -18,6 +18,7 @@ import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 const defaultValues = {
   fio: '',
@@ -100,6 +101,7 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
       </Container>
     )
   }
+  const isMobile = useIsMobile()
 
   return (
     <Card sx={{ minWidth: 275 }}>
@@ -113,7 +115,7 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
             spacing={2}
             sx={{ marginBottom: 4 }}
           >
-            <Grid size={4}>
+            <Grid size={isMobile ? 12 : 4}>
               <Controller
                 name='fio'
                 control={control}
@@ -129,7 +131,7 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
                 )}
               />
             </Grid>
-            <Grid size={1}>
+            <Grid size={isMobile ? 12 : 1}>
               <Controller
                 name='gender'
                 control={control}
@@ -147,7 +149,7 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
                 )}
               />
             </Grid>
-            <Grid size={2}>
+            <Grid size={isMobile ? 12 : 2}>
               <Controller
                 name='date_birth'
                 control={control}
@@ -160,7 +162,7 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
                 )}
               />
             </Grid>
-            <Grid size={1}>
+            <Grid size={isMobile ? 12 : 1}>
               <Controller
                 name='size_shoe'
                 control={control}
@@ -178,7 +180,7 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
                 )}
               />
             </Grid>
-            <Grid size={1}>
+            <Grid size={isMobile ? 12 : 1}>
               <Controller
                 name='size_cloth'
                 control={control}
@@ -196,7 +198,7 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
                 )}
               />
             </Grid>
-            <Grid size={2}>
+            <Grid size={isMobile ? 12 : 2}>
               <Controller
                 name='city'
                 control={control}
@@ -212,7 +214,7 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
                 )}
               />
             </Grid>
-            <Grid size={2}>
+            <Grid size={isMobile ? 12 : 2}>
               <Controller
                 name='tel_1'
                 control={control}
@@ -221,7 +223,7 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
                 )}
               />
             </Grid>
-            <Grid size={2}>
+            <Grid size={isMobile ? 12 : 2}>
               <Controller
                 name='tel_2'
                 control={control}
@@ -235,7 +237,7 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
                 )}
               />
             </Grid>
-            <Grid size={2}>
+            <Grid size={isMobile ? 12 : 2}>
               <Controller
                 name='memb_email'
                 control={control}
@@ -260,7 +262,7 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
             spacing={2}
             columns={24}
           >
-            <Grid size={4}>
+            <Grid size={isMobile ? 24 : 4}>
               <Controller
                 name='alpzeton'
                 control={control}
@@ -269,7 +271,7 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
                 )}
               />
             </Grid>
-            <Grid size={3}>
+            <Grid size={isMobile ? 24 : 3}>
               <Controller
                 name='date_zeton'
                 control={control}
@@ -282,7 +284,7 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
                 )}
               />
             </Grid>
-            <Grid size={4}>
+            <Grid size={isMobile ? 24 : 4}>
               <Controller
                 name='alpinstrnom'
                 control={control}
@@ -291,7 +293,7 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
                 )}
               />
             </Grid>
-            <Grid size={2}>
+            <Grid size={isMobile ? 24 : 2}>
               <Controller
                 name='skali'
                 control={control}
@@ -323,7 +325,7 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
                 )}
               />
             </Grid>
-            <Grid size={2}>
+            <Grid size={isMobile ? 24 : 2}>
               <Controller
                 name='ledu'
                 control={control}

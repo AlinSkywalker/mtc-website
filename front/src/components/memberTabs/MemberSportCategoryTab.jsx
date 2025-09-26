@@ -10,11 +10,13 @@ const defaultItem = {
   type: '',
   date_pr: '',
   ball: '',
+  date_completion: '',
+  gde_pris: '',
+  nomer_prik: '',
 }
 
 const validationSchema = Yup.object({
   type: Yup.string().required('Поле обязательно для заполнения'),
-  date_pr: Yup.string().required('Поле обязательно для заполнения'),
   ball: Yup.string().required('Поле обязательно для заполнения'),
 })
 
@@ -55,16 +57,35 @@ export const MemberSportCategoryTab = ({ memberId, readOnly }) => {
       valueOptions: ['Разряд', 'Судья', 'Инструктор'],
     },
     {
-      field: 'date_pr',
+      field: 'ball',
+      headerName: 'Разряд/Категория',
+      width: 180,
+      editable: !readOnly,
+    },
+    {
+      field: 'date_completion',
       ...dateColumnType,
-      headerName: 'Дата присвоения',
+      headerName: 'Выполнен',
       width: 120,
       editable: !readOnly,
     },
     {
-      field: 'ball',
-      headerName: 'Разряд/Категория',
-      width: 200,
+      field: 'date_pr',
+      ...dateColumnType,
+      headerName: 'Присвоен',
+      width: 120,
+      editable: !readOnly,
+    },
+    {
+      field: 'nomer_prik',
+      headerName: 'Номер приказа',
+      width: 180,
+      editable: !readOnly,
+    },
+    {
+      field: 'gde_pris',
+      headerName: 'Где присвоили',
+      width: 180,
       editable: !readOnly,
     },
   ]

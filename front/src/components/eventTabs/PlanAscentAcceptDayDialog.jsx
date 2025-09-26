@@ -61,8 +61,8 @@ export const PlanAscentAcceptDayDialog = ({
     //         event_finish: format(data.event_finish, 'yyyy-MM-dd'),
     const postData = {
       acceptedMember,
-      start: format(start, 'yyyy-MM-dd HH:mm:ss'),
-      finish: format(finish, 'yyyy-MM-dd HH:mm:ss'),
+      start: start ? format(start, 'yyyy-MM-dd HH:mm:ss') : null,
+      finish: finish ? format(finish, 'yyyy-MM-dd HH:mm:ss') : null,
     }
     apiClient
       .post(

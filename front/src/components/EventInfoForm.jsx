@@ -95,6 +95,7 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
 
   const fetchOBMembers = () => apiClient.get(`/api/memberList?possibleRole=ob`)
   const fetchSTMembers = () => apiClient.get(`/api/memberList?possibleRole=st`)
+  const fetchDoctorMembers = () => apiClient.get(`/api/memberList`)
 
   if (isLoading) {
     return (
@@ -144,6 +145,8 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
                   label='Описание'
                   fullWidth
                   disabled={readOnly}
+                  multiline
+                  maxRows={4}
                 />
               )}
             />
@@ -190,6 +193,22 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
           </Grid>
           <Grid size={isMobile ? 12 : 3}>
             <Controller
+              name='st'
+              control={control}
+              render={({ field }) => (
+                <AsynchronousAutocomplete
+                  label='СТ'
+                  request={fetchSTMembers}
+                  dataNameField='fio'
+                  field={field}
+                  errors={errors}
+                  disabled
+                />
+              )}
+            />
+          </Grid>
+          <Grid size={isMobile ? 12 : 3}>
+            <Controller
               name='ob'
               control={control}
               render={({ field }) => (
@@ -206,12 +225,12 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
           </Grid>
           <Grid size={isMobile ? 12 : 3}>
             <Controller
-              name='st'
+              name='doctor'
               control={control}
               render={({ field }) => (
                 <AsynchronousAutocomplete
-                  label='СТ'
-                  request={fetchSTMembers}
+                  label='Врач'
+                  request={fetchDoctorMembers}
                   dataNameField='fio'
                   field={field}
                   errors={errors}
@@ -243,7 +262,7 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
                 <TextField
                   {...field}
                   variant='outlined'
-                  label='Цена мероприятия'
+                  label='Инструкторский сбор'
                   fullWidth
                   error={errors[field.name]}
                   helperText={errors[field.name]?.message}
