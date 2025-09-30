@@ -151,8 +151,16 @@ const eventListRouter = (app, passport) => {
             res.send("Ничего не найдено");
             return;
           }
-          const { ob_fio, event_ob, st_fio, event_st, rai_name, event_raion } =
-            result[0];
+          const {
+            ob_fio,
+            event_ob,
+            st_fio,
+            event_st,
+            doctor_fio,
+            event_doctor,
+            rai_name,
+            event_raion,
+          } = result[0];
           // console.log(result[0])
           const raion_name_list = result[0].raion_names?.split("||");
           const raion_id_list = result[0].raion_ids
@@ -163,6 +171,7 @@ const eventListRouter = (app, passport) => {
             ...result[0],
             ob: { fio: ob_fio, id: event_ob },
             st: { fio: st_fio, id: event_st },
+            doctor: { fio: doctor_fio, id: event_doctor },
             raion: { rai_name, id: event_raion },
             raion_name_list,
             raion_id_list,

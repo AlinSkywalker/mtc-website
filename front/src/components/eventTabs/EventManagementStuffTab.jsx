@@ -9,8 +9,20 @@ import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
 import { useParams } from 'react-router-dom'
 import { useFetchMemberList } from '../../queries/member'
 import { Toolbar } from '@mui/x-data-grid'
-import { Button, Grid } from '@mui/material'
-
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  Grid,
+  IconButton,
+} from '@mui/material'
+import CloseIcon from '@mui/icons-material/Close'
+import { SetAllDayManagementStaffDialog } from './SetAllDayManagementStaffDialog'
 const defaultItem = {}
 
 const validationSchema = Yup.object({
@@ -22,6 +34,7 @@ export const EventManagementStuffTab = () => {
   const { id: eventId } = useParams()
   const queryClient = useQueryClient()
   const { isLoading, data } = useFetchEventManagementStaff(eventId)
+  const [open, setOpen] = React.useState(false)
 
   const [rows, setRows] = React.useState(data)
   const [rowModesModel, setRowModesModel] = React.useState({})
@@ -122,34 +135,35 @@ export const EventManagementStuffTab = () => {
     queryClient.invalidateQueries({ queryKey: ['event', eventId, 'eventManagementStuff'] })
   }
 
-  const handelClickAddStaff = async () => {
-    await apiClient.put(`/api/eventList/${eventId}/eventManagementStuffFromEvent/`)
-    queryClient.invalidateQueries({ queryKey: ['event', eventId, 'eventManagementStuff'] })
-  }
   const toolbar = (
     <Toolbar>
       <Grid sx={{ flexGrow: 1 }}>
-        <Button color='primary' onClick={handelClickAddStaff}>
-          Назначить ОБ И СТ на все даты
+        <Button color='primary' onClick={() => setOpen(true)}>
+          Назначить на все даты
         </Button>
       </Grid>
     </Toolbar>
   )
+
   if (!eventId) return null
+
   return (
-    <EditableTable
-      rows={rows}
-      setRows={setRows}
-      rowModesModel={rowModesModel}
-      setRowModesModel={setRowModesModel}
-      columns={columns}
-      processRowUpdate={processRowUpdate}
-      fieldToFocus={fieldToFocus}
-      columnVisibilityModel={columnVisibilityModel}
-      defaultItem={defaultItem}
-      isLoading={isLoading}
-      addButtonDisabled
-      toolbar={toolbar}
-    />
+    <>
+      <EditableTable
+        rows={rows}
+        setRows={setRows}
+        rowModesModel={rowModesModel}
+        setRowModesModel={setRowModesModel}
+        columns={columns}
+        processRowUpdate={processRowUpdate}
+        fieldToFocus={fieldToFocus}
+        columnVisibilityModel={columnVisibilityModel}
+        defaultItem={defaultItem}
+        isLoading={isLoading}
+        addButtonDisabled
+        toolbar={toolbar}
+      />
+      <SetAllDayManagementStaffDialog open={open} setOpen={setOpen} eventId={eventId} />
+    </>
   )
 }

@@ -98,7 +98,151 @@ const eventManagementStuffRouter = (app, passport) => {
       );
     }
   );
-};
 
+  app.put(
+    "/eventList/:eventId/eventManagementStuffFromEvent/st",
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+      const { eventId } = req.params;
+      const { st } = req.body;
+      pool.query(
+        `SELECT * FROM eventalp WHERE id=${eventId}`,
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return;
+          }
+          const { event_start, event_finish } = result[0];
+          console.log();
+          const eventDateStart = new Date(event_start);
+          const eventDateFinish = new Date(event_finish);
+          const dates = getDatesInRange(eventDateStart, eventDateFinish);
+          const insertValueString = dates
+            .map((item) => `(${eventId},${st}, '${item}')`)
+            .join(", ");
+          pool.query(
+            `INSERT INTO event_management_staff ( event, st, date) 
+              VALUES ${insertValueString}  ON DUPLICATE KEY UPDATE st=${st}`,
+            (error, result) => {
+              if (error) {
+                console.log(error);
+                res.status(500).json({ success: false, message: error });
+                return;
+              }
+              pool.query(
+                `UPDATE eventalp SET event_st=${st} WHERE id=${eventId}`,
+                (error, result) => {
+                  if (error) {
+                    console.log(error);
+                    res.status(500).json({ success: false, message: error });
+                    return;
+                  }
+                  res.json({ success: true });
+                }
+              );
+            }
+          );
+        }
+      );
+    }
+  );
+  app.put(
+    "/eventList/:eventId/eventManagementStuffFromEvent/ob",
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+      const { eventId } = req.params;
+      const { ob } = req.body;
+      pool.query(
+        `SELECT * FROM eventalp WHERE id=${eventId}`,
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return;
+          }
+          const { event_start, event_finish } = result[0];
+          console.log();
+          const eventDateStart = new Date(event_start);
+          const eventDateFinish = new Date(event_finish);
+          const dates = getDatesInRange(eventDateStart, eventDateFinish);
+          const insertValueString = dates
+            .map((item) => `(${eventId},${ob}, '${item}')`)
+            .join(", ");
+          pool.query(
+            `INSERT INTO event_management_staff ( event, ob, date) 
+              VALUES ${insertValueString}  ON DUPLICATE KEY UPDATE ob=${ob}`,
+            (error, result) => {
+              if (error) {
+                console.log(error);
+                res.status(500).json({ success: false, message: error });
+                return;
+              }
+              pool.query(
+                `UPDATE eventalp SET event_ob=${ob} WHERE id=${eventId}`,
+                (error, result) => {
+                  if (error) {
+                    console.log(error);
+                    res.status(500).json({ success: false, message: error });
+                    return;
+                  }
+                  res.json({ success: true });
+                }
+              );
+            }
+          );
+        }
+      );
+    }
+  );
+  app.put(
+    "/eventList/:eventId/eventManagementStuffFromEvent/doctor",
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+      const { eventId } = req.params;
+      const { doctor } = req.body;
+      pool.query(
+        `SELECT * FROM eventalp WHERE id=${eventId}`,
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return;
+          }
+          const { event_start, event_finish } = result[0];
+          console.log();
+          const eventDateStart = new Date(event_start);
+          const eventDateFinish = new Date(event_finish);
+          const dates = getDatesInRange(eventDateStart, eventDateFinish);
+          const insertValueString = dates
+            .map((item) => `(${eventId},${doctor}, '${item}')`)
+            .join(", ");
+          pool.query(
+            `INSERT INTO event_management_staff ( event, doctor, date) 
+              VALUES ${insertValueString}  ON DUPLICATE KEY UPDATE doctor=${doctor}`,
+            (error, result) => {
+              if (error) {
+                console.log(error);
+                res.status(500).json({ success: false, message: error });
+                return;
+              }
+              pool.query(
+                `UPDATE eventalp SET event_doctor=${doctor} WHERE id=${eventId}`,
+                (error, result) => {
+                  if (error) {
+                    console.log(error);
+                    res.status(500).json({ success: false, message: error });
+                    return;
+                  }
+                  res.json({ success: true });
+                }
+              );
+            }
+          );
+        }
+      );
+    }
+  );
+};
 // Export the router
 module.exports = eventManagementStuffRouter;

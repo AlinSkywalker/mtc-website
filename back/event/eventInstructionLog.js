@@ -13,7 +13,7 @@ const eventInstructionLogRouter = (app, passport) => {
         `SELECT *
                 FROM event_instruction_log e_m_s 
                 WHERE event=${eventId}
-                ORDER BY date `,
+                ORDER BY date, instruction_order `,
         (error, result) => {
           if (error) {
             console.log(error);
@@ -78,10 +78,43 @@ const eventInstructionLogRouter = (app, passport) => {
       queries.push(
         new Promise((resolve, reject) => {
           pool.query(
-            `SELECT e.* , m_ob.fio as ob_fio, m_st.fio as st_fio, e_m.member_fio, e_m.eventmemb_dates
+            `SELECT e.* , m_ob.fio as ob_fio, m_st.fio as st_fio, m_d.fio as doctor_fio
                 FROM eventalp  e
                 LEFT JOIN member m_ob on e.event_ob = m_ob.id
                 LEFT JOIN member m_st on e.event_st = m_st.id
+                LEFT JOIN member m_d on e.event_doctor = m_d.id
+                WHERE e.id=${eventId}`,
+            (error, result) => {
+              if (error) {
+                reject(error);
+              }
+              const { event_start, ob_fio, event_name, st_fio, doctor_fio } =
+                result[0];
+
+              pool.query(
+                `INSERT INTO event_instruction_log ( event, date,instruction_order, instruction) 
+                        VALUES (${eventId} ,'${event_start}', 0,'Альпинисткое мероприятие ${event_name} обьявляется открытым.'),
+                        (${eventId} ,'${event_start}', 3,'Назначить СТ - ${st_fio}'),
+                        (${eventId} ,'${event_start}', 4,'Назначить ОБ - ${ob_fio}'),
+                        (${eventId} ,'${event_start}', 5,'Назначить доктора - ${doctor_fio}')
+                        `,
+
+                (error, result) => {
+                  if (error) {
+                    reject(error);
+                  }
+                  resolve({ success: true });
+                }
+              );
+            }
+          );
+        })
+      );
+      queries.push(
+        new Promise((resolve, reject) => {
+          pool.query(
+            `SELECT e_m.member_fio, e_m.eventmemb_dates
+                FROM eventalp  e
                 LEFT JOIN (
                     SELECT
                     e_m.eventmemb_even as eventmemb_even,
@@ -90,21 +123,23 @@ const eventInstructionLogRouter = (app, passport) => {
                     FROM eventmemb e_m
                     LEFT JOIN member m on m.id = e_m.eventmemb_memb
                     GROUP BY e_m.eventmemb_even, e_m.eventmemb_dates
-                    ) e_m ON e_m.eventmemb_even = e.id AND e_m.eventmemb_dates = e.event_start
+                    ) e_m ON e_m.eventmemb_even = e.id
                 WHERE e.id=${eventId}`,
             (error, result) => {
               if (error) {
                 reject(error);
               }
-              const { event_start, ob_fio, event_name, st_fio, member_fio } =
-                result[0];
+
+              const insertValueString = result
+                .map(
+                  (item) =>
+                    `(${eventId}, '${item.eventmemb_dates}', 2 ,'Зачислить на Альпинисткое мероприятие следующих участников: ${item.member_fio}')`
+                )
+                .join(", ");
 
               pool.query(
-                `INSERT INTO event_instruction_log ( event, date, instruction) 
-                        VALUES (${eventId} ,'${event_start}','Альпинисткое мероприятие ${event_name} обьявляется открытым.'),
-                        (${eventId} ,'${event_start}', 'Зачислить на Альпинисткое мероприяти следующих участников: ${member_fio}'),
-                        (${eventId} ,'${event_start}', 'Назначить СТ - ${st_fio}'),
-                        (${eventId} ,'${event_start}', 'Назначить ОБ - ${ob_fio}')`,
+                `INSERT INTO event_instruction_log ( event, date, instruction_order, instruction) 
+                        VALUES ${insertValueString}`,
                 (error, result) => {
                   if (error) {
                     reject(error);
@@ -180,8 +215,63 @@ const eventInstructionLogRouter = (app, passport) => {
           );
         })
       );
+
+      queries.push(
+        new Promise((resolve, reject) => {
+          pool.query(
+            `SELECT d.*, d_g.membd_date, d_g.member_fio, m_i.fio 
+                FROM depart  d
+                LEFT JOIN (
+                    SELECT
+                    e_i_d.membd_dep as membd_dep,
+                    GROUP_CONCAT(m.fio SEPARATOR ', ') as member_fio,
+                    e_i_d.membd_date
+                    FROM member_in_depart e_i_d
+                    LEFT JOIN eventmemb e_m on e_m.id = e_i_d.membd_memb
+                    LEFT JOIN member m on m.id = e_m.eventmemb_memb
+                    GROUP BY e_i_d.membd_dep, e_i_d.membd_date
+                    ) d_g ON d_g.membd_dep = d.id
+                LEFT JOIN member m_i on m_i.id =d.depart_inst
+                WHERE d.depart_event=${eventId} AND d_g.membd_date=d.depart_dates`,
+            (error, result) => {
+              if (error) {
+                reject(error);
+              }
+
+              const insertValueString = result
+                .map(
+                  (item) =>
+                    `(${eventId}, '${
+                      item.membd_date
+                    }', 6 ,'Сформировать отделение ${
+                      item.depart_tip
+                    } позывной ${item.depart_name}. 
+                ${
+                  ["НП", "СП"].includes("item.depart_tip")
+                    ? "Инструктор"
+                    : "Тренер"
+                }: ${item.fio}.
+                Участники: ${item.member_fio}')`
+                )
+                .join(", ");
+
+              pool.query(
+                `INSERT INTO event_instruction_log ( event, date, instruction_order, instruction) 
+                        VALUES ${insertValueString}`,
+                (error, result) => {
+                  if (error) {
+                    reject(error);
+                  }
+                  resolve({ success: true });
+                }
+              );
+            }
+          );
+        })
+      );
+
       pool.query(
-        `DELETE FROM event_instruction_log WHERE event =${eventId} AND manual<>0`,
+        `DELETE FROM event_instruction_log WHERE event =${eventId} AND manual=0`,
         (error, result) => {
           if (error) {
             console.log(error);
