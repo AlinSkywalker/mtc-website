@@ -17,8 +17,10 @@ import MtcImage from '../assets/mtc.png'
 import './AdminLayoutStyles.css'
 import { useMediaQuery } from 'react-responsive'
 import { useLocation } from 'react-router-dom'
+import { useIsAdmin } from '../hooks/useIsAdmin'
 
 export const AdminLayout = ({ children }) => {
+  const isAdmin = useIsAdmin()
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [anchorMainMenuEl, setAnchorMainMenuEl] = React.useState(null)
   const { userInfo, setUserInfo, setIsAuthenticated } = useContext(AuthContext)
@@ -61,14 +63,17 @@ export const AdminLayout = ({ children }) => {
   const handleGoToProfilePage = () => {
     navigate('/profile')
   }
+  const handleTestButton = () => {
+    apiClient.post(`/api/testEmail`)
+  }
   const pages =
     userInfo.role !== 'ADMIN_ROLE'
       ? [{ name: 'eventList', url: '/eventList', label: 'Мероприятия' }]
       : [
-          { name: 'eventList', url: '/admin/event', label: 'Мероприятия' },
-          { name: 'memberList', url: '/admin/member', label: 'Тритонны' },
-          { name: 'dictionary', url: '/admin/dictionary', label: 'Справочники' },
-        ]
+        { name: 'eventList', url: '/admin/event', label: 'Мероприятия' },
+        { name: 'memberList', url: '/admin/member', label: 'Тритонны' },
+        { name: 'dictionary', url: '/admin/dictionary', label: 'Справочники' },
+      ]
   const location = useLocation()
 
   const currentPage = pages.find(
@@ -113,6 +118,7 @@ export const AdminLayout = ({ children }) => {
     >
       <MenuItem onClick={handleGoToProfilePage}>Мой профиль</MenuItem>
       <MenuItem onClick={handleLogout}>Выйти</MenuItem>
+      {/* {isAdmin && <MenuItem onClick={handleTestButton}>Тестовая кнопка</MenuItem>} */}
     </Menu>
   )
   const isMobile = useMediaQuery({ query: '(max-device-width: 768px)' })
@@ -149,7 +155,7 @@ export const AdminLayout = ({ children }) => {
         <MenuItem
           key={page.name}
           onClick={handleCloseGoToPage(page)}
-          // sx={{ my: 2, color: 'white', display: 'block' }}
+        // sx={{ my: 2, color: 'white', display: 'block' }}
         >
           {page.label}
         </MenuItem>

@@ -144,20 +144,46 @@ const sendSuccessfulRegistrationEmail = (email, callback) => {
 };
 
 app.post("/testEmail", (req, res) => {
-  const mailOptions = {
-    ...defaultMailOptions,
-    to: "alinskywalker@yandex.ru", // Recipient's email address
-    subject: "Hello from Nodemailer", // Subject line
-    text: "This is a test email sent using Nodemailer!", // Plain text body
-  };
-  transporter.sendMail(mailOptions, (error, info) => {
+  // const mailOptions = {
+  //   ...defaultMailOptions,
+  //   to: "alinskywalker@yandex.ru", // Recipient's email address
+  //   subject: "Hello from Nodemailer", // Subject line
+  //   text: "This is a test email sent using Nodemailer!", // Plain text body
+  // };
+  // transporter.sendMail(mailOptions, (error, info) => {
+  //   if (error) {
+  //     console.log("Ошибка отправки:", error);
+  //   } else {
+  //     console.log("Successful send email");
+  //     res.json({});
+  //   }
+  // });
+  pool.query(`SELECT * FROM user`, (error, result) => {
     if (error) {
-      console.log("Ошибка отправки:", error);
-    } else {
-      console.log("Successful send email");
-      res.json({});
+      console.log(error);
+      res.status(500).json({ success: false, message: error });
+      return;
     }
-  });
+    const queries = [];
+    result.forEach(user => {
+      const hashPassword = bcrypt.hashSync(user.password, 10);
+      const query = new Promise((resolve, reject) => {
+        pool.query(
+          `UPDATE user SET password='${hashPassword}' WHERE id=${user.id}`,
+          (error, result) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+      });
+      queries.push(query);
+    })
+
+  })
+
 });
 
 app.post("/register", (req, res) => {
@@ -194,9 +220,10 @@ app.post("/register", (req, res) => {
           });
           return;
         }
+        const hashPassword = bcrypt.hashSync(password, 10);
         pool.query(
           "INSERT INTO user (login, password, user_role) VALUES(?,?, 'USER_ROLE')",
-          [email, password],
+          [email, hashPassword],
           (error, result) => {
             if (error) {
               console.log(error);
@@ -308,7 +335,7 @@ app.post("/login", (req, res) => {
       const user = result[0];
       // console.log('user', user)
       // if (!user || !bcrypt.compareSync(password, user.password)) {
-      if (!user || password != user.password) {
+      if (!user || !bcrypt.compareSync(password, user.password)) {
         res
           .status(500)
           .json({ success: false, message: "Invalid username or password" });

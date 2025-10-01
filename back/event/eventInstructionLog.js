@@ -90,13 +90,13 @@ const eventInstructionLogRouter = (app, passport) => {
               }
               const { event_start, ob_fio, event_name, st_fio, doctor_fio } =
                 result[0];
-
+              const doctorInsertString = doctor_fio ? `,(${eventId} ,'${event_start}', 5,'Назначить доктора - ${doctor_fio}')` : ''
               pool.query(
                 `INSERT INTO event_instruction_log ( event, date,instruction_order, instruction) 
                         VALUES (${eventId} ,'${event_start}', 0,'Альпинисткое мероприятие ${event_name} обьявляется открытым.'),
                         (${eventId} ,'${event_start}', 3,'Назначить СТ - ${st_fio}'),
-                        (${eventId} ,'${event_start}', 4,'Назначить ОБ - ${ob_fio}'),
-                        (${eventId} ,'${event_start}', 5,'Назначить доктора - ${doctor_fio}')
+                        (${eventId} ,'${event_start}', 4,'Назначить ОБ - ${ob_fio}')
+                        ${doctorInsertString}
                         `,
 
                 (error, result) => {
@@ -190,9 +190,8 @@ const eventInstructionLogRouter = (app, passport) => {
                 } else if (type === "Восхождение") {
                   instruction = `Разрешить отделению ${depart_name} выход на восхождение на вершину ${mount_name}, по маршруту ${rout_name} (${rout_comp})`;
                 } else if (type === "Занятие") {
-                  instruction = `Разрешить отделению ${depart_name} выход на занятия ${
-                    program_names || ""
-                  } в ${laba_name}`;
+                  instruction = `Разрешить отделению ${depart_name} выход на занятия ${program_names || ""
+                    } в ${laba_name}`;
                 }
                 if (instruction) {
                   insertValuesArray.push(
@@ -241,16 +240,13 @@ const eventInstructionLogRouter = (app, passport) => {
               const insertValueString = result
                 .map(
                   (item) =>
-                    `(${eventId}, '${
-                      item.membd_date
-                    }', 6 ,'Сформировать отделение ${
-                      item.depart_tip
+                    `(${eventId}, '${item.membd_date
+                    }', 6 ,'Сформировать отделение ${item.depart_tip
                     } позывной ${item.depart_name}. 
-                ${
-                  ["НП", "СП"].includes("item.depart_tip")
-                    ? "Инструктор"
-                    : "Тренер"
-                }: ${item.fio}.
+                ${["НП", "СП"].includes("item.depart_tip")
+                      ? "Инструктор"
+                      : "Тренер"
+                    }: ${item.fio}.
                 Участники: ${item.member_fio}')`
                 )
                 .join(", ");
