@@ -95,7 +95,7 @@ const eventListRouter = (app, passport) => {
               const insertValueString = dates
                 .map(
                   (item) =>
-                    `(${eventId},${event_st},${event_ob}, ${event_doctor}, '${item}')`
+                    `(${eventId},${event_st},${event_ob}, ${event_doctor || null}, '${item}')`
                 )
                 .join(", ");
               pool.query(

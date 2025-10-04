@@ -6,23 +6,25 @@ import { useParams } from 'react-router-dom'
 import Tooltip from '@mui/material/Tooltip'
 import FileDownloadIcon from '@mui/icons-material/FileDownload'
 
-function CustomToolbar() {
-  return (
-    <Toolbar>
-      <Tooltip title='Скачать CSV'>
-        <ExportCsv render={<ToolbarButton />}>
-          <FileDownloadIcon fontSize='small' />
-        </ExportCsv>
-      </Tooltip>
-    </Toolbar>
-  )
-}
 
-export const EventProtocolTab = () => {
+
+export const EventProtocolTab = ({ eventName }) => {
   const { id: eventId } = useParams()
   const { isLoading, data } = useFetchEventProtocol(eventId)
-
+  console.log('eventName', eventName)
   const [rows, setRows] = React.useState(data)
+  const csvOptions = { utf8WithBom: true, fileName: `Протокол ${eventName}`, delimiter: ';' }
+  const CustomToolbar = () => {
+    return (
+      <Toolbar>
+        <Tooltip title='Скачать CSV'>
+          <ExportCsv render={<ToolbarButton />} options={csvOptions}>
+            <FileDownloadIcon fontSize='small' />
+          </ExportCsv>
+        </Tooltip>
+      </Toolbar>
+    )
+  }
 
   React.useEffect(() => {
     setRows(data)
@@ -30,7 +32,7 @@ export const EventProtocolTab = () => {
 
   const columns = [
     {
-      field: 'id',
+      field: 'number',
       headerName: '№',
       width: 80,
     },

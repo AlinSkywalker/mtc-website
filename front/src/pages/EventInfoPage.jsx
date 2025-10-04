@@ -90,7 +90,7 @@ export const EventInfoPage = ({ readOnly = false }) => {
       name: 'protocol',
       path: `/protocol`,
       label: 'Протокол',
-      component: <EventProtocolTab />,
+      component: <EventProtocolTab eventName={data?.event_name} />,
     },
     {
       name: 'instructionLog',
@@ -120,7 +120,7 @@ export const EventInfoPage = ({ readOnly = false }) => {
       name: 'protocol',
       path: `/protocol`,
       label: 'Протокол',
-      component: <EventProtocolTab />,
+      component: <EventProtocolTab eventName={data?.event_name} />,
     },
     {
       name: 'district',
@@ -171,7 +171,7 @@ export const EventInfoPage = ({ readOnly = false }) => {
             <Grid size={isMobile ? 12 : 10}>
               <Card sx={{ minWidth: 275 }}>
                 {readOnly ? (
-                  <EventInfoFormRO eventData={data} isLoading={isLoading} readOnly={readOnly} />
+                  <EventInfoFormRO eventData={data} isLoading={isLoading} />
                 ) : (
                   <EventInfoForm eventData={data} isLoading={isLoading} readOnly={readOnly} />
                 )}

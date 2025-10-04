@@ -18,6 +18,7 @@ const defaultItem = {
   event_finish: '',
   event_st: '',
   event_ob: '',
+  event_doctor: '',
   event_desc: '',
   ob_fio: '',
   st_fio: '',

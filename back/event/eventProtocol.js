@@ -20,7 +20,14 @@ const eventProtocolRouter = (app, passport) => {
                   ELSE 'Участник'
                   END AS role,
                 s.sub_name, m.mount_name, r.rout_name, r.rout_comp,r.rout_tip ,
-                'в уч. гр.' AS group_type, dp.start 
+                COUNT(*) OVER (PARTITION BY dp.id) AS ascent_member_count,
+                CASE
+	              WHEN COUNT(*) OVER (PARTITION BY dp.id) = 2
+                      THEN 'в двойке'  
+                  WHEN d.depart_inst<>dp.ascent_head
+                      THEN 'в сп. гр.'
+                  ELSE 'в уч. гр.'
+                  END AS group_type, dp.start, dp.id as dp_id
                 FROM depart_plan dp
                   LEFT JOIN route r on r.id=dp.route
                   LEFT JOIN mount m on m.id=r.rout_mount
@@ -31,7 +38,6 @@ const eventProtocolRouter = (app, passport) => {
                   LEFT JOIN member_in_depart m_d on m_d.membd_dep=dp.department and m_d.membd_date=dp.start
                   LEFT JOIN eventmemb em on em.id=m_d.membd_memb
                   LEFT JOIN member mem ON mem.id = em.eventmemb_memb
-                  LEFT JOIN membalp mem_a ON mem_a.id = mem.id
                   LEFT JOIN city c ON c.id = mem.memb_city
                   LEFT JOIN subekt s ON s.id = c.city_sub 
                   LEFT JOIN member_sport_category m_s_c ON m_s_c.id=
@@ -46,10 +52,21 @@ const eventProtocolRouter = (app, passport) => {
             res.status(500).json({ success: false, message: error });
             return;
           }
-          const fullResult = result.map((item, index) => ({
-            ...item,
-            id: index + 1,
-          }));
+          let number = 0
+          const fullResult = result.reduce((acc, item, index) => {
+            if (index !== 0 && item.dp_id !== result[index - 1].dp_id) {
+              acc.push({})
+            }
+            acc.push(item)
+            return acc
+          }, []).map((item, index) => {
+            if (item.dp_id) number++
+            return ({
+              ...item,
+              id: index + 1,
+              number: item.dp_id ? number : ''
+            })
+          });
           res.send(fullResult);
         }
       );
