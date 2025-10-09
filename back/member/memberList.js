@@ -146,9 +146,11 @@ const memberListRouter = (app, passport) => {
         skali,
         ledu,
         memb,
+        emergency_contact
       } = req.body;
       pool.query(
-        `INSERT INTO member ( fio,gender,date_birth,memb_city,tel_1,tel_2,memb_email,size_cloth,size_shoe,memb) VALUES(?,?,?,?,?,?,?,?,?,?)`,
+        `INSERT INTO member ( fio,gender,date_birth,memb_city,tel_1,tel_2,memb_email,size_cloth,size_shoe,memb,emergency_contact) 
+        VALUES(?,?,?,?,?,?,?,?,?,?,?)`,
         [
           fio,
           gender,
@@ -160,6 +162,7 @@ const memberListRouter = (app, passport) => {
           size_cloth,
           size_shoe,
           memb,
+          emergency_contact
         ],
         (error, result) => {
           if (error) {
@@ -206,6 +209,7 @@ const memberListRouter = (app, passport) => {
         skali,
         ledu,
         memb,
+        emergency_contact
       } = req.body;
       pool.query(
         `UPDATE member SET 
@@ -219,6 +223,7 @@ const memberListRouter = (app, passport) => {
       size_cloth=?,
       size_shoe=?,
       memb=?,
+      emergency_contact=?,
       updated_date=CURRENT_TIMESTAMP WHERE id=${id}`,
         [
           fio,
@@ -231,6 +236,7 @@ const memberListRouter = (app, passport) => {
           size_cloth,
           size_shoe,
           memb,
+          emergency_contact
         ],
         (error, result) => {
           if (error) {

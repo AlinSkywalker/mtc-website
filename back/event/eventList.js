@@ -8,6 +8,15 @@ const eventListRouter = (app, passport) => {
     "/eventList/",
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
+      const { show } = req.query;
+      const isPastList = show === 'past'
+      const isFutureList = show === 'future'
+      const whereAndOrderClause =
+        isPastList
+          ? 'WHERE e.event_finish<CURRENT_TIMESTAMP ORDER BY e.event_start DESC' :
+          isFutureList ? 'WHERE e.event_finish>=CURRENT_TIMESTAMP ORDER BY e.event_start ASC' :
+            'ORDER BY e.event_start DESC'
+
       pool.query(
         `SELECT e.*, m_ob.fio as ob_fio, m_st.fio as st_fio, e_r.raion_names, e_r.raion_ids, m_organizer.fio as organizer_fio
             FROM eventalp e
@@ -26,7 +35,7 @@ const eventListRouter = (app, passport) => {
                 GROUP BY
                   e_r.event_m) e_r on
                 e_r.event_m = e.id
-            ORDER BY e.event_start DESC`,
+                ${whereAndOrderClause}`,
         (error, result) => {
           if (error) {
             console.log(error);

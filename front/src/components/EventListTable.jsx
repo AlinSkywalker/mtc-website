@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useFetchEventList } from '../queries/event'
 import { useFetchMemberList } from '../queries/member'
-import { Link } from '@mui/material'
+import { Link, ToggleButtonGroup, ToggleButton } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import apiClient from '../api/api'
 import { useQueryClient } from '@tanstack/react-query'
@@ -40,7 +40,8 @@ const validationSchema = Yup.object({
 })
 
 export const EventListTable = ({ readOnly = false }) => {
-  const { isLoading, data } = useFetchEventList()
+  const [show, setShow] = useState('future')
+  const { isLoading, data } = useFetchEventList(show)
   const navigate = useNavigate()
   const queryClient = useQueryClient()
 
@@ -218,6 +219,25 @@ export const EventListTable = ({ readOnly = false }) => {
     await handleSave(newRow)
     queryClient.invalidateQueries({ queryKey: ['eventList'] })
   }
+  const handleChangeShow = (event, show) => {
+    setShow(show);
+  };
+
+  const rightPanel = (<> <ToggleButtonGroup
+    value={show}
+    exclusive
+    onChange={handleChangeShow}
+    aria-label="text alignment"
+  >
+    <ToggleButton value="future" aria-label="left aligned">
+      Будущие
+    </ToggleButton>
+    <ToggleButton value="past" aria-label="centered">
+      Прошедшие
+    </ToggleButton>
+  </ToggleButtonGroup></>
+  )
+
   return (
     <EditableTable
       rows={rows}
@@ -236,6 +256,7 @@ export const EventListTable = ({ readOnly = false }) => {
         (params.row.isNew && (params.field == 'st_fio' || params.field == 'ob_fio'))
       }
       readOnly={readOnly}
+      rightPanel={rightPanel}
     />
   )
 }

@@ -40,6 +40,7 @@ const defaultValues = {
   city: { name_city: '', id: 0 },
   ledu: 'WI2',
   skali: '5a',
+  emergency_contact: ''
 }
 
 const validationSchema = Yup.object({
@@ -231,7 +232,21 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
                   <TextField
                     {...field}
                     variant='outlined'
-                    label='Телефон дополнительный'
+                    label='Телефон экстренного контакта'
+                    fullWidth
+                  />
+                )}
+              />
+            </Grid>
+            <Grid size={isMobile ? 12 : 2}>
+              <Controller
+                name='emergency_contact'
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    variant='outlined'
+                    label='Имя экстренного контакта'
                     fullWidth
                   />
                 )}

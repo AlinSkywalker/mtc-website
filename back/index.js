@@ -131,8 +131,8 @@ const sendSuccessfulRegistrationEmail = (email, callback) => {
   const mailOptions = {
     ...defaultMailOptions,
     to: email, // Recipient's email address
-    subject: "Hello from Nodemailer", // Subject line
-    text: "This is a test email sent using Nodemailer!", // Plain text body
+    subject: "Регистрация в системе ЦАП", // Subject line
+    text: "Вы зарегистрировались в системе ЦАП Тритонн. Добро пожаловать!", // Plain text body
   };
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
@@ -261,8 +261,8 @@ app.post("/register", (req, res) => {
               );
             } else {
               pool.query(
-                "INSERT INTO member (fio, date_birth, gender, user_id) VALUES(?,?,?,?)",
-                [fio, date_birth, gender, userId],
+                "INSERT INTO member (fio, date_birth, gender, user_id,memb_email) VALUES(?,?,?,?,?)",
+                [fio, date_birth, gender, userId, email],
                 (error, result) => {
                   if (error) {
                     console.log(error);
@@ -415,7 +415,7 @@ app.post(
   "/profile",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    const { id, size_cloth, size_shoe, tel_1, tel_2, gender, fio, date_birth } =
+    const { id, size_cloth, size_shoe, tel_1, tel_2, gender, fio, date_birth, memb_city, emergency_contact } =
       req.body;
     pool.query(
       `UPDATE member 
@@ -425,7 +425,9 @@ app.post(
       tel_2='${tel_2}',
       gender='${gender}',
       fio='${fio}',
-      date_birth='${date_birth}'
+      date_birth='${date_birth}',
+      memb_city='${memb_city || null}',
+      emergency_contact='${emergency_contact}'
       WHERE id=${id}`,
       (error, result) => {
         if (error) {

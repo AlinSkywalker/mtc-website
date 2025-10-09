@@ -38,6 +38,7 @@ export const EditableTable = ({
   showPagination = true,
   additionalButton,
   readOnly,
+  rightPanel,
 }) => {
   const [paginationModel, setPaginationModel] = React.useState({
     pageSize: 100,
@@ -207,15 +208,15 @@ export const EditableTable = ({
   const defaultColumns = readOnly
     ? []
     : [
-        {
-          field: 'actions',
-          type: 'actions',
-          headerName: '',
-          width: 70,
-          cellClassName: 'actions',
-          getActions: ({ id }) => getActions(id),
-        },
-      ]
+      {
+        field: 'actions',
+        type: 'actions',
+        headerName: '',
+        width: 70,
+        cellClassName: 'actions',
+        getActions: ({ id }) => getActions(id),
+      },
+    ]
   const tableColumns = [...defaultColumns, ...columns]
   const tableHeight = height ? height : `calc(100vh - 150px)`
   const disabled = addButtonDisabled
@@ -253,6 +254,7 @@ export const EditableTable = ({
                   additionalButton={additionalButton}
                   paginationModel={paginationModel}
                   readOnly={readOnly}
+                  rightPanel={rightPanel}
                 />
               )
             },

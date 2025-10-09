@@ -51,19 +51,15 @@ export const EventMembersTab = ({ eventId, readOnly }) => {
 
   const handleSaveNewItem = (data) => {
     // console.log('data', data)
-    // const { id, isNew, med_file, strah_file, ...postedData } = data
-    // const formData = new FormData()
+    const { id, isNew, med_file, strah_file, ...postedData } = data
+    const formData = new FormData()
+    formData.append('data', JSON.stringify(postedData))
 
-    // for (let key in postedData) {
-    //   formData.append(key, postedData[key])
-    // }
-    // // formData.append('med_file', data.med_file?.[0])
-    // // formData.append('strah_file', data.strah_file?.[0])
-    // return apiClient.put(`/api/eventList/${eventId}/member`, formData, {
-    //   headers: { 'Content-Type': 'multipart/form-data' },
-    // })
-    const { id, isNew, ...postedData } = data
-    return apiClient.put(`/api/eventList/${eventId}/member`, postedData)
+    formData.append('med_file', data.med_file?.[0])
+    formData.append('strah_file', data.strah_file?.[0])
+    return apiClient.put(`/api/eventList/${eventId}/member`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
   }
 
   const handleDeleteItem = (id) => () => {
@@ -74,7 +70,15 @@ export const EventMembersTab = ({ eventId, readOnly }) => {
 
   const handleSaveEditedItem = React.useCallback((data) => {
     const { id, isNew, ...postedData } = data
-    return apiClient.post(`/api/eventList/${eventId}/member/${id}`, postedData)
+
+    const formData = new FormData()
+    formData.append('data', JSON.stringify({ ...postedData, id }))
+    formData.append('med_file', data.med_file?.[0])
+    formData.append('strah_file', data.strah_file?.[0])
+
+    return apiClient.post(`/api/eventList/${eventId}/member/${id}`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
   }, [])
 
   const renderSelectEditCell = (params) => {
@@ -165,21 +169,34 @@ export const EventMembersTab = ({ eventId, readOnly }) => {
       ...checkboxColumnType,
     },
     {
-      field: 'eventmemb_nmed',
+      field: 'strah_file_name',
       headerName: 'Страховка',
+      width: 200,
+      editable: !readOnly,
+      downloadApiPath: `/api/eventList/${eventId}/members/files`,
+      filePathField: 'strah_file_path',
+      fileNameField: 'strah_file_name',
+      fileCol: 'strah_file',
+      ...fileColumnType,
+    },
+    {
+      field: 'eventmemb_nmed',
+      headerName: 'Справка',
       width: 100,
       editable: !readOnly,
       ...checkboxColumnType,
     },
-    // {
-    //   field: 'med_file_name',
-    //   headerName: 'Справка',
-    //   width: 100,
-    //   editable: !readOnly,
-    //   downloadApiPath: `/api/eventList/${eventId}/files`,
-    //   fileCol: 'med_file',
-    //   ...fileColumnType,
-    // },
+    {
+      field: 'med_file_name',
+      headerName: 'Справка',
+      width: 200,
+      editable: !readOnly,
+      downloadApiPath: `/api/eventList/${eventId}/members/files`,
+      filePathField: 'med_file_path',
+      fileNameField: 'med_file_name',
+      fileCol: 'med_file',
+      ...fileColumnType,
+    },
     {
       field: 'eventmemb_role',
       headerName: 'Роль',
@@ -253,6 +270,18 @@ export const EventMembersTab = ({ eventId, readOnly }) => {
       width: 0,
       editable: !readOnly,
     },
+    {
+      field: 'med_file_path',
+      headerName: '',
+      width: 0,
+      editable: !readOnly,
+    },
+    {
+      field: 'strah_file_path',
+      headerName: '',
+      width: 0,
+      editable: !readOnly,
+    },
   ]
   const fieldToFocus = 'fio'
   const columnVisibilityModel = readOnly
@@ -267,6 +296,9 @@ export const EventMembersTab = ({ eventId, readOnly }) => {
       eventmemb_nstrah: false,
       eventmemb_nmed: false,
       med_file_name: false,
+      med_file_path: false,
+      strah_file_name: false,
+      strah_file_path: false,
       alerts: false,
     }
     : {

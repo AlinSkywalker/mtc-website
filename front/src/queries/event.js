@@ -2,11 +2,11 @@ import apiClient from '../api/api'
 import { useQuery } from '@tanstack/react-query'
 import { parseISO } from 'date-fns'
 
-export function useFetchEventList() {
+export function useFetchEventList(show = 'all') {
   return useQuery({
-    queryKey: ['eventList'],
+    queryKey: ['eventList', show],
     queryFn: async () => {
-      const { data } = await apiClient.get(`/api/eventList`)
+      const { data } = await apiClient.get(`/api/eventList?show=${show}`)
       return data
     },
   })

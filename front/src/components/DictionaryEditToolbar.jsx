@@ -15,6 +15,7 @@ export const DictionaryEditToolbar = (props) => {
     additionalButton,
     paginationModel,
     readOnly,
+    rightPanel
   } = props
 
   const handleClick = () => {
@@ -42,6 +43,7 @@ export const DictionaryEditToolbar = (props) => {
         )}
         {additionalButton}
       </Grid>
+      {rightPanel && <Grid>{rightPanel}</Grid>}
     </Toolbar>
   )
 }

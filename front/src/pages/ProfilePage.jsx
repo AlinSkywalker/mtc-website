@@ -41,6 +41,7 @@ export const ProfilePage = () => {
     size_shoe: '?',
     name_city: '',
     city: { name_city: '', id: 0 },
+    emergency_contact: ''
   }
   const { userInfo } = useContext(AuthContext)
   const { data } = useFetchProfile(userInfo.id)
@@ -61,11 +62,12 @@ export const ProfilePage = () => {
   const handleSaveProfileData = async (data, e) => {
     e.preventDefault()
     try {
-      const { date_birth } = data
+      const { date_birth, city } = data
 
       const response = await apiClient.post('/api/profile', {
         ...data,
         date_birth: date_birth ? format(date_birth, 'yyyy-MM-dd') : null,
+        memb_city: city.id
       })
       // Handle successful login
     } catch (error) {
@@ -119,7 +121,7 @@ export const ProfilePage = () => {
         container
         justifyContent='center'
         alignItems='center'
-        // sx={{ width: '100%', height: '100%' }}
+      // sx={{ width: '100%', height: '100%' }}
       >
         <Card sx={{ width: 400 }}>
           <CardContent>
@@ -254,7 +256,21 @@ export const ProfilePage = () => {
                       <TextField
                         {...field}
                         variant='outlined'
-                        label='Телефон дополнительный'
+                        label='Телефон экстренного контакта'
+                        fullWidth
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid>
+                  <Controller
+                    name='emergency_contact'
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        variant='outlined'
+                        label='Имя экстренного контакта'
                         fullWidth
                       />
                     )}

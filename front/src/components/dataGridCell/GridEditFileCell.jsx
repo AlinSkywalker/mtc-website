@@ -17,8 +17,9 @@ export const fileColumnType = {
   // },
 }
 
-const handleDownloadFile = (id, downloadApiPath) => async () => {
-  const response = await apiClient.get(`${downloadApiPath}/${id}`, {
+const handleDownloadFile = (id, downloadApiPath, filePathField, fileNameField) => async () => {
+  const downloadPath = `${downloadApiPath}/${id}?filePathField=${filePathField}&fileNameField=${fileNameField}`
+  const response = await apiClient.get(downloadPath, {
     responseType: 'blob',
   })
   const url = window.URL.createObjectURL(new Blob([response.data]))
@@ -37,7 +38,18 @@ const handleDownloadFile = (id, downloadApiPath) => async () => {
   link.click()
 }
 function GridFileCell({ value, id, colDef }) {
-  return <Link onClick={handleDownloadFile(id, colDef.downloadApiPath)}>{value}</Link>
+  return (
+    <Link
+      onClick={handleDownloadFile(
+        id,
+        colDef.downloadApiPath,
+        colDef.filePathField,
+        colDef.fileNameField,
+      )}
+    >
+      {value}
+    </Link>
+  )
 }
 
 function GridEditFileCell({ id, field, value, colDef }) {
@@ -55,7 +67,16 @@ function GridEditFileCell({ id, field, value, colDef }) {
   if (value) {
     return (
       <Grid container alignItems={'center'}>
-        <Link onClick={handleDownloadFile(id, colDef.downloadApiPath)}>{value}</Link>
+        <Link
+          onClick={handleDownloadFile(
+            id,
+            colDef.downloadApiPath,
+            colDef.filePathField,
+            colDef.fileNameField,
+          )}
+        >
+          {value}
+        </Link>
         <IconButton aria-label='delete' onClick={handleClearFile}>
           <DeleteIcon />
         </IconButton>
