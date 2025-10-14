@@ -16,6 +16,7 @@ import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import { red } from '@mui/material/colors'
 import { fileColumnType } from '../dataGridCell/GridEditFileCell'
+import { useIsAdmin } from '../../hooks/useIsAdmin'
 
 const defaultItem = {
   eventmemb_memb: '',
@@ -36,7 +37,9 @@ const validationSchema = Yup.object({
   fio: Yup.string().required('Поле обязательно для заполнения'),
 })
 
-export const EventMembersTab = ({ eventId, readOnly }) => {
+export const EventMembersTab = ({ eventId }) => {
+  const isAdmin = useIsAdmin()
+  const readOnly = !isAdmin
   const queryClient = useQueryClient()
   const { isLoading, data } = useFetchEventMemberList(eventId)
 
@@ -286,26 +289,26 @@ export const EventMembersTab = ({ eventId, readOnly }) => {
   const fieldToFocus = 'fio'
   const columnVisibilityModel = readOnly
     ? {
-      eventmemb_memb: false,
-      med_file: false,
-      strah_file: false,
-      memb_email: false,
-      tel_1: false,
-      eventmemb_gen: false,
-      eventmemb_pred: false,
-      eventmemb_nstrah: false,
-      eventmemb_nmed: false,
-      med_file_name: false,
-      med_file_path: false,
-      strah_file_name: false,
-      strah_file_path: false,
-      alerts: false,
-    }
+        eventmemb_memb: false,
+        med_file: false,
+        strah_file: false,
+        memb_email: false,
+        tel_1: false,
+        eventmemb_gen: false,
+        eventmemb_pred: false,
+        eventmemb_nstrah: false,
+        eventmemb_nmed: false,
+        med_file_name: false,
+        med_file_path: false,
+        strah_file_name: false,
+        strah_file_path: false,
+        alerts: false,
+      }
     : {
-      eventmemb_memb: false,
-      med_file: false,
-      strah_file: false,
-    }
+        eventmemb_memb: false,
+        med_file: false,
+        strah_file: false,
+      }
 
   const processRowUpdate = async (newRow, oldRow) => {
     validationSchema.validateSync(newRow, { abortEarly: false })
