@@ -1,9 +1,12 @@
 import React from 'react'
-import { useFetchEventMemberDepartmentList } from '../../queries/event'
+import {
+  useFetchEventMemberDepartmentList,
+  useFetchEventDepartmentListForMember,
+} from '../../queries/eventDepartment'
 import apiClient from '../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
 import { EditableTable } from '../EditableTable'
-import { useFetchEventDepartmentListForMember, useFetchEventMemberList } from '../../queries/event'
+import { useFetchEventMemberList } from '../../queries/event'
 import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
 import Grid from '@mui/material/Grid'
 import { DataGrid, GridEditInputCell, Toolbar } from '@mui/x-data-grid'

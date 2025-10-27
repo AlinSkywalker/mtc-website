@@ -18,27 +18,12 @@ import './AdminLayoutStyles.css'
 import { useMediaQuery } from 'react-responsive'
 import { useLocation } from 'react-router-dom'
 import { useIsAdmin } from '../hooks/useIsAdmin'
+import { AppToolbar } from './AppToolbar'
 
 export const AdminLayout = ({ children }) => {
   const isAdmin = useIsAdmin()
-  const [anchorEl, setAnchorEl] = React.useState(null)
   const [anchorMainMenuEl, setAnchorMainMenuEl] = React.useState(null)
-  const { userInfo, setUserInfo, setIsAuthenticated } = useContext(AuthContext)
 
-  useEffect(() => {
-    apiClient.get('/api/current').then((response) => {
-      setUserInfo({ id: response.data.id, role: response.data.role })
-    })
-  }, [])
-
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget)
-  }
-  const handleMenuClose = () => {
-    setAnchorEl(null)
-  }
-
-  const isMenuOpen = Boolean(anchorEl)
   const menuId = 'primary-search-account-menu'
 
   const handleMainMenuOpen = (event) => {
@@ -53,27 +38,13 @@ export const AdminLayout = ({ children }) => {
 
   const navigate = useNavigate()
 
-  const handleLogout = () => {
-    apiClient.get(`/api/logout`).then(() => {
-      localStorage.removeItem('token')
-      setIsAuthenticated(false)
-      setUserInfo({ id: '', role: '' })
-    })
-  }
-  const handleGoToProfilePage = () => {
-    navigate('/profile')
-  }
-  const handleTestButton = () => {
-    apiClient.post(`/api/testEmail`)
-  }
-  const pages =
-    userInfo.role !== 'ADMIN_ROLE'
-      ? [{ name: 'eventList', url: '/eventList', label: 'Мероприятия' }]
-      : [
-        { name: 'eventList', url: '/admin/event', label: 'Мероприятия' },
-        { name: 'memberList', url: '/admin/member', label: 'Тритонны' },
-        { name: 'dictionary', url: '/admin/dictionary', label: 'Справочники' },
-      ]
+  const pages = !isAdmin
+    ? [{ name: 'eventList', url: '/eventList', label: 'Мероприятия' }]
+    : [
+      { name: 'eventList', url: '/admin/event', label: 'Мероприятия' },
+      { name: 'memberList', url: '/admin/member', label: 'Тритонны' },
+      { name: 'dictionary', url: '/admin/dictionary', label: 'Справочники' },
+    ]
   const location = useLocation()
 
   const currentPage = pages.find(
@@ -85,114 +56,71 @@ export const AdminLayout = ({ children }) => {
   const handleCloseGoToPage = (page) => () => {
     navigate(page.url)
     handleMainMenuClose()
-    handleMenuClose()
+    // handleMenuClose()
   }
-  const profileButton = (
-    <IconButton
-      size='large'
-      edge='end'
-      aria-label='account of current user'
-      aria-controls={menuId}
-      aria-haspopup='true'
-      onClick={handleProfileMenuOpen}
-      color='inherit'
-    >
-      <AccountCircle />
-    </IconButton>
-  )
-  const renderProfileMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleGoToProfilePage}>Мой профиль</MenuItem>
-      <MenuItem onClick={handleLogout}>Выйти</MenuItem>
-      {/* {isAdmin && <MenuItem onClick={handleTestButton}>Тестовая кнопка</MenuItem>} */}
-    </Menu>
-  )
+
   const isMobile = useMediaQuery({ query: '(max-device-width: 768px)' })
-  const menuButton = isMobile ? (
-    <IconButton
-      size='large'
-      edge='end'
-      aria-label='account of current user'
-      aria-controls={menuId}
-      aria-haspopup='true'
-      onClick={handleMainMenuOpen}
-      color='inherit'
-    >
-      <MenuIcon />
-    </IconButton>
-  ) : null
+
   const renderMenu = isMobile ? (
-    <Menu
-      anchorEl={anchorMainMenuEl}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      id={mainMenuId}
-      keepMounted
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      open={isMainMenuOpen}
-      onClose={handleMainMenuClose}
-    >
-      {pages.map((page) => (
-        <MenuItem
-          key={page.name}
-          onClick={handleCloseGoToPage(page)}
-        // sx={{ my: 2, color: 'white', display: 'block' }}
-        >
-          {page.label}
-        </MenuItem>
-      ))}
-    </Menu>
+    <>
+      <IconButton
+        size='large'
+        edge='end'
+        aria-label='account of current user'
+        aria-controls={menuId}
+        aria-haspopup='true'
+        onClick={handleMainMenuOpen}
+        color='inherit'
+      >
+        <MenuIcon />
+      </IconButton>
+      <Menu
+        anchorEl={anchorMainMenuEl}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        id={mainMenuId}
+        keepMounted
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        open={isMainMenuOpen}
+        onClose={handleMainMenuClose}
+      >
+        {pages.map((page) => (
+          <MenuItem key={page.name} onClick={handleCloseGoToPage(page)}>
+            {page.label}
+          </MenuItem>
+        ))}
+      </Menu>
+    </>
   ) : null
 
   return (
     <Grid>
-      <AppBar position='static'>
-        <Toolbar className='AppBarToolbar'>
-          <img src={MtcImage} alt='ЦАП' height='55px' />
-          <Box sx={{ flexGrow: 1, display: 'flex', marginLeft: 3 }}>
-            {isMobile && currentPage && (
-              <Typography>
-                <Link to={currentPage.url} className='pageLink'>
-                  {currentPage.label}
-                </Link>
-              </Typography>
-            )}
-            {!isMobile &&
-              pages.map((page) => (
-                <Button
-                  key={page.name}
-                  onClick={handleCloseGoToPage(page)}
-                  sx={{ my: 2, color: 'white', display: 'block' }}
-                >
-                  {page.label}
-                </Button>
-              ))}
-          </Box>
-          {menuButton}
-          {profileButton}
-        </Toolbar>
-        {renderProfileMenu}
-        {renderMenu}
-      </AppBar>
+      <AppToolbar renderMenu={renderMenu}>
+        <>
+          {isMobile && currentPage && (
+            <Typography>
+              <Link to={currentPage.url} className='pageLink'>
+                {currentPage.label}
+              </Link>
+            </Typography>
+          )}
+          {!isMobile &&
+            pages.map((page) => (
+              <Button
+                key={page.name}
+                onClick={handleCloseGoToPage(page)}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                {page.label}
+              </Button>
+            ))}
+        </>
+      </AppToolbar>
       {children}
     </Grid>
   )

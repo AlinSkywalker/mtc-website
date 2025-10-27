@@ -12,7 +12,8 @@ import { MemberExamTab } from '../components/memberTabs/MemberExamTab'
 import { MemberAscentTab } from '../components/memberTabs/MemberAscentTab'
 import { MemberEventTab } from '../components/memberTabs/MemberEventTab'
 import { MemberSportCategoryTab } from '../components/memberTabs/MemberSportCategoryTab'
-import { MemberInfoForm } from '../components/MemberInfoForm'
+import { MemberInfoForm } from './MemberInfoForm'
+import { MemberLabaAscentTab } from '../components/memberTabs/MemberLabaAscentTab'
 
 export const MemberInfoPage = () => {
   const [value, setValue] = React.useState(0)
@@ -26,14 +27,14 @@ export const MemberInfoPage = () => {
 
   const memberTabs = [
     {
-      name: 'sportCategory',
-      label: 'Разряды/Категории',
-      component: <MemberSportCategoryTab memberId={currentId} />,
-    },
-    {
       name: 'ascents',
       label: 'Восхождения',
       component: <MemberAscentTab memberId={currentId} />,
+    },
+    {
+      name: 'labaAscents',
+      label: 'Тренировки',
+      component: <MemberLabaAscentTab memberId={currentId} />,
     },
     {
       name: 'exam',
@@ -41,10 +42,16 @@ export const MemberInfoPage = () => {
       component: <MemberExamTab memberId={currentId} />,
     },
     {
+      name: 'sportCategory',
+      label: 'Разряды/Категории',
+      component: <MemberSportCategoryTab memberId={currentId} />,
+    },
+    {
       name: 'event',
       label: 'Мероприятия',
       component: <MemberEventTab memberId={currentId} />,
     },
+
   ]
 
   if (isLoading) {

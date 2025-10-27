@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react'
 
 import Grid from '@mui/material/Grid'
-import { useFetchEventDepartmentList } from '../../queries/event'
+import { useFetchEventDepartmentList } from '../../queries/eventDepartment'
 import { EventDepartmentPlansTable } from './EventDepartmentPlansTable'
 import { EventAllDepartmentPlansTable } from './EventAllDepartmentPlansTable'
 import ToggleButton from '@mui/material/ToggleButton'

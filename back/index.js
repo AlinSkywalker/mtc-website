@@ -37,11 +37,15 @@ const eventDepartmentPlanJournalRouter = require("./event/eventDepartmentPlanJou
 const eventProtocolRouter = require("./event/eventProtocol");
 const eventManagementStuffRouter = require("./event/eventManagementStuff");
 const eventInstructionLogRouter = require("./event/eventInstructionLog");
+const eventDepartPlanLabaAscentRouter = require("./event/eventDepartPlanLabaAscent");
+
 
 const memberListRouter = require("./member/memberList");
 const memberExamRouter = require("./member/memberExam");
 const memberAscentRouter = require("./member/memberAscent");
 const memberSportCategoryRouter = require("./member/memberSportCategory");
+const memberLabaAscentRouter = require("./member/memberLabaAscent");
+
 
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -477,11 +481,14 @@ eventDepartmentPlanJournalRouter(app, passport);
 eventProtocolRouter(app, passport);
 eventManagementStuffRouter(app, passport);
 eventInstructionLogRouter(app, passport);
+eventDepartPlanLabaAscentRouter(app, passport);
+
 
 memberListRouter(app, passport);
 memberExamRouter(app, passport);
 memberAscentRouter(app, passport);
 memberSportCategoryRouter(app, passport);
+memberLabaAscentRouter(app, passport);
 
 app.get(/(.*)/, (req, res) => {
   // console.log(req.params);

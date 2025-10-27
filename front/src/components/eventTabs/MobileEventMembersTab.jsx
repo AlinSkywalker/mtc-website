@@ -82,6 +82,7 @@ export const MobileEventMembersTab = ({ eventId, readOnly }) => {
       <Card
         sx={{ margin: '12px 0', padding: 1.5 }}
         onClick={() => setExpandedItemId(isExpanded ? '' : memberItem.id)}
+        key={memberItem.id}
       >
         <Typography variant='h5' sx={{ fontSize: '19px' }}>
           {isAdmin && renderAlerts(memberItem.alerts)}

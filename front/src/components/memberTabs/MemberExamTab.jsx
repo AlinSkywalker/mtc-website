@@ -5,6 +5,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { EditableTable } from '../EditableTable'
 import * as Yup from 'yup'
 import { dateColumnType } from '../dataGridCell/GridEditDateCell'
+import { useIsAdmin } from '../../hooks/useIsAdmin'
 
 const defaultItem = {
   zach_name: '',
@@ -20,7 +21,8 @@ const validationSchema = Yup.object({
   zach_grade: Yup.string().required('Поле обязательно для заполнения'),
 })
 
-export const MemberExamTab = ({ memberId, readOnly }) => {
+export const MemberExamTab = ({ memberId }) => {
+  const readOnly = !useIsAdmin()
   const queryClient = useQueryClient()
   const { isLoading, data } = useFetchMemberExamList(memberId)
 

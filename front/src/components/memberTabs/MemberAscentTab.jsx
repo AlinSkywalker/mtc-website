@@ -9,6 +9,9 @@ import { dateColumnType, dateTimeColumnType } from '../dataGridCell/GridEditDate
 import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
 import { EditCascadeSelectMenu } from '../dataGridCell/EditCascadeSelectMenu'
 import { GridEditInputCell } from '@mui/x-data-grid'
+import { useIsAdmin } from '../../hooks/useIsAdmin'
+import { MobileMemberAscentTab } from './MobileMemberAscentTab'
+import { useIsMobile } from '../../hooks/useIsMobile'
 
 const defaultItem = {
   asc_event: '',
@@ -26,7 +29,9 @@ const validationSchema = Yup.object({
   asc_typ: Yup.string().required('Поле обязательно для заполнения'),
 })
 
-export const MemberAscentTab = ({ memberId, readOnly }) => {
+export const MemberAscentTab = ({ memberId }) => {
+  const readOnly = !useIsAdmin()
+  const isMobile = useIsMobile()
   const queryClient = useQueryClient()
   const { isLoading, data } = useFetchMemberAscentList(memberId)
 
@@ -181,6 +186,8 @@ export const MemberAscentTab = ({ memberId, readOnly }) => {
   }
 
   if (!memberId) return null
+  if (isMobile) return <MobileMemberAscentTab memberId={memberId} />
+
   return (
     <EditableTable
       rows={rows}

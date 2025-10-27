@@ -42,7 +42,7 @@ export function MultiValueSelecWithGroupingtEditInputCell(props) {
 
   const nameList = row[nameListField]
   const idList = row[idListField]
-  // console.log('nameList', dictionaryData)
+
   const apiRef = useGridApiContext()
 
   const [personName, setPersonName] = React.useState(nameList)
@@ -51,7 +51,7 @@ export function MultiValueSelecWithGroupingtEditInputCell(props) {
   const [autocompleteValue, setAutocompleteValue] = React.useState([])
 
   useEffect(() => {
-    // console.log(personId)
+
     const newValue = dictionaryData?.filter((item) => personId?.includes(item.id)) || []
     setAutocompleteValue(newValue)
   }, [dictionaryData, personId])

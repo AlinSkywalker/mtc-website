@@ -220,22 +220,27 @@ export const EventListTable = ({ readOnly = false }) => {
     queryClient.invalidateQueries({ queryKey: ['eventList'] })
   }
   const handleChangeShow = (event, show) => {
-    setShow(show);
-  };
+    if (show) {
+      setShow(show)
+    }
+  }
 
-  const rightPanel = (<> <ToggleButtonGroup
-    value={show}
-    exclusive
-    onChange={handleChangeShow}
-    aria-label="text alignment"
-  >
-    <ToggleButton value="future" aria-label="left aligned">
-      Будущие
-    </ToggleButton>
-    <ToggleButton value="past" aria-label="centered">
-      Прошедшие
-    </ToggleButton>
-  </ToggleButtonGroup></>
+  const rightPanel = (
+    <>
+      <ToggleButtonGroup
+        value={show}
+        exclusive
+        onChange={handleChangeShow}
+        aria-label='text alignment'
+      >
+        <ToggleButton value='future' aria-label='left aligned'>
+          Будущие
+        </ToggleButton>
+        <ToggleButton value='past' aria-label='centered'>
+          Прошедшие
+        </ToggleButton>
+      </ToggleButtonGroup>
+    </>
   )
 
   return (

@@ -11,7 +11,7 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload'
 export const EventProtocolTab = ({ eventName }) => {
   const { id: eventId } = useParams()
   const { isLoading, data } = useFetchEventProtocol(eventId)
-  console.log('eventName', eventName)
+
   const [rows, setRows] = React.useState(data)
   const csvOptions = { utf8WithBom: true, fileName: `Протокол ${eventName}`, delimiter: ';' }
   const CustomToolbar = () => {

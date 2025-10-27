@@ -14,17 +14,21 @@ export function AsynchronousAutocomplete({
   const [options, setOptions] = React.useState([])
   const [loading, setLoading] = React.useState(false)
 
+
+
   const { onChange, value } = field
+
+  const [inputValue, setInputValue] = React.useState(value?.[dataNameField])
 
   const handleOpen = () => {
     setOpen(true)
-    ;(async () => {
-      setLoading(true)
-      const { data } = await request()
-      setLoading(false)
+      ; (async () => {
+        setLoading(true)
+        const { data } = await request()
+        setLoading(false)
 
-      setOptions(data)
-    })()
+        setOptions(data)
+      })()
   }
 
   const handleClose = () => {
@@ -58,7 +62,7 @@ export function AsynchronousAutocomplete({
       fullWidth
       open={open}
       value={value}
-      inputValue={value?.[dataNameField] || ''}
+      inputValue={inputValue}
       onOpen={handleOpen}
       onClose={handleClose}
       onChange={(event, newValue) => {
@@ -68,6 +72,9 @@ export function AsynchronousAutocomplete({
       getOptionLabel={(option) => option[dataNameField]}
       options={options}
       loading={loading}
+      onInputChange={(event, newInputValue) => {
+        setInputValue(newInputValue)
+      }}
       renderOption={renderAutocompleteOption}
       renderInput={(params) => (
         <TextField

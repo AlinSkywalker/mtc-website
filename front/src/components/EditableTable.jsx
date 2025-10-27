@@ -30,6 +30,8 @@ export const EditableTable = ({
   toolbar,
   height,
   onRowSelectionModelChange,
+  rowSelectionModel,
+  checkboxSelection = false,
   addButtonDisabled,
   isCellEditable,
   isRowEditable = () => true,
@@ -220,6 +222,15 @@ export const EditableTable = ({
   const tableColumns = [...defaultColumns, ...columns]
   const tableHeight = height ? height : `calc(100vh - 150px)`
   const disabled = addButtonDisabled
+  const rowSelectionParams = {}
+  if (onRowSelectionModelChange) {
+    rowSelectionParams.onRowSelectionModelChange = onRowSelectionModelChange
+    rowSelectionParams.checkboxSelection = checkboxSelection
+  }
+  if (rowSelectionModel) {
+    rowSelectionParams.rowSelectionModel = rowSelectionModel
+  }
+
   return (
     <Grid spacing={2} container flexDirection={'column'}>
       {renderConfirmDialog()}
@@ -237,7 +248,7 @@ export const EditableTable = ({
           onRowEditStop={handleRowEditStop}
           processRowUpdate={handleProcessRowUpdate}
           onProcessRowUpdateError={handleProcessRowUpdateError}
-          onRowSelectionModelChange={onRowSelectionModelChange}
+          {...rowSelectionParams}
           showToolbar
           slots={{
             toolbar: () => {

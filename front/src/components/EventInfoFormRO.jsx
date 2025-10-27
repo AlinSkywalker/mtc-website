@@ -5,7 +5,8 @@ import Container from '@mui/material/Container'
 import { format } from 'date-fns'
 import { CircularProgress, Typography } from '@mui/material'
 import { useIsMobile } from '../hooks/useIsMobile'
-import { useFetchEventBaseList, useFetchEventInstructorsList } from '../queries/event'
+import { useFetchEventInstructorsList } from '../queries/event'
+import { useFetchEventBaseList } from '../queries/eventBase'
 
 export const EventInfoFormRO = ({ eventData: data, isLoading }) => {
   const isMobile = useIsMobile()

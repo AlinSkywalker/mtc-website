@@ -26,6 +26,10 @@ import TabPanel from '@mui/lab/TabPanel'
 import Box from '@mui/material/Box'
 import { format } from 'date-fns'
 import { AsynchronousAutocomplete } from '../components/AsynchronousAutocomplete'
+import { MemberLabaAscentTab } from '../components/memberTabs/MemberLabaAscentTab'
+import PhoneInput from 'react-phone-number-input/react-hook-form-input'
+import { PhoneField } from '../components/formFields/PhoneField'
+import { parsePhoneNumber } from 'react-phone-number-input'
 
 export const ProfilePage = () => {
   const defaultValues = {
@@ -41,7 +45,7 @@ export const ProfilePage = () => {
     size_shoe: '?',
     name_city: '',
     city: { name_city: '', id: 0 },
-    emergency_contact: ''
+    emergency_contact: '',
   }
   const { userInfo } = useContext(AuthContext)
   const { data } = useFetchProfile(userInfo.id)
@@ -67,7 +71,9 @@ export const ProfilePage = () => {
       const response = await apiClient.post('/api/profile', {
         ...data,
         date_birth: date_birth ? format(date_birth, 'yyyy-MM-dd') : null,
-        memb_city: city.id
+        memb_city: city.id,
+        tel_1: parsePhoneNumber(data.tel_1)?.number,
+        tel_2: parsePhoneNumber(data.tel_2)?.number,
       })
       // Handle successful login
     } catch (error) {
@@ -86,19 +92,24 @@ export const ProfilePage = () => {
   const currentMemberId = data?.id || ''
   const tabs = [
     {
-      name: 'sportCategory',
-      label: 'Разряды/Категории',
-      component: <MemberSportCategoryTab memberId={currentMemberId} readOnly={true} />,
-    },
-    {
       name: 'ascents',
       label: 'Восхождения',
-      component: <MemberAscentTab memberId={currentMemberId} readOnly={true} />,
+      component: <MemberAscentTab memberId={currentMemberId} />,
+    },
+    {
+      name: 'labaAscents',
+      label: 'Тренировки',
+      component: <MemberLabaAscentTab memberId={currentMemberId} />,
     },
     {
       name: 'exam',
       label: 'Зачеты',
-      component: <MemberExamTab memberId={currentMemberId} readOnly={true} />,
+      component: <MemberExamTab memberId={currentMemberId} />,
+    },
+    {
+      name: 'sportCategory',
+      label: 'Разряды/Категории',
+      component: <MemberSportCategoryTab memberId={currentMemberId} />,
     },
     {
       name: 'event',
@@ -117,12 +128,7 @@ export const ProfilePage = () => {
       maxWidth={false}
       sx={{ height: '100vh', backgroundColor: { xs: '#fff', md: '#f4f4f4' } }}
     >
-      <Grid
-        container
-        justifyContent='center'
-        alignItems='center'
-      // sx={{ width: '100%', height: '100%' }}
-      >
+      <Grid container justifyContent='center' alignItems='center'>
         <Card sx={{ width: 400 }}>
           <CardContent>
             <form onSubmit={handleSubmit(handleSaveProfileData)}>
@@ -240,16 +246,24 @@ export const ProfilePage = () => {
                   />
                 </Grid>
                 <Grid>
-                  <Controller
+                  {/* <Controller
                     name='tel_1'
                     control={control}
                     render={({ field }) => (
                       <TextField {...field} variant='outlined' label='Телефон основной' fullWidth />
                     )}
+                  /> */}
+                  <PhoneInput
+                    control={control}
+                    rules={{ required: true }}
+                    name='tel_1'
+                    label='Телефон основной'
+                    defaultCountry='RU'
+                    inputComponent={PhoneField}
                   />
                 </Grid>
                 <Grid>
-                  <Controller
+                  {/* <Controller
                     name='tel_2'
                     control={control}
                     render={({ field }) => (
@@ -260,6 +274,14 @@ export const ProfilePage = () => {
                         fullWidth
                       />
                     )}
+                  /> */}
+                  <PhoneInput
+                    control={control}
+                    rules={{ required: true }}
+                    name='tel_2'
+                    label='Телефон экстренного контакта'
+                    defaultCountry='RU'
+                    inputComponent={PhoneField}
                   />
                 </Grid>
                 <Grid>

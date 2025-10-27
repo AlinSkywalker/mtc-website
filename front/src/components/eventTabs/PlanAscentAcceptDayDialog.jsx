@@ -12,7 +12,7 @@ import IconButton from '@mui/material/IconButton'
 import { useQueryClient } from '@tanstack/react-query'
 import React, { useEffect } from 'react'
 import apiClient from '../../api/api'
-import { useFetchEventDepartmentMemberList } from '../../queries/event'
+import { useFetchEventDepartmentMemberList } from '../../queries/eventDepartment'
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
 import { format } from 'date-fns'
 
@@ -30,7 +30,7 @@ export const PlanAscentAcceptDayDialog = ({
   const [state, setState] = React.useState({})
   const [start, setStart] = React.useState()
   const [finish, setFinish] = React.useState()
-  console.log('state', state)
+
   const { data: selectedDateDepartmentMembers } = useFetchEventDepartmentMemberList({
     eventId,
     departmentId,
@@ -66,7 +66,7 @@ export const PlanAscentAcceptDayDialog = ({
     }
     apiClient
       .post(
-        `/api/eventList/${eventId}/department/${departmentId}/plan/${selectedPlan}/accept`,
+        `/api/eventList/${eventId}/department/${departmentId}/plan/${selectedPlan.id}/accept`,
         postData,
       )
       .then((res) => {

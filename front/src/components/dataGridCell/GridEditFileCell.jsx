@@ -32,7 +32,7 @@ const handleDownloadFile = (id, downloadApiPath, filePathField, fileNameField) =
   fileName = fileName.replaceAll('"', '')
   const link = document.createElement('a')
   link.href = url
-  // console.log('fileName', fileName)
+
   link.setAttribute('download', fileName) // Specify the filename here
   document.body.appendChild(link)
   link.click()
@@ -57,7 +57,7 @@ function GridEditFileCell({ id, field, value, colDef }) {
 
   const handleFileInput = (event, newValue) => {
     const files = event.currentTarget.files
-    // console.log('files', files)
+
     apiRef.current.setEditCellValue({ id, field: colDef.fileCol, value: files })
   }
   const handleClearFile = () => {

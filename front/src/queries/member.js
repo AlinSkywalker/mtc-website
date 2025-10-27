@@ -1,6 +1,6 @@
 import apiClient from '../api/api'
 import { useQuery } from '@tanstack/react-query'
-import parseISO from 'date-fns/parseISO'
+import { parseISO } from 'date-fns'
 
 export function useFetchMemberList(params) {
   let queryUrl = `/api/memberList`
@@ -67,6 +67,17 @@ export function useFetchMemberSportCategoryList(id) {
     queryFn: async () => {
       if (!id) return []
       const { data } = await apiClient.get(`/api/memberList/${id}/sportCategory`)
+      return data
+    },
+  })
+}
+
+export function useFetchMemberLabaAscentList(id) {
+  return useQuery({
+    queryKey: ['member', id, 'labaAscent'],
+    queryFn: async () => {
+      if (!id) return []
+      const { data } = await apiClient.get(`/api/memberList/${id}/labaAscent`)
       return data
     },
   })

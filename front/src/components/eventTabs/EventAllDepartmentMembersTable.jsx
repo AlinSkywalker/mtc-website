@@ -2,7 +2,7 @@ import React, { Fragment, useState } from 'react'
 import {
   useFetchEventAllDepartmentMembersList,
   useFetchEventDepartmentList,
-} from '../../queries/event'
+} from '../../queries/eventDepartment'
 import Grid from '@mui/material/Grid'
 import { getDatesInRange } from '../../utils/getDatesInRange'
 import './EventAllDepartmentPlansTableStyle.css'

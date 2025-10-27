@@ -1,5 +1,5 @@
 import React from 'react'
-import { useFetchEventDepartmentList } from '../../queries/event'
+import { useFetchEventDepartmentList } from '../../queries/eventDepartment'
 import apiClient from '../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
 import { EditableTable } from '../EditableTable'

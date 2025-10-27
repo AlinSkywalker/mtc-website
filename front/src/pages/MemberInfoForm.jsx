@@ -9,7 +9,7 @@ import Container from '@mui/material/Container'
 import apiClient from '../api/api'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { format } from 'date-fns'
-import { AsynchronousAutocomplete } from './AsynchronousAutocomplete'
+import { AsynchronousAutocomplete } from '../components/AsynchronousAutocomplete'
 import { CircularProgress } from '@mui/material'
 import { sizeClothOptions, sizeShoeOptions } from '../constants'
 import Select from '@mui/material/Select'
@@ -19,6 +19,9 @@ import FormControl from '@mui/material/FormControl'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
 import { useIsMobile } from '../hooks/useIsMobile'
+import PhoneInput from 'react-phone-number-input/react-hook-form-input'
+import { PhoneField } from '../components/formFields/PhoneField'
+import { parsePhoneNumber } from 'react-phone-number-input'
 
 const defaultValues = {
   fio: '',
@@ -40,7 +43,7 @@ const defaultValues = {
   city: { name_city: '', id: 0 },
   ledu: 'WI2',
   skali: '5a',
-  emergency_contact: ''
+  emergency_contact: '',
 }
 
 const validationSchema = Yup.object({
@@ -80,6 +83,8 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
         date_razr: date_razr ? format(date_razr, 'yyyy-MM-dd') : null,
         date_zeton: date_zeton ? format(date_zeton, 'yyyy-MM-dd') : null,
         date_instr: date_instr ? format(date_instr, 'yyyy-MM-dd') : null,
+        tel_1: parsePhoneNumber(data.tel_1)?.number,
+        tel_2: parsePhoneNumber(data.tel_2)?.number,
       })
       reset(data)
     } catch (error) {
@@ -216,16 +221,24 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
               />
             </Grid>
             <Grid size={isMobile ? 12 : 2}>
-              <Controller
+              {/* <Controller
                 name='tel_1'
                 control={control}
                 render={({ field }) => (
                   <TextField {...field} variant='outlined' label='Телефон основной' fullWidth />
                 )}
+              /> */}
+              <PhoneInput
+                control={control}
+                rules={{ required: true }}
+                name='tel_1'
+                label='Телефон основной'
+                defaultCountry='RU'
+                inputComponent={PhoneField}
               />
             </Grid>
             <Grid size={isMobile ? 12 : 2}>
-              <Controller
+              {/* <Controller
                 name='tel_2'
                 control={control}
                 render={({ field }) => (
@@ -236,6 +249,14 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
                     fullWidth
                   />
                 )}
+              /> */}
+              <PhoneInput
+                control={control}
+                rules={{ required: true }}
+                name='tel_2'
+                label='Телефон экстренного контакта'
+                defaultCountry='RU'
+                inputComponent={PhoneField}
               />
             </Grid>
             <Grid size={isMobile ? 12 : 2}>

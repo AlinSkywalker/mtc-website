@@ -2,7 +2,7 @@ import React from 'react'
 import {
   useFetchEventBaseHouseRoomMemberList,
   useFetchMemberForEventRoom,
-} from '../../queries/event'
+} from '../../queries/eventBase'
 import apiClient from '../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
 import { EditableTable } from '../EditableTable'

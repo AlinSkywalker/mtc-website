@@ -53,7 +53,7 @@ export const EventMembersTab = ({ eventId }) => {
   }, [data])
 
   const handleSaveNewItem = (data) => {
-    // console.log('data', data)
+
     const { id, isNew, med_file, strah_file, ...postedData } = data
     const formData = new FormData()
     formData.append('data', JSON.stringify(postedData))
@@ -289,26 +289,26 @@ export const EventMembersTab = ({ eventId }) => {
   const fieldToFocus = 'fio'
   const columnVisibilityModel = readOnly
     ? {
-        eventmemb_memb: false,
-        med_file: false,
-        strah_file: false,
-        memb_email: false,
-        tel_1: false,
-        eventmemb_gen: false,
-        eventmemb_pred: false,
-        eventmemb_nstrah: false,
-        eventmemb_nmed: false,
-        med_file_name: false,
-        med_file_path: false,
-        strah_file_name: false,
-        strah_file_path: false,
-        alerts: false,
-      }
+      eventmemb_memb: false,
+      med_file: false,
+      strah_file: false,
+      memb_email: false,
+      tel_1: false,
+      eventmemb_gen: false,
+      eventmemb_pred: false,
+      eventmemb_nstrah: false,
+      eventmemb_nmed: false,
+      med_file_name: false,
+      med_file_path: false,
+      strah_file_name: false,
+      strah_file_path: false,
+      alerts: false,
+    }
     : {
-        eventmemb_memb: false,
-        med_file: false,
-        strah_file: false,
-      }
+      eventmemb_memb: false,
+      med_file: false,
+      strah_file: false,
+    }
 
   const processRowUpdate = async (newRow, oldRow) => {
     validationSchema.validateSync(newRow, { abortEarly: false })

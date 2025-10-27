@@ -21,6 +21,8 @@ import theme from './api/theme'
 import { Grid, ThemeProvider } from '@mui/material'
 import { SnackbarProvider } from 'notistack'
 import { EventListPageRO } from './pages/EventListPageRO'
+import { PublicLayout } from './components/PublicLayout'
+import { PersonalDataConsentPage } from './pages/PersonalDataConsentPage'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -37,7 +39,7 @@ const PrivateRoute = ({ children }) => {
 
 const AdminRoute = ({ children }) => {
   const { isAuthenticated, userInfo } = useContext(AuthContext)
-  // console.log('userInfo', userInfo)
+
   if (!isAuthenticated) {
     return <Navigate to='/login' />
   }
@@ -53,7 +55,7 @@ const AdminRoute = ({ children }) => {
 }
 
 const PublicRoute = ({ children }) => {
-  return children
+  return <PublicLayout>{children}</PublicLayout>
 }
 
 const LoginRoute = ({ children }) => {
@@ -172,6 +174,15 @@ const App = () => {
                       </PrivateRoute>
                     }
                   />
+                  <Route
+                    path='/personalDataConsent'
+                    element={
+                      <PublicRoute>
+                        <PersonalDataConsentPage />
+                      </PublicRoute>
+                    }
+                  />
+
                 </Routes>
               </BrowserRouter>
             </AuthProvider>

@@ -38,12 +38,11 @@ export const EventDepartmentPlanJournalCell = ({
   }
   const openJournalItem = Boolean(anchorElJournalItem)
   const departmentJournalItem = journalItem[department.id]
-  // console.log('departmentJournalItem', departmentJournalItem?.id)
 
   const handleEditJournalItem = () => {
     const postData = { place_plan: placePlan, direction, place_fact: placeFact }
     const putData = { ...postData, comm_time: date, dept_id: department.id }
-    // console.log('departmentJournalItem', departmentJournalItem)
+
     const apiMethod = departmentJournalItem
       ? apiClient.post(
         `/api/eventList/${eventId}/departments/planJournal/${departmentJournalItem.id}`,

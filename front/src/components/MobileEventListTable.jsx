@@ -17,30 +17,39 @@ export const MobileEventListTable = ({ readOnly = false }) => {
   }
 
   const handleChangeShow = (event, show) => {
-    setShow(show);
-  };
+    if (show) {
+      setShow(show)
+    }
+  }
 
-  const rightPanel = (<> <ToggleButtonGroup
-    value={show}
-    exclusive
-    onChange={handleChangeShow}
-    aria-label="text alignment"
-    sx={{ width: '100%' }}
-  >
-    <ToggleButton value="future" aria-label="left aligned" sx={{ width: '50%' }}>
-      Будущие
-    </ToggleButton>
-    <ToggleButton value="past" aria-label="centered" sx={{ width: '50%' }}>
-      Прошедшие
-    </ToggleButton>
-  </ToggleButtonGroup></>
+  const rightPanel = (
+    <>
+      <ToggleButtonGroup
+        value={show}
+        exclusive
+        onChange={handleChangeShow}
+        aria-label='text alignment'
+        sx={{ width: '100%' }}
+      >
+        <ToggleButton value='future' aria-label='left aligned' sx={{ width: '50%' }}>
+          Будущие
+        </ToggleButton>
+        <ToggleButton value='past' aria-label='centered' sx={{ width: '50%' }}>
+          Прошедшие
+        </ToggleButton>
+      </ToggleButtonGroup>
+    </>
   )
 
   const renderEventItem = (eventItem) => {
     const eventStart = format(parseISO(eventItem.event_start || ''), 'dd.MM.yyyy')
     const eventFinish = format(parseISO(eventItem.event_finish || ''), 'dd.MM.yyyy')
     return (
-      <Card onClick={handleItemClickName(eventItem.id)} sx={{ margin: 2, padding: 2 }}>
+      <Card
+        onClick={handleItemClickName(eventItem.id)}
+        sx={{ margin: 2, padding: 2 }}
+        key={eventItem.id}
+      >
         <Typography variant='h5'>{eventItem.event_name}</Typography>
         <Typography>
           {eventStart} - {eventFinish}
@@ -49,5 +58,10 @@ export const MobileEventListTable = ({ readOnly = false }) => {
       </Card>
     )
   }
-  return (<Grid>{rightPanel}{data?.map(renderEventItem)}</Grid>)
+  return (
+    <Grid>
+      {rightPanel}
+      {data?.map(renderEventItem)}
+    </Grid>
+  )
 }

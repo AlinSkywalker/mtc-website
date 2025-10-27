@@ -2,7 +2,7 @@ import React from 'react'
 import {
   useFetchEventDepartmentPlanList,
   useFetchEventDepartmentMemberList,
-} from '../../queries/event'
+} from '../../queries/eventDepartment'
 import apiClient from '../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
 import { EditableTable } from '../EditableTable'
@@ -18,6 +18,7 @@ import {
   plansTableHiddenColumns,
   plansTableColumnVisibilityModel,
 } from './eventDepartmentPlansTableSettings'
+import { PlanLabaAcceptDayDialog } from './PlanLabaAcceptDayDialog'
 
 export const EventDepartmentPlansTable = ({
   eventId,
@@ -44,7 +45,7 @@ export const EventDepartmentPlansTable = ({
 
   const [open, setOpen] = React.useState(false)
   const [selectedDate, setSelectedDate] = React.useState()
-  const [selectedPlan, setSelectedPlan] = React.useState()
+  const [selectedPlan, setSelectedPlan] = React.useState({})
 
   const { isLoading, data } = useFetchEventDepartmentPlanList(eventId, departmentId)
 
@@ -136,7 +137,9 @@ export const EventDepartmentPlansTable = ({
 
   const renderAcceptButtonCell = (params) => {
     const buttonElement = React.useRef(null)
-    if (params.row.type !== 'Восхождение') {
+    const isAscent = params.row.type === 'Восхождение'
+    const isLaba = params.row.type === 'Занятие'
+    if (!(isAscent || isLaba)) {
       return <></>
     }
     if (!params.row.start) {
@@ -146,21 +149,36 @@ export const EventDepartmentPlansTable = ({
     const isFutureDate = new Date() < itemDate
     const isPrevAcceptedRouteEqualsRoute =
       params.row.route === params.row.prev_accepted_route || !params.row.prev_accepted_route
-    return (
-      <Button
-        size='small'
-        variant='contained'
-        onClick={handleClickOpen(params.row.start, params.row.id)}
-        ref={buttonElement}
-        disabled={
-          (!!params.row.accepted && isPrevAcceptedRouteEqualsRoute) ||
-          isFutureDate ||
-          !params.row.route
-        }
-      >
-        Результат
-      </Button>
-    )
+    if (isAscent) {
+      return (
+        <Button
+          size='small'
+          variant='contained'
+          onClick={handleClickOpen(params.row.start, params.row)}
+          ref={buttonElement}
+          disabled={
+            (!!params.row.accepted && isPrevAcceptedRouteEqualsRoute) ||
+            isFutureDate ||
+            !params.row.route
+          }
+        >
+          Результат
+        </Button>
+      )
+    }
+    if (isLaba) {
+      return (
+        <Button
+          size='small'
+          variant='contained'
+          onClick={handleClickOpen(params.row.start, params.row)}
+          ref={buttonElement}
+          disabled={isFutureDate || !params.row.laba}
+        >
+          Результат
+        </Button>
+      )
+    }
   }
 
   const handleClickOpen = (clickDate, clickPlan) => () => {
@@ -269,8 +287,19 @@ export const EventDepartmentPlansTable = ({
         height='calc(100vh - 150px)'
         addButtonDisabled={!departmentId}
       />
-      {selectedDate && (
+      {selectedDate && selectedPlan.type === 'Восхождение' && (
         <PlanAscentAcceptDayDialog
+          departmentId={departmentId}
+          eventId={eventId}
+          selectedDate={selectedDate}
+          selectedPlan={selectedPlan}
+          open={open}
+          setOpen={setOpen}
+          setSelectedDate={setSelectedDate}
+        />
+      )}
+      {selectedDate && selectedPlan.type === 'Занятие' && (
+        <PlanLabaAcceptDayDialog
           departmentId={departmentId}
           eventId={eventId}
           selectedDate={selectedDate}

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useFetchEventBaseList, useFetchBaseForEvent } from '../queries/event'
+import { useFetchEventBaseList, useFetchBaseForEvent } from '../queries/eventBase'
 import apiClient from '../api/api'
 import { useQueryClient } from '@tanstack/react-query'
 import { EditableTable } from './EditableTable'

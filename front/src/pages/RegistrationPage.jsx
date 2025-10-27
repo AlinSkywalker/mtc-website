@@ -6,18 +6,19 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Grid from '@mui/material/Grid'
 import Container from '@mui/material/Container'
-import { useNavigate, redirect, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { AuthContext } from '../components/AuthContext'
 import apiClient from '../api/api'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Typography } from '@mui/material'
+import { Checkbox, FormControlLabel, Typography } from '@mui/material'
 import * as Yup from 'yup'
 import { format } from 'date-fns'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
+import { RegistrationForm } from './RegistrationForm'
 
 const validationSchema = Yup.object({
   email: Yup.string().required('Поле обязательно для заполнения'),
@@ -33,6 +34,7 @@ const validationSchema = Yup.object({
       test: (value, context) => value == context.parent.password,
     }),
   date_birth: Yup.string().required('Поле обязательно для заполнения'),
+  personal_data_consent: Yup.boolean(),
 })
 
 const defaultValues = {
@@ -42,6 +44,7 @@ const defaultValues = {
   password: '',
   password_repeat: '',
   gender: 'М',
+  personal_data_consent: false,
 }
 
 export const RegistrationPage = () => {
@@ -51,8 +54,15 @@ export const RegistrationPage = () => {
     control,
   } = useForm({ defaultValues, resolver: yupResolver(validationSchema) })
 
-  const [serverError, setServerError] = useState(false)
+  const [serverError, setServerError] = useState('')
   const { setIsAuthenticated, setUserInfo } = useContext(AuthContext)
+
+  const [consentValue, setConsentValue] = useState(false)
+
+  const handleChangeConsentValue = () => {
+    setConsentValue((prevValue) => !prevValue)
+  }
+
   const handleLogin = (data, e) => {
     e.preventDefault()
 
@@ -67,8 +77,8 @@ export const RegistrationPage = () => {
       })
       .catch((error) => {
         // Handle login error
-        console.error(error)
-        setServerError(true)
+        console.error(error.response.data.message)
+        setServerError(error.response.data.message)
       })
   }
 
@@ -83,116 +93,17 @@ export const RegistrationPage = () => {
         alignItems='center'
         sx={{ width: '100%', height: '100%' }}
       >
-        <Card sx={{ minWidth: 475 }}>
+        <Card sx={{ minWidth: 275 }}>
           <CardContent>
-            <form onSubmit={handleSubmit(handleLogin)}>
-              <Grid
-                container
-                justifyContent='center'
-                alignItems='center'
-                flexDirection='column'
-                spacing={2}
-              >
-                <Controller
-                  name='email'
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      variant='outlined'
-                      label='Email'
-                      error={errors[field.name]}
-                      helperText={errors[field.name]?.message}
-                      fullWidth
-                    />
-                  )}
-                />
-                <Controller
-                  name='fio'
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      variant='outlined'
-                      label='ФИО'
-                      fullWidth
-                      error={errors[field.name]}
-                      helperText={errors[field.name]?.message}
-                    />
-                  )}
-                />
-                <Controller
-                  name='date_birth'
-                  control={control}
-                  render={({ field }) => (
-                    <DatePicker
-                      label='Дата рождения'
-                      {...field}
-                      slotProps={{ textField: { fullWidth: true } }}
-                    />
-                  )}
-                />
-                <Controller
-                  name='gender'
-                  control={control}
-                  render={({ field }) => (
-                    <FormControl fullWidth>
-                      <InputLabel id='genderLabel'>Пол</InputLabel>
-                      <Select {...field} label='Пол' fullWidth labelId='genderLabel'>
-                        {['М', 'Ж'].map((item, index) => (
-                          <MenuItem value={item} key={index}>
-                            {item}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  )}
-                />
-                <Controller
-                  name='password'
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      variant='outlined'
-                      label='Пароль'
-                      type='password'
-                      error={errors[field.name]}
-                      helperText={errors[field.name]?.message}
-                      fullWidth
-                    />
-                  )}
-                />
-                <Controller
-                  name='password_repeat'
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      variant='outlined'
-                      label='Повторите пароль'
-                      type='password'
-                      error={errors[field.name]}
-                      helperText={errors[field.name]?.message}
-                      fullWidth
-                    />
-                  )}
-                />
-                <Grid>
-                  <Button variant='contained' type='submit'>
-                    Зарегистрироваться
-                  </Button>
-                </Grid>
-                {serverError && (
-                  <Grid>
-                    <Typography sx={{ color: 'red' }}>Произошла ошибка при регистрации</Typography>
-                  </Grid>
-                )}
-                <Grid>
-                  <Link to='/login'>Войти в систему</Link>
-                </Grid>
-              </Grid>
-            </form>
+            <RegistrationForm
+              handleLogin={handleLogin}
+              handleSubmit={handleSubmit}
+              control={control}
+              errors={errors}
+              consentValue={consentValue}
+              handleChangeConsentValue={handleChangeConsentValue}
+              serverError={serverError}
+            />
           </CardContent>
         </Card>
       </Grid>
