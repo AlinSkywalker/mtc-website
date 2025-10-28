@@ -1,76 +1,11 @@
-import React, { useContext, useState } from 'react'
-import { useForm, Controller } from 'react-hook-form'
-import TextField from '@mui/material/TextField'
-import Button from '@mui/material/Button'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import Grid from '@mui/material/Grid'
-import Container from '@mui/material/Container'
-import { useNavigate, redirect, Link } from 'react-router-dom'
-import { AuthContext } from '../components/AuthContext'
-import apiClient from '../api/api'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { Typography } from '@mui/material'
-import * as Yup from 'yup'
-import { format } from 'date-fns'
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
-import InputLabel from '@mui/material/InputLabel'
-import FormControl from '@mui/material/FormControl'
-
-const validationSchema = Yup.object({
-  email: Yup.string().required('Поле обязательно для заполнения'),
-  fio: Yup.string().required('Поле обязательно для заполнения'),
-  password: Yup.string().required('Поле обязательно для заполнения'),
-  password_repeat: Yup.string()
-    .required('Поле обязательно для заполнения')
-    .test({
-      name: 'notSt',
-      exclusive: false,
-      params: {},
-      message: 'Пароли не совпадают',
-      test: (value, context) => value == context.parent.password,
-    }),
-  date_birth: Yup.string().required('Поле обязательно для заполнения'),
-})
-
-const defaultValues = {
-  email: '',
-  fio: '',
-  date_birth: null,
-  password: '',
-  password_repeat: '',
-  gender: 'М',
-}
+import React from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Typography, Button, Grid, Container } from '@mui/material'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 
 export const PersonalDataConsentPage = () => {
-  const {
-    handleSubmit,
-    formState: { errors },
-    control,
-  } = useForm({ defaultValues, resolver: yupResolver(validationSchema) })
+  const navigate = useNavigate()
 
-  const [serverError, setServerError] = useState(false)
-  const { setIsAuthenticated, setUserInfo } = useContext(AuthContext)
-  const handleLogin = (data, e) => {
-    e.preventDefault()
-
-    apiClient
-      .post('/api/register', { ...data, date_birth: format(data.date_birth, 'yyyy-MM-dd') })
-      .then((response) => {
-        // Handle successful login
-        const { token, user_role, user_id } = response.data
-        setIsAuthenticated(true)
-        setUserInfo({ id: user_id, role: user_role })
-        localStorage.setItem('token', token)
-      })
-      .catch((error) => {
-        // Handle login error
-        console.error(error)
-        setServerError(true)
-      })
-  }
   const pStyle = { mb: 2 }
   return (
     <Container
@@ -146,6 +81,11 @@ export const PersonalDataConsentPage = () => {
           от 27.07.2006 № 152-ФЗ «О персональных данных», Политикой оператора в отношении
           персональных данных. Права и обязанности в области защиты персональных данных мне понятны.
         </Typography>
+      </Grid>
+      <Grid>
+        <Button variant='contained' startIcon={<ArrowBackIcon />} onClick={() => navigate(-1)}>
+          Вернуться назад
+        </Button>
       </Grid>
     </Container>
   )
