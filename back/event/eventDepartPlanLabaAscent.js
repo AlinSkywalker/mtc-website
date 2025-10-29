@@ -20,6 +20,8 @@ const eventDepartPlanLabaAscentRouter = (app, passport) => {
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
       const { planId } = req.params;
+      const { withAccept } = req.query;
+
       const {
         data,
         ascent_date,
@@ -48,7 +50,22 @@ const eventDepartPlanLabaAscentRouter = (app, passport) => {
                 res.status(500).json({ success: false, message: error });
                 return;
               }
-              res.json({ success: true });
+              if (withAccept) {
+                pool.query(
+                  `UPDATE depart_plan dp SET accepted='Зачтено', updated_date=CURRENT_TIMESTAMP WHERE id='${planId}'`,
+                  (error, result) => {
+                    if (error) {
+                      console.log(error);
+                      res.status(500).json({ success: false, message: error });
+                      return;
+                    }
+                    res.json({ success: true });
+                  })
+              }
+              else {
+                res.json({ success: true });
+              }
+
             }
           );
         }

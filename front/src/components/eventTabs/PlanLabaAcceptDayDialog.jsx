@@ -9,7 +9,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import React, { useEffect, useState } from 'react'
 import apiClient from '../../api/api'
 import { useFetchEventDepartmentMemberList } from '../../queries/eventDepartment'
-import { DataGrid, GridEditInputCell } from '@mui/x-data-grid'
+import { DataGrid, GridEditInputCell, Toolbar, useGridApiRef } from '@mui/x-data-grid'
 import { useFetchLaboratoryRouteDictionaryList } from '../../queries/dictionary'
 import { checkboxColumnType } from '../dataGridCell/GridEditCheckboxCell'
 import { useFetchEventDepartPlanLabaAscent } from '../../queries/eventDepartPlanLabaAscent'
@@ -29,6 +29,7 @@ export const PlanLabaAcceptDayDialog = ({
   selectedPlan,
 }) => {
   const queryClient = useQueryClient()
+  const apiRef = useGridApiRef()
 
   const { isLoading, data: laboratoryRouteData } = useFetchLaboratoryRouteDictionaryList(
     selectedPlan.laba,
@@ -48,7 +49,6 @@ export const PlanLabaAcceptDayDialog = ({
   const { isLoading: isLabaAscentsLoading, data: selectedDateDepartmentLabaAscents } =
     useFetchEventDepartPlanLabaAscent(eventId, departmentId, selectedPlan.id)
 
-  const [laboratoryRouteRows, setLaboratoryRouteRows] = React.useState([])
   const [memberRows, setMemberRows] = React.useState(selectedDateDepartmentMembers)
 
   React.useEffect(() => {
@@ -86,6 +86,7 @@ export const PlanLabaAcceptDayDialog = ({
                     labatr_sl,
                     ascent_belay,
                     ascent_type,
+                    member_id: memberItem.member_id,
                   },
                 }
               },
@@ -98,8 +99,19 @@ export const PlanLabaAcceptDayDialog = ({
       setState(membersId)
     }
   }, [selectedDateDepartmentMembers, laboratoryRouteData, selectedDateDepartmentLabaAscents])
-  // console.log('state', state)
 
+  const [isEditMode, setIsEditMode] = useState(false)
+
+  const applyNewChanges = () => {
+    laboratoryRouteData.forEach((row) => {
+      const newRow = apiRef.current?.getRowWithUpdatedValues(row.id, 'id') || {}
+      setState((prevState) => {
+        const newState = { ...prevState }
+        newState[newRow.member_id][newRow.id] = newRow
+        return newState
+      })
+    })
+  }
   const handleRowSelectionModelChange = (newRowSelectionModel) => {
     setRowSelectionModel(newRowSelectionModel)
     let newMemberId = ''
@@ -108,10 +120,28 @@ export const PlanLabaAcceptDayDialog = ({
     })
     setSelectedMember(newMemberId)
 
-    const routeRows = Object.values(state[newMemberId] || {})
-    setLaboratoryRouteRows(routeRows)
+    const routeRows = Object.values(state[newMemberId])
+
+    if (isEditMode) {
+      setIsEditMode(false)
+      applyNewChanges()
+      laboratoryRouteData.forEach((row) => {
+
+        // const newRow = apiRef.current?.getRowWithUpdatedValues(row.id, 'id') || {}
+        // setState((prevState) => {
+        //   const newState = { ...prevState }
+        //   newState[newRow.member_id][newRow.id] = newRow
+        //   return newState
+        // })
+        try {
+          apiRef.current?.stopRowEditMode({ id: row.id, ignoreModifications: true })
+        } catch (err) { }
+      })
+    }
+    apiRef.current?.setRows(routeRows)
   }
-  const handleAcceptDay = () => {
+
+  const handleAcceptDay = (withAccept) => () => {
     const data = []
     Object.entries(state).forEach(([memberId, routeObject]) => {
       Object.values(routeObject)
@@ -128,7 +158,7 @@ export const PlanLabaAcceptDayDialog = ({
     }
     apiClient
       .put(
-        `/api/eventList/${eventId}/department/${departmentId}/plan/${selectedPlan.id}/labaAscents`,
+        `/api/eventList/${eventId}/department/${departmentId}/plan/${selectedPlan.id}/labaAscents?withAccept=${withAccept}`,
         postData,
       )
       .then((res) => {
@@ -200,6 +230,21 @@ export const PlanLabaAcceptDayDialog = ({
     },
   ]
 
+  const handleStartEditing = () => {
+    if (isEditMode) {
+      setIsEditMode(false)
+      applyNewChanges()
+      laboratoryRouteData.forEach((row) => {
+        apiRef.current?.stopRowEditMode({ id: row.id })
+      })
+    } else {
+      setIsEditMode(true)
+      laboratoryRouteData.forEach((row) => {
+        apiRef.current?.startRowEditMode({ id: row.id })
+      })
+    }
+  }
+
   return (
     <Dialog onClose={handleClose} open={open} maxWidth='xl'>
       <DialogTitle>
@@ -229,24 +274,43 @@ export const PlanLabaAcceptDayDialog = ({
               rowHeight={42}
               onRowSelectionModelChange={handleRowSelectionModelChange}
               rowSelectionModel={rowSelectionModel}
+              showToolbar
+              slots={{
+                toolbar: () => {
+                  return <Toolbar />
+                },
+              }}
             />
           </Grid>
           <Grid size={7} sx={{ height: `calc(100vh - 190px)` }}>
             <DataGrid
-              rows={laboratoryRouteRows}
+              apiRef={apiRef}
               columns={labaRouteColumns}
               columnHeaderHeight={36}
               rowHeight={42}
               editMode='row'
-              processRowUpdate={processRouteRowUpdate}
+              showToolbar
+              slots={{
+                toolbar: () => {
+                  return (
+                    <Toolbar>
+                      <Button onClick={handleStartEditing} disabled={!selectedMember}>
+                        {isEditMode ? 'Применить' : 'Редактировать'}
+                        {/* тест */}
+                      </Button>
+                    </Toolbar>
+                  )
+                },
+              }}
             />
           </Grid>
         </Grid>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Отмена</Button>
-        <Button onClick={handleAcceptDay} autoFocus>
-          Сохранить
+        <Button onClick={handleAcceptDay(false)}>Сохранить</Button>
+        <Button onClick={handleAcceptDay(true)} autoFocus variant='contained'>
+          Сохранить и зачесть
         </Button>
       </DialogActions>
     </Dialog>

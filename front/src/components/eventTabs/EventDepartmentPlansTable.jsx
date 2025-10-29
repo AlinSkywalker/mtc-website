@@ -173,7 +173,7 @@ export const EventDepartmentPlansTable = ({
           variant='contained'
           onClick={handleClickOpen(params.row.start, params.row)}
           ref={buttonElement}
-          disabled={isFutureDate || !params.row.laba}
+          disabled={isFutureDate || !params.row.laba || !!params.row.accepted}
         >
           Результат
         </Button>
