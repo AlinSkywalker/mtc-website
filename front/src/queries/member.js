@@ -35,6 +35,7 @@ export function useFetchMemberExamList(id) {
   return useQuery({
     queryKey: ['member', id, 'exam'],
     queryFn: async () => {
+      if (!id) return []
       const { data } = await apiClient.get(`/api/memberList/${id}/exam`)
       return data
     },
@@ -45,6 +46,7 @@ export function useFetchMemberAscentList(id) {
   return useQuery({
     queryKey: ['member', id, 'ascent'],
     queryFn: async () => {
+      if (!id) return []
       const { data } = await apiClient.get(`/api/memberList/${id}/ascent`)
       return data
     },
@@ -55,6 +57,7 @@ export function useFetchMemberEvent(id) {
   return useQuery({
     queryKey: ['member', id, 'events'],
     queryFn: async () => {
+      if (!id) return []
       const { data } = await apiClient.get(`/api/memberList/${id}/events`)
       return data
     },

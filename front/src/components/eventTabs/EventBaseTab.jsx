@@ -5,8 +5,8 @@ import Tab from '@mui/material/Tab'
 import Box from '@mui/material/Box'
 import Tabs from '@mui/material/Tabs'
 
-import { EventBaseHouseRoomTable } from './EventBaseHouseRoomTable'
-import { EventBaseHouseRoomMemberTable } from './EventBaseHouseRoomMemberTable'
+import { EventBaseHouseRoomTable } from './tables/EventBaseHouseRoomTable'
+import { EventBaseHouseRoomMemberTable } from './tables/EventBaseHouseRoomMemberTable'
 import { useParams, useLocation, Route, Routes, Link } from 'react-router-dom'
 import { EventBaseSettlementTab } from './EventBaseSettlementTab'
 

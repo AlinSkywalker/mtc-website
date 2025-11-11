@@ -1,8 +1,10 @@
 import React, { Fragment, useState } from 'react'
-import { useFetchEventFullBase } from '../../queries/eventBase'
-import { useFetchEventDepartmentList } from '../../queries/eventDepartment'
+import {
+  useFetchEventAllDepartmentMembersList,
+  useFetchEventDepartmentList,
+} from '../../../queries/eventDepartment'
 import Grid from '@mui/material/Grid'
-import { getDatesInRange } from '../../utils/getDatesInRange'
+import { getDatesInRange } from '../../../utils/getDatesInRange'
 import './EventAllDepartmentPlansTableStyle.css'
 import IconButton from '@mui/material/IconButton'
 import ScheduleIcon from '@mui/icons-material/Schedule'
@@ -10,10 +12,15 @@ import Tooltip from '@mui/material/Tooltip'
 import { formatISO } from 'date-fns'
 import { Typography } from '@mui/material'
 
-export const EventMemberSettlement = ({ eventId, seleсtedMember }) => {
-  const { isLoading, data } = useFetchEventFullBase(eventId)
+export const EventAllDepartmentMembersTable = ({ eventId, eventStart, eventFinish }) => {
+  const { isLoading, data } = useFetchEventAllDepartmentMembersList(eventId)
   const { data: departmentData } = useFetchEventDepartmentList(eventId)
-
+  const dates = getDatesInRange(new Date(eventStart), new Date(eventFinish))
+  const isPastEvent = new Date(eventFinish) < new Date()
+  const [isShowPast, setIsShowPast] = useState(isPastEvent)
+  const handleShowPast = () => {
+    setIsShowPast((prev) => !prev)
+  }
   const renderCell = (department, date) => {
     const depMembers = data[date]?.[department.id] || []
 
@@ -22,9 +29,7 @@ export const EventMemberSettlement = ({ eventId, seleсtedMember }) => {
         <Grid sx={{ textAlign: 'center' }}>
           {depMembers.map((item, index) => (
             <Fragment key={index}>
-              <Typography variant='caption' className='depMember'>
-                {item}
-              </Typography>
+              <Typography variant='caption' className='depMember'>{item}</Typography>
             </Fragment>
           ))}
         </Grid>

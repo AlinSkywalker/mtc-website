@@ -1,21 +1,9 @@
 import React, { useState } from 'react'
-import { useFetchMemberAscentList } from '../../queries/member'
-import apiClient from '../../api/api'
-import { useQueryClient } from '@tanstack/react-query'
-import { EditableTable } from '../EditableTable'
-import * as Yup from 'yup'
-import { useFetchEventList } from '../../queries/event'
-import { dateColumnType, dateTimeColumnType } from '../dataGridCell/GridEditDateCell'
-import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
-import { EditCascadeSelectMenu } from '../dataGridCell/EditCascadeSelectMenu'
-import { GridEditInputCell } from '@mui/x-data-grid'
-import { useIsAdmin } from '../../hooks/useIsAdmin'
+
 import { format, parseISO } from 'date-fns'
 import { Card, CircularProgress, Container, Grid, Typography } from '@mui/material'
 
-export const MobileMemberAscentTab = ({ memberId }) => {
-  const { isLoading, data } = useFetchMemberAscentList(memberId)
-
+export const MobileMemberAscentTab = ({ isLoading, data }) => {
   const [expandedItemId, setExpandedItemId] = useState('')
   if (isLoading)
     return (
@@ -26,7 +14,6 @@ export const MobileMemberAscentTab = ({ memberId }) => {
         <CircularProgress />
       </Container>
     )
-  if (!memberId) return null
 
   const renderAscentItem = (ascentItem) => {
     const ascDate = format(parseISO(ascentItem.asc_date || ''), 'dd.MM.yyyy')

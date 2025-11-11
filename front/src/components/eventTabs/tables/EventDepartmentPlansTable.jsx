@@ -2,23 +2,23 @@ import React from 'react'
 import {
   useFetchEventDepartmentPlanList,
   useFetchEventDepartmentMemberList,
-} from '../../queries/eventDepartment'
-import apiClient from '../../api/api'
+} from '../../../queries/eventDepartment'
+import apiClient from '../../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
-import { EditableTable } from '../EditableTable'
-import { dateColumnType } from '../dataGridCell/GridEditDateCell'
-import { useFetchLaboratoryForEvent } from '../../queries/dictionary'
-import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
-import { EditCascadeSelectMenu } from '../dataGridCell/EditCascadeSelectMenu'
+import { EditableTable } from '../../EditableTable'
+import { dateColumnType } from '../../dataGridCell/GridEditDateCell'
+import { useFetchLaboratoryForEvent } from '../../../queries/dictionary'
+import { SelectEditInputCell } from '../../dataGridCell/SelectEditInputCell'
+import { EditCascadeSelectMenu } from '../../dataGridCell/EditCascadeSelectMenu'
 import { Button } from '@mui/material'
-import { PlanAscentAcceptDayDialog } from './PlanAscentAcceptDayDialog'
-import { MultiValueSelecWithGroupingtEditInputCell } from '../dataGridCell/MultiValueSelecWithGroupingtEditInputCell'
-import { eventDepartmentPlanValidationSchema } from '../../validations/eventDepartmentPlanValidation'
+import { PlanAscentAcceptDayDialog } from '../../dialogs/PlanAscentAcceptDayDialog'
+import { MultiValueSelecWithGroupingtEditInputCell } from '../../dataGridCell/MultiValueSelecWithGroupingtEditInputCell'
+import { eventDepartmentPlanValidationSchema } from '../../../validations/eventDepartmentPlanValidation'
 import {
   plansTableHiddenColumns,
   plansTableColumnVisibilityModel,
 } from './eventDepartmentPlansTableSettings'
-import { PlanLabaAcceptDayDialog } from './PlanLabaAcceptDayDialog'
+import { PlanLabaAcceptDayDialog } from '../../dialogs/PlanLabaAcceptDayDialog'
 
 export const EventDepartmentPlansTable = ({
   eventId,

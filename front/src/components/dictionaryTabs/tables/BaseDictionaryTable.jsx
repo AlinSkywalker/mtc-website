@@ -1,12 +1,12 @@
 import React from 'react'
-import { useFetchBaseDictionaryList } from '../../queries/dictionary'
-import apiClient from '../../api/api'
+import { useFetchBaseDictionaryList } from '../../../queries/dictionary'
+import apiClient from '../../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
-import { DistrictSelectMenu } from '../dataGridCell/DistrictSelectMenu'
-import { EditableTable } from '../EditableTable'
-import { MultiValueSelectEditInputCell } from '../dataGridCell/MultiValueSelectEditInputCell'
+import { DistrictSelectMenu } from '../../dataGridCell/DistrictSelectMenu'
+import { EditableTable } from '../../EditableTable'
+import { MultiValueSelectEditInputCell } from '../../dataGridCell/MultiValueSelectEditInputCell'
 import * as Yup from 'yup'
-import { multilineColumnType } from '../dataGridCell/GridEditMultilineCell'
+import { multilineColumnType } from '../../dataGridCell/GridEditMultilineCell'
 
 const defaultItem = {
   base_rai: '',

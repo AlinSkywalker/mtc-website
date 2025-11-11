@@ -3,13 +3,13 @@ import {
   useFetchEventBaseHouseRoomList,
   useFetchBaseHouseRoomForEvent,
   useFetchBaseHouseForEvent,
-} from '../../queries/eventBase'
-import apiClient from '../../api/api'
+} from '../../../queries/eventBase'
+import apiClient from '../../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
-import { EditableTable } from '../EditableTable'
+import { EditableTable } from '../../EditableTable'
 import * as Yup from 'yup'
-import { dateColumnType } from '../dataGridCell/GridEditDateCell'
-import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
+import { dateColumnType } from '../../dataGridCell/GridEditDateCell'
+import { SelectEditInputCell } from '../../dataGridCell/SelectEditInputCell'
 import { GridEditInputCell } from '@mui/x-data-grid'
 
 const defaultItem = {

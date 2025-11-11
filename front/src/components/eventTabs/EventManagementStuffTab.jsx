@@ -10,19 +10,10 @@ import { useParams } from 'react-router-dom'
 import { useFetchMemberList } from '../../queries/member'
 import { Toolbar } from '@mui/x-data-grid'
 import {
-  Box,
   Button,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  FormControl,
-  FormControlLabel,
-  FormGroup,
   Grid,
-  IconButton,
 } from '@mui/material'
-import CloseIcon from '@mui/icons-material/Close'
-import { SetAllDayManagementStaffDialog } from './SetAllDayManagementStaffDialog'
+import { SetAllDayManagementStaffDialog } from '../dialogs/SetAllDayManagementStaffDialog'
 const defaultItem = {}
 
 const validationSchema = Yup.object({

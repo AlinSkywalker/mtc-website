@@ -1,5 +1,5 @@
 import React from 'react'
-import { useFetchMemberLabaAscentList, useFetchMemberSportCategoryList } from '../../queries/member'
+import { useFetchMemberLabaAscentList } from '../../queries/member'
 import apiClient from '../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
 import { EditableTable } from '../EditableTable'
@@ -7,6 +7,8 @@ import * as Yup from 'yup'
 import { dateColumnType } from '../dataGridCell/GridEditDateCell'
 import { useIsAdmin } from '../../hooks/useIsAdmin'
 import { GridEditInputCell } from '@mui/x-data-grid'
+import { useIsMobile } from '../../hooks/useIsMobile'
+import { MobileMemberLabaAscentTab } from './MobileMemberLabaAscentTab'
 
 const defaultItem = {
   ascent_date: '',
@@ -26,6 +28,7 @@ export const MemberLabaAscentTab = ({ memberId }) => {
   // const readOnly = !useIsAdmin()
   const readOnly = true
   const queryClient = useQueryClient()
+  const isMobile = useIsMobile()
   const { isLoading, data } = useFetchMemberLabaAscentList(memberId)
 
   const [rows, setRows] = React.useState(data)
@@ -111,6 +114,9 @@ export const MemberLabaAscentTab = ({ memberId }) => {
   }
 
   if (!memberId) return null
+
+  if (isMobile) return <MobileMemberLabaAscentTab isLoading={isLoading} data={data} />
+
   return (
     <EditableTable
       rows={rows}

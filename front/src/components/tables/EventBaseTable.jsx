@@ -1,10 +1,10 @@
 import React from 'react'
-import { useFetchEventBaseList, useFetchBaseForEvent } from '../queries/eventBase'
-import apiClient from '../api/api'
+import { useFetchEventBaseList, useFetchBaseForEvent } from '../../queries/eventBase'
+import apiClient from '../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
-import { EditableTable } from './EditableTable'
+import { EditableTable } from '../EditableTable'
 import * as Yup from 'yup'
-import { SelectEditInputCell } from './dataGridCell/SelectEditInputCell'
+import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
 
 const defaultItem = {
   base_name: '',

@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 
 import Grid from '@mui/material/Grid'
-import { BaseDictionaryTable } from './BaseDictionaryTable'
-import { BaseHouseDictionaryTable } from './BaseHouseDictionaryTable'
-import { BaseHouseRoomDictionaryTable } from './BaseHouseRoomDictionaryTable'
+import { BaseDictionaryTable } from './tables/BaseDictionaryTable'
+import { BaseHouseDictionaryTable } from './tables/BaseHouseDictionaryTable'
+import { BaseHouseRoomDictionaryTable } from './tables/BaseHouseRoomDictionaryTable'
 
 export const BaseDictionaryTab = () => {
   const [selectedBase, setSelectedBase] = useState()

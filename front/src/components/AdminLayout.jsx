@@ -44,6 +44,7 @@ export const AdminLayout = ({ children }) => {
       { name: 'eventList', url: '/admin/event', label: 'Мероприятия' },
       { name: 'memberList', url: '/admin/member', label: 'Тритонны' },
       { name: 'dictionary', url: '/admin/dictionary', label: 'Справочники' },
+      { name: 'applications', url: '/admin/applications', label: 'Заявки' },
     ]
   const location = useLocation()
 

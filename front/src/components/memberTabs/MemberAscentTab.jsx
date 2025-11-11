@@ -186,7 +186,7 @@ export const MemberAscentTab = ({ memberId }) => {
   }
 
   if (!memberId) return null
-  if (isMobile) return <MobileMemberAscentTab memberId={memberId} />
+  if (isMobile) return <MobileMemberAscentTab isLoading={isLoading} data={data} />
 
   return (
     <EditableTable

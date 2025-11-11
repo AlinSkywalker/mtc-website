@@ -4,14 +4,16 @@ import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
 import Box from '@mui/material/Box'
 
-import { EventDepartmentTable } from './EventDepartmentTable'
+import { EventDepartmentTable } from './tables/EventDepartmentTable'
 import { EventDepartmentPlansTab } from './EventDepartmentPlansTab'
-import { EventAllDepartmentMembersTable } from './EventAllDepartmentMembersTable'
-import { EventMemberDepartment } from './EventMemberDepartment'
+import { EventAllDepartmentMembersTable } from './tables/EventAllDepartmentMembersTable'
+import { EventMemberDepartment } from './components/EventMemberDepartment'
 import { useLocation, Route, Routes, Link } from 'react-router-dom'
+import { useIsAdmin } from '../../hooks/useIsAdmin'
 
-export const EventDepartmentTab = ({ event, readOnly }) => {
+export const EventDepartmentTab = ({ event }) => {
   const location = useLocation()
+  const readOnly = !useIsAdmin()
   if (!event) return
   const basePath = readOnly
     ? `/event/${event.id}/department`
@@ -58,7 +60,6 @@ export const EventDepartmentTab = ({ event, readOnly }) => {
           eventDistrict={event.raion_id_list}
           eventStart={event.event_start}
           eventFinish={event.event_finish}
-          readOnly={readOnly}
         />
       ),
     },

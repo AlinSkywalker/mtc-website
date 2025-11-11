@@ -1,7 +1,7 @@
 import React from 'react'
-import { EventListTable } from '../components/EventListTable'
+import { EventListTable } from '../components/eventTabs/tables/EventListTable'
 import { useIsMobile } from '../hooks/useIsMobile'
-import { MobileEventListTable } from '../components/MobileEventListTable'
+import { MobileEventListTable } from '../components/eventTabs/tables/MobileEventListTable'
 
 export const EventListPageRO = () => {
   const isMobile = useIsMobile()

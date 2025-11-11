@@ -1,12 +1,12 @@
 import React from 'react'
-import { useFetchEventDepartmentList } from '../../queries/eventDepartment'
-import apiClient from '../../api/api'
+import { useFetchEventDepartmentList } from '../../../queries/eventDepartment'
+import apiClient from '../../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
-import { EditableTable } from '../EditableTable'
+import { EditableTable } from '../../EditableTable'
 import * as Yup from 'yup'
-import { dateColumnType } from '../dataGridCell/GridEditDateCell'
-import { useFetchMemberList } from '../../queries/member'
-import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
+import { dateColumnType } from '../../dataGridCell/GridEditDateCell'
+import { useFetchMemberList } from '../../../queries/member'
+import { SelectEditInputCell } from '../../dataGridCell/SelectEditInputCell'
 
 const validationSchema = Yup.object({
   depart_tip: Yup.string().required('Поле обязательно для заполнения'),
@@ -69,9 +69,12 @@ export const EventDepartmentTable = ({ eventId, eventStart, eventFinish, readOnl
   }, [])
 
   const renderInstructorSelectEditCell = (params) => {
-    const hookParams = {
-      possibleRole: 'instructor',
-    }
+    const hookParams = ['НП', 'СП'].includes(params.row.depart_tip)
+      ? {
+        possibleRole: 'instructor',
+      }
+      : {}
+
     return (
       <SelectEditInputCell
         {...params}

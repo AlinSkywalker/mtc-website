@@ -1,8 +1,8 @@
 import React from 'react'
-import { useFetchLaboratoryRouteDictionaryList } from '../../queries/dictionary'
-import apiClient from '../../api/api'
+import { useFetchLaboratoryRouteDictionaryList } from '../../../queries/dictionary'
+import apiClient from '../../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
-import { EditableTable } from '../EditableTable'
+import { EditableTable } from '../../EditableTable'
 import * as Yup from 'yup'
 import Typography from '@mui/material/Typography'
 

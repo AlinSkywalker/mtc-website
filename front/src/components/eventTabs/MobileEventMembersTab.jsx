@@ -1,45 +1,14 @@
 import React, { useState } from 'react'
 import { useFetchEventMemberList } from '../../queries/event'
-import apiClient from '../../api/api'
-import { useQueryClient } from '@tanstack/react-query'
-import { EditableTable } from '../EditableTable'
-import * as Yup from 'yup'
-import { dateColumnType } from '../dataGridCell/GridEditDateCell'
-import { useFetchMemberList } from '../../queries/member'
-import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
-import { checkboxColumnType } from '../dataGridCell/GridEditCheckboxCell'
-import { Button, Card, CircularProgress, Container, Grid, Link, Typography } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
-import { GridEditInputCell } from '@mui/x-data-grid'
+import { Card, CircularProgress, Container, Grid, Typography } from '@mui/material'
 import ErrorIcon from '@mui/icons-material/Error'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import { red } from '@mui/material/colors'
-import { fileColumnType } from '../dataGridCell/GridEditFileCell'
 import { format, parseISO } from 'date-fns'
 import { useIsAdmin } from '../../hooks/useIsAdmin'
 
-const defaultItem = {
-  eventmemb_memb: '',
-  eventmemb_nstrah: 0,
-  eventmemb_nmed: 0,
-  eventmemb_dates: '',
-  eventmemb_datef: '',
-  fio: '',
-  eventmemb_gen: '',
-  eventmemb_nom: '',
-  ventmemb_pred: '',
-  eventmemb_opl: '',
-  eventmemb_role: 'Участник',
-  alerts: [],
-}
-
-const validationSchema = Yup.object({
-  fio: Yup.string().required('Поле обязательно для заполнения'),
-})
-
-export const MobileEventMembersTab = ({ eventId, readOnly }) => {
-  const queryClient = useQueryClient()
+export const MobileEventMembersTab = ({ eventId }) => {
   const { isLoading, data } = useFetchEventMemberList(eventId)
   const isAdmin = useIsAdmin()
 

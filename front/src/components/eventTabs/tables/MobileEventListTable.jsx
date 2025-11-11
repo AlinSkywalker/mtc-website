@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useFetchEventList } from '../queries/event'
+import { useFetchEventList } from '../../../queries/event'
 import { Card, Grid, Typography, ToggleButtonGroup, ToggleButton } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 

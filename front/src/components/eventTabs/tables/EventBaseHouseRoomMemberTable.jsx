@@ -2,13 +2,13 @@ import React from 'react'
 import {
   useFetchEventBaseHouseRoomMemberList,
   useFetchMemberForEventRoom,
-} from '../../queries/eventBase'
-import apiClient from '../../api/api'
+} from '../../../queries/eventBase'
+import apiClient from '../../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
-import { EditableTable } from '../EditableTable'
+import { EditableTable } from '../../EditableTable'
 import * as Yup from 'yup'
-import { dateColumnType } from '../dataGridCell/GridEditDateCell'
-import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
+import { dateColumnType } from '../../dataGridCell/GridEditDateCell'
+import { SelectEditInputCell } from '../../dataGridCell/SelectEditInputCell'
 
 const defaultItem = {
   basenom_name: '',
@@ -69,7 +69,7 @@ export const EventBaseHouseRoomMemberTable = ({ eventId, selectedBaseRoom }) => 
         nameField='event_per'
         hook={useFetchMemberForEventRoom}
         hookParams={hookParams}
-        // secondarySource='basefd_name'
+      // secondarySource='basefd_name'
       />
     )
   }

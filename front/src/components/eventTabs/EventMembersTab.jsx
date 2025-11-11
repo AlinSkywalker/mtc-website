@@ -1,5 +1,5 @@
 import React from 'react'
-import { useFetchEventMemberList } from '../../queries/event'
+import { useFetchEvent, useFetchEventMemberList } from '../../queries/event'
 import apiClient from '../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
 import { EditableTable } from '../EditableTable'
@@ -38,8 +38,7 @@ const validationSchema = Yup.object({
 })
 
 export const EventMembersTab = ({ eventId }) => {
-  const isAdmin = useIsAdmin()
-  const readOnly = !isAdmin
+  const readOnly = !useIsAdmin()
   const queryClient = useQueryClient()
   const { isLoading, data } = useFetchEventMemberList(eventId)
 
@@ -53,7 +52,6 @@ export const EventMembersTab = ({ eventId }) => {
   }, [data])
 
   const handleSaveNewItem = (data) => {
-
     const { id, isNew, med_file, strah_file, ...postedData } = data
     const formData = new FormData()
     formData.append('data', JSON.stringify(postedData))

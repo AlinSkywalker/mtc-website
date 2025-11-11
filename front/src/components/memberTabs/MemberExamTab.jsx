@@ -6,6 +6,8 @@ import { EditableTable } from '../EditableTable'
 import * as Yup from 'yup'
 import { dateColumnType } from '../dataGridCell/GridEditDateCell'
 import { useIsAdmin } from '../../hooks/useIsAdmin'
+import { useIsMobile } from '../../hooks/useIsMobile'
+import { MobileMemberExamTab } from './MobileMemberExamTab'
 
 const defaultItem = {
   zach_name: '',
@@ -24,6 +26,7 @@ const validationSchema = Yup.object({
 export const MemberExamTab = ({ memberId }) => {
   const readOnly = !useIsAdmin()
   const queryClient = useQueryClient()
+  const isMobile = useIsMobile()
   const { isLoading, data } = useFetchMemberExamList(memberId)
 
   const [rows, setRows] = React.useState(data)
@@ -104,6 +107,8 @@ export const MemberExamTab = ({ memberId }) => {
   }
 
   if (!memberId) return null
+  if (isMobile) return <MobileMemberExamTab isLoading={isLoading} data={data} />
+
   return (
     <EditableTable
       rows={rows}

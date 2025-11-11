@@ -1,6 +1,6 @@
 import React from 'react'
-import { EventListTable } from '../components/EventListTable'
-import { MobileEventListTable } from '../components/MobileEventListTable'
+import { EventListTable } from '../components/eventTabs/tables/EventListTable'
+import { MobileEventListTable } from '../components/eventTabs/tables/MobileEventListTable'
 import { useIsMobile } from '../hooks/useIsMobile'
 
 export const EventListPage = () => {

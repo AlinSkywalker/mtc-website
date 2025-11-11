@@ -11,7 +11,7 @@ import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import { red } from '@mui/material/colors'
 import { format, parseISO } from 'date-fns'
-import { EventMemberSettlement } from './EventMemberSettlement'
+import { EventMemberSettlement } from './components/EventMemberSettlement'
 
 const emptyRowSelection = {
   type: 'include',

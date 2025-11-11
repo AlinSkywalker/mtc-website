@@ -70,9 +70,9 @@ export const RegistrationPage = () => {
       .post('/api/register', { ...data, date_birth: format(data.date_birth, 'yyyy-MM-dd') })
       .then((response) => {
         // Handle successful login
-        const { token, user_role, user_id } = response.data
+        const { token, user_role, user_id, user_member_id } = response.data
         setIsAuthenticated(true)
-        setUserInfo({ id: user_id, role: user_role })
+        setUserInfo({ id: user_id, role: user_role, memberId: user_member_id })
         localStorage.setItem('token', token)
       })
       .catch((error) => {

@@ -1,12 +1,12 @@
 import React from 'react'
-import { useFetchBaseHouseRoomDictionaryList } from '../../queries/dictionary'
-import apiClient from '../../api/api'
+import { useFetchBaseHouseRoomDictionaryList } from '../../../queries/dictionary'
+import apiClient from '../../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
-import { EditableTable } from '../EditableTable'
+import { EditableTable } from '../../EditableTable'
 import * as Yup from 'yup'
 import Typography from '@mui/material/Typography'
-import { dateColumnType } from '../dataGridCell/GridEditDateCell'
-import { checkboxColumnType } from '../dataGridCell/GridEditCheckboxCell'
+import { dateColumnType } from '../../dataGridCell/GridEditDateCell'
+import { checkboxColumnType } from '../../dataGridCell/GridEditCheckboxCell'
 
 const defaultItem = {
   basenom_mest: '',

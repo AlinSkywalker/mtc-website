@@ -13,7 +13,7 @@ import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
-import { EventDepartmentPlanJournalCell } from './EventDepartmentPlanJournalCell'
+import { EventDepartmentPlanJournalCell } from './components/EventDepartmentPlanJournalCell'
 
 export const EventDepartmentPlanJournalTab = ({ eventId, eventStart, eventFinish }) => {
   // в заголовке те отделения, у которых есть план на дату

@@ -23,6 +23,7 @@ export function useFetchEvent(id) {
         event_finish: parseISO(data.event_finish),
       }
     },
+    staleTime: 5 * 1000,
   })
 }
 
@@ -130,6 +131,18 @@ export function useFetchEventInstructionLog(eventId) {
   let fetchUrl = `/api/eventList/${eventId}/eventInstructionLog`
   return useQuery({
     queryKey: ['event', eventId, 'eventInstructionLog'],
+    queryFn: async () => {
+      if (!eventId) return []
+      const { data } = await apiClient.get(fetchUrl)
+      return data
+    },
+  })
+}
+
+export function useFetchEventApplicationList(eventId) {
+  let fetchUrl = `/api/eventList/${eventId}/eventApplication`
+  return useQuery({
+    queryKey: ['event', eventId, 'eventApplication'],
     queryFn: async () => {
       if (!eventId) return []
       const { data } = await apiClient.get(fetchUrl)

@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import {
   useFetchEventAllDepartmentPlanList,
   useFetchEventDepartmentList,
-} from '../../queries/eventDepartment'
+} from '../../../queries/eventDepartment'
 import Grid from '@mui/material/Grid'
-import { getDatesInRange } from '../../utils/getDatesInRange'
+import { getDatesInRange } from '../../../utils/getDatesInRange'
 import './EventAllDepartmentPlansTableStyle.css'
 import IconButton from '@mui/material/IconButton'
 import ScheduleIcon from '@mui/icons-material/Schedule'

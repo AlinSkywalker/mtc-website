@@ -2,11 +2,11 @@ import React from 'react'
 import { EventListTable } from '../components/eventTabs/tables/EventListTable'
 import { MobileEventListTable } from '../components/eventTabs/tables/MobileEventListTable'
 import { useIsMobile } from '../hooks/useIsMobile'
-import { MemberListTable } from '../components/memberTabs/tables/MemberListTable'
+import { ApplicationListTable } from '../components/tables/ApplicationListTable'
 
-export const MemberListPage = () => {
+export const ApplicationListPage = () => {
   const isMobile = useIsMobile()
   // if (isMobile) return <MobileEventListTable readOnly={false} />
 
-  return <MemberListTable />
+  return <ApplicationListTable />
 }

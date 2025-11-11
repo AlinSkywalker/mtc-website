@@ -23,6 +23,7 @@ import { SnackbarProvider } from 'notistack'
 import { EventListPageRO } from './pages/EventListPageRO'
 import { PublicLayout } from './components/PublicLayout'
 import { PersonalDataConsentPage } from './pages/PersonalDataConsentPage'
+import { ApplicationListPage } from './pages/ApplicationListPage'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -141,6 +142,14 @@ const App = () => {
                     }
                   />
                   <Route
+                    path='/admin/applications'
+                    element={
+                      <AdminRoute>
+                        <ApplicationListPage />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
                     path='/admin/dictionary/:dictionaryType'
                     element={
                       <AdminRoute>
@@ -170,7 +179,7 @@ const App = () => {
                     path='/event/:id/*'
                     element={
                       <PrivateRoute>
-                        <EventInfoPage readOnly={true} />
+                        <EventInfoPage />
                       </PrivateRoute>
                     }
                   />

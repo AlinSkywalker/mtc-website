@@ -1,15 +1,15 @@
 import React, { useState } from 'react'
-import { useFetchEventList } from '../queries/event'
-import { useFetchMemberList } from '../queries/member'
+import { useFetchEventList } from '../../../queries/event'
+import { useFetchMemberList } from '../../../queries/member'
 import { Link, ToggleButtonGroup, ToggleButton } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
-import apiClient from '../api/api'
+import apiClient from '../../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
-import { EditableTable } from './EditableTable'
+import { EditableTable } from '../../EditableTable'
 import * as Yup from 'yup'
-import { SelectEditInputCell } from './dataGridCell/SelectEditInputCell'
-import { dateColumnType } from './dataGridCell/GridEditDateCell'
-import { MultiValueSelecWithGroupingtEditInputCell } from './dataGridCell/MultiValueSelecWithGroupingtEditInputCell'
+import { SelectEditInputCell } from '../../dataGridCell/SelectEditInputCell'
+import { dateColumnType } from '../../dataGridCell/GridEditDateCell'
+import { MultiValueSelecWithGroupingtEditInputCell } from '../../dataGridCell/MultiValueSelecWithGroupingtEditInputCell'
 
 const defaultItem = {
   event_name: '',

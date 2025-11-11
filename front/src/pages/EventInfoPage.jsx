@@ -16,7 +16,7 @@ import { EventFilesTab } from '../components/eventTabs/EventFilesTab'
 import { EventStatisticsTab } from '../components/eventTabs/EventStatisticsTab'
 import { EventProtocolTab } from '../components/eventTabs/EventProtocolTab'
 
-import { EventBaseTable } from '../components/EventBaseTable'
+import { EventBaseTable } from '../components/tables/EventBaseTable'
 import { EventInfoForm } from '../components/EventInfoForm'
 import EditIcon from '@mui/icons-material/Edit'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
@@ -26,8 +26,10 @@ import { useIsMobile } from '../hooks/useIsMobile'
 import { EventDistrictInfoTab } from '../components/eventTabs/EventDistrictInfoTab'
 import { EventInfoFormRO } from '../components/EventInfoFormRO'
 import { MobileEventMembersTab } from '../components/eventTabs/MobileEventMembersTab'
+import { useGetUserEventPermisson } from '../hooks/useGetUserPermisson'
+import { useIsAdmin } from '../hooks/useIsAdmin'
 
-export const EventInfoPage = ({ readOnly = false }) => {
+export const EventInfoPage = () => {
   const [isDisplayForm, setIsDisplayForm] = useState(false)
 
   const params = useParams()
@@ -37,6 +39,9 @@ export const EventInfoPage = ({ readOnly = false }) => {
   const isMobile = useIsMobile()
 
   const { isLoading, data } = useFetchEvent(currentId)
+  const { isCurrentMemberST } = useGetUserEventPermisson(currentId)
+  const isAdmin = useIsAdmin()
+  const readOnly = !isAdmin && !isCurrentMemberST
 
   const basePath = readOnly ? `/event/${currentId}` : `/admin/event/${currentId}`
   const eventTabs = [
@@ -45,16 +50,16 @@ export const EventInfoPage = ({ readOnly = false }) => {
       path: `/`,
       label: 'Участники',
       component: isMobile ? (
-        <MobileEventMembersTab eventId={currentId} readOnly={false} />
+        <MobileEventMembersTab eventId={currentId} />
       ) : (
-        <EventMembersTab eventId={currentId} readOnly={false} />
+        <EventMembersTab eventId={currentId} />
       ),
     },
     {
       name: 'department',
       path: `/department/`,
       label: 'Отделения',
-      component: <EventDepartmentTab event={data} readOnly={readOnly} />,
+      component: <EventDepartmentTab event={data} />,
     },
     {
       name: 'contractor',
@@ -105,16 +110,16 @@ export const EventInfoPage = ({ readOnly = false }) => {
       path: `/`,
       label: 'Участники',
       component: isMobile ? (
-        <MobileEventMembersTab eventId={currentId} readOnly={true} />
+        <MobileEventMembersTab eventId={currentId} />
       ) : (
-        <EventMembersTab eventId={currentId} readOnly={true} />
+        <EventMembersTab eventId={currentId} />
       ),
     },
     {
       name: 'department',
       path: `/department/`,
       label: 'Отделения',
-      component: <EventDepartmentTab event={data} readOnly={true} />,
+      component: <EventDepartmentTab event={data} />,
     },
     {
       name: 'protocol',

@@ -2,12 +2,12 @@ import React from 'react'
 import {
   useFetchEventMemberDepartmentList,
   useFetchEventDepartmentListForMember,
-} from '../../queries/eventDepartment'
-import apiClient from '../../api/api'
+} from '../../../queries/eventDepartment'
+import apiClient from '../../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
-import { EditableTable } from '../EditableTable'
-import { useFetchEventMemberList } from '../../queries/event'
-import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
+import { EditableTable } from '../../EditableTable'
+import { useFetchEventMemberList } from '../../../queries/event'
+import { SelectEditInputCell } from '../../dataGridCell/SelectEditInputCell'
 import Grid from '@mui/material/Grid'
 import { DataGrid, GridEditInputCell, Toolbar } from '@mui/x-data-grid'
 import { Button, Select, MenuItem } from '@mui/material'
@@ -16,7 +16,7 @@ import ErrorIcon from '@mui/icons-material/Error'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import { red } from '@mui/material/colors'
-import { dateColumnType } from '../dataGridCell/GridEditDateCell'
+import { dateColumnType } from '../../dataGridCell/GridEditDateCell'
 
 const defaultItem = {
   member_fio: '',

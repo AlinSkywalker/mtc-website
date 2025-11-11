@@ -38,6 +38,8 @@ const eventProtocolRouter = require("./event/eventProtocol");
 const eventManagementStuffRouter = require("./event/eventManagementStuff");
 const eventInstructionLogRouter = require("./event/eventInstructionLog");
 const eventDepartPlanLabaAscentRouter = require("./event/eventDepartPlanLabaAscent");
+const eventApplicationRouter = require("./event/eventApplication");
+
 
 
 const memberListRouter = require("./member/memberList");
@@ -45,6 +47,8 @@ const memberExamRouter = require("./member/memberExam");
 const memberAscentRouter = require("./member/memberAscent");
 const memberSportCategoryRouter = require("./member/memberSportCategory");
 const memberLabaAscentRouter = require("./member/memberLabaAscent");
+
+const applicationRouter = require("./application");
 
 
 const jwtOptions = {
@@ -333,7 +337,9 @@ app.get(
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
   pool.query(
-    `SELECT * FROM user WHERE login='${username}'`,
+    `SELECT u.*, m.id as user_member_id FROM user u 
+      LEFT OUTER JOIN member m ON m.user_id=u.id
+      WHERE u.login='${username}'`,
     (error, result) => {
       if (error) console.log(result);
       const user = result[0];
@@ -351,6 +357,7 @@ app.post("/login", (req, res) => {
           user_id: user.id,
           user_name: user.login,
           user_role: user.user_role,
+          user_member_id: user.user_member_id,
           iat: Date.now(),
         },
         jwtOptions.secretOrKey
@@ -366,6 +373,7 @@ app.post("/login", (req, res) => {
             token,
             user_role: user.user_role,
             user_id: user.id,
+            user_member_id: user.user_member_id
           });
         }
       );
@@ -389,7 +397,7 @@ app.get(
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     // console.log("user", req.user);
-    res.send({ id: req.user.user_id, role: req.user.user_role });
+    res.send({ id: req.user.user_id, role: req.user.user_role, memberId: req.user.user_member_id });
   }
 );
 
@@ -399,7 +407,8 @@ app.get(
   (req, res) => {
     const id = req.params.id;
     pool.query(
-      `SELECT u.*, m.*, c.name_city FROM mtc_db.user u 
+      `SELECT u.*, m.*, c.name_city 
+      FROM mtc_db.user u 
       RIGHT JOIN member m on m.user_id=u.id 
       LEFT JOIN city c on c.id=m.memb_city
       WHERE u.id=${id}`,
@@ -409,8 +418,12 @@ app.get(
           res.status(500).json({ success: false, message: error });
           return;
         }
-        const { name_city, memb_city } = result[0];
-        res.send({ ...result[0], city: { name_city, id: memb_city } });
+        if (result[0]) {
+          const { name_city, memb_city } = result[0];
+          res.send({ ...result[0], city: { name_city, id: memb_city } });
+          return
+        }
+        res.status(500).json({ success: false });
       }
     );
   }
@@ -482,6 +495,7 @@ eventProtocolRouter(app, passport);
 eventManagementStuffRouter(app, passport);
 eventInstructionLogRouter(app, passport);
 eventDepartPlanLabaAscentRouter(app, passport);
+eventApplicationRouter(app, passport);
 
 
 memberListRouter(app, passport);
@@ -489,6 +503,10 @@ memberExamRouter(app, passport);
 memberAscentRouter(app, passport);
 memberSportCategoryRouter(app, passport);
 memberLabaAscentRouter(app, passport);
+
+applicationRouter(app, passport);
+
+
 
 app.get(/(.*)/, (req, res) => {
   // console.log(req.params);
