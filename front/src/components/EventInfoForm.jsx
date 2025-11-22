@@ -84,7 +84,7 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
         event_start: format(data.event_start, 'yyyy-MM-dd'),
         event_finish: format(data.event_finish, 'yyyy-MM-dd'),
       })
-      reset(data)
+      reset(undefined, { keepDirtyValues: true })
     } catch (error) {
       console.error(error)
     }

@@ -94,7 +94,7 @@ passport.deserializeUser(function (id, done) {
 });
 
 app = express();
-const port = 3000;
+const port = 8000;
 
 // app.use(express.cookieParser());
 app.use(bodyParser.json());

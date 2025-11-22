@@ -30,6 +30,24 @@ import { MemberLabaAscentTab } from '../components/memberTabs/MemberLabaAscentTa
 import PhoneInput from 'react-phone-number-input/react-hook-form-input'
 import { PhoneField } from '../components/formFields/PhoneField'
 import { parsePhoneNumber } from 'react-phone-number-input'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as Yup from 'yup'
+
+const validationSchema = Yup.object({
+  fio: Yup.string().required('Поле обязательно для заполнения'),
+  date_birth: Yup.string().required('Поле обязательно для заполнения'),
+  tel_1: Yup.string().required('Поле обязательно для заполнения'),
+  memb_email: Yup.string()
+    .nullable()
+    .matches(
+      // eslint-disable-next-line no-useless-escape
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+      {
+        message: 'Поле неверного формата',
+        excludeEmptyString: true,
+      },
+    ),
+})
 
 export const ProfilePage = () => {
   const defaultValues = {
@@ -55,7 +73,7 @@ export const ProfilePage = () => {
     formState: { errors, dirtyFields },
     control,
     reset,
-  } = useForm({ defaultValues })
+  } = useForm({ defaultValues, resolver: yupResolver(validationSchema) })
 
   useEffect(() => {
     data && reset(data)
@@ -67,14 +85,16 @@ export const ProfilePage = () => {
     e.preventDefault()
     try {
       const { date_birth, city } = data
-
-      const response = await apiClient.post('/api/profile', {
+      const postData = {
         ...data,
         date_birth: date_birth ? format(date_birth, 'yyyy-MM-dd') : null,
         memb_city: city.id,
-        tel_1: parsePhoneNumber(data.tel_1)?.number,
-        tel_2: parsePhoneNumber(data.tel_2)?.number,
-      })
+        tel_1: data.tel_1 ? parsePhoneNumber(data.tel_1)?.number : '',
+        tel_2: data.tel_2 ? parsePhoneNumber(data.tel_2)?.number : '',
+      }
+      const response = await apiClient.post('/api/profile', postData)
+
+      reset(undefined, { keepDirtyValues: true })
       // Handle successful login
     } catch (error) {
       // Handle login error
@@ -158,6 +178,8 @@ export const ProfilePage = () => {
                         variant='outlined'
                         label='Фамилия Имя Отчество'
                         fullWidth
+                        error={errors[field.name]}
+                        helperText={errors[field.name]?.message}
                       />
                     )}
                   />
@@ -170,7 +192,13 @@ export const ProfilePage = () => {
                       <DatePicker
                         label='Дата рождения'
                         {...field}
-                        slotProps={{ textField: { fullWidth: true } }}
+                        slotProps={{
+                          textField: {
+                            fullWidth: true,
+                            error: errors[field.name],
+                            helperText: errors[field.name]?.message,
+                          },
+                        }}
                       />
                     )}
                   />
@@ -260,6 +288,8 @@ export const ProfilePage = () => {
                     label='Телефон основной'
                     defaultCountry='RU'
                     inputComponent={PhoneField}
+                    error={errors['tel_1']}
+                    helperText={errors['tel_1']?.message}
                   />
                 </Grid>
                 <Grid>
@@ -277,11 +307,12 @@ export const ProfilePage = () => {
                   /> */}
                   <PhoneInput
                     control={control}
-                    rules={{ required: true }}
                     name='tel_2'
                     label='Телефон экстренного контакта'
                     defaultCountry='RU'
                     inputComponent={PhoneField}
+                    error={errors['tel_2']}
+                    helperText={errors['tel_2']?.message}
                   />
                 </Grid>
                 <Grid>

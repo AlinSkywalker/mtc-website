@@ -1,6 +1,6 @@
 import React from 'react'
 import { useFetchMemberList } from '../../queries/member'
-import { Link } from '@mui/material'
+import { Button, Link } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import apiClient from '../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
@@ -8,7 +8,7 @@ import { EditableTable } from '../EditableTable'
 import * as Yup from 'yup'
 import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
 import { dateColumnType } from '../dataGridCell/GridEditDateCell'
-import { sizeClothOptions, sizeShoeOptions } from '../../constants'
+import { DEPARTMENT_TYPE_ARRAY, sizeClothOptions, sizeShoeOptions } from '../../constants'
 import { checkboxColumnType } from '../dataGridCell/GridEditCheckboxCell'
 import { useFetchApplicationList } from '../../queries/application'
 
@@ -52,30 +52,20 @@ export const ApplicationListTable = () => {
 
   const handleSaveNewItem = (data) => {
     const { id, isNew, ...postedData } = data
-    return apiClient.put('/api/memberList', postedData)
+    return apiClient.put('/api/applicationList', postedData)
   }
 
   const handleDeleteItem = (id) => () => {
-    apiClient.delete(`/api/memberList/${id}`).then((res) => {
-      queryClient.invalidateQueries({ queryKey: ['memberList'] })
+    apiClient.delete(`/api/applicationList/${id}`).then((res) => {
+      queryClient.invalidateQueries({ queryKey: ['applicationList'] })
     })
   }
 
   const handleSaveEditedItem = React.useCallback((data) => {
     const { id, isNew, ...postedData } = data
-    return apiClient.post(`/api/memberList/${id}`, postedData)
+    return apiClient.post(`/api/applicationList/${id}`, postedData)
   }, [])
 
-  const renderCitySelectEditCell = (params) => {
-    return (
-      <SelectEditInputCell
-        {...params}
-        dictionaryName='cityDictionary'
-        nameField='memb_city'
-        secondarySourceArray={['count_name', 'okr_name', 'sub_name']}
-      />
-    )
-  }
   const renderEventLink = (params) => {
     const link = params.value ?? ''
 
@@ -95,6 +85,31 @@ export const ApplicationListTable = () => {
       </Link>
     )
   }
+  const handleAcceptApplication = (id) => () => {
+    apiClient.post(`/api/applicationList/${id}/accept`).then((res) => {
+      queryClient.invalidateQueries({
+        queryKey: ['applicationList'],
+      })
+    })
+  }
+
+  const renderAcceptButtonCell = (params) => {
+    const buttonElement = React.useRef(null)
+
+    if (!params.row.accepted) {
+      return (
+        <Button
+          size='small'
+          variant='contained'
+          onClick={handleAcceptApplication(params.row.id)}
+          ref={buttonElement}
+        >
+          Принять
+        </Button>
+      )
+    }
+  }
+
   const columns = [
     {
       field: 'event_name',
@@ -125,12 +140,18 @@ export const ApplicationListTable = () => {
       editable: true,
     },
     {
-      field: 'depart_tip',
+      field: 'department_type',
       headerName: 'Тип отделения',
       width: 100,
       editable: true,
       type: 'singleSelect',
-      valueOptions: ['НП', 'СП', 'СС', 'СМ'],
+      valueOptions: DEPARTMENT_TYPE_ARRAY,
+    },
+    {
+      field: 'accept_day',
+      headerName: '',
+      width: 125,
+      renderCell: renderAcceptButtonCell,
     },
   ]
   const fieldToFocus = 'fio'

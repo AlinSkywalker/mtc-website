@@ -4,7 +4,7 @@ import apiClient from '../../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
 import { EditableTable } from '../../EditableTable'
 import * as Yup from 'yup'
-import Typography from '@mui/material/Typography'
+import { multilineColumnType } from '../../dataGridCell/GridEditMultilineCell'
 
 const defaultItem = {
   labatr_name: '',
@@ -61,7 +61,7 @@ export const LaboratoryRouteDictionaryTable = ({ selectedLaboratory }) => {
       width: 150,
       editable: true,
       type: 'singleSelect',
-      valueOptions: ['Скала', 'Лед', 'Микст', 'Драйтул', 'ИТО'],
+      valueOptions: ['Скала', 'Лед', 'Микст', 'Драйтул', 'ИТО', 'Теория', 'Практика'],
     },
     {
       field: 'labatr_sl',
@@ -114,6 +114,8 @@ export const LaboratoryRouteDictionaryTable = ({ selectedLaboratory }) => {
           values = []
         } else if (row.labatr_typ === 'ИТО') {
           values = ['A0', 'A1', 'A2', 'A3', 'A4', 'A5']
+        } else if (row.labatr_typ === 'Теория' || row.labatr_typ === 'Практика') {
+          values = ['СО', 'НП', 'УТ', 'СС', 'СМ']
         }
         return values
       },
@@ -126,7 +128,13 @@ export const LaboratoryRouteDictionaryTable = ({ selectedLaboratory }) => {
       editable: true,
       type: 'number',
     },
-    { field: 'labatr_desk', headerName: 'Описание', width: 100, editable: true },
+    {
+      field: 'labatr_desk',
+      headerName: 'Описание',
+      width: 300,
+      editable: true,
+      ...multilineColumnType,
+    },
   ]
 
   const fieldToFocus = 'labatr_name'

@@ -27,13 +27,19 @@ export const PlanLabaAcceptDayDialog = ({
   selectedDate,
   setSelectedDate,
   selectedPlan,
+  lecturesLabaId,
+  practiceLabaId,
 }) => {
   const queryClient = useQueryClient()
   const apiRef = useGridApiRef()
-
-  const { isLoading, data: laboratoryRouteData } = useFetchLaboratoryRouteDictionaryList(
-    selectedPlan.laba,
-  )
+  let labaId = selectedPlan.laba
+  if (selectedPlan.type === 'Лекция') {
+    labaId = lecturesLabaId
+  } else if (selectedPlan.type === 'Практика') {
+    labaId = practiceLabaId
+  }
+  console.log('labaId', labaId, selectedPlan.type)
+  const { isLoading, data: laboratoryRouteData } = useFetchLaboratoryRouteDictionaryList(labaId)
 
   const [state, setState] = useState({})
   const [selectedMember, setSelectedMember] = useState('')
@@ -63,7 +69,7 @@ export const PlanLabaAcceptDayDialog = ({
             const labaRoutes = laboratoryRouteData.reduce(
               (routeAcc, { id, labatr_name, labatr_sl }) => {
                 let done = false
-                let ascent_belay = 'Нижняя'
+                let ascent_belay = 'Уверенно'
                 let ascent_type = 'Онсайт'
                 if (!isLabaAscentsLoading) {
                   const savedAscent = selectedDateDepartmentLabaAscents.find(
@@ -126,13 +132,6 @@ export const PlanLabaAcceptDayDialog = ({
       setIsEditMode(false)
       applyNewChanges()
       laboratoryRouteData.forEach((row) => {
-
-        // const newRow = apiRef.current?.getRowWithUpdatedValues(row.id, 'id') || {}
-        // setState((prevState) => {
-        //   const newState = { ...prevState }
-        //   newState[newRow.member_id][newRow.id] = newRow
-        //   return newState
-        // })
         try {
           apiRef.current?.stopRowEditMode({ id: row.id, ignoreModifications: true })
         } catch (err) { }
@@ -169,14 +168,6 @@ export const PlanLabaAcceptDayDialog = ({
       })
   }
 
-  const processRouteRowUpdate = (newRow) => {
-    setState((prevState) => {
-      const newState = { ...prevState }
-      newState[selectedMember][newRow.id] = newRow
-      return newState
-    })
-    return newRow
-  }
   const handleClose = () => {
     setOpen(false)
     setSelectedDate()
@@ -214,19 +205,11 @@ export const PlanLabaAcceptDayDialog = ({
     },
     {
       field: 'ascent_belay',
-      headerName: 'Страховка',
+      headerName: 'Оценка',
       width: 150,
       editable: true,
       type: 'singleSelect',
-      valueOptions: ['Верхняя', 'Нижняя'],
-    },
-    {
-      field: 'ascent_type',
-      headerName: 'Тип пролаза',
-      width: 150,
-      editable: true,
-      type: 'singleSelect',
-      valueOptions: ['Онсайт', 'Флеш', 'Редпоинт'],
+      valueOptions: ['Уверенно', 'Не уверенно'],
     },
   ]
 
@@ -296,7 +279,6 @@ export const PlanLabaAcceptDayDialog = ({
                     <Toolbar>
                       <Button onClick={handleStartEditing} disabled={!selectedMember}>
                         {isEditMode ? 'Применить' : 'Редактировать'}
-                        {/* тест */}
                       </Button>
                     </Toolbar>
                   )

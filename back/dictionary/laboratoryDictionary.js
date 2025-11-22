@@ -12,7 +12,8 @@ const dictionaryRouter = (app, passport) => {
       pool.query(
         `SELECT l.*, r.rai_name, r.rai_reg, reg.region_name FROM laba l 
                 LEFT JOIN raion r ON l.laba_rai=r.id
-                LEFT JOIN region reg ON r.rai_reg = reg.id`,
+                LEFT JOIN region reg ON r.rai_reg = reg.id
+                ORDER BY laba_name ASC`,
         (error, result) => {
           if (error) {
             console.log(error);
@@ -24,6 +25,28 @@ const dictionaryRouter = (app, passport) => {
       );
     }
   );
+  app.get(
+    "/laboratoryDictionaryByName/",
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+      const { name } = req.query;
+      pool.query(
+        `SELECT l.*, r.rai_name, r.rai_reg, reg.region_name FROM laba l 
+                LEFT JOIN raion r ON l.laba_rai=r.id
+                LEFT JOIN region reg ON r.rai_reg = reg.id
+                WHERE laba_name='${name}'`,
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return;
+          }
+          res.send(result[0]);
+        }
+      );
+    }
+  );
+
   app.put(
     "/laboratoryDictionary",
     passport.authenticate("jwt", { session: false }),

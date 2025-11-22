@@ -41,3 +41,5 @@ export const warningTypes = {
   ascentInTwoMemberWithoutExam: 'ascentInTwoMemberWithoutExam',
   notFullSettlement: 'notFullSettlement',
 }
+
+export const DEPARTMENT_TYPE_ARRAY = ['НП', 'СП', 'СС', 'СМ']

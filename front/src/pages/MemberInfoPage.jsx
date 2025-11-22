@@ -12,7 +12,7 @@ import { MemberExamTab } from '../components/memberTabs/MemberExamTab'
 import { MemberAscentTab } from '../components/memberTabs/MemberAscentTab'
 import { MemberEventTab } from '../components/memberTabs/MemberEventTab'
 import { MemberSportCategoryTab } from '../components/memberTabs/MemberSportCategoryTab'
-import { MemberInfoForm } from './MemberInfoForm'
+import { MemberInfoForm } from '../components/MemberInfoForm'
 import { MemberLabaAscentTab } from '../components/memberTabs/MemberLabaAscentTab'
 
 export const MemberInfoPage = () => {

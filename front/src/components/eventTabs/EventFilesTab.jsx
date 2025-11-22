@@ -6,6 +6,8 @@ import { EditableTable } from '../EditableTable'
 import * as Yup from 'yup'
 import { fileColumnType } from '../dataGridCell/GridEditFileCell'
 import { useParams } from 'react-router-dom'
+import { useGetUserEventPermisson } from '../../hooks/useGetUserPermisson'
+import { useIsAdmin } from '../../hooks/useIsAdmin'
 
 const defaultItem = {
   event_file: '',
@@ -23,6 +25,10 @@ export const EventFilesTab = () => {
 
   const [rows, setRows] = React.useState(data)
   const [rowModesModel, setRowModesModel] = React.useState({})
+
+  const { isCurrentMemberST } = useGetUserEventPermisson(eventId)
+  const isAdmin = useIsAdmin()
+  const readOnly = !isAdmin && !isCurrentMemberST
 
   React.useEffect(() => {
     setRows(data)
@@ -106,6 +112,7 @@ export const EventFilesTab = () => {
       isCellEditable={(params) =>
         params.field !== 'file_name' || (params.row.isNew && params.field == 'file_name')
       }
+      readOnly={readOnly}
     />
   )
 }

@@ -7,6 +7,7 @@ import * as Yup from 'yup'
 import { dateColumnType } from '../../dataGridCell/GridEditDateCell'
 import { useFetchMemberList } from '../../../queries/member'
 import { SelectEditInputCell } from '../../dataGridCell/SelectEditInputCell'
+import { DEPARTMENT_TYPE_ARRAY } from '../../../constants'
 
 const validationSchema = Yup.object({
   depart_tip: Yup.string().required('Поле обязательно для заполнения'),
@@ -94,7 +95,7 @@ export const EventDepartmentTable = ({ eventId, eventStart, eventFinish, readOnl
       width: 100,
       editable: true,
       type: 'singleSelect',
-      valueOptions: ['НП', 'СП', 'СС', 'СМ', 'ХЗ'],
+      valueOptions: [...DEPARTMENT_TYPE_ARRAY, 'ХЗ'],
     },
     { field: 'depart_name', headerName: 'Позывной', width: 150, editable: true },
     {

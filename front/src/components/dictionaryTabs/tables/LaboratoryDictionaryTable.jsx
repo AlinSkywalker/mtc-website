@@ -1,11 +1,11 @@
 import React from 'react'
-import { useFetchLaboratoryDictionaryList } from '../../queries/dictionary'
-import apiClient from '../../api/api'
+import { useFetchLaboratoryDictionaryList } from '../../../queries/dictionary'
+import apiClient from '../../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
-import { DistrictSelectMenu } from '../dataGridCell/DistrictSelectMenu'
-import { EditableTable } from '../EditableTable'
+import { DistrictSelectMenu } from '../../dataGridCell/DistrictSelectMenu'
+import { EditableTable } from '../../EditableTable'
 import * as Yup from 'yup'
-import { multilineColumnType } from '../dataGridCell/GridEditMultilineCell'
+import { multilineColumnType } from '../../dataGridCell/GridEditMultilineCell'
 
 const defaultItem = {
   laba_rai: '',

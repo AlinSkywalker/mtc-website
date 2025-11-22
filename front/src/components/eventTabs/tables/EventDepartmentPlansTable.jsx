@@ -7,7 +7,7 @@ import apiClient from '../../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
 import { EditableTable } from '../../EditableTable'
 import { dateColumnType } from '../../dataGridCell/GridEditDateCell'
-import { useFetchLaboratoryForEvent } from '../../../queries/dictionary'
+import { useFetchLaboratoryByName, useFetchLaboratoryForEvent } from '../../../queries/dictionary'
 import { SelectEditInputCell } from '../../dataGridCell/SelectEditInputCell'
 import { EditCascadeSelectMenu } from '../../dataGridCell/EditCascadeSelectMenu'
 import { Button } from '@mui/material'
@@ -48,7 +48,12 @@ export const EventDepartmentPlansTable = ({
   const [selectedPlan, setSelectedPlan] = React.useState({})
 
   const { isLoading, data } = useFetchEventDepartmentPlanList(eventId, departmentId)
-
+  const { data: lecturesLabaData } = useFetchLaboratoryByName('Лекторий')
+  const { data: practiceLabaData } = useFetchLaboratoryByName('Практорий')
+  const lecturesLabaId = lecturesLabaData?.id
+  const practiceLabaId = practiceLabaData?.id
+  console.log('practiceLabaId', practiceLabaId)
+  console.log('lecturesLabaId', lecturesLabaId)
   const [rows, setRows] = React.useState(data)
   const [rowModesModel, setRowModesModel] = React.useState({})
 
@@ -105,19 +110,6 @@ export const EventDepartmentPlansTable = ({
     )
   }
 
-  const renderProgramSelectEditCell = (params) => {
-    return (
-      <MultiValueSelecWithGroupingtEditInputCell
-        {...params}
-        dictionaryName='trainingProgram'
-        nameListField='program_name_list'
-        idListField='program_id_list'
-        displayNameField='program_name'
-        // groupByField='prog_razd'
-        labelField='prog_razd'
-      />
-    )
-  }
   const renderAscentHeadSelectEditCell = (params) => {
     const hookParams = {
       eventId,
@@ -138,7 +130,7 @@ export const EventDepartmentPlansTable = ({
   const renderAcceptButtonCell = (params) => {
     const buttonElement = React.useRef(null)
     const isAscent = params.row.type === 'Восхождение'
-    const isLaba = params.row.type === 'Занятие'
+    const isLaba = ['Занятие', 'Лекция', 'Практика'].includes(params.row.type)
     if (!(isAscent || isLaba)) {
       return <></>
     }
@@ -173,7 +165,11 @@ export const EventDepartmentPlansTable = ({
           variant='contained'
           onClick={handleClickOpen(params.row.start, params.row)}
           ref={buttonElement}
-          disabled={isFutureDate || !params.row.laba || !!params.row.accepted}
+          disabled={
+            isFutureDate ||
+            (params.row.type === 'Занятие' && !params.row.laba) ||
+            !!params.row.accepted
+          }
         >
           Результат
         </Button>
@@ -203,7 +199,16 @@ export const EventDepartmentPlansTable = ({
       width: 120,
       editable: true,
       type: 'singleSelect',
-      valueOptions: ['Заезд', 'Подход/отход', 'Восхождение', 'Занятие', 'Отдых', 'Отъезд'],
+      valueOptions: [
+        'Заезд',
+        'Подход/отход',
+        'Восхождение',
+        'Занятие',
+        'Лекция',
+        'Практика',
+        'Отдых',
+        'Отъезд',
+      ],
     },
     {
       field: 'rout_name',
@@ -236,13 +241,6 @@ export const EventDepartmentPlansTable = ({
       width: 120,
       editable: true,
       type: 'string',
-    },
-    {
-      field: 'program_name',
-      headerName: 'Программа подготовки',
-      width: 250,
-      renderEditCell: renderProgramSelectEditCell,
-      editable: true,
     },
     {
       field: 'accept_day',
@@ -298,7 +296,7 @@ export const EventDepartmentPlansTable = ({
           setSelectedDate={setSelectedDate}
         />
       )}
-      {selectedDate && selectedPlan.type === 'Занятие' && (
+      {selectedDate && ['Занятие', 'Лекция', 'Практика'].includes(selectedPlan.type) && (
         <PlanLabaAcceptDayDialog
           departmentId={departmentId}
           eventId={eventId}
@@ -307,6 +305,8 @@ export const EventDepartmentPlansTable = ({
           open={open}
           setOpen={setOpen}
           setSelectedDate={setSelectedDate}
+          lecturesLabaId={lecturesLabaId}
+          practiceLabaId={practiceLabaId}
         />
       )}
     </>

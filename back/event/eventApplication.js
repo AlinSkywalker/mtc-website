@@ -23,10 +23,32 @@ const eventApplicationRouter = (app, passport) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
-        sendTelegramMessage('Получена новая заявка', '1663445325')
         return
       }
-      res.send(result);
+      pool.query(`SELECT * FROM eventalp WHERE id='${eventId}'`, (error, event_result) => {
+        if (error) {
+          console.log(error);
+          res.status(500).json({ success: false, message: error });
+          return
+        }
+        pool.query(`SELECT * FROM member WHERE id='${member}'`, (error, member_result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return
+          }
+          const memberData = member_result[0]
+          const eventData = event_result[0]
+          const messageText = `Получена новая заявка от <b>${memberData.fio}</b> на мероприятие <b>${eventData.event_name}</b>
+<b>Отделение:</b> ${department_type}
+<b>Дата заезда:</b> ${date_start}
+<b>Дата отьезда:</b> ${date_finish}`
+          sendTelegramMessage(messageText, '1663445325')
+          sendTelegramMessage(messageText, '5004682600')
+          res.send(result);
+        });
+      });
+
     });
   })
   app.post('/eventList/:eventId/eventApplication/:id', passport.authenticate('jwt', { session: false }), (req, res) => {

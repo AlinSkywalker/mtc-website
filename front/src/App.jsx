@@ -20,7 +20,6 @@ import { ru } from 'date-fns/locale/ru'
 import theme from './api/theme'
 import { Grid, ThemeProvider } from '@mui/material'
 import { SnackbarProvider } from 'notistack'
-import { EventListPageRO } from './pages/EventListPageRO'
 import { PublicLayout } from './components/PublicLayout'
 import { PersonalDataConsentPage } from './pages/PersonalDataConsentPage'
 import { ApplicationListPage } from './pages/ApplicationListPage'
@@ -170,7 +169,7 @@ const App = () => {
                     path='/eventList'
                     element={
                       <PrivateRoute>
-                        <EventListPageRO />
+                        <EventListPage />
                       </PrivateRoute>
                     }
                   />

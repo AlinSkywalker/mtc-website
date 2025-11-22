@@ -4,12 +4,13 @@ function sendTelegramMessage(text, reciever) {
   const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
   const data = {
     chat_id: reciever,
-    text: text
+    text: text,
+    parse_mode: 'HTML'
   };
   fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   })
     .then(response => response.json())
     .then(data => console.log("Сообщение отправлено:", data))

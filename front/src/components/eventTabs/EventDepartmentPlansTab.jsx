@@ -12,7 +12,7 @@ import { useGetUserEventPermisson } from '../../hooks/useGetUserPermisson'
 import { AuthContext } from '../AuthContext'
 
 export const EventDepartmentPlansTab = ({ eventId, eventDistrict, eventStart, eventFinish }) => {
-  const readOnly = !useIsAdmin()
+  const isAdmin = useIsAdmin()
   const [selectedDepartment, setSelectedDepartment] = useState('all')
 
   const { isLoading, data } = useFetchEventDepartmentList(eventId)
@@ -30,11 +30,9 @@ export const EventDepartmentPlansTab = ({ eventId, eventDistrict, eventStart, ev
   }
   if (!data || data?.lenght == 0) return
   const visibleDepartments = data.filter(
-    (item) => isCurrentMemberST || item.depart_inst === currentUserId,
+    (item) => isCurrentMemberST || item.depart_inst === currentUserId || isAdmin,
   )
-  console.log('visibleDepartments', visibleDepartments)
-  console.log('data', data)
-  console.log('currentUserId', currentUserId)
+
   const isToggleDisplayed = visibleDepartments.length !== 0
 
   return (

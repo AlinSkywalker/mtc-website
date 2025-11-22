@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import Grid from '@mui/material/Grid'
-import { LaboratoryDictionaryTable } from './LaboratoryDictionaryTable'
+import { LaboratoryDictionaryTable } from './tables/LaboratoryDictionaryTable'
 import { LaboratoryRouteDictionaryTable } from './tables/LaboratoryRouteDictionaryTable'
 
 export const LaboratoryDictionaryTab = () => {

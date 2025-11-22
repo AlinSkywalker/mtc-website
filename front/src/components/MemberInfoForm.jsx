@@ -9,7 +9,7 @@ import Container from '@mui/material/Container'
 import apiClient from '../api/api'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { format } from 'date-fns'
-import { AsynchronousAutocomplete } from '../components/AsynchronousAutocomplete'
+import { AsynchronousAutocomplete } from './AsynchronousAutocomplete'
 import { CircularProgress } from '@mui/material'
 import { sizeClothOptions, sizeShoeOptions } from '../constants'
 import Select from '@mui/material/Select'
@@ -20,7 +20,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
 import { useIsMobile } from '../hooks/useIsMobile'
 import PhoneInput from 'react-phone-number-input/react-hook-form-input'
-import { PhoneField } from '../components/formFields/PhoneField'
+import { PhoneField } from './formFields/PhoneField'
 import { parsePhoneNumber } from 'react-phone-number-input'
 
 const defaultValues = {
@@ -49,7 +49,7 @@ const defaultValues = {
 const validationSchema = Yup.object({
   fio: Yup.string().required('Поле обязательно для заполнения'),
   memb_email: Yup.string()
-    .nullable(true)
+    .nullable()
     .matches(
       // eslint-disable-next-line no-useless-escape
       /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
@@ -83,10 +83,10 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
         date_razr: date_razr ? format(date_razr, 'yyyy-MM-dd') : null,
         date_zeton: date_zeton ? format(date_zeton, 'yyyy-MM-dd') : null,
         date_instr: date_instr ? format(date_instr, 'yyyy-MM-dd') : null,
-        tel_1: parsePhoneNumber(data.tel_1)?.number,
-        tel_2: parsePhoneNumber(data.tel_2)?.number,
+        tel_1: data.tel_1 ? parsePhoneNumber(data.tel_1)?.number : '',
+        tel_2: data.tel_2 ? parsePhoneNumber(data.tel_2)?.number : '',
       })
-      reset(data)
+      reset(undefined, { keepDirtyValues: true })
     } catch (error) {
       console.error(error)
     }

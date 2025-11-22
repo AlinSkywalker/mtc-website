@@ -43,11 +43,10 @@ const memberListRouter = (app, passport) => {
         );
       } else if (possibleRole == "ob") {
         pool.query(
-          `SELECT m.*, ma.alprazr, ma.alpinstr, ma.skali, ma.ledu    
+          `SELECT m.*, ma.alprazr, ma.alpinstrnom, ma.skali, ma.ledu    
                   FROM member m 
-                  JOIN membalp ma on m.id=ma.id 
-                  WHERE ma.alpinstr IS NOT NULL 
-                  AND ma.alpzeton IS NOT NULL
+                  JOIN membalp ma on m.id=ma.id
+                  WHERE ma.alpinstrnom IS NOT NULL AND ma.alpzeton IS NOT NULL
                   ORDER BY m.fio ASC`,
           (error, result) => {
             if (error) {
@@ -60,8 +59,12 @@ const memberListRouter = (app, passport) => {
         );
       } else if (possibleRole == "st") {
         pool.query(
-          `SELECT m.*, ma.alprazr, ma.alpinstr, ma.skali, ma.ledu    FROM member m JOIN membalp ma on m.id=ma.id 
-                  WHERE ma.alpinstr='1' OR ma.alpinstr='2' ORDER BY m.fio ASC`,
+          `SELECT m.*, ma.alprazr,  m_s_c.ball as alpinstr, ma.skali, ma.ledu    
+            FROM member m JOIN membalp ma on m.id=ma.id
+            LEFT JOIN member_sport_category m_s_c ON m_s_c.id=
+                (SELECT id FROM member_sport_category t1 WHERE type='Инструктор' and t1.member=m.id ORDER BY date_completion DESC LIMIT 1)
+            WHERE m_s_c.ball='1' OR m_s_c.ball='2' 
+            ORDER BY m.fio ASC`,
           (error, result) => {
             if (error) {
               console.log(error);
@@ -73,8 +76,12 @@ const memberListRouter = (app, passport) => {
         );
       } else if (possibleRole == "instructor") {
         pool.query(
-          `SELECT m.*, ma.alprazr, ma.alpinstr, ma.skali, ma.ledu  
-                  FROM member m JOIN membalp ma on m.id=ma.id WHERE ma.alpinstr IS NOT NULL ORDER BY m.fio ASC`,
+          `SELECT m.*, ma.alprazr, m_s_c.ball as alpinstr, ma.skali, ma.ledu  
+                  FROM member m JOIN membalp ma on m.id=ma.id 
+                  LEFT JOIN member_sport_category m_s_c ON m_s_c.id=
+                (SELECT id FROM member_sport_category t1 WHERE type='Инструктор' and t1.member=m.id ORDER BY date_completion DESC LIMIT 1)
+                  WHERE m_s_c.ball IS NOT NULL 
+                  ORDER BY m.fio ASC`,
           (error, result) => {
             if (error) {
               console.log(error);

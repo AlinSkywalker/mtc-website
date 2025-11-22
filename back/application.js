@@ -8,6 +8,7 @@ const applicationRouter = (app, passport) => {
                 FROM event_application e_a
                 LEFT OUTER JOIN eventalp e on e.id = e_a.event
                 LEFT OUTER JOIN member m on m.id = e_a.member
+                ORDER BY created_date DESC
                 `, (error, result) => {
       if (error) {
         console.log(error);
@@ -46,6 +47,46 @@ const applicationRouter = (app, passport) => {
       res.send(result);
     });
 
+  })
+  app.post('/applicationList/:id/accept', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const { id } = req.params;
+    pool.query(`SELECT e_a.*
+                FROM event_application e_a
+                 WHERE id=${id}
+                `, (error, result) => {
+      if (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: error });
+        return
+      }
+      const applicationData = result[0]
+      console.log('applicationData', applicationData)
+      pool.query(
+        `INSERT INTO eventmemb 
+        ( eventmemb_memb, eventmemb_dates, eventmemb_datef,eventmemb_even) 
+         VALUES(${applicationData.member},'${applicationData.date_start}','${applicationData.date_finish}',
+         ${applicationData.event})
+         ON DUPLICATE KEY UPDATE updated_date=CURRENT_TIMESTAMP`,
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return;
+          }
+          pool.query(`UPDATE event_application SET 
+            accepted=1,
+            updated_date=CURRENT_TIMESTAMP 
+            WHERE id=${id}`, (error, result) => {
+            if (error) {
+              console.log(error);
+              res.status(500).json({ success: false, message: error });
+              return
+            }
+            res.send(result);
+          });
+        }
+      );
+    });
   })
   app.delete('/applicationList/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
     const { id } = req.params;
