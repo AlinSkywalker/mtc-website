@@ -46,7 +46,18 @@ export const EventBaseTab = () => {
   const currentTab = tabs.findIndex((tab) => `${basePath}${tab.path}` === location.pathname)
   return (
     <>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+      <Grid container spacing={1}>
+        <Grid size={7}>
+          <EventBaseHouseRoomTable
+            eventId={eventId}
+            onRowSelectionModelChange={onRowSelectionModelChange}
+          />
+        </Grid>
+        <Grid size={5}>
+          <EventBaseHouseRoomMemberTable eventId={eventId} selectedBaseRoom={selectedBaseRoom} />
+        </Grid>
+      </Grid>
+      {/* <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs
           value={currentTab !== -1 ? currentTab : false}
           variant='scrollable'
@@ -61,7 +72,7 @@ export const EventBaseTab = () => {
         {tabs.map((tab, index) => (
           <Route key={index} path={`${tab.path}/*`} element={tab.component} />
         ))}
-      </Routes>
+      </Routes> */}
     </>
   )
 }

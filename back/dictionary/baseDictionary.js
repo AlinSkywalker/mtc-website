@@ -329,7 +329,7 @@ LEFT JOIN (
       basenom_prais=?,
       basenom_akt='${basenom_akt}',
       basenom_name='${basenom_name}',
-      basenom_koi='${basenom_koi}',
+      basenom_koi=${basenom_koi},
       updated_date=CURRENT_TIMESTAMP WHERE id=${id}`,
         [basenom_mest, basenom_prais],
         (error, result) => {
