@@ -12,6 +12,7 @@ import apiClient from '../api/api'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
 import { Typography } from '@mui/material'
+import MtcImage from '../assets/mtc_black.png'
 
 const validationSchema = Yup.object({
   username: Yup.string().required('Поле обязательно для заполнения'),
@@ -64,9 +65,12 @@ export const LoginPage = () => {
         alignItems='center'
         sx={{ width: '100%', height: '100%' }}
       >
-        <Card sx={{ minWidth: 275 }}>
+        <Card sx={{ minWidth: 400 }}>
           <CardContent>
             <form onSubmit={handleSubmit(handleLogin)}>
+              <Grid container sx={{ mb: 2 }} direction='column' alignItems='center'>
+                <img src={MtcImage} alt='ЦАП' height='65px' width='75px' />
+              </Grid>
               <Grid
                 container
                 justifyContent='center'
@@ -74,7 +78,6 @@ export const LoginPage = () => {
                 flexDirection='column'
                 spacing={2}
               >
-
                 <Controller
                   name='username'
                   control={control}
@@ -115,7 +118,12 @@ export const LoginPage = () => {
                   </Grid>
                 )}
                 <Grid>
-                  <Link to='/register'>Зарегистрироваться</Link>
+                  <Link to='/reset-password' style={{ color: '#8a8989ff' }}>
+                    Восстановить пароль
+                  </Link>
+                </Grid>
+                <Grid>
+                  <Link to='/register' style={{ color: '#8a8989ff' }} >Зарегистрироваться</Link>
                 </Grid>
               </Grid>
             </form>

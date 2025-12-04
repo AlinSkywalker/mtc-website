@@ -70,7 +70,7 @@ export const ApplicationListTable = () => {
     const link = params.value ?? ''
 
     return (
-      <Link onClick={handleClickEvent(params.row.id)} sx={{ cursor: 'pointer' }}>
+      <Link onClick={handleClickEvent(params.row.event)} sx={{ cursor: 'pointer' }}>
         {link}
       </Link>
     )
@@ -80,7 +80,7 @@ export const ApplicationListTable = () => {
     const link = params.value ?? ''
 
     return (
-      <Link onClick={handleClickName(params.row.id)} sx={{ cursor: 'pointer' }}>
+      <Link onClick={handleClickName(params.row.member)} sx={{ cursor: 'pointer' }}>
         {link}
       </Link>
     )

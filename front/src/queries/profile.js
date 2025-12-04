@@ -1,6 +1,6 @@
 import apiClient from '../api/api'
 import { useQuery } from '@tanstack/react-query'
-import parseISO from 'date-fns/parseISO'
+import { parseISO } from 'date-fns'
 
 export function useFetchProfile(id) {
   return useQuery({

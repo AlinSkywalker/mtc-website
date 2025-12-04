@@ -23,6 +23,7 @@ import { SnackbarProvider } from 'notistack'
 import { PublicLayout } from './components/PublicLayout'
 import { PersonalDataConsentPage } from './pages/PersonalDataConsentPage'
 import { ApplicationListPage } from './pages/ApplicationListPage'
+import { ResetPasswordPage } from './pages/ResetPasswordPage'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -98,6 +99,14 @@ const App = () => {
                       </LoginRoute>
                     }
                     exact
+                  />
+                  <Route
+                    path='/reset-password'
+                    element={
+                      <LoginRoute>
+                        <ResetPasswordPage />
+                      </LoginRoute>
+                    }
                   />
 
                   <Route

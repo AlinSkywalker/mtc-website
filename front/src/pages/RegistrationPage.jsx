@@ -1,24 +1,17 @@
 import React, { useContext, useState } from 'react'
-import { useForm, Controller } from 'react-hook-form'
-import TextField from '@mui/material/TextField'
-import Button from '@mui/material/Button'
+import { useForm } from 'react-hook-form'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Grid from '@mui/material/Grid'
 import Container from '@mui/material/Container'
-import { Link } from 'react-router-dom'
 import { AuthContext } from '../components/AuthContext'
 import apiClient from '../api/api'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Checkbox, FormControlLabel, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 import * as Yup from 'yup'
 import { format } from 'date-fns'
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
-import InputLabel from '@mui/material/InputLabel'
-import FormControl from '@mui/material/FormControl'
 import { RegistrationForm } from './RegistrationForm'
+import MtcImage from '../assets/mtc_black.png'
 
 const validationSchema = Yup.object({
   email: Yup.string().required('Поле обязательно для заполнения'),
@@ -95,6 +88,12 @@ export const RegistrationPage = () => {
       >
         <Card sx={{ minWidth: 275 }}>
           <CardContent>
+            <Grid container sx={{ mb: 2 }} direction='column' alignItems='center'>
+              <img src={MtcImage} alt='ЦАП' height='65px' width='75px' />
+              <Typography variant='h6' sx={{ mt: 2 }}>
+                Регистрация
+              </Typography>
+            </Grid>
             <RegistrationForm
               handleLogin={handleLogin}
               handleSubmit={handleSubmit}

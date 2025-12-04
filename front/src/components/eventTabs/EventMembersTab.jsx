@@ -204,7 +204,7 @@ export const EventMembersTab = ({ eventId }) => {
       width: 100,
       editable: !readOnly,
       type: 'singleSelect',
-      valueOptions: ['Участник', 'Инструктор', 'Стажёр'],
+      valueOptions: ['Участник', 'Инструктор', 'Стажёр', 'Турист', 'Спортсмен'],
     },
     {
       field: 'eventmemb_pred',

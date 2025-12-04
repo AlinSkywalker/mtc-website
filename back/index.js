@@ -11,9 +11,11 @@ const bcrypt = require("bcryptjs");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const fileUpload = require("express-fileupload");
-const nodemailer = require("nodemailer");
+
 
 const pool = require("./mysql");
+
+const authRouter = require("./auth");
 
 const baseDictionaryRouter = require("./dictionary/baseDictionary");
 const cityDictionaryRouter = require("./dictionary/cityDictionary");
@@ -119,37 +121,9 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-const transporter = nodemailer.createTransport({
-  host: "mail.hosting.reg.ru",
-  port: 587,
-  secure: false, // upgrade later with STARTTLS
-  auth: {
-    user: "info@mtc-tritonn.ru", // Your Gmail email address
-    pass: "fHreL67ZT", // Your Gmail password
-  },
-});
-const defaultMailOptions = {
-  from: {
-    name: "ЦАП Тритонн",
-    address: "info@mtc-tritonn.ru",
-  },
-};
 
-const sendSuccessfulRegistrationEmail = (email, callback) => {
-  const mailOptions = {
-    ...defaultMailOptions,
-    to: email, // Recipient's email address
-    subject: "Регистрация в системе ЦАП", // Subject line
-    text: "Вы зарегистрировались в системе ЦАП Тритонн. Добро пожаловать!", // Plain text body
-  };
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.log("Ошибка отправки:", error);
-    } else {
-      callback();
-    }
-  });
-};
+
+
 
 app.post("/testEmail", (req, res) => {
   // const mailOptions = {
@@ -194,192 +168,10 @@ app.post("/testEmail", (req, res) => {
 
 });
 
-app.post("/register", (req, res) => {
-  const { email, fio, date_birth, password, gender } = req.body;
-  pool.query(`SELECT * FROM user WHERE login='${email}'`, (error, result) => {
-    if (error) {
-      console.log(error);
-      res.status(500).json({ success: false, message: error });
-      return;
-    }
-    const user = result[0];
-    // console.log('user', user)
-    // if (!user || !bcrypt.compareSync(password, user.password)) {
-    if (user) {
-      res.status(500).json({
-        success: false,
-        message: "Пользователь с таким email уже существует",
-      });
-      return;
-    }
-    pool.query(
-      `SELECT * FROM member WHERE fio='${fio}' AND date_birth='${date_birth}'`,
-      (error, result) => {
-        if (error) {
-          console.log(error);
-          res.status(500).json({ success: false, message: error });
-          return;
-        }
-        const member = result[0];
-        if (!!member?.user_id) {
-          res.status(500).json({
-            success: false,
-            message: "Пользователь с таким ФИО и датой рождения уже существует",
-          });
-          return;
-        }
-        const hashPassword = bcrypt.hashSync(password, 10);
-        pool.query(
-          "INSERT INTO user (login, password, user_role) VALUES(?,?, 'USER_ROLE')",
-          [email, hashPassword],
-          (error, result) => {
-            if (error) {
-              console.log(error);
-              res.status(500).json({ success: false, message: error });
-              return;
-            }
-            const userId = result.insertId;
-            if (member) {
-              pool.query(
-                `UPDATE member SET user_id=${userId}, memb_email='${email}'  WHERE id=${member.id} AND user_id IS NULL`,
-                (error, result) => {
-                  if (error) {
-                    console.log(error);
-                    res.status(500).json({ success: false, message: error });
-                    return;
-                  }
-                  const token = jwt.sign(
-                    {
-                      user_id: userId,
-                      user_name: email,
-                      user_role: "USER_ROLE",
-                      iat: Date.now(),
-                    },
-                    jwtOptions.secretOrKey
-                  );
 
-                  // sendSuccessfulRegistrationEmail(email, () => {});
-                  res.json({
-                    success: true,
-                    token,
-                    user_role: "USER_ROLE",
-                    user_id: userId,
-                  });
-                }
-              );
-            } else {
-              pool.query(
-                "INSERT INTO member (fio, date_birth, gender, user_id,memb_email) VALUES(?,?,?,?,?)",
-                [fio, date_birth, gender, userId, email],
-                (error, result) => {
-                  if (error) {
-                    console.log(error);
-                    res.status(500).json({ success: false, message: error });
-                    return;
-                  }
 
-                  const newMemberId = result.insertId;
-                  pool.query(
-                    `INSERT INTO membalp ( id) VALUES(?)`,
-                    [newMemberId],
-                    (error, result) => {
-                      if (error) {
-                        console.log(error);
-                        res
-                          .status(500)
-                          .json({ success: false, message: error });
-                        return;
-                      }
-                      const token = jwt.sign(
-                        {
-                          user_id: userId,
-                          user_name: email,
-                          user_role: "USER_ROLE",
-                          iat: Date.now(),
-                        },
-                        jwtOptions.secretOrKey
-                      );
-                      sendSuccessfulRegistrationEmail(email, () => {
-                        res.json({
-                          success: true,
-                          token,
-                          user_role: "USER_ROLE",
-                          user_id: userId,
-                        });
-                      });
-                    }
-                  );
-                }
-              );
-            }
-          }
-        );
-      }
-    );
-  });
-});
-app.get(
-  "/logout",
-  passport.authenticate("jwt", { session: false }),
-  function (req, res) {
-    const token = req.user.token;
 
-    pool.query(
-      `DELETE FROM user_token WHERE token='${token}'`,
-      (error, result) => {
-        if (error) console.log(error);
-        res.send("Logout done");
-      }
-    );
-  }
-);
 
-app.post("/login", (req, res) => {
-  const { username, password } = req.body;
-  pool.query(
-    `SELECT u.*, m.id as user_member_id FROM user u 
-      LEFT OUTER JOIN member m ON m.user_id=u.id
-      WHERE u.login='${username}'`,
-    (error, result) => {
-      if (error) console.log(result);
-      const user = result[0];
-      // console.log('user', user)
-      // if (!user || !bcrypt.compareSync(password, user.password)) {
-      if (!user || !bcrypt.compareSync(password, user.password)) {
-        res
-          .status(500)
-          .json({ success: false, message: "Invalid username or password" });
-        return;
-      }
-
-      const token = jwt.sign(
-        {
-          user_id: user.id,
-          user_name: user.login,
-          user_role: user.user_role,
-          user_member_id: user.user_member_id,
-          iat: Date.now(),
-        },
-        jwtOptions.secretOrKey
-      );
-      // записать в базу токен и айди пользователя
-      pool.query(
-        "INSERT INTO user_token (user_id, token) VALUES(?,?)",
-        [user.id, token],
-        (error, result) => {
-          if (error) console.log(error);
-          res.json({
-            success: true,
-            token,
-            user_role: user.user_role,
-            user_id: user.id,
-            user_member_id: user.user_member_id
-          });
-        }
-      );
-    }
-  );
-});
 
 app.get(
   "/users",
@@ -471,6 +263,8 @@ app.post(
     });
   }
 );
+
+authRouter(app, passport);
 
 baseDictionaryRouter(app, passport);
 cityDictionaryRouter(app, passport);

@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const instance = axios.create({
-  timeout: 6000,
+  timeout: 30000,
 })
 instance.interceptors.request.use((config) => {
   if (localStorage.getItem('token')) {
