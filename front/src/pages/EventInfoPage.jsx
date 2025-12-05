@@ -82,22 +82,9 @@ export const EventInfoPage = () => {
             </IconButton>
           </Tooltip>
           {data.event_finish > new Date() && (
-            <>
-              {isMobile ? (
-                <Tooltip title='Подать заявку'>
-                  <IconButton
-                    onClick={() => setIsApplicationDialogOpen(true)}
-                    sx={{ alignSelf: 'center' }}
-                  >
-                    {<PersonAddIcon />}
-                  </IconButton>
-                </Tooltip>
-              ) : (
-                <Button variant='contained' onClick={() => setIsApplicationDialogOpen(true)}>
-                  Подать заявку
-                </Button>
-              )}
-            </>
+            <Button variant='contained' onClick={() => setIsApplicationDialogOpen(true)}>
+              Заявка
+            </Button>
           )}
         </Grid>
         {isDisplayForm && (

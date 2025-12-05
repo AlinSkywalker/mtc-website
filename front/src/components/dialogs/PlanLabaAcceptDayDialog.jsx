@@ -248,7 +248,7 @@ export const PlanLabaAcceptDayDialog = ({
 
       <DialogContent sx={{ minWidth: '800px' }}>
         <Grid container>
-          <Grid size={5} sx={{ height: `calc(100vh - 190px)` }}>
+          <Grid size={3} sx={{ height: `calc(100vh - 190px)` }}>
             <DataGrid
               editMode='row'
               rows={memberRows}
@@ -265,7 +265,7 @@ export const PlanLabaAcceptDayDialog = ({
               }}
             />
           </Grid>
-          <Grid size={7} sx={{ height: `calc(100vh - 190px)` }}>
+          <Grid size={9} sx={{ height: `calc(100vh - 190px)` }}>
             <DataGrid
               apiRef={apiRef}
               columns={labaRouteColumns}

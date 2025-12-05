@@ -86,7 +86,7 @@ export const RegistrationPage = () => {
         alignItems='center'
         sx={{ width: '100%', height: '100%' }}
       >
-        <Card sx={{ minWidth: 275 }}>
+        <Card sx={{ minWidth: 400 }}>
           <CardContent>
             <Grid container sx={{ mb: 2 }} direction='column' alignItems='center'>
               <img src={MtcImage} alt='ЦАП' height='65px' width='75px' />

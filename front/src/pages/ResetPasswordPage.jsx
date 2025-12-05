@@ -40,17 +40,11 @@ export const ResetPasswordPage = () => {
       apiClient
         .post('/api/verify-token', { token })
         .then((response) => {
-          // setServerResponse(response)
-          // console.log('serverResponse then', response)
           if (response) {
             setIsValidToken(true)
           }
         })
         .catch((error) => {
-          // Handle login error
-          // console.error(error)
-          // console.log('serverResponse catch', error)
-          // setServerResponse(error)
           setIsValidToken(false)
         })
     }
@@ -63,16 +57,11 @@ export const ResetPasswordPage = () => {
     return apiClient
       .post('/api/reset-password', { username })
       .then((response) => {
-        // setServerResponse(response)
-        // console.log('serverResponse then', response)
         if (response) {
           setServerResponse('Ссылка для восстановления пароля отправлена на указанный e-mail')
         }
       })
       .catch((error) => {
-        // Handle login error
-        // console.error(error)
-        // console.log('serverResponse catch', error)
         setServerResponse(error)
       })
   }

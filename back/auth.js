@@ -2,6 +2,9 @@
 const pool = require("./mysql");
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const JwtStrategy = require("passport-jwt").Strategy;
+const ExtractJwt = require("passport-jwt").ExtractJwt;
 
 const transporter = nodemailer.createTransport({
   host: "mail.hosting.reg.ru",
@@ -17,6 +20,12 @@ const defaultMailOptions = {
     name: "ЦАП Тритонн",
     address: "info@mtc-tritonn.ru",
   },
+};
+
+const jwtOptions = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey:
+    "bb70ee193c249bb7c856f8c408dfaed81458e8773a05364e7bc6b726e4f83e0d",
 };
 
 const sendSuccessfulRegistrationEmail = (email, callback, errorCallback) => {
@@ -43,7 +52,7 @@ const sendResetPasswordEmail = (email, token, callback, errorCallback) => {
     subject: "Восстановление пароля от системы ЦАП", // Subject line
     html: `<p>Добрый день!</p>
 <p>Вы запросили восстановление пароля для учетной записи email в ЦАП.</p>
-<p><a href="http://localhost:9000/reset-password?token=${token}">Восстановить пароль</a></p>
+<p><a href="https://mtc-tritonn.ru/reset-password?token=${token}">Восстановить пароль</a></p>
 <p>Для восстановления пароля перейдите по ссылке</p>`,
   };
   transporter.sendMail(mailOptions, (error, info) => {
