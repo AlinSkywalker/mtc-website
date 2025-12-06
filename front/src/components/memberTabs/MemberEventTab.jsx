@@ -18,7 +18,7 @@ export const MemberEventTab = ({ memberId }) => {
   }, [data])
 
   const handleClickName = (id) => () => {
-    const link = isAdmin ? `/admin/event/${id}` : `/event/${id}`
+    const link = `/event/${id}`
     navigate(link)
   }
   const renderLink = (params) => {

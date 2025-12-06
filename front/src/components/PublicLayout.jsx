@@ -13,15 +13,14 @@ export const PublicLayout = ({ children }) => {
   const isAdmin = useIsAdmin()
   const { userInfo } = useContext(AuthContext)
 
-  const pages =
-    userInfo.role !== 'ADMIN_ROLE'
-      ? [{ name: 'eventList', url: '/eventList', label: 'Мероприятия' }]
-      : [
-        { name: 'eventList', url: '/admin/event', label: 'Мероприятия' },
-        { name: 'memberList', url: '/admin/member', label: 'Тритонны' },
-        { name: 'dictionary', url: '/admin/dictionary', label: 'Справочники' },
-        { name: 'applications', url: '/admin/applications', label: 'Заявки' },
-      ]
+  const pages = !isAdmin
+    ? [{ name: 'eventList', url: '/event', label: 'Мероприятия' }]
+    : [
+      { name: 'eventList', url: '/event', label: 'Мероприятия' },
+      { name: 'memberList', url: '/member', label: 'Тритонны' },
+      { name: 'dictionary', url: '/dictionary', label: 'Справочники' },
+      { name: 'applications', url: '/applications', label: 'Заявки' },
+    ]
   const location = useLocation()
 
   const currentPage = pages.find(

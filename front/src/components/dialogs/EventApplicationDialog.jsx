@@ -11,13 +11,14 @@ import {
   Typography,
   TextField,
   MenuItem,
+  ListItemText,
 } from '@mui/material'
 import React, { useContext, useState } from 'react'
 import CloseIcon from '@mui/icons-material/Close'
 import { DatePicker } from '@mui/x-date-pickers'
 import apiClient from '../../api/api'
 import { AuthContext } from '../AuthContext'
-import { format } from 'date-fns'
+import { format, parseISO } from 'date-fns'
 import { useFetchEventDepartmentList } from '../../queries/eventDepartment'
 import { DEPARTMENT_TYPE_ARRAY } from '../../constants'
 import { useIsMobile } from '../../hooks/useIsMobile'
@@ -78,6 +79,19 @@ export const EventApplicationDialog = ({ eventId, open, setOpen }) => {
     setDepartmentType(newValue)
     setDepartment('')
   }
+  const renderMenuItem = (option) => {
+    const start = format(parseISO(option.depart_dates || ''), 'dd.MM.yyyy')
+    const end = format(parseISO(option.depart_datef || ''), 'dd.MM.yyyy')
+
+    return (
+      <MenuItem key={option.id} value={option.id} onClick={handleSelectDepartment(option.id)}>
+        <ListItemText
+          primary={`${option.depart_tip} ${start} - ${end}`}
+          secondary={`Инструктор: ${option.inst_fio}`}
+        />
+      </MenuItem>
+    )
+  }
 
   return (
     <Dialog onClose={handleClose} open={open} maxWidth='sm'>
@@ -110,15 +124,7 @@ export const EventApplicationDialog = ({ eventId, open, setOpen }) => {
               // defaultValue=''
               value={department}
             >
-              {data?.map((option) => (
-                <MenuItem
-                  key={option.id}
-                  value={option.id}
-                  onClick={handleSelectDepartment(option.id)}
-                >
-                  {`${option.depart_tip} ${option.depart_dates} - ${option.depart_datef}`}
-                </MenuItem>
-              ))}
+              {data?.filter(item => item.depart_tip !== 'ХЗ').map(renderMenuItem)}
             </TextField>
           </FormControl>
         </Box>

@@ -37,11 +37,11 @@ export const ApplicationListTable = () => {
   const queryClient = useQueryClient()
 
   const handleClickName = (id) => () => {
-    navigate(`/admin/member/${id}`)
+    navigate(`/member/${id}`)
   }
 
   const handleClickEvent = (id) => () => {
-    navigate(`/admin/event/${id}`)
+    navigate(`/event/${id}`)
   }
   const [rows, setRows] = React.useState(data)
   const [rowModesModel, setRowModesModel] = React.useState({})

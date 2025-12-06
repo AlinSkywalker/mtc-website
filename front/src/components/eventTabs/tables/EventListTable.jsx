@@ -10,6 +10,7 @@ import * as Yup from 'yup'
 import { SelectEditInputCell } from '../../dataGridCell/SelectEditInputCell'
 import { dateColumnType } from '../../dataGridCell/GridEditDateCell'
 import { MultiValueSelecWithGroupingtEditInputCell } from '../../dataGridCell/MultiValueSelecWithGroupingtEditInputCell'
+import { useIsAdmin } from '../../../hooks/useIsAdmin'
 
 const defaultItem = {
   event_name: '',
@@ -39,15 +40,15 @@ const validationSchema = Yup.object({
   // rai_name: Yup.string().required('Поле обязательно для заполнения'),
 })
 
-export const EventListTable = ({ readOnly = false }) => {
+export const EventListTable = () => {
   const [show, setShow] = useState('future')
+  const readOnly = !useIsAdmin()
   const { isLoading, data } = useFetchEventList(show)
   const navigate = useNavigate()
   const queryClient = useQueryClient()
 
   const handleClickName = (id) => () => {
-    if (readOnly) navigate(`/event/${id}/`)
-    else navigate(`/admin/event/${id}/`)
+    navigate(`/event/${id}/`)
   }
   const [rows, setRows] = React.useState(data)
   const [rowModesModel, setRowModesModel] = React.useState({})

@@ -76,7 +76,7 @@ export const DictionaryPage = () => {
 
   const handleChange = (event, newValue) => {
     setValue(newValue)
-    navigate(`/admin/dictionary/${dictionaryTabs[newValue].name}`)
+    navigate(`/dictionary/${dictionaryTabs[newValue].name}`)
   }
 
   return (

@@ -5,15 +5,14 @@ import { useNavigate } from 'react-router-dom'
 
 import { format, parseISO } from 'date-fns'
 
-export const MobileEventListTable = ({ readOnly = false }) => {
+export const MobileEventListTable = () => {
   const [show, setShow] = useState('future')
   const { isLoading, data } = useFetchEventList(show)
 
   const navigate = useNavigate()
 
   const handleItemClickName = (id) => () => {
-    if (readOnly) navigate(`/event/${id}/`)
-    else navigate(`/admin/event/${id}/`)
+    navigate(`/event/${id}/`)
   }
 
   const handleChangeShow = (event, show) => {

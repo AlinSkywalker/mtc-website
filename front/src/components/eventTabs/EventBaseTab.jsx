@@ -1,13 +1,10 @@
 import React, { useState } from 'react'
 
 import Grid from '@mui/material/Grid'
-import Tab from '@mui/material/Tab'
-import Box from '@mui/material/Box'
-import Tabs from '@mui/material/Tabs'
 
 import { EventBaseHouseRoomTable } from './tables/EventBaseHouseRoomTable'
 import { EventBaseHouseRoomMemberTable } from './tables/EventBaseHouseRoomMemberTable'
-import { useParams, useLocation, Route, Routes, Link } from 'react-router-dom'
+import { useParams, useLocation } from 'react-router-dom'
 import { EventBaseSettlementTab } from './EventBaseSettlementTab'
 
 export const EventBaseTab = () => {
@@ -22,7 +19,7 @@ export const EventBaseTab = () => {
     setSelectedBaseRoom(newId)
   }
   const location = useLocation()
-  const basePath = `/admin/event/${eventId}/base`
+  const basePath = `/event/${eventId}/base`
 
   const tabs = [
     {

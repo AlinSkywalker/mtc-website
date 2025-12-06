@@ -110,39 +110,39 @@ const App = () => {
                   />
 
                   <Route
-                    path='/admin/event'
+                    path='/event'
                     element={
-                      <AdminRoute>
+                      <PrivateRoute>
                         <EventListPage />
-                      </AdminRoute>
+                      </PrivateRoute>
                     }
                   />
                   <Route
-                    path='/admin/event/:id/*'
+                    path='/event/:id/*'
                     element={
-                      <AdminRoute>
+                      <PrivateRoute>
                         <EventInfoPage />
-                      </AdminRoute>
+                      </PrivateRoute>
                     }
                   />
                   <Route
-                    path='/admin/member'
+                    path='/member'
                     element={
-                      <AdminRoute>
+                      <PrivateRoute>
                         <MemberListPage />
-                      </AdminRoute>
+                      </PrivateRoute>
                     }
                   />
                   <Route
-                    path='/admin/member/:id'
+                    path='/member/:id'
                     element={
-                      <AdminRoute>
+                      <PrivateRoute>
                         <MemberInfoPage />
-                      </AdminRoute>
+                      </PrivateRoute>
                     }
                   />
                   <Route
-                    path='/admin/dictionary'
+                    path='/dictionary'
                     element={
                       <AdminRoute>
                         <DictionaryPage />
@@ -150,7 +150,7 @@ const App = () => {
                     }
                   />
                   <Route
-                    path='/admin/applications'
+                    path='/applications'
                     element={
                       <AdminRoute>
                         <ApplicationListPage />
@@ -158,7 +158,7 @@ const App = () => {
                     }
                   />
                   <Route
-                    path='/admin/dictionary/:dictionaryType'
+                    path='/dictionary/:dictionaryType'
                     element={
                       <AdminRoute>
                         <DictionaryPage />
@@ -173,23 +173,6 @@ const App = () => {
                       </PrivateRoute>
                     }
                     exact
-                  />
-                  <Route
-                    path='/eventList'
-                    element={
-                      <PrivateRoute>
-                        <EventListPage />
-                      </PrivateRoute>
-                    }
-                  />
-
-                  <Route
-                    path='/event/:id/*'
-                    element={
-                      <PrivateRoute>
-                        <EventInfoPage />
-                      </PrivateRoute>
-                    }
                   />
                   <Route
                     path='/personalDataConsent'

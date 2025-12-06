@@ -15,9 +15,8 @@ export const EventDepartmentTab = ({ event }) => {
   const location = useLocation()
   const readOnly = !useIsAdmin()
   if (!event) return
-  const basePath = readOnly
-    ? `/event/${event.id}/department`
-    : `/admin/event/${event.id}/department`
+  const basePath = `/event/${event.id}/department`
+
   const tabs = [
     {
       name: 'list',

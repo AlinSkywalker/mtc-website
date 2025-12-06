@@ -7,7 +7,7 @@ import { useIsAdmin } from '../hooks/useIsAdmin'
 export const EventListPage = () => {
   const isMobile = useIsMobile()
   const readOnly = !useIsAdmin()
-  if (isMobile) return <MobileEventListTable readOnly={readOnly} />
+  if (isMobile) return <MobileEventListTable />
 
-  return <EventListTable readOnly={readOnly} />
+  return <EventListTable />
 }
