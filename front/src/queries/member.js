@@ -19,6 +19,7 @@ export function useFetchMember(id) {
   return useQuery({
     queryKey: ['member', id],
     queryFn: async () => {
+      if (!id) return {}
       const { data } = await apiClient.get(`/api/memberList/${id}`)
       return {
         ...data,
@@ -81,6 +82,17 @@ export function useFetchMemberLabaAscentList(id) {
     queryFn: async () => {
       if (!id) return []
       const { data } = await apiClient.get(`/api/memberList/${id}/labaAscent`)
+      return data
+    },
+  })
+}
+
+export function useFetchMemberEquipmentList(id) {
+  return useQuery({
+    queryKey: ['member', id, 'equipment'],
+    queryFn: async () => {
+      if (!id) return []
+      const { data } = await apiClient.get(`/api/memberList/${id}/equipment`)
       return data
     },
   })

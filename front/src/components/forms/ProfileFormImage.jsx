@@ -73,9 +73,23 @@ export const ProfileFormImage = ({ photo, currentMemberId, currentUserId }) => {
   }
 
   const isMobile = useIsMobile()
+
+  const maxSize = 10485760
+  function fileSizeValidator(file) {
+    if (file.size > maxSize) {
+      return {
+        code: 'size-too-large',
+        message: `Файл больше ${maxSize}`,
+      }
+    }
+
+    return null
+  }
+
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } = useDropzone({
     accept: { 'image/*': [] },
     maxFiles: 1,
+    validator: fileSizeValidator,
     onDrop: (acceptedFiles) => {
       if (acceptedFiles.length > 0) {
         const file = acceptedFiles[0]
@@ -124,6 +138,7 @@ export const ProfileFormImage = ({ photo, currentMemberId, currentUserId }) => {
         onClick={() => {
           setIsDialogOpen(true)
         }}
+        sx={{ cursor: 'pointer' }}
       >
         <img alt='' src={photo} width='200' height='200' />
       </Grid>
@@ -157,19 +172,18 @@ export const ProfileFormImage = ({ photo, currentMemberId, currentUserId }) => {
             <Grid>
               <div {...getRootProps({ style })}>
                 <input {...getInputProps()} />
-                <p>Перетащите сюда файл или нажмите для выбора</p>
+                <p>
+                  Перетащите сюда файл или нажмите для выбора.
+                  <br />
+                  Максимальный размер файла - 10МБ
+                </p>
               </div>
             </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Отмена</Button>
-          <Button
-            onClick={handleSavePhoto}
-            autoFocus
-            variant='contained'
-          // disabled={!isSendEnabled}
-          >
+          <Button onClick={handleSavePhoto} autoFocus variant='contained'>
             Сохранить фото
           </Button>
         </DialogActions>

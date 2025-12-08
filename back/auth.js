@@ -90,7 +90,12 @@ const authRouter = (app, passport) => {
       LEFT OUTER JOIN member m ON m.user_id=u.id
       WHERE u.login='${username}'`,
       (error, result) => {
-        if (error) console.log(result);
+        if (error) {
+          res
+            .status(500)
+            .json({ success: false, message: "error" });
+          return;
+        }
         const user = result[0];
         // console.log('user', user)
         // if (!user || !bcrypt.compareSync(password, user.password)) {

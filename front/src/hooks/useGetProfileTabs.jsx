@@ -4,6 +4,7 @@ import { MemberLabaAscentTab } from '../components/memberTabs/MemberLabaAscentTa
 import { MemberExamTab } from '../components/memberTabs/MemberExamTab'
 import { MemberSportCategoryTab } from '../components/memberTabs/MemberSportCategoryTab'
 import { MemberEventTab } from '../components/memberTabs/MemberEventTab'
+import { MemberEquipmentTab } from '../components/memberTabs/MemberEquipmentTab'
 
 export const useGetProfileTabs = (currentMemberId) => {
   return [
@@ -17,6 +18,11 @@ export const useGetProfileTabs = (currentMemberId) => {
       label: 'Тренировки',
       component: <MemberLabaAscentTab memberId={currentMemberId} />,
     },
+    // {
+    //   name: 'equipment',
+    //   label: 'Моё снаряжение',
+    //   component: <MemberEquipmentTab memberId={currentMemberId} />,
+    // },
     {
       name: 'exam',
       label: 'Зачеты',

@@ -70,7 +70,6 @@ const eventMemberRouter = (app, passport) => {
               (1000 * 60 * 60 * 24) +
               1;
             const daysWithDept = item.days_with_dept;
-            // console.log('fio', item.fio, memberDays, daysWithDept)
             const allDaysWithDept = daysWithDept >= memberDays;
             const alerts = [];
             if (!allDaysWithDept) {
@@ -96,7 +95,7 @@ const eventMemberRouter = (app, passport) => {
     (req, res) => {
       const eventId = req.params.eventId;
       pool.query(
-        `SELECT e_m.*, m.fio
+        `SELECT e_m.*, m.fio, m.id as member_id
                 FROM eventmemb e_m
                 LEFT JOIN member m on m.id=e_m.eventmemb_memb 
                 WHERE eventmemb_even=${eventId} AND e_m.eventmemb_role='Инструктор'
@@ -283,11 +282,8 @@ const eventMemberRouter = (app, passport) => {
           }
           const filePath = result[0][filePathField]//.replaceAll('/', '\\')
           const fileName = result[0][fileNameField]
-          // console.log('filePath', filePath)
           const file = `${__dirname}/../${filePath}`;
-          // console.log('file', file)
           var newFileName = encodeURIComponent(fileName);
-          // console.log('newFileName', newFileName)
           res.setHeader('Content-Disposition', 'attachment;filename*=UTF-8\'\'' + newFileName);
           res.download(file); // Set disposition and send it.
         }

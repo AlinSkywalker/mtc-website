@@ -188,7 +188,6 @@ app.get(
   "/current",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    // console.log("user", req.user);
     res.send({ id: req.user.user_id, role: req.user.user_role, memberId: req.user.user_member_id });
   }
 );

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Controller } from 'react-hook-form'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
@@ -13,19 +13,69 @@ import { AsynchronousAutocomplete } from '../AsynchronousAutocomplete'
 import PhoneInput from 'react-phone-number-input/react-hook-form-input'
 import { PhoneField } from '../formFields/PhoneField'
 import { ProfileFormImage } from './ProfileFormImage'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as Yup from 'yup'
+import { useForm } from 'react-hook-form'
+
+const validationSchema = Yup.object({
+  fio: Yup.string().required('Поле обязательно для заполнения'),
+  date_birth: Yup.string().required('Поле обязательно для заполнения'),
+  tel_1: Yup.string().required('Поле обязательно для заполнения'),
+  memb_email: Yup.string()
+    .nullable()
+    .matches(
+      // eslint-disable-next-line no-useless-escape
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+      {
+        message: 'Поле неверного формата',
+        excludeEmptyString: true,
+      },
+    ),
+})
+
+const defaultValues = {
+  userName: '',
+  fio: '',
+  gender: '',
+  memb_email: '',
+  date_birth: null,
+  memb_city: '',
+  tel_1: '',
+  tel_2: '',
+  size_cloth: '?',
+  size_shoe: '?',
+  name_city: '',
+  city: { name_city: '', id: 0 },
+  emergency_contact: '',
+  about_me: '',
+}
 
 export const ProfileForm = ({
   handleSaveProfileData,
-  handleSubmit,
-  control,
-  errors,
   fetchAllCities,
-  isDirty,
-  handleReset,
-  photo,
+  data,
   currentMemberId,
   currentUserId,
 }) => {
+  const {
+    handleSubmit,
+    formState: { errors, dirtyFields },
+    control,
+    reset,
+  } = useForm({ defaultValues, resolver: yupResolver(validationSchema) })
+
+  useEffect(() => {
+    data && reset(data)
+  }, [data])
+
+  const isDirty = !!Object.keys(dirtyFields).length
+
+  const handleReset = () => {
+    reset(data ? data : defaultValues)
+  }
+
+  const photo = data?.member_photo
+
   return (
     <form onSubmit={handleSubmit(handleSaveProfileData)}>
       <Grid

@@ -4,7 +4,7 @@ import { Button, Card, Grid } from '@mui/material'
 import { useParams } from 'react-router-dom'
 import { useIsAdmin } from '../../hooks/useIsAdmin'
 import { useIsMobile } from '../../hooks/useIsMobile'
-import { EventInfoFormRO } from '../EventInfoFormRO'
+import { EventInfoRO } from '../EventInfoRO'
 import { EventInfoForm } from '../EventInfoForm'
 import { EventBaseTable } from '../tables/EventBaseTable'
 import { EventApplicationDialog } from '../dialogs/EventApplicationDialog'
@@ -29,7 +29,7 @@ export const EventDescriptionTab = ({ eventId }) => {
         )}
       </Grid>
       {readOnly ? (
-        <EventInfoFormRO eventData={data} isLoading={isLoading} />
+        <EventInfoRO eventData={data} isLoading={isLoading} />
       ) : (
         <Grid container spacing={2}>
           <Grid size={isMobile ? 12 : 10}>

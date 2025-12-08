@@ -60,7 +60,6 @@ const applicationRouter = (app, passport) => {
         return
       }
       const applicationData = result[0]
-      console.log('applicationData', applicationData)
       pool.query(
         `INSERT INTO eventmemb 
         ( eventmemb_memb, eventmemb_dates, eventmemb_datef,eventmemb_even) 

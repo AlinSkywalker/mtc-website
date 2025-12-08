@@ -72,7 +72,6 @@ const eventManagementStuffRouter = (app, passport) => {
             event_ob,
             event_doctor,
           } = result[0];
-          console.log();
           const eventDateStart = new Date(event_start);
           const eventDateFinish = new Date(event_finish);
           const dates = getDatesInRange(eventDateStart, eventDateFinish);
@@ -114,7 +113,6 @@ const eventManagementStuffRouter = (app, passport) => {
             return;
           }
           const { event_start, event_finish } = result[0];
-          console.log();
           const eventDateStart = new Date(event_start);
           const eventDateFinish = new Date(event_finish);
           const dates = getDatesInRange(eventDateStart, eventDateFinish);
@@ -162,7 +160,6 @@ const eventManagementStuffRouter = (app, passport) => {
             return;
           }
           const { event_start, event_finish } = result[0];
-          console.log();
           const eventDateStart = new Date(event_start);
           const eventDateFinish = new Date(event_finish);
           const dates = getDatesInRange(eventDateStart, eventDateFinish);
@@ -210,7 +207,6 @@ const eventManagementStuffRouter = (app, passport) => {
             return;
           }
           const { event_start, event_finish } = result[0];
-          console.log();
           const eventDateStart = new Date(event_start);
           const eventDateFinish = new Date(event_finish);
           const dates = getDatesInRange(eventDateStart, eventDateFinish);

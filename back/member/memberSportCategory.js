@@ -62,7 +62,6 @@ const memberSportCategoryRouter = (app, passport) => {
       const id = req.params.id;
       const { type, ball, date_pr, date_completion, nomer_prik, gde_pris } =
         req.body;
-      console.log("date_completion", date_completion);
       pool.query(
         `UPDATE member_sport_category SET 
       type=?,
