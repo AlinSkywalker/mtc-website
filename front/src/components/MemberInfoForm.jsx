@@ -113,132 +113,145 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
     <Card sx={{ minWidth: 275 }}>
       <CardContent>
         <form onSubmit={handleSubmit(handleSave)}>
-          <Grid
-            container
-            // justifyContent='center'
-            // alignItems='center'
-            flexDirection='row'
-            spacing={2}
-            sx={{ marginBottom: 4 }}
-          >
-            <Grid size={isMobile ? 12 : 4}>
-              <Controller
-                name='fio'
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    variant='outlined'
-                    label='ФИО'
-                    fullWidth
-                    error={errors[field.name]}
-                    helperText={errors[field.name]?.message}
+          <Grid container wrap={isMobile ? 'wrap' : 'nowrap'}>
+            <Grid
+              sx={{
+                width: isMobile ? '100%' : 200,
+                flexShrink: 0,
+                marginRight: 1,
+                marginBottom: 1,
+                textAlign: 'center',
+              }}
+            >
+              <img alt='' src={memberData?.member_photo} width='200' height='200' />
+            </Grid>
+            <Grid>
+              <Grid
+                container
+                // justifyContent='center'
+                // alignItems='center'
+                flexDirection='row'
+                spacing={2}
+                sx={{ marginBottom: 4 }}
+              >
+                <Grid size={isMobile ? 12 : 4}>
+                  <Controller
+                    name='fio'
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        variant='outlined'
+                        label='ФИО'
+                        fullWidth
+                        error={errors[field.name]}
+                        helperText={errors[field.name]?.message}
+                      />
+                    )}
                   />
-                )}
-              />
-            </Grid>
-            <Grid size={isMobile ? 12 : 1}>
-              <Controller
-                name='gender'
-                control={control}
-                render={({ field }) => (
-                  <FormControl fullWidth>
-                    <InputLabel id='ageLabel'>Пол</InputLabel>
-                    <Select {...field} label='Пол' fullWidth labelId='ageLabel'>
-                      {['М', 'Ж'].map((item, index) => (
-                        <MenuItem value={item} key={index}>
-                          {item}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                )}
-              />
-            </Grid>
-            <Grid size={isMobile ? 12 : 2}>
-              <Controller
-                name='date_birth'
-                control={control}
-                render={({ field }) => (
-                  <DatePicker
-                    label='Дата рождения'
-                    {...field}
-                    slotProps={{ textField: { fullWidth: true } }}
+                </Grid>
+                <Grid size={isMobile ? 12 : 1}>
+                  <Controller
+                    name='gender'
+                    control={control}
+                    render={({ field }) => (
+                      <FormControl fullWidth>
+                        <InputLabel id='ageLabel'>Пол</InputLabel>
+                        <Select {...field} label='Пол' fullWidth labelId='ageLabel'>
+                          {['М', 'Ж'].map((item, index) => (
+                            <MenuItem value={item} key={index}>
+                              {item}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    )}
                   />
-                )}
-              />
-            </Grid>
-            <Grid size={isMobile ? 12 : 1}>
-              <Controller
-                name='size_shoe'
-                control={control}
-                render={({ field }) => (
-                  <FormControl fullWidth>
-                    <InputLabel id='sizeShoeLabel'>Размер обуви</InputLabel>
-                    <Select {...field} label='Размер обуви' fullWidth labelId='sizeShoeLabel'>
-                      {sizeShoeOptions.map((item, index) => (
-                        <MenuItem value={item} key={index}>
-                          {item}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                )}
-              />
-            </Grid>
-            <Grid size={isMobile ? 12 : 1}>
-              <Controller
-                name='size_cloth'
-                control={control}
-                render={({ field }) => (
-                  <FormControl fullWidth>
-                    <InputLabel id='sizeClothLabel'>Размер одежды</InputLabel>
-                    <Select {...field} label='Размер одежды' fullWidth labelId='sizeClothLabel'>
-                      {sizeClothOptions.map((item, index) => (
-                        <MenuItem value={item} key={index}>
-                          {item}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                )}
-              />
-            </Grid>
-            <Grid size={isMobile ? 12 : 2}>
-              <Controller
-                name='city'
-                control={control}
-                render={({ field }) => (
-                  <AsynchronousAutocomplete
-                    label='Город'
-                    request={fetchAllCities}
-                    dataNameField='name_city'
-                    field={field}
-                    errors={errors}
-                    secondarySourceArray={['count_name', 'okr_name', 'sub_name']}
+                </Grid>
+                <Grid size={isMobile ? 12 : 2}>
+                  <Controller
+                    name='date_birth'
+                    control={control}
+                    render={({ field }) => (
+                      <DatePicker
+                        label='Дата рождения'
+                        {...field}
+                        slotProps={{ textField: { fullWidth: true } }}
+                      />
+                    )}
                   />
-                )}
-              />
-            </Grid>
-            <Grid size={isMobile ? 12 : 2}>
-              {/* <Controller
+                </Grid>
+                <Grid size={isMobile ? 12 : 1}>
+                  <Controller
+                    name='size_shoe'
+                    control={control}
+                    render={({ field }) => (
+                      <FormControl fullWidth>
+                        <InputLabel id='sizeShoeLabel'>Размер обуви</InputLabel>
+                        <Select {...field} label='Размер обуви' fullWidth labelId='sizeShoeLabel'>
+                          {sizeShoeOptions.map((item, index) => (
+                            <MenuItem value={item} key={index}>
+                              {item}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    )}
+                  />
+                </Grid>
+                <Grid size={isMobile ? 12 : 1}>
+                  <Controller
+                    name='size_cloth'
+                    control={control}
+                    render={({ field }) => (
+                      <FormControl fullWidth>
+                        <InputLabel id='sizeClothLabel'>Размер одежды</InputLabel>
+                        <Select {...field} label='Размер одежды' fullWidth labelId='sizeClothLabel'>
+                          {sizeClothOptions.map((item, index) => (
+                            <MenuItem value={item} key={index}>
+                              {item}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    )}
+                  />
+                </Grid>
+                <Grid size={isMobile ? 12 : 2}>
+                  <Controller
+                    name='city'
+                    control={control}
+                    render={({ field }) => (
+                      <AsynchronousAutocomplete
+                        label='Город'
+                        request={fetchAllCities}
+                        dataNameField='name_city'
+                        field={field}
+                        errors={errors}
+                        secondarySourceArray={['count_name', 'okr_name', 'sub_name']}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid size={isMobile ? 12 : 2}>
+                  {/* <Controller
                 name='tel_1'
                 control={control}
                 render={({ field }) => (
                   <TextField {...field} variant='outlined' label='Телефон основной' fullWidth />
                 )}
               /> */}
-              <PhoneInput
-                control={control}
-                rules={{ required: true }}
-                name='tel_1'
-                label='Телефон основной'
-                defaultCountry='RU'
-                inputComponent={PhoneField}
-              />
-            </Grid>
-            <Grid size={isMobile ? 12 : 2}>
-              {/* <Controller
+                  <PhoneInput
+                    control={control}
+                    rules={{ required: true }}
+                    name='tel_1'
+                    label='Телефон основной'
+                    defaultCountry='RU'
+                    inputComponent={PhoneField}
+                  />
+                </Grid>
+                <Grid size={isMobile ? 12 : 2}>
+                  {/* <Controller
                 name='tel_2'
                 control={control}
                 render={({ field }) => (
@@ -250,146 +263,163 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
                   />
                 )}
               /> */}
-              <PhoneInput
-                control={control}
-                rules={{ required: true }}
-                name='tel_2'
-                label='Телефон экстренного контакта'
-                defaultCountry='RU'
-                inputComponent={PhoneField}
-              />
-            </Grid>
-            <Grid size={isMobile ? 12 : 2}>
-              <Controller
-                name='emergency_contact'
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    variant='outlined'
-                    label='Имя экстренного контакта'
-                    fullWidth
+                  <PhoneInput
+                    control={control}
+                    rules={{ required: true }}
+                    name='tel_2'
+                    label='Телефон экстренного контакта'
+                    defaultCountry='RU'
+                    inputComponent={PhoneField}
                   />
-                )}
-              />
-            </Grid>
-            <Grid size={isMobile ? 12 : 2}>
-              <Controller
-                name='memb_email'
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    variant='outlined'
-                    label='Email'
-                    fullWidth
-                    error={errors[field.name]}
-                    helperText={errors[field.name]?.message}
+                </Grid>
+                <Grid size={isMobile ? 12 : 2}>
+                  <Controller
+                    name='emergency_contact'
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        variant='outlined'
+                        label='Имя экстренного контакта'
+                        fullWidth
+                      />
+                    )}
                   />
-                )}
-              />
-            </Grid>
-          </Grid>
-          <Grid
-            container
-            // justifyContent='center'
-            // alignItems='center'
-            flexDirection='row'
-            spacing={2}
-            columns={24}
-          >
-            <Grid size={isMobile ? 24 : 4}>
-              <Controller
-                name='alpzeton'
-                control={control}
-                render={({ field }) => (
-                  <TextField {...field} variant='outlined' label='Номер жетона' fullWidth />
-                )}
-              />
-            </Grid>
-            <Grid size={isMobile ? 24 : 3}>
-              <Controller
-                name='date_zeton'
-                control={control}
-                render={({ field }) => (
-                  <DatePicker
-                    label='Дата получения жетона'
-                    {...field}
-                    slotProps={{ textField: { fullWidth: true } }}
+                </Grid>
+                <Grid size={isMobile ? 12 : 2}>
+                  <Controller
+                    name='memb_email'
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        variant='outlined'
+                        label='Email'
+                        fullWidth
+                        error={errors[field.name]}
+                        helperText={errors[field.name]?.message}
+                      />
+                    )}
                   />
-                )}
-              />
-            </Grid>
-            <Grid size={isMobile ? 24 : 4}>
-              <Controller
-                name='alpinstrnom'
-                control={control}
-                render={({ field }) => (
-                  <TextField {...field} variant='outlined' label='Номер инструктора' fullWidth />
-                )}
-              />
-            </Grid>
-            <Grid size={isMobile ? 24 : 2}>
-              <Controller
-                name='skali'
-                control={control}
-                render={({ field }) => (
-                  <FormControl fullWidth>
-                    <InputLabel id='skaliLabel'>Уровень скалолазания</InputLabel>
-                    <Select {...field} label='Уровень скалолазания' fullWidth labelId='skaliLabel'>
-                      {[
-                        '5a',
-                        '5b',
-                        '5c',
-                        '6a',
-                        '6b',
-                        '6c',
-                        '7a',
-                        '7b',
-                        '7c',
-                        '8a',
-                        '8b',
-                        '8c',
-                        '9a',
-                      ].map((item, index) => (
-                        <MenuItem value={item} key={index}>
-                          {item}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                )}
-              />
-            </Grid>
-            <Grid size={isMobile ? 24 : 2}>
-              <Controller
-                name='ledu'
-                control={control}
-                render={({ field }) => (
-                  <FormControl fullWidth>
-                    <InputLabel id='leduLabel'>Уровень лазания лёд</InputLabel>
-                    <Select {...field} label='Уровень лазания лёд' fullWidth labelId='leduLabel'>
-                      {['WI2', 'WI3', 'WI4', 'WI5', 'WI6', 'WI7'].map((item, index) => (
-                        <MenuItem value={item} key={index}>
-                          {item}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                )}
-              />
-            </Grid>
-          </Grid>
-          <Grid container sx={{ marginTop: 4 }}>
-            <Grid>
-              <Button variant='text' type='button' disabled={!isDirty} onClick={handleReset}>
-                Отменить
-              </Button>
-            </Grid>
-            <Grid>
-              <Button variant='contained' type='submit' disabled={!isDirty}>
-                Сохранить
-              </Button>
+                </Grid>
+              </Grid>
+              <Grid
+                container
+                // justifyContent='center'
+                // alignItems='center'
+                flexDirection='row'
+                spacing={2}
+                columns={24}
+              >
+                <Grid size={isMobile ? 24 : 4}>
+                  <Controller
+                    name='alpzeton'
+                    control={control}
+                    render={({ field }) => (
+                      <TextField {...field} variant='outlined' label='Номер жетона' fullWidth />
+                    )}
+                  />
+                </Grid>
+                <Grid size={isMobile ? 24 : 3}>
+                  <Controller
+                    name='date_zeton'
+                    control={control}
+                    render={({ field }) => (
+                      <DatePicker
+                        label='Дата получения жетона'
+                        {...field}
+                        slotProps={{ textField: { fullWidth: true } }}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid size={isMobile ? 24 : 4}>
+                  <Controller
+                    name='alpinstrnom'
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        variant='outlined'
+                        label='Номер инструктора'
+                        fullWidth
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid size={isMobile ? 24 : 2}>
+                  <Controller
+                    name='skali'
+                    control={control}
+                    render={({ field }) => (
+                      <FormControl fullWidth>
+                        <InputLabel id='skaliLabel'>Уровень скалолазания</InputLabel>
+                        <Select
+                          {...field}
+                          label='Уровень скалолазания'
+                          fullWidth
+                          labelId='skaliLabel'
+                        >
+                          {[
+                            '5a',
+                            '5b',
+                            '5c',
+                            '6a',
+                            '6b',
+                            '6c',
+                            '7a',
+                            '7b',
+                            '7c',
+                            '8a',
+                            '8b',
+                            '8c',
+                            '9a',
+                          ].map((item, index) => (
+                            <MenuItem value={item} key={index}>
+                              {item}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    )}
+                  />
+                </Grid>
+                <Grid size={isMobile ? 24 : 2}>
+                  <Controller
+                    name='ledu'
+                    control={control}
+                    render={({ field }) => (
+                      <FormControl fullWidth>
+                        <InputLabel id='leduLabel'>Уровень лазания лёд</InputLabel>
+                        <Select
+                          {...field}
+                          label='Уровень лазания лёд'
+                          fullWidth
+                          labelId='leduLabel'
+                        >
+                          {['WI2', 'WI3', 'WI4', 'WI5', 'WI6', 'WI7'].map((item, index) => (
+                            <MenuItem value={item} key={index}>
+                              {item}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    )}
+                  />
+                </Grid>
+              </Grid>
+              <Grid container sx={{ marginTop: 4 }}>
+                <Grid>
+                  <Button variant='text' type='button' disabled={!isDirty} onClick={handleReset}>
+                    Отменить
+                  </Button>
+                </Grid>
+                <Grid>
+                  <Button variant='contained' type='submit' disabled={!isDirty}>
+                    Сохранить
+                  </Button>
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </form>

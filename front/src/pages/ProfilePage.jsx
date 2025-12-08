@@ -1,7 +1,5 @@
 import React, { useContext, useEffect } from 'react'
-import { useForm, Controller } from 'react-hook-form'
-import TextField from '@mui/material/TextField'
-import Button from '@mui/material/Button'
+import { useForm } from 'react-hook-form'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Grid from '@mui/material/Grid'
@@ -9,29 +7,20 @@ import Container from '@mui/material/Container'
 import { AuthContext } from '../components/AuthContext'
 import apiClient from '../api/api'
 import { useFetchProfile } from '../queries/profile'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
-import InputLabel from '@mui/material/InputLabel'
-import FormControl from '@mui/material/FormControl'
-import { sizeClothOptions, sizeShoeOptions } from '../constants'
-import { MemberEventTab } from '../components/memberTabs/MemberEventTab'
-import { MemberSportCategoryTab } from '../components/memberTabs/MemberSportCategoryTab'
-import { MemberAscentTab } from '../components/memberTabs/MemberAscentTab'
-import { MemberExamTab } from '../components/memberTabs/MemberExamTab'
+import { SERVER_REQUEST_ERROR } from '../constants'
 import Tab from '@mui/material/Tab'
 import TabContext from '@mui/lab/TabContext'
 import Tabs from '@mui/material/Tabs'
 import TabPanel from '@mui/lab/TabPanel'
 import Box from '@mui/material/Box'
 import { format } from 'date-fns'
-import { AsynchronousAutocomplete } from '../components/AsynchronousAutocomplete'
-import { MemberLabaAscentTab } from '../components/memberTabs/MemberLabaAscentTab'
-import PhoneInput from 'react-phone-number-input/react-hook-form-input'
-import { PhoneField } from '../components/formFields/PhoneField'
 import { parsePhoneNumber } from 'react-phone-number-input'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
+import { useSnackbar } from 'notistack'
+import { useQueryClient } from '@tanstack/react-query'
+import { useGetProfileTabs } from '../hooks/useGetProfileTabs'
+import { ProfileForm } from '../components/forms/ProfileForm'
 
 const validationSchema = Yup.object({
   fio: Yup.string().required('Поле обязательно для заполнения'),
@@ -49,23 +38,26 @@ const validationSchema = Yup.object({
     ),
 })
 
+const defaultValues = {
+  userName: '',
+  fio: '',
+  gender: '',
+  memb_email: '',
+  date_birth: null,
+  memb_city: '',
+  tel_1: '',
+  tel_2: '',
+  size_cloth: '?',
+  size_shoe: '?',
+  name_city: '',
+  city: { name_city: '', id: 0 },
+  emergency_contact: '',
+  about_me: '',
+}
 export const ProfilePage = () => {
-  const defaultValues = {
-    userName: '',
-    fio: '',
-    gender: '',
-    memb_email: '',
-    date_birth: null,
-    memb_city: '',
-    tel_1: '',
-    tel_2: '',
-    size_cloth: '?',
-    size_shoe: '?',
-    name_city: '',
-    city: { name_city: '', id: 0 },
-    emergency_contact: '',
-  }
+  const queryClient = useQueryClient()
   const { userInfo } = useContext(AuthContext)
+  const { enqueueSnackbar } = useSnackbar()
   const { data } = useFetchProfile(userInfo.id)
   const fetchAllCities = () => apiClient.get(`/api/cityDictionary`)
   const {
@@ -84,21 +76,23 @@ export const ProfilePage = () => {
   const handleSaveProfileData = async (data, e) => {
     e.preventDefault()
     try {
-      const { date_birth, city } = data
+      const { date_birth, city, member_photo, ...rest } = data
       const postData = {
-        ...data,
+        ...rest,
         date_birth: date_birth ? format(date_birth, 'yyyy-MM-dd') : null,
         memb_city: city.id,
         tel_1: data.tel_1 ? parsePhoneNumber(data.tel_1)?.number : '',
         tel_2: data.tel_2 ? parsePhoneNumber(data.tel_2)?.number : '',
       }
-      const response = await apiClient.post('/api/profile', postData)
-
-      reset(undefined, { keepDirtyValues: true })
-      // Handle successful login
+      await apiClient.post('/api/profile', postData)
+      queryClient.invalidateQueries({ queryKey: ['profile', userInfo.id] })
     } catch (error) {
       // Handle login error
       console.error(error)
+      enqueueSnackbar(SERVER_REQUEST_ERROR, {
+        variant: 'error',
+        autoHideDuration: 5000,
+      })
     }
   }
   const handleReset = () => {
@@ -108,35 +102,9 @@ export const ProfilePage = () => {
   const handleChange = (event, newValue) => {
     setValue(newValue)
   }
-  const basePath = `/profile`
+  const basePath = `/crm/profile`
   const currentMemberId = data?.id || ''
-  const tabs = [
-    {
-      name: 'ascents',
-      label: 'Восхождения',
-      component: <MemberAscentTab memberId={currentMemberId} />,
-    },
-    {
-      name: 'labaAscents',
-      label: 'Тренировки',
-      component: <MemberLabaAscentTab memberId={currentMemberId} />,
-    },
-    {
-      name: 'exam',
-      label: 'Зачеты',
-      component: <MemberExamTab memberId={currentMemberId} />,
-    },
-    {
-      name: 'sportCategory',
-      label: 'Разряды/Категории',
-      component: <MemberSportCategoryTab memberId={currentMemberId} />,
-    },
-    {
-      name: 'event',
-      label: 'Мероприятия',
-      component: <MemberEventTab memberId={currentMemberId} />,
-    },
-  ]
+  const tabs = useGetProfileTabs(currentMemberId)
   const currentTab = tabs.findIndex(
     (tab) =>
       `${basePath}${tab.path}` === location.pathname ||
@@ -151,198 +119,18 @@ export const ProfilePage = () => {
       <Grid container justifyContent='center' alignItems='center'>
         <Card sx={{ width: 400 }}>
           <CardContent>
-            <form onSubmit={handleSubmit(handleSaveProfileData)}>
-              <Grid
-                container
-                justifyContent='center'
-                // alignItems='center'
-                flexDirection='column'
-                spacing={2}
-              >
-                <Grid>
-                  <Controller
-                    name='memb_email'
-                    control={control}
-                    render={({ field }) => (
-                      <TextField {...field} variant='outlined' label='Email' disabled fullWidth />
-                    )}
-                  />
-                </Grid>
-                <Grid>
-                  <Controller
-                    name='fio'
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        variant='outlined'
-                        label='Фамилия Имя Отчество'
-                        fullWidth
-                        error={errors[field.name]}
-                        helperText={errors[field.name]?.message}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid>
-                  <Controller
-                    name='date_birth'
-                    control={control}
-                    render={({ field }) => (
-                      <DatePicker
-                        label='Дата рождения'
-                        {...field}
-                        slotProps={{
-                          textField: {
-                            fullWidth: true,
-                            error: errors[field.name],
-                            helperText: errors[field.name]?.message,
-                          },
-                        }}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid>
-                  <Controller
-                    name='gender'
-                    control={control}
-                    render={({ field }) => (
-                      <FormControl fullWidth>
-                        <InputLabel id='ageLabel'>Пол</InputLabel>
-                        <Select {...field} label='Пол' fullWidth labelId='ageLabel'>
-                          {['М', 'Ж'].map((item, index) => (
-                            <MenuItem value={item} key={index}>
-                              {item}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    )}
-                  />
-                </Grid>
-                <Grid>
-                  <Controller
-                    name='size_shoe'
-                    control={control}
-                    render={({ field }) => (
-                      <FormControl fullWidth>
-                        <InputLabel id='sizeShoeLabel'>Размер обуви</InputLabel>
-                        <Select {...field} label='Размер обуви' fullWidth labelId='sizeShoeLabel'>
-                          {sizeShoeOptions.map((item, index) => (
-                            <MenuItem value={item} key={index}>
-                              {item}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    )}
-                  />
-                </Grid>
-                <Grid>
-                  <Controller
-                    name='size_cloth'
-                    control={control}
-                    render={({ field }) => (
-                      <FormControl fullWidth>
-                        <InputLabel id='sizeClothLabel'>Размер одежды</InputLabel>
-                        <Select {...field} label='Размер одежды' fullWidth labelId='sizeClothLabel'>
-                          {sizeClothOptions.map((item, index) => (
-                            <MenuItem value={item} key={index}>
-                              {item}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    )}
-                  />
-                </Grid>
-                <Grid>
-                  <Controller
-                    name='city'
-                    control={control}
-                    render={({ field }) => (
-                      <AsynchronousAutocomplete
-                        label='Город'
-                        request={fetchAllCities}
-                        dataNameField='name_city'
-                        field={field}
-                        errors={errors}
-                        secondarySourceArray={['count_name', 'okr_name', 'sub_name']}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid>
-                  {/* <Controller
-                    name='tel_1'
-                    control={control}
-                    render={({ field }) => (
-                      <TextField {...field} variant='outlined' label='Телефон основной' fullWidth />
-                    )}
-                  /> */}
-                  <PhoneInput
-                    control={control}
-                    rules={{ required: true }}
-                    name='tel_1'
-                    label='Телефон основной'
-                    defaultCountry='RU'
-                    inputComponent={PhoneField}
-                    error={errors['tel_1']}
-                    helperText={errors['tel_1']?.message}
-                  />
-                </Grid>
-                <Grid>
-                  {/* <Controller
-                    name='tel_2'
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        variant='outlined'
-                        label='Телефон экстренного контакта'
-                        fullWidth
-                      />
-                    )}
-                  /> */}
-                  <PhoneInput
-                    control={control}
-                    name='tel_2'
-                    label='Телефон экстренного контакта'
-                    defaultCountry='RU'
-                    inputComponent={PhoneField}
-                    error={errors['tel_2']}
-                    helperText={errors['tel_2']?.message}
-                  />
-                </Grid>
-                <Grid>
-                  <Controller
-                    name='emergency_contact'
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        variant='outlined'
-                        label='Имя экстренного контакта'
-                        fullWidth
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid container>
-                  <Grid>
-                    <Button variant='text' type='button' disabled={!isDirty} onClick={handleReset}>
-                      Отменить
-                    </Button>
-                  </Grid>
-                  <Grid>
-                    <Button variant='contained' type='submit' disabled={!isDirty}>
-                      Сохранить
-                    </Button>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </form>
+            <ProfileForm
+              handleSaveProfileData={handleSaveProfileData}
+              handleSubmit={handleSubmit}
+              control={control}
+              errors={errors}
+              isDirty={isDirty}
+              handleReset={handleReset}
+              fetchAllCities={fetchAllCities}
+              photo={data?.member_photo}
+              currentMemberId={currentMemberId}
+              currentUserId={userInfo.id}
+            />
           </CardContent>
         </Card>
       </Grid>

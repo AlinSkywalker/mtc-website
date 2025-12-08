@@ -199,7 +199,8 @@ app.get(
   (req, res) => {
     const id = req.params.id;
     pool.query(
-      `SELECT u.*, m.*, c.name_city 
+      `SELECT u.*, m.*, c.name_city,
+      CONVERT(m.photo USING utf8) as member_photo 
       FROM mtc_db.user u 
       RIGHT JOIN member m on m.user_id=u.id 
       LEFT JOIN city c on c.id=m.memb_city
@@ -212,6 +213,7 @@ app.get(
         }
         if (result[0]) {
           const { name_city, memb_city } = result[0];
+
           res.send({ ...result[0], city: { name_city, id: memb_city } });
           return
         }
@@ -224,7 +226,7 @@ app.post(
   "/profile",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    const { id, size_cloth, size_shoe, tel_1, tel_2, gender, fio, date_birth, memb_city, emergency_contact } =
+    const { id, size_cloth, size_shoe, tel_1, tel_2, gender, fio, date_birth, memb_city, emergency_contact, about_me } =
       req.body;
     pool.query(
       `UPDATE member 
@@ -236,7 +238,30 @@ app.post(
       fio='${fio}',
       date_birth='${date_birth}',
       memb_city='${memb_city || null}',
-      emergency_contact='${emergency_contact}'
+      emergency_contact=${emergency_contact ? 'emergency_contact' : ''},
+      about_me='${about_me}'
+      WHERE id=${id}`,
+      (error, result) => {
+        if (error) {
+          console.log(error);
+          res.status(500).json({ success: false, message: error });
+          return;
+        }
+        res.send(result);
+      }
+    );
+  }
+);
+app.post(
+  "/profile/:id/setPhoto",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    const id = req.params.id;
+    const { newPhoto } =
+      req.body;
+    pool.query(
+      `UPDATE member 
+      SET photo='${newPhoto}'
       WHERE id=${id}`,
       (error, result) => {
         if (error) {

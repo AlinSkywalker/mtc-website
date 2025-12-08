@@ -104,7 +104,7 @@ export const EventMembersTab = ({ eventId }) => {
     )
   }
   const handleClickName = (id) => () => {
-    navigate(`/member/${id}`)
+    navigate(`/crm/member/${id}`)
   }
   const renderLink = (params) => {
     const link = params.value ?? ''

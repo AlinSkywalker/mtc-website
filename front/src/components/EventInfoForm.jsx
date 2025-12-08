@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
@@ -6,15 +6,16 @@ import CardContent from '@mui/material/CardContent'
 import Grid from '@mui/material/Grid'
 import Container from '@mui/material/Container'
 import apiClient from '../api/api'
-import { useFetchEvent } from '../queries/event'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { format } from 'date-fns'
-import { AsynchronousAutocomplete } from './AsynchronousAutocomplete'
-import { CircularProgress, Typography } from '@mui/material'
+import { CircularProgress } from '@mui/material'
 
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
 import { useIsMobile } from '../hooks/useIsMobile'
+import { useSnackbar } from 'notistack'
+import { SERVER_REQUEST_ERROR } from '../constants'
+import { useQueryClient } from '@tanstack/react-query'
 
 const defaultValues = {
   id: 0,
@@ -33,6 +34,8 @@ const defaultValues = {
   base: { base_name: '', id: 0 },
   raion: { rai_name: '', id: 0 },
   price: '',
+  price_sport: '',
+  price_tourist: '',
   raion_id_list: [],
   raion_name: '',
 }
@@ -63,7 +66,9 @@ const validationSchema = Yup.object({
 })
 
 export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
+  const queryClient = useQueryClient()
   const isMobile = useIsMobile()
+  const { enqueueSnackbar } = useSnackbar()
   const {
     handleSubmit,
     formState: { errors, dirtyFields },
@@ -84,18 +89,18 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
         event_start: format(data.event_start, 'yyyy-MM-dd'),
         event_finish: format(data.event_finish, 'yyyy-MM-dd'),
       })
-      reset(undefined, { keepDirtyValues: true })
+      queryClient.invalidateQueries({ queryKey: ['event', data.id] })
     } catch (error) {
       console.error(error)
+      enqueueSnackbar(SERVER_REQUEST_ERROR, {
+        variant: 'error',
+        autoHideDuration: 5000,
+      })
     }
   }
   const handleReset = () => {
     reset(data)
   }
-
-  const fetchOBMembers = () => apiClient.get(`/api/memberList?possibleRole=ob`)
-  const fetchSTMembers = () => apiClient.get(`/api/memberList?possibleRole=st`)
-  const fetchDoctorMembers = () => apiClient.get(`/api/memberList`)
 
   if (isLoading) {
     return (
@@ -191,69 +196,6 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
               )}
             />
           </Grid>
-          <Grid size={isMobile ? 12 : 3}>
-            <Controller
-              name='st'
-              control={control}
-              render={({ field }) => (
-                <AsynchronousAutocomplete
-                  label='СТ'
-                  request={fetchSTMembers}
-                  dataNameField='fio'
-                  field={field}
-                  errors={errors}
-                  disabled
-                />
-              )}
-            />
-          </Grid>
-          <Grid size={isMobile ? 12 : 3}>
-            <Controller
-              name='ob'
-              control={control}
-              render={({ field }) => (
-                <AsynchronousAutocomplete
-                  label='ОБ'
-                  request={fetchOBMembers}
-                  dataNameField='fio'
-                  field={field}
-                  errors={errors}
-                  disabled
-                />
-              )}
-            />
-          </Grid>
-          <Grid size={isMobile ? 12 : 3}>
-            <Controller
-              name='doctor'
-              control={control}
-              render={({ field }) => (
-                <AsynchronousAutocomplete
-                  label='Врач'
-                  request={fetchDoctorMembers}
-                  dataNameField='fio'
-                  field={field}
-                  errors={errors}
-                  disabled
-                />
-              )}
-            />
-          </Grid>
-          <Grid size={isMobile ? 12 : 3}>
-            <Controller
-              name='raion_name'
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  variant='outlined'
-                  label='Район проведения'
-                  fullWidth
-                  disabled
-                />
-              )}
-            />
-          </Grid>
           <Grid size={isMobile ? 12 : 2}>
             <Controller
               name='price'
@@ -263,6 +205,42 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
                   {...field}
                   variant='outlined'
                   label='Инструкторский сбор'
+                  fullWidth
+                  error={errors[field.name]}
+                  helperText={errors[field.name]?.message}
+                  type='number'
+                  disabled={readOnly}
+                />
+              )}
+            />
+          </Grid>
+          <Grid size={isMobile ? 12 : 2}>
+            <Controller
+              name='price_sport'
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  variant='outlined'
+                  label='Цена для спортсменов'
+                  fullWidth
+                  error={errors[field.name]}
+                  helperText={errors[field.name]?.message}
+                  type='number'
+                  disabled={readOnly}
+                />
+              )}
+            />
+          </Grid>
+          <Grid size={isMobile ? 12 : 2}>
+            <Controller
+              name='price_tourist'
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  variant='outlined'
+                  label='Цена для туристов'
                   fullWidth
                   error={errors[field.name]}
                   helperText={errors[field.name]?.message}

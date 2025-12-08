@@ -206,6 +206,8 @@ const eventListRouter = (app, passport) => {
         event_organizer,
         event_desc,
         price,
+        price_sport,
+        price_tourist,
         raion_id_list,
         isDatesChanged,
       } = req.body;
@@ -223,8 +225,10 @@ const eventListRouter = (app, passport) => {
         event_organizer=${event_organizer || null},
         event_desc=?,
         price=?,
+        price_sport=?,
+        price_tourist=?,
         updated_date=CURRENT_TIMESTAMP WHERE id=${id}`,
-        [event_name, event_start, event_finish, event_desc, price || null],
+        [event_name, event_start, event_finish, event_desc, price || null, price_sport || null, price_tourist || null],
         (error, result) => {
           if (error) {
             console.log(error);

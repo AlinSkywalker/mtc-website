@@ -4,13 +4,15 @@ import Grid from '@mui/material/Grid'
 import { DataGrid } from '@mui/x-data-grid'
 import { useNavigate } from 'react-router-dom'
 import { Link } from '@mui/material'
-import { useIsAdmin } from '../../hooks/useIsAdmin'
+import { useIsMobile } from '../../hooks/useIsMobile'
 import { dateColumnType } from '../dataGridCell/GridEditDateCell'
+import { MobileMemberEventTab } from './MobileMemberEventTab'
 
 export const MemberEventTab = ({ memberId }) => {
+  const isMobile = useIsMobile()
   const { isLoading, data } = useFetchMemberEvent(memberId)
   const navigate = useNavigate()
-  const isAdmin = useIsAdmin()
+
   const [rows, setRows] = React.useState(data)
 
   React.useEffect(() => {
@@ -18,7 +20,7 @@ export const MemberEventTab = ({ memberId }) => {
   }, [data])
 
   const handleClickName = (id) => () => {
-    const link = `/event/${id}`
+    const link = `/crm/event/${id}`
     navigate(link)
   }
   const renderLink = (params) => {
@@ -53,6 +55,8 @@ export const MemberEventTab = ({ memberId }) => {
   ]
 
   if (!memberId) return null
+  if (isMobile) return <MobileMemberEventTab isLoading={isLoading} data={data} />
+
   return (
     <Grid size={12} sx={{ height: 400 }}>
       <DataGrid

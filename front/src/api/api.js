@@ -13,7 +13,7 @@ instance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response.status === 401) {
-      window.location = '/login'
+      window.location = '/crm/login'
       localStorage.removeItem('token')
     }
     if (error && error.response?.status == 500) {

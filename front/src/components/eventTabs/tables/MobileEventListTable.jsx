@@ -12,7 +12,7 @@ export const MobileEventListTable = () => {
   const navigate = useNavigate()
 
   const handleItemClickName = (id) => () => {
-    navigate(`/event/${id}/`)
+    navigate(`/crm/event/${id}/`)
   }
 
   const handleChangeShow = (event, show) => {

@@ -14,12 +14,12 @@ export const PublicLayout = ({ children }) => {
   const { userInfo } = useContext(AuthContext)
 
   const pages = !isAdmin
-    ? [{ name: 'eventList', url: '/event', label: 'Мероприятия' }]
+    ? [{ name: 'eventList', url: '/crm/event', label: 'Мероприятия' }]
     : [
-      { name: 'eventList', url: '/event', label: 'Мероприятия' },
-      { name: 'memberList', url: '/member', label: 'Тритонны' },
-      { name: 'dictionary', url: '/dictionary', label: 'Справочники' },
-      { name: 'applications', url: '/applications', label: 'Заявки' },
+      { name: 'eventList', url: '/crm/event', label: 'Мероприятия' },
+      { name: 'memberList', url: '/crm/member', label: 'Тритонны' },
+      { name: 'dictionary', url: '/crm/dictionary', label: 'Справочники' },
+      { name: 'applications', url: '/crm/applications', label: 'Заявки' },
     ]
   const location = useLocation()
 

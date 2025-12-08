@@ -129,7 +129,7 @@ export const ResetPasswordPage = () => {
             )}
             {!token && resetForm}
             <Grid container alignItems={'center'} justifyContent='center' sx={{ mt: 2 }}>
-              <Link to='/login'>Вернуться назад</Link>
+              <Link to='/crm/login'>Вернуться назад</Link>
             </Grid>
           </CardContent>
         </Card>

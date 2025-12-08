@@ -25,7 +25,7 @@ export const EventInfoPage = () => {
   const isAdmin = useIsAdmin()
   const readOnly = !isAdmin && !isCurrentMemberST
 
-  const basePath = `/event/${currentId}`
+  const basePath = `/crm/event/${currentId}`
 
   const { eventTabs, roEventTabs } = useGetEventTabs(data)
   const tabs = readOnly ? roEventTabs : eventTabs
@@ -66,9 +66,9 @@ export const EventInfoPage = () => {
           </Grid>
           <Grid size={12}>
             <Typography
-              variant='h5'
+              variant='h6'
               sx={{ paddingLeft: 2 }}
-            >{`${format(data.event_start, 'dd.MM.yyyy')}-${format(data.event_finish, 'dd.MM.yyyy')}`}</Typography>
+            >{`${format(data.event_start, 'dd.MM.yyyy')} - ${format(data.event_finish, 'dd.MM.yyyy')}`}</Typography>
           </Grid>
         </Grid>
       </Card>

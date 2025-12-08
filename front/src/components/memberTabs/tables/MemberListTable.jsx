@@ -36,7 +36,7 @@ export const MemberListTable = () => {
   const queryClient = useQueryClient()
 
   const handleClickName = (id) => () => {
-    navigate(`/member/${id}`)
+    navigate(`/crm/member/${id}`)
   }
   const [rows, setRows] = React.useState(data)
   const [rowModesModel, setRowModesModel] = React.useState({})

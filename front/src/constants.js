@@ -43,3 +43,5 @@ export const warningTypes = {
 }
 
 export const DEPARTMENT_TYPE_ARRAY = ['НП', 'СП', 'СС', 'СМ']
+
+export const SERVER_REQUEST_ERROR = 'Произошла ошибка при отправке на сервер'

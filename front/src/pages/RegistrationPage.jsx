@@ -10,7 +10,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { Typography } from '@mui/material'
 import * as Yup from 'yup'
 import { format } from 'date-fns'
-import { RegistrationForm } from './RegistrationForm'
+import { RegistrationForm } from '../components/forms/RegistrationForm'
 import MtcImage from '../assets/mtc_black.png'
 
 const validationSchema = Yup.object({

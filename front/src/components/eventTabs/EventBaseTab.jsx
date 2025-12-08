@@ -19,7 +19,7 @@ export const EventBaseTab = () => {
     setSelectedBaseRoom(newId)
   }
   const location = useLocation()
-  const basePath = `/event/${eventId}/base`
+  const basePath = `/crm/event/${eventId}/base`
 
   const tabs = [
     {

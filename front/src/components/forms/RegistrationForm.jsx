@@ -150,7 +150,7 @@ export const RegistrationForm = ({
           </Grid>
         )}
         <Grid>
-          <Link to='/login'>Войти в систему</Link>
+          <Link to='/crm/login'>Войти в систему</Link>
         </Grid>
       </Grid>
     </form>

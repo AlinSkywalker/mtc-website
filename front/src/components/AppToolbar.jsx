@@ -50,11 +50,12 @@ export const AppToolbar = ({ children, renderMenu }) => {
     })
   }
   const handleGoToProfilePage = () => {
-    navigate('/profile')
+    navigate('/crm/profile')
+    handleMenuClose()
   }
 
   const handleGoToLoginPage = () => {
-    navigate('/login')
+    navigate('/crm/login')
   }
 
   const renderProfileMenu = (

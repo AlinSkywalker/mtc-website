@@ -48,7 +48,7 @@ export const EventListTable = () => {
   const queryClient = useQueryClient()
 
   const handleClickName = (id) => () => {
-    navigate(`/event/${id}/`)
+    navigate(`/crm/event/${id}/`)
   }
   const [rows, setRows] = React.useState(data)
   const [rowModesModel, setRowModesModel] = React.useState({})

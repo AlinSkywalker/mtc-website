@@ -35,14 +35,14 @@ const queryClient = new QueryClient({
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated } = useContext(AuthContext)
-  return isAuthenticated ? <AdminLayout>{children}</AdminLayout> : <Navigate to='/login' />
+  return isAuthenticated ? <AdminLayout>{children}</AdminLayout> : <Navigate to='/crm/login' />
 }
 
 const AdminRoute = ({ children }) => {
   const { isAuthenticated, userInfo } = useContext(AuthContext)
 
   if (!isAuthenticated) {
-    return <Navigate to='/login' />
+    return <Navigate to='/crm/login' />
   }
   if (userInfo.role !== 'ADMIN_ROLE') {
     return (
@@ -61,7 +61,7 @@ const PublicRoute = ({ children }) => {
 
 const LoginRoute = ({ children }) => {
   const { isAuthenticated } = useContext(AuthContext)
-  return isAuthenticated ? <Navigate to='/profile' /> : children
+  return isAuthenticated ? <Navigate to='/crm/profile' /> : children
 }
 
 const App = () => {
@@ -83,7 +83,7 @@ const App = () => {
                     }
                   />
                   <Route
-                    path='/login'
+                    path='/crm/login'
                     element={
                       <LoginRoute>
                         <LoginPage />
@@ -92,7 +92,7 @@ const App = () => {
                     exact
                   />
                   <Route
-                    path='/register'
+                    path='/crm/register'
                     element={
                       <LoginRoute>
                         <RegistrationPage />
@@ -101,7 +101,7 @@ const App = () => {
                     exact
                   />
                   <Route
-                    path='/reset-password'
+                    path='/crm/reset-password'
                     element={
                       <LoginRoute>
                         <ResetPasswordPage />
@@ -110,7 +110,7 @@ const App = () => {
                   />
 
                   <Route
-                    path='/event'
+                    path='/crm/event'
                     element={
                       <PrivateRoute>
                         <EventListPage />
@@ -118,7 +118,7 @@ const App = () => {
                     }
                   />
                   <Route
-                    path='/event/:id/*'
+                    path='/crm/event/:id/*'
                     element={
                       <PrivateRoute>
                         <EventInfoPage />
@@ -126,7 +126,7 @@ const App = () => {
                     }
                   />
                   <Route
-                    path='/member'
+                    path='/crm/member'
                     element={
                       <PrivateRoute>
                         <MemberListPage />
@@ -134,7 +134,7 @@ const App = () => {
                     }
                   />
                   <Route
-                    path='/member/:id'
+                    path='/crm/member/:id'
                     element={
                       <PrivateRoute>
                         <MemberInfoPage />
@@ -142,7 +142,7 @@ const App = () => {
                     }
                   />
                   <Route
-                    path='/dictionary'
+                    path='/crm/dictionary'
                     element={
                       <AdminRoute>
                         <DictionaryPage />
@@ -150,7 +150,7 @@ const App = () => {
                     }
                   />
                   <Route
-                    path='/applications'
+                    path='/crm/applications'
                     element={
                       <AdminRoute>
                         <ApplicationListPage />
@@ -158,7 +158,7 @@ const App = () => {
                     }
                   />
                   <Route
-                    path='/dictionary/:dictionaryType'
+                    path='/crm/dictionary/:dictionaryType'
                     element={
                       <AdminRoute>
                         <DictionaryPage />
@@ -166,7 +166,7 @@ const App = () => {
                     }
                   />
                   <Route
-                    path='/profile'
+                    path='/crm/profile'
                     element={
                       <PrivateRoute>
                         <ProfilePage />
@@ -182,7 +182,6 @@ const App = () => {
                       </PublicRoute>
                     }
                   />
-
                 </Routes>
               </BrowserRouter>
             </AuthProvider>

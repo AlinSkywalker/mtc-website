@@ -118,12 +118,14 @@ export const LoginPage = () => {
                   </Grid>
                 )}
                 <Grid>
-                  <Link to='/reset-password' style={{ color: '#8a8989ff' }}>
+                  <Link to='/crm/reset-password' style={{ color: '#8a8989ff' }}>
                     Восстановить пароль
                   </Link>
                 </Grid>
                 <Grid>
-                  <Link to='/register' style={{ color: '#8a8989ff' }} >Зарегистрироваться</Link>
+                  <Link to='/crm/register' style={{ color: '#8a8989ff' }}>
+                    Зарегистрироваться
+                  </Link>
                 </Grid>
               </Grid>
             </form>

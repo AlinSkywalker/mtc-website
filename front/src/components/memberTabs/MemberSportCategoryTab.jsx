@@ -6,6 +6,8 @@ import { EditableTable } from '../EditableTable'
 import * as Yup from 'yup'
 import { dateColumnType } from '../dataGridCell/GridEditDateCell'
 import { useIsAdmin } from '../../hooks/useIsAdmin'
+import { useIsMobile } from '../../hooks/useIsMobile'
+import { MobileMemberSportCategoryTab } from './MobileMemberSportCategoryTab'
 
 const defaultItem = {
   type: '',
@@ -22,6 +24,7 @@ const validationSchema = Yup.object({
 })
 
 export const MemberSportCategoryTab = ({ memberId }) => {
+  const isMobile = useIsMobile()
   const readOnly = !useIsAdmin()
   const queryClient = useQueryClient()
   const { isLoading, data } = useFetchMemberSportCategoryList(memberId)
@@ -102,6 +105,8 @@ export const MemberSportCategoryTab = ({ memberId }) => {
   }
 
   if (!memberId) return null
+  if (isMobile) return <MobileMemberSportCategoryTab isLoading={isLoading} data={data} />
+
   return (
     <EditableTable
       rows={rows}

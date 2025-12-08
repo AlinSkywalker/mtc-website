@@ -117,12 +117,19 @@ const memberListRouter = (app, passport) => {
     (req, res) => {
       const id = req.params.id;
       pool.query(
-        `SELECT m.*, ma.*, c.name_city FROM member m 
+        `SELECT m.*, ma.*, c.name_city, 
+                  CONVERT(m.photo USING utf8) as member_photo
+                  FROM member m 
                   JOIN membalp ma ON ma.id=m.id
                   LEFT JOIN city c ON c.id=m.memb_city
                   WHERE m.id=${id}`,
         (error, result) => {
           if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return;
+          }
+          if (!result[0]) {
             console.log(error);
             res.status(500).json({ success: false, message: error });
             return;

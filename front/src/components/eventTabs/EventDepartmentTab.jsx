@@ -15,7 +15,7 @@ export const EventDepartmentTab = ({ event }) => {
   const location = useLocation()
   const readOnly = !useIsAdmin()
   if (!event) return
-  const basePath = `/event/${event.id}/department`
+  const basePath = `/crm/event/${event.id}/department`
 
   const tabs = [
     {
