@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { Link } from '@mui/material'
 import { useIsMobile } from '../../hooks/useIsMobile'
 import { dateColumnType } from '../dataGridCell/GridEditDateCell'
-import { MobileMemberEventTab } from './MobileMemberEventTab'
+import { MobileMemberEventTab } from './mobileTables/MobileMemberEventTab'
 
 export const MemberEventTab = ({ memberId }) => {
   const isMobile = useIsMobile()

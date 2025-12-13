@@ -113,7 +113,7 @@ export const BaseHouseRoomDictionaryTable = ({ selectedBase, selectedBaseHouse }
     },
   ]
 
-  const fieldToFocus = 'base_name'
+  const fieldToFocus = 'basenom_name'
   const columnVisibilityModel = {}
 
   const processRowUpdate = async (newRow) => {

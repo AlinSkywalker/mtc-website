@@ -73,7 +73,7 @@ export const CityDictionaryTab = () => {
     { field: 'city_sub', headerName: 'city_sub', width: 0, editable: true },
   ]
 
-  const fieldToFocus = 'city_name'
+  const fieldToFocus = 'name_city'
   const columnVisibilityModel = { city_sub: false }
 
   const processRowUpdate = async (newRow) => {

@@ -18,11 +18,11 @@ export const useGetProfileTabs = (currentMemberId) => {
       label: 'Тренировки',
       component: <MemberLabaAscentTab memberId={currentMemberId} />,
     },
-    // {
-    //   name: 'equipment',
-    //   label: 'Моё снаряжение',
-    //   component: <MemberEquipmentTab memberId={currentMemberId} />,
-    // },
+    {
+      name: 'equipment',
+      label: 'Моё снаряжение',
+      component: <MemberEquipmentTab memberId={currentMemberId} />,
+    },
     {
       name: 'exam',
       label: 'Зачеты',

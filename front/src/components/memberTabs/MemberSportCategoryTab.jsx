@@ -7,7 +7,7 @@ import * as Yup from 'yup'
 import { dateColumnType } from '../dataGridCell/GridEditDateCell'
 import { useIsAdmin } from '../../hooks/useIsAdmin'
 import { useIsMobile } from '../../hooks/useIsMobile'
-import { MobileMemberSportCategoryTab } from './MobileMemberSportCategoryTab'
+import { MobileMemberSportCategoryTab } from './mobileTables/MobileMemberSportCategoryTab'
 
 const defaultItem = {
   type: '',

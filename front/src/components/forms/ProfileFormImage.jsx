@@ -16,6 +16,7 @@ import { SERVER_REQUEST_ERROR } from '../../constants'
 import { useSnackbar } from 'notistack'
 import { useQueryClient } from '@tanstack/react-query'
 import apiClient from '../../api/api'
+import DefaultImage from '../../assets/default_profile.jpg'
 
 const baseStyle = {
   flex: 1,
@@ -57,10 +58,24 @@ export const ProfileFormImage = ({ photo, currentMemberId, currentUserId }) => {
 
     reader.onload = (event) => {
       // event.target.result содержит base64 строку
-      const base64 = event.target.result
+      var image = new Image()
+      image.src = event.target.result
+
+      image.onload = function () {
+        if (this.width / this.height > 1.1 || this.height / this.width > 1.1) {
+          enqueueSnackbar('Изображение должно иметь соотношение сторон 1:1', {
+            variant: 'error',
+            autoHideDuration: 5000,
+          })
+        } else {
+          const base64 = event.target.result
+          setNewPhoto(base64)
+        }
+      }
+
       // Можно также сохранить только data часть (без префикса)
       // const base64Data = base64?.split(',')[1] || ''
-      setNewPhoto(base64)
+
       // console.log('Base64:', base64)
     }
 
@@ -76,6 +91,7 @@ export const ProfileFormImage = ({ photo, currentMemberId, currentUserId }) => {
 
   const maxSize = 10485760
   function fileSizeValidator(file) {
+    console.log('file', file)
     if (file.size > maxSize) {
       return {
         code: 'size-too-large',
@@ -113,9 +129,17 @@ export const ProfileFormImage = ({ photo, currentMemberId, currentUserId }) => {
   }
   const handleSavePhoto = async () => {
     try {
-      await apiClient.post(`/api/profile/${currentMemberId}/setPhoto`, { newPhoto })
-      queryClient.invalidateQueries({ queryKey: ['profile', currentUserId] })
-      setIsDialogOpen(false)
+      const result = await apiClient.post(`/api/profile/${currentMemberId}/setPhoto`, { newPhoto })
+
+      if (!result) {
+        enqueueSnackbar(SERVER_REQUEST_ERROR, {
+          variant: 'error',
+          autoHideDuration: 5000,
+        })
+      } else {
+        setIsDialogOpen(false)
+        queryClient.invalidateQueries({ queryKey: ['profile', currentUserId] })
+      }
     } catch (error) {
       // Handle login error
       console.error(error)
@@ -140,7 +164,7 @@ export const ProfileFormImage = ({ photo, currentMemberId, currentUserId }) => {
         }}
         sx={{ cursor: 'pointer' }}
       >
-        <img alt='' src={photo} width='200' height='200' />
+        <img alt='' src={newPhoto || DefaultImage} width='200' height='200' />
       </Grid>
       <Dialog onClose={handleClose} open={isDialogOpen} maxWidth='md'>
         <DialogTitle>
@@ -167,7 +191,7 @@ export const ProfileFormImage = ({ photo, currentMemberId, currentUserId }) => {
             direction={isMobile ? 'column' : 'row'}
           >
             <Grid width='200'>
-              <img alt='' src={newPhoto} width='200' height='200' />
+              <img alt='' src={newPhoto || DefaultImage} width='200' height='200' />
             </Grid>
             <Grid>
               <div {...getRootProps({ style })}>
@@ -176,6 +200,8 @@ export const ProfileFormImage = ({ photo, currentMemberId, currentUserId }) => {
                   Перетащите сюда файл или нажмите для выбора.
                   <br />
                   Максимальный размер файла - 10МБ
+                  <br />
+                  Изображение должно иметь соотношение сторон 1:1
                 </p>
               </div>
             </Grid>

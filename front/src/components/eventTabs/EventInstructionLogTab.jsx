@@ -52,7 +52,7 @@ export const EventInstructionLogTab = () => {
       editable: true,
     },
   ]
-  const fieldToFocus = 'cont_fio'
+  const fieldToFocus = 'date'
   const columnVisibilityModel = {
     st: false,
     ob: false,

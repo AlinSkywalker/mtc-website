@@ -15,8 +15,10 @@ export const MobileMemberSportCategoryTab = ({ isLoading, data }) => {
     )
 
   const renderItem = (item) => {
-    const complDate = format(parseISO(item.date_completion || ''), 'dd.MM.yyyy')
-    const prDate = format(parseISO(item.date_pr || ''), 'dd.MM.yyyy')
+    const complDate = item.date_completion
+      ? format(parseISO(item.date_completion), 'dd.MM.yyyy')
+      : ''
+    const prDate = item.date_pr ? format(parseISO(item.date_pr), 'dd.MM.yyyy') : ''
     const isExpanded = item.id === expandedItemId
 
     return (

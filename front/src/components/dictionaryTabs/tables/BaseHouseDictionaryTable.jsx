@@ -65,7 +65,7 @@ export const BaseHouseDictionaryTable = ({ onRowSelectionModelChange, selectedBa
     },
   ]
 
-  const fieldToFocus = 'base_name'
+  const fieldToFocus = 'basefd_name'
   const columnVisibilityModel = {}
 
   const processRowUpdate = async (newRow) => {

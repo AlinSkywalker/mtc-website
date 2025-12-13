@@ -7,7 +7,7 @@ import * as Yup from 'yup'
 import { dateColumnType } from '../dataGridCell/GridEditDateCell'
 import { GridEditInputCell } from '@mui/x-data-grid'
 import { useIsMobile } from '../../hooks/useIsMobile'
-import { MobileMemberLabaAscentTab } from './MobileMemberLabaAscentTab'
+import { MobileMemberLabaAscentTab } from './mobileTables/MobileMemberLabaAscentTab'
 
 const defaultItem = {
   ascent_date: '',

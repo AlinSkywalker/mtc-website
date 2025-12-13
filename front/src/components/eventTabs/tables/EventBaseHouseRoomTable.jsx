@@ -132,7 +132,7 @@ export const EventBaseHouseRoomTable = ({ eventId, onRowSelectionModelChange }) 
     { field: 'basehouse_id', headerName: 'basehouse_id', width: 0, editable: true },
   ]
 
-  const fieldToFocus = 'basenom_name'
+  const fieldToFocus = 'basefd_name'
   const columnVisibilityModel = {
     basefd: false,
     basehouse_id: false,

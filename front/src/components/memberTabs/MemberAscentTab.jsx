@@ -10,7 +10,7 @@ import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
 import { EditCascadeSelectMenu } from '../dataGridCell/EditCascadeSelectMenu'
 import { GridEditInputCell } from '@mui/x-data-grid'
 import { useIsAdmin } from '../../hooks/useIsAdmin'
-import { MobileMemberAscentTab } from './MobileMemberAscentTab'
+import { MobileMemberAscentTab } from './mobileTables/MobileMemberAscentTab'
 import { useIsMobile } from '../../hooks/useIsMobile'
 
 const defaultItem = {
@@ -165,7 +165,7 @@ export const MemberAscentTab = ({ memberId }) => {
     { field: 'rai_reg', headerName: 'rai_reg', width: 0, editable: true },
     { field: 'region_name', headerName: 'region_name', width: 0, editable: true },
   ]
-  const fieldToFocus = 'fio'
+  const fieldToFocus = 'mount_name'
   const columnVisibilityModel = {
     asc_event: false,
     asc_route: false,

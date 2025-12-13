@@ -77,6 +77,12 @@ function mapDictionaryData(
       case 'subektDictionary':
         itemName = `${item.count_name}, ${item.okr_name}, ${item.sub_name}`
         break
+      case 'storage':
+        itemName = `${item.stor_name}`
+        break
+      case 'equipment_type':
+        itemName = `${item.equip_name}`
+        break
       default:
         itemName = ''
         secondary = ''

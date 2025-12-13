@@ -112,7 +112,7 @@ export const EventManagementStuffTab = () => {
     { field: 'ob', headerName: 'ob', width: 0, editable: true },
     { field: 'doctor', headerName: 'doctor', width: 0, editable: true },
   ]
-  const fieldToFocus = 'cont_fio'
+  const fieldToFocus = 'date'
   const columnVisibilityModel = {
     st: false,
     ob: false,

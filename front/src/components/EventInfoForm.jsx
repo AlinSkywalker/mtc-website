@@ -89,7 +89,7 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
         event_start: format(data.event_start, 'yyyy-MM-dd'),
         event_finish: format(data.event_finish, 'yyyy-MM-dd'),
       })
-      queryClient.invalidateQueries({ queryKey: ['event', data.id] })
+      queryClient.invalidateQueries({ queryKey: ['event', String(data.id)] })
     } catch (error) {
       console.error(error)
       enqueueSnackbar(SERVER_REQUEST_ERROR, {

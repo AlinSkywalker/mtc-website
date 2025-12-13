@@ -256,7 +256,7 @@ export const EventDepartmentPlansTable = ({
     ...plansTableHiddenColumns,
   ]
 
-  const fieldToFocus = 'depart_tip'
+  const fieldToFocus = 'start'
   const columnVisibilityModel = plansTableColumnVisibilityModel
 
   const processRowUpdate = async (newRow) => {

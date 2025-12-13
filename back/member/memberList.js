@@ -134,8 +134,8 @@ const memberListRouter = (app, passport) => {
             res.status(500).json({ success: false, message: error });
             return;
           }
-          const { name_city, memb_city } = result[0];
-          res.send({ ...result[0], city: { name_city, id: memb_city } });
+          const { name_city, memb_city, member_photo } = result[0];
+          res.send({ ...result[0], city: { name_city, id: memb_city }, member_photo });
         }
       );
     }

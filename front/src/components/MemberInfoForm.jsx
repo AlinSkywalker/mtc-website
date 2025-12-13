@@ -22,6 +22,8 @@ import { useIsMobile } from '../hooks/useIsMobile'
 import PhoneInput from 'react-phone-number-input/react-hook-form-input'
 import { PhoneField } from './formFields/PhoneField'
 import { parsePhoneNumber } from 'react-phone-number-input'
+import { useQueryClient } from '@tanstack/react-query'
+import DefaultImage from '../assets/default_profile.jpg'
 
 const defaultValues = {
   fio: '',
@@ -61,6 +63,7 @@ const validationSchema = Yup.object({
 })
 
 export const MemberInfoForm = ({ memberData, isLoading }) => {
+  const queryClient = useQueryClient()
   const {
     handleSubmit,
     formState: { errors, dirtyFields },
@@ -76,9 +79,9 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
   const handleSave = async (data, e) => {
     e.preventDefault()
     try {
-      const { date_birth, date_razr, date_zeton, date_instr } = data
+      const { date_birth, date_razr, date_zeton, date_instr, photo, ...rest } = data
       await apiClient.post(`/api/memberList/${data.id}`, {
-        ...data,
+        ...rest,
         date_birth: date_birth ? format(date_birth, 'yyyy-MM-dd') : null,
         date_razr: date_razr ? format(date_razr, 'yyyy-MM-dd') : null,
         date_zeton: date_zeton ? format(date_zeton, 'yyyy-MM-dd') : null,
@@ -86,7 +89,9 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
         tel_1: data.tel_1 ? parsePhoneNumber(data.tel_1)?.number : '',
         tel_2: data.tel_2 ? parsePhoneNumber(data.tel_2)?.number : '',
       })
-      reset(undefined, { keepDirtyValues: true })
+      // reset(undefined, { keepDirtyValues: true })
+
+      queryClient.invalidateQueries({ queryKey: ['member', String(data.id)] })
     } catch (error) {
       console.error(error)
     }
@@ -123,7 +128,7 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
                 textAlign: 'center',
               }}
             >
-              <img alt='' src={memberData?.member_photo} width='200' height='200' />
+              <img alt='' src={memberData?.member_photo || DefaultImage} width='200' height='200' />
             </Grid>
             <Grid>
               <Grid
@@ -298,6 +303,22 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
                         fullWidth
                         error={errors[field.name]}
                         helperText={errors[field.name]?.message}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid size={isMobile ? 12 : 3}>
+                  <Controller
+                    name='about_me'
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        variant='outlined'
+                        label='О себе'
+                        fullWidth
+                        multiline
+                        maxRows={isMobile ? 3 : 1}
                       />
                     )}
                   />

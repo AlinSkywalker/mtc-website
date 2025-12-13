@@ -29,7 +29,7 @@ export const ProfilePage = () => {
   const handleSaveProfileData = async (data, e) => {
     e.preventDefault()
     try {
-      const { date_birth, city, ...rest } = data
+      const { date_birth, city, member_photo, photo, ...rest } = data
       const postData = {
         ...rest,
         date_birth: date_birth ? format(date_birth, 'yyyy-MM-dd') : null,

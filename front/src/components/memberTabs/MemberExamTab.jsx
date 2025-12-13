@@ -7,7 +7,7 @@ import * as Yup from 'yup'
 import { dateColumnType } from '../dataGridCell/GridEditDateCell'
 import { useIsAdmin } from '../../hooks/useIsAdmin'
 import { useIsMobile } from '../../hooks/useIsMobile'
-import { MobileMemberExamTab } from './MobileMemberExamTab'
+import { MobileMemberExamTab } from './mobileTables/MobileMemberExamTab'
 
 const defaultItem = {
   zach_name: '',
@@ -96,7 +96,7 @@ export const MemberExamTab = ({ memberId }) => {
     },
     { field: 'zach_note', headerName: 'Заметки', width: 350, editable: !readOnly },
   ]
-  const fieldToFocus = 'fio'
+  const fieldToFocus = 'zach_name'
   const columnVisibilityModel = {}
 
   const processRowUpdate = async (newRow) => {

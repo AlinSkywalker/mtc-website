@@ -135,7 +135,7 @@ export const EventMemberDepartment = ({ eventId }) => {
     { field: 'existedDept', headerName: 'existedDept', width: 0, editable: true },
   ]
 
-  const fieldToFocus = 'member_fio'
+  const fieldToFocus = 'membd_date'
   const columnVisibilityModel = {
     membd_dep: false,
     existedDept: false,

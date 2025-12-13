@@ -6,9 +6,11 @@ import { EditableTable } from '../EditableTable'
 import * as Yup from 'yup'
 import { dateColumnType } from '../dataGridCell/GridEditDateCell'
 import { useIsMobile } from '../../hooks/useIsMobile'
-import { MobileMemberExamTab } from './MobileMemberExamTab'
+import { MobileMemberExamTab } from './mobileTables/MobileMemberExamTab'
 import { AuthContext } from '../../components/AuthContext'
 import { useFetchEquipmentTypeList, useFetchStorageList } from '../../queries/equipment'
+import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
+import { checkboxColumnType } from '../dataGridCell/GridEditCheckboxCell'
 
 const defaultItem = {
   equip_member: '',
@@ -22,8 +24,7 @@ const defaultItem = {
 }
 
 const validationSchema = Yup.object({
-  zach_name: Yup.string().required('Поле обязательно для заполнения'),
-  zach_grade: Yup.string().required('Поле обязательно для заполнения'),
+  equip_name: Yup.string().required('Поле обязательно для заполнения'),
 })
 
 export const MemberEquipmentTab = ({ memberId }) => {
@@ -34,12 +35,10 @@ export const MemberEquipmentTab = ({ memberId }) => {
   const queryClient = useQueryClient()
   const isMobile = useIsMobile()
   const { isLoading, data } = useFetchMemberEquipmentList(memberId)
-  const { data: equipTypeData } = useFetchEquipmentTypeList()
-  const { data: storageData } = useFetchStorageList()
 
   const [rows, setRows] = React.useState(data)
   const [rowModesModel, setRowModesModel] = React.useState({})
-
+  console.log('rows', rows)
   React.useEffect(() => {
     setRows(data)
   }, [data])
@@ -60,58 +59,86 @@ export const MemberEquipmentTab = ({ memberId }) => {
     return apiClient.post(`/api/memberList/${memberId}/equipment/${id}`, postedData)
   }, [])
 
+  const renderEquipmentTypeSelectEditCell = (params) => {
+    return (
+      <SelectEditInputCell
+        {...params}
+        dictionaryName='equipment_type'
+        nameField='equip'
+        hook={useFetchEquipmentTypeList}
+      />
+    )
+  }
+  const renderStorageSelectEditCell = (params) => {
+    return (
+      <SelectEditInputCell
+        {...params}
+        dictionaryName='storage'
+        nameField='equip_storage'
+        hook={useFetchStorageList}
+      />
+    )
+  }
+
   const columns = [
     {
-      field: 'zach_name',
-      headerName: 'Зачет',
-      width: 250,
-      editable: !readOnly,
-      type: 'singleSelect',
-      valueOptions: [
-        'Оказание доврачебной помощи',
-        'Транспортировка подручными средствами',
-        'Нормативные документы ФАР',
-        'Cпасработы на сложном рельефе в двойке',
-        'Cпасработы на сложном рельефе в группе',
-      ],
-    },
-    {
-      field: 'zach_grade',
-      headerName: 'Оценка',
-      width: 150,
-      editable: !readOnly,
-      type: 'singleSelect',
-      valueOptions: ['3', '4', '5'],
-    },
-    {
-      field: 'zach_e1',
-      headerName: 'Экзаменатор 1',
-      width: 200,
+      field: 'stor_name',
+      headerName: 'Склад',
+      width: 300,
+      renderEditCell: renderStorageSelectEditCell,
       editable: !readOnly,
     },
     {
-      field: 'zach_e2',
-      headerName: 'Экзаменатор 2',
-      width: 200,
+      field: 'equip_type',
+      headerName: 'Тип снаряжения',
+      width: 300,
+      renderEditCell: renderEquipmentTypeSelectEditCell,
       editable: !readOnly,
     },
     {
-      field: 'zach_date',
-      ...dateColumnType,
-      headerName: 'Дата зачета',
-      width: 120,
+      field: 'equip_name',
+      headerName: 'Название',
+      width: 300,
       editable: !readOnly,
     },
-    { field: 'zach_note', headerName: 'Заметки', width: 350, editable: !readOnly },
+    {
+      field: 'quantity',
+      headerName: 'Количество',
+      width: 300,
+      type: 'number',
+      editable: !readOnly,
+    },
+    {
+      field: 'loss',
+      headerName: 'Утеряно',
+      width: 300,
+      editable: !readOnly,
+      ...checkboxColumnType,
+    },
+    {
+      field: 'equip',
+      headerName: 'equip',
+      width: 0,
+      editable: !readOnly,
+    },
+    {
+      field: 'equip_storage',
+      headerName: 'equip_storage',
+      width: 0,
+      editable: !readOnly,
+    },
   ]
-  const fieldToFocus = 'fio'
-  const columnVisibilityModel = {}
+  const fieldToFocus = 'stor_name'
+  const columnVisibilityModel = {
+    equip_storage: false,
+    equip: false,
+  }
 
   const processRowUpdate = async (newRow) => {
     validationSchema.validateSync(newRow, { abortEarly: false })
     const handleSave = newRow.isNew ? handleSaveNewItem : handleSaveEditedItem
     await handleSave(newRow)
-    queryClient.invalidateQueries({ queryKey: ['member', memberId, 'exam'] })
+    queryClient.invalidateQueries({ queryKey: ['member', memberId, 'equipment'] })
   }
 
   if (!memberId) return null

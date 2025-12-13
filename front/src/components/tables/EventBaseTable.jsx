@@ -67,7 +67,7 @@ export const EventBaseTable = ({ eventId, readOnly = false }) => {
     { field: 'base_m', headerName: 'base_m', width: 0, editable: true },
   ]
 
-  const fieldToFocus = 'basenom_name'
+  const fieldToFocus = 'base_name'
   const columnVisibilityModel = {
     base_m: false,
   }

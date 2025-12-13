@@ -26,6 +26,8 @@ const regionDictionaryRouter = require("./dictionary/regionDictionary");
 const routeDictionaryRouter = require("./dictionary/routeDictionary");
 const summitDictionaryRouter = require("./dictionary/summitDictionary");
 const trainingProgramRouter = require("./dictionary/trainingProgram");
+const equipmentRouter = require("./dictionary/equipment");
+
 
 const eventListRouter = require("./event/eventList");
 const eventSmenaRouter = require("./event/eventSmena");
@@ -49,6 +51,8 @@ const memberExamRouter = require("./member/memberExam");
 const memberAscentRouter = require("./member/memberAscent");
 const memberSportCategoryRouter = require("./member/memberSportCategory");
 const memberLabaAscentRouter = require("./member/memberLabaAscent");
+const memberEquipmentRouter = require("./member/memberEquipment");
+
 
 const applicationRouter = require("./application");
 
@@ -99,7 +103,7 @@ app = express();
 const port = 8000;
 
 // app.use(express.cookieParser());
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
 app.use(
   session({
     secret: "keyboard cat",
@@ -109,7 +113,8 @@ app.use(
   })
 );
 
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }));
 app.use(
   fileUpload({
     createParentPath: true,
@@ -299,6 +304,7 @@ regionDictionaryRouter(app, passport);
 routeDictionaryRouter(app, passport);
 summitDictionaryRouter(app, passport);
 trainingProgramRouter(app, passport);
+equipmentRouter(app, passport);
 
 eventListRouter(app, passport);
 eventSmenaRouter(app, passport);
@@ -321,6 +327,7 @@ memberExamRouter(app, passport);
 memberAscentRouter(app, passport);
 memberSportCategoryRouter(app, passport);
 memberLabaAscentRouter(app, passport);
+memberEquipmentRouter(app, passport);
 
 applicationRouter(app, passport);
 

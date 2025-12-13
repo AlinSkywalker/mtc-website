@@ -154,7 +154,7 @@ export const ApplicationListTable = () => {
       renderCell: renderAcceptButtonCell,
     },
   ]
-  const fieldToFocus = 'fio'
+  const fieldToFocus = 'event_name'
   const columnVisibilityModel = {
     memb_city: false,
   }
