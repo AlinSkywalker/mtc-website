@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
@@ -12,9 +12,11 @@ import { useMediaQuery } from 'react-responsive'
 import { useLocation } from 'react-router-dom'
 import { useIsAdmin } from '../hooks/useIsAdmin'
 import { AppToolbar } from './AppToolbar'
+import { AuthContext } from './AuthContext'
 
-export const AdminLayout = ({ children }) => {
+export const MainLayout = ({ children }) => {
   const isAdmin = useIsAdmin()
+  const { isAuthenticated } = useContext(AuthContext)
   const [anchorMainMenuEl, setAnchorMainMenuEl] = React.useState(null)
 
   const menuId = 'primary-search-account-menu'
@@ -31,14 +33,18 @@ export const AdminLayout = ({ children }) => {
 
   const navigate = useNavigate()
 
-  const pages = !isAdmin
-    ? [{ name: 'eventList', url: '/crm/event', label: 'Мероприятия' }]
-    : [
+  let pages = []
+  if (isAuthenticated && isAdmin) {
+    pages = [
       { name: 'eventList', url: '/crm/event', label: 'Мероприятия' },
       { name: 'memberList', url: '/crm/member', label: 'Тритонны' },
       { name: 'dictionary', url: '/crm/dictionary', label: 'Справочники' },
       { name: 'applications', url: '/crm/applications', label: 'Заявки' },
     ]
+  } else if (isAuthenticated) {
+    pages = [{ name: 'eventList', url: '/crm/event', label: 'Мероприятия' }]
+  }
+
   const location = useLocation()
 
   const currentPage = pages.find(
@@ -55,42 +61,43 @@ export const AdminLayout = ({ children }) => {
 
   const isMobile = useMediaQuery({ query: '(max-device-width: 768px)' })
 
-  const renderMenu = isMobile ? (
-    <>
-      <IconButton
-        size='large'
-        edge='end'
-        aria-label='account of current user'
-        aria-controls={menuId}
-        aria-haspopup='true'
-        onClick={handleMainMenuOpen}
-        color='inherit'
-      >
-        <MenuIcon />
-      </IconButton>
-      <Menu
-        anchorEl={anchorMainMenuEl}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        id={mainMenuId}
-        keepMounted
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        open={isMainMenuOpen}
-        onClose={handleMainMenuClose}
-      >
-        {pages.map((page) => (
-          <MenuItem key={page.name} onClick={handleCloseGoToPage(page)}>
-            {page.label}
-          </MenuItem>
-        ))}
-      </Menu>
-    </>
-  ) : null
+  const renderMenu =
+    isMobile && pages.length !== 0 ? (
+      <>
+        <IconButton
+          size='large'
+          edge='end'
+          aria-label='account of current user'
+          aria-controls={menuId}
+          aria-haspopup='true'
+          onClick={handleMainMenuOpen}
+          color='inherit'
+        >
+          <MenuIcon />
+        </IconButton>
+        <Menu
+          anchorEl={anchorMainMenuEl}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          id={mainMenuId}
+          keepMounted
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          open={isMainMenuOpen}
+          onClose={handleMainMenuClose}
+        >
+          {pages.map((page) => (
+            <MenuItem key={page.name} onClick={handleCloseGoToPage(page)}>
+              {page.label}
+            </MenuItem>
+          ))}
+        </Menu>
+      </>
+    ) : null
 
   return (
     <Grid>

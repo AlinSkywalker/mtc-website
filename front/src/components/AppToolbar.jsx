@@ -1,17 +1,12 @@
 import React, { useContext, useEffect } from 'react'
-import AppBar from '@mui/material/AppBar'
-import Toolbar from '@mui/material/Toolbar'
-import IconButton from '@mui/material/IconButton'
 import AccountCircle from '@mui/icons-material/AccountCircle'
-import MenuItem from '@mui/material/MenuItem'
-import Menu from '@mui/material/Menu'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from './AuthContext'
-import Box from '@mui/material/Box'
 import apiClient from '../api/api'
 import MtcImage from '../assets/mtc.png'
 import './AdminLayoutStyles.css'
 import { useIsAdmin } from '../hooks/useIsAdmin'
+import { Grid, Menu, Box, MenuItem, IconButton, Toolbar, AppBar } from '@mui/material'
 
 export const AppToolbar = ({ children, renderMenu }) => {
   const isAdmin = useIsAdmin()
@@ -57,6 +52,9 @@ export const AppToolbar = ({ children, renderMenu }) => {
   const handleGoToLoginPage = () => {
     navigate('/crm/login')
   }
+  const handleGoToMainPage = () => {
+    navigate('/')
+  }
 
   const renderProfileMenu = (
     <>
@@ -97,7 +95,9 @@ export const AppToolbar = ({ children, renderMenu }) => {
   return (
     <AppBar position='static'>
       <Toolbar className='AppBarToolbar'>
-        <img src={MtcImage} alt='ЦАП' height='55px' />
+        <Grid onClick={handleGoToMainPage} sx={{ cursor: 'pointer' }}>
+          <img src={MtcImage} alt='ЦАП' height='55px' />
+        </Grid>
         <Box sx={{ flexGrow: 1, display: 'flex', marginLeft: 3 }}>{children}</Box>
         {renderProfileMenu}
         {renderMenu}

@@ -9,6 +9,7 @@ import { useFetchEventInstructorsList } from '../queries/event'
 import { useFetchEventBaseList } from '../queries/eventBase'
 import apiClient from '../api/api'
 import CloseIcon from '@mui/icons-material/Close'
+import { getFormattedNumber } from '../utils/numbers'
 
 export const EventInfoRO = ({ eventData: data, isLoading }) => {
   const isMobile = useIsMobile()
@@ -35,15 +36,10 @@ export const EventInfoRO = ({ eventData: data, isLoading }) => {
       </Container>
     )
   }
-  const price = new Intl.NumberFormat('ru', { style: 'currency', currency: 'RUB' }).format(
-    data.price,
-  )
-  const price_sport = data.price_sport
-    ? new Intl.NumberFormat('ru', { style: 'currency', currency: 'RUB' }).format(data.price_sport)
-    : ''
-  const price_tourist = data.price_tourist
-    ? new Intl.NumberFormat('ru', { style: 'currency', currency: 'RUB' }).format(data.price_tourist)
-    : ''
+  const price = getFormattedNumber(data.price)
+  const price_sport = getFormattedNumber(data.price_sport)
+  const price_tourist = getFormattedNumber(data.price_tourist)
+
   const dashedTextStyle = { textDecoration: 'underline dashed #1976d2', cursor: 'pointer' }
 
   const handleClickMember = async (memberId, event) => {
@@ -94,7 +90,9 @@ export const EventInfoRO = ({ eventData: data, isLoading }) => {
         </Grid>
         <Grid size={isMobile ? 12 : 4}>
           <Typography sx={{ fontWeight: 'bold' }}>Район проведения</Typography>
-          <Typography>{data.raion_name}</Typography>
+          {data?.raion_name_list?.map((baseItem, index) => (
+            <Typography key={index}>{baseItem}</Typography>
+          ))}
         </Grid>
         <Grid size={isMobile ? 12 : 2}>
           <Typography sx={{ fontWeight: 'bold' }}>Инструкторский сбор</Typography>
@@ -140,7 +138,7 @@ export const EventInfoRO = ({ eventData: data, isLoading }) => {
           <img alt='' src={memberData?.member_photo} width='200' height='200' />
           <Grid sx={{ maxWidth: 400 }}>
             <Typography sx={{ fontWeight: 'bold' }}>{memberData?.fio}</Typography>
-            <Typography>{memberData?.aboutMe}</Typography>
+            <Typography sx={{ whiteSpace: 'pre-wrap' }}>{memberData?.aboutMe}</Typography>
           </Grid>
           <Grid sx={{ width: 20 }}>
             <IconButton

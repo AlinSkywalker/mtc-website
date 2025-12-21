@@ -3,7 +3,7 @@ import React, { useContext } from 'react'
 import { BrowserRouter, Route, Navigate, Routes } from 'react-router-dom'
 import { LoginPage } from './pages/LoginPage'
 import { RegistrationPage } from './pages/RegistrationPage'
-import { AdminLayout } from './components/AdminLayout'
+import { MainLayout } from './components/MainLayout'
 import { ProfilePage } from './pages/ProfilePage'
 import { EventListPage } from './pages/EventListPage'
 import { EventInfoPage } from './pages/EventInfoPage'
@@ -24,6 +24,8 @@ import { PublicLayout } from './components/PublicLayout'
 import { PersonalDataConsentPage } from './pages/PersonalDataConsentPage'
 import { ApplicationListPage } from './pages/ApplicationListPage'
 import { ResetPasswordPage } from './pages/ResetPasswordPage'
+import { MainPage } from './pages/MainPage'
+
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -35,7 +37,7 @@ const queryClient = new QueryClient({
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated } = useContext(AuthContext)
-  return isAuthenticated ? <AdminLayout>{children}</AdminLayout> : <Navigate to='/crm/login' />
+  return isAuthenticated ? <MainLayout>{children}</MainLayout> : <Navigate to='/crm/login' />
 }
 
 const AdminRoute = ({ children }) => {
@@ -46,17 +48,17 @@ const AdminRoute = ({ children }) => {
   }
   if (userInfo.role !== 'ADMIN_ROLE') {
     return (
-      <AdminLayout>
+      <MainLayout>
         <Grid>Данная страница недоступна</Grid>
-      </AdminLayout>
+      </MainLayout>
     )
   }
-  return <AdminLayout>{children}</AdminLayout>
+  return <MainLayout>{children}</MainLayout>
   // return isAuthenticated ? <AdminLayout>{children}</AdminLayout> : <Navigate to='/login' />
 }
 
 const PublicRoute = ({ children }) => {
-  return <PublicLayout>{children}</PublicLayout>
+  return <MainLayout>{children}</MainLayout>
 }
 
 const LoginRoute = ({ children }) => {
@@ -77,9 +79,9 @@ const App = () => {
                   <Route
                     path='/'
                     element={
-                      <AdminRoute>
-                        <EventListPage />
-                      </AdminRoute>
+                      <PublicRoute>
+                        <MainPage />
+                      </PublicRoute>
                     }
                   />
                   <Route

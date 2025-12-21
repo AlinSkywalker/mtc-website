@@ -29,6 +29,7 @@ export const ResetPasswordPage = () => {
   } = useForm({ defaultValues, resolver: yupResolver(validationSchema) })
 
   const [serverResponse, setServerResponse] = useState('')
+  const [serverResponseType, setServerResponseType] = useState('')
 
   const [searchParams] = useSearchParams()
   const token = searchParams.get('token')
@@ -59,10 +60,14 @@ export const ResetPasswordPage = () => {
       .then((response) => {
         if (response) {
           setServerResponse('Ссылка для восстановления пароля отправлена на указанный e-mail')
+          setServerResponseType('success')
+        } else {
+          setServerResponseType('error')
         }
       })
       .catch((error) => {
         setServerResponse(error)
+        setServerResponseType('error')
       })
   }
 
@@ -90,7 +95,7 @@ export const ResetPasswordPage = () => {
           )}
         />
         <Grid>
-          <Button variant='contained' type='submit'>
+          <Button variant='contained' type='submit' disabled={serverResponseType === 'success'}>
             Восстановить пароль
           </Button>
         </Grid>
@@ -102,6 +107,7 @@ export const ResetPasswordPage = () => {
       </Grid>
     </form>
   )
+
   return (
     <Container
       maxWidth={false}

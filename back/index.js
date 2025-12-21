@@ -204,9 +204,10 @@ app.get(
     const id = req.params.id;
     pool.query(
       `SELECT u.*, m.*, c.name_city,
-      CONVERT(m.photo USING utf8) as member_photo 
+      CONVERT(m_p.photo USING utf8) as member_photo 
       FROM mtc_db.user u 
       RIGHT JOIN member m on m.user_id=u.id 
+      LEFT JOIN member_photo m_p on m_p.id=m.id 
       LEFT JOIN city c on c.id=m.memb_city
       WHERE u.id=${id}`,
       (error, result) => {
@@ -264,9 +265,10 @@ app.post(
     const { newPhoto } =
       req.body;
     pool.query(
-      `UPDATE member 
-      SET photo='${newPhoto}'
-      WHERE id=${id}`,
+      `INSERT INTO member_photo (id, photo)
+          VALUES (${id}, '${newPhoto}')
+          ON DUPLICATE KEY UPDATE
+            photo = '${newPhoto}'`,
       (error, result) => {
         if (error) {
           console.log(error);

@@ -4,6 +4,7 @@ import { Card, Grid, Typography, ToggleButtonGroup, ToggleButton } from '@mui/ma
 import { useNavigate } from 'react-router-dom'
 
 import { format, parseISO } from 'date-fns'
+import { MobileTableItem } from '../../../components/MobileTableItem'
 
 export const MobileEventListTable = () => {
   const [show, setShow] = useState('future')
@@ -11,7 +12,7 @@ export const MobileEventListTable = () => {
 
   const navigate = useNavigate()
 
-  const handleItemClickName = (id) => () => {
+  const handleItemClickName = (id) => {
     navigate(`/crm/event/${id}/`)
   }
 
@@ -44,17 +45,13 @@ export const MobileEventListTable = () => {
     const eventStart = format(parseISO(eventItem.event_start || ''), 'dd.MM.yyyy')
     const eventFinish = format(parseISO(eventItem.event_finish || ''), 'dd.MM.yyyy')
     return (
-      <Card
-        onClick={handleItemClickName(eventItem.id)}
-        sx={{ margin: 2, padding: 2 }}
-        key={eventItem.id}
-      >
+      <MobileTableItem handleItemClick={handleItemClickName} id={eventItem.id}>
         <Typography variant='h5'>{eventItem.event_name}</Typography>
         <Typography>
           {eventStart} - {eventFinish}
         </Typography>
         <Typography>{eventItem.event_desc}</Typography>
-      </Card>
+      </MobileTableItem>
     )
   }
   return (

@@ -52,7 +52,7 @@ const sendResetPasswordEmail = (email, token, callback, errorCallback) => {
     subject: "Восстановление пароля от системы ЦАП", // Subject line
     html: `<p>Добрый день!</p>
 <p>Вы запросили восстановление пароля для учетной записи email в ЦАП.</p>
-<p><a href="https://mtc-tritonn.ru/reset-password?token=${token}">Восстановить пароль</a></p>
+<p><a href="https://mtc-tritonn.ru/crm/reset-password?token=${token}">Восстановить пароль</a></p>
 <p>Для восстановления пароля перейдите по ссылке</p>`,
   };
   transporter.sendMail(mailOptions, (error, info) => {
@@ -289,7 +289,8 @@ const authRouter = (app, passport) => {
         const user = result[0];
         if (!user) {
           pool.query(
-            `DELETE FROM user u 
+            `UPDATE user u
+              SET password_reset_token=NULL, password_reset_date=NULL
               WHERE u.password_reset_token='${token}'`,
             (error, result) => {
               if (error) {

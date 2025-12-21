@@ -12,6 +12,18 @@ export function useFetchEventList(show = 'all') {
   })
 }
 
+export function useFetchMainPageEventList() {
+  return useQuery({
+    queryKey: ['mainPageEventList'],
+    queryFn: async () => {
+      const { data } = await apiClient.get(`/api/mainPageEventList`)
+      return data
+    },
+  })
+}
+
+
+
 export function useFetchEvent(id) {
   return useQuery({
     queryKey: ['event', id],

@@ -199,7 +199,10 @@ const eventMemberRouter = (app, passport) => {
       const { fileNameStrah, newFilePathStrah, newFilePathMed, fileNameMed } = saveFiles({ eventId, fio, med_file, strah_file })
 
       if (!strah_file_name) {
-        fs.unlinkSync(strah_file_path)
+        try {
+          fs.unlinkSync(strah_file_path)
+        } catch (e) { }
+
       }
       const strahFileUpdateStatement = strah_file_name
         ? strah_file
@@ -208,7 +211,9 @@ const eventMemberRouter = (app, passport) => {
         : `strah_file_path='', strah_file_name='',`
 
       if (!med_file_name) {
-        fs.unlinkSync(med_file_path)
+        try {
+          fs.unlinkSync(med_file_path)
+        } catch (e) { }
       }
       // const medFileUpdateStatement = med_file
       //   ? med_file_name

@@ -14,6 +14,7 @@ import { MemberEventTab } from '../components/memberTabs/MemberEventTab'
 import { MemberSportCategoryTab } from '../components/memberTabs/MemberSportCategoryTab'
 import { MemberInfoForm } from '../components/MemberInfoForm'
 import { MemberLabaAscentTab } from '../components/memberTabs/MemberLabaAscentTab'
+import { MemberEquipmentTab } from '../components/memberTabs/MemberEquipmentTab'
 
 export const MemberInfoPage = () => {
   const [value, setValue] = React.useState(0)
@@ -35,6 +36,11 @@ export const MemberInfoPage = () => {
       name: 'labaAscents',
       label: 'Тренировки',
       component: <MemberLabaAscentTab memberId={currentId} />,
+    },
+    {
+      name: 'equipment',
+      label: 'Снаряжение',
+      component: <MemberEquipmentTab memberId={currentId} />,
     },
     {
       name: 'exam',

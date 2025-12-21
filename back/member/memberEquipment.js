@@ -38,7 +38,7 @@ const memberEquipmentRouter = (app, passport) => {
         `INSERT INTO equip_mtc ( equip_member,equip, equip_storage, loss, quantity, equip_name) 
             VALUES(?,?,?,?,?,?)`,
         [
-          memberId, equip, equip_storage, loss, quantity, equip_name
+          memberId, equip, equip_storage || null, loss, quantity, equip_name
         ],
         (error, result) => {
           if (error) {
@@ -68,7 +68,7 @@ const memberEquipmentRouter = (app, passport) => {
           updated_date=CURRENT_TIMESTAMP 
           WHERE id=${id}`,
         [
-          equip, equip_storage, loss, quantity, equip_name
+          equip, equip_storage || null, loss, quantity, equip_name
         ],
         (error, result) => {
           if (error) {

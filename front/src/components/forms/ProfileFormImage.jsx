@@ -1,12 +1,14 @@
 import {
-  Box,
+  Backdrop,
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   Grid,
   IconButton,
+  styled,
 } from '@mui/material'
 import React, { useEffect, useMemo, useState } from 'react'
 import CloseIcon from '@mui/icons-material/Close'
@@ -18,37 +20,32 @@ import { useQueryClient } from '@tanstack/react-query'
 import apiClient from '../../api/api'
 import DefaultImage from '../../assets/default_profile.jpg'
 
-const baseStyle = {
-  flex: 1,
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  padding: '20px',
-  borderWidth: 2,
-  borderRadius: 2,
-  borderColor: '#eeeeee',
-  borderStyle: 'dashed',
-  backgroundColor: '#fafafa',
-  color: '#bdbdbd',
-  outline: 'none',
-  transition: 'border .24s ease-in-out',
-}
+import FilerobotImageEditor, { TABS, TOOLS } from 'react-filerobot-image-editor'
+import { acceptStyle, baseStyle, focusedStyle, rejectStyle } from './dropzone.styles'
 
-const focusedStyle = {
-  borderColor: '#2196f3',
-}
 
-const acceptStyle = {
-  borderColor: '#00e676',
-}
 
-const rejectStyle = {
-  borderColor: '#ff1744',
-}
+const FilerobotImageEditorWrap = styled('div')({
+  '& .FIE_tabs': {
+    display: 'none',
+  },
+})
 
 export const ProfileFormImage = ({ photo, currentMemberId, currentUserId }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [isSaveAvailable, setIsSaveAvailable] = useState(false)
   const [newPhoto, setNewPhoto] = useState(photo)
+  const [newPhotoImage, setNewPhotoImage] = useState()
+  const [isLoading, setIsLoading] = useState(false)
+
+  const openImgEditor = (image) => {
+    setNewPhotoImage(image)
+  }
+
+  const closeImgEditor = () => {
+    setNewPhotoImage()
+  }
+
   useEffect(() => setNewPhoto(photo), [photo])
   const queryClient = useQueryClient()
   const { enqueueSnackbar } = useSnackbar()
@@ -62,15 +59,17 @@ export const ProfileFormImage = ({ photo, currentMemberId, currentUserId }) => {
       image.src = event.target.result
 
       image.onload = function () {
-        if (this.width / this.height > 1.1 || this.height / this.width > 1.1) {
-          enqueueSnackbar('Изображение должно иметь соотношение сторон 1:1', {
-            variant: 'error',
-            autoHideDuration: 5000,
-          })
-        } else {
-          const base64 = event.target.result
-          setNewPhoto(base64)
-        }
+        // if (this.width / this.height > 1.1 || this.height / this.width > 1.1) {
+        //   enqueueSnackbar('Изображение должно иметь соотношение сторон 1:1', {
+        //     variant: 'error',
+        //     autoHideDuration: 5000,
+        //   })
+        // } else {
+
+        // }
+        // const base64 = event.target.result
+        // setNewPhoto(base64)
+        openImgEditor(image)
       }
 
       // Можно также сохранить только data часть (без префикса)
@@ -126,11 +125,13 @@ export const ProfileFormImage = ({ photo, currentMemberId, currentUserId }) => {
 
   const handleClose = () => {
     setIsDialogOpen(false)
+    setNewPhotoImage()
   }
   const handleSavePhoto = async () => {
     try {
+      setIsLoading(true)
       const result = await apiClient.post(`/api/profile/${currentMemberId}/setPhoto`, { newPhoto })
-
+      setIsLoading(false)
       if (!result) {
         enqueueSnackbar(SERVER_REQUEST_ERROR, {
           variant: 'error',
@@ -182,37 +183,99 @@ export const ProfileFormImage = ({ photo, currentMemberId, currentUserId }) => {
             <CloseIcon />
           </IconButton>
         </DialogTitle>
-
-        <DialogContent sx={{ minWidth: '300px' }}>
-          <Grid
-            container
-            alignItems={'center'}
-            spacing={isMobile ? 0 : 2}
-            direction={isMobile ? 'column' : 'row'}
-          >
-            <Grid width='200'>
-              <img alt='' src={newPhoto || DefaultImage} width='200' height='200' />
-            </Grid>
-            <Grid>
-              <div {...getRootProps({ style })}>
-                <input {...getInputProps()} />
-                <p>
-                  Перетащите сюда файл или нажмите для выбора.
-                  <br />
-                  Максимальный размер файла - 10МБ
-                  <br />
-                  Изображение должно иметь соотношение сторон 1:1
-                </p>
-              </div>
-            </Grid>
-          </Grid>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Отмена</Button>
-          <Button onClick={handleSavePhoto} autoFocus variant='contained'>
-            Сохранить фото
-          </Button>
-        </DialogActions>
+        {!newPhotoImage && (
+          <>
+            <DialogContent sx={{ minWidth: '300px' }}>
+              <Backdrop
+                sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+                open={isLoading}
+              >
+                <CircularProgress color='inherit' />
+              </Backdrop>
+              <Grid
+                container
+                alignItems={'center'}
+                spacing={isMobile ? 0 : 2}
+                direction={isMobile ? 'column' : 'row'}
+              >
+                <Grid width='200'>
+                  <img alt='' src={newPhoto || DefaultImage} width='200' height='200' />
+                </Grid>
+                <Grid>
+                  <div {...getRootProps({ style })}>
+                    <input {...getInputProps()} />
+                    <p>
+                      Перетащите сюда файл или нажмите для выбора.
+                      <br />
+                      Максимальный размер файла - 10МБ
+                      <br />
+                      Изображение должно иметь соотношение сторон 1:1
+                    </p>
+                  </div>
+                </Grid>
+              </Grid>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose}>Отмена</Button>
+              <Button
+                onClick={handleSavePhoto}
+                autoFocus
+                variant='contained'
+                disabled={!isSaveAvailable || isLoading}
+              >
+                Сохранить фото
+              </Button>
+            </DialogActions>
+          </>
+        )}
+        {!!newPhotoImage && (
+          <FilerobotImageEditorWrap>
+            <FilerobotImageEditor
+              translations={{
+                save: 'Сохранить',
+                cropTool: 'Обрезать',
+                rotateTool: 'Повернуть',
+                flipX: 'Отразить по оси X',
+                flipY: 'Отразить по оси Y',
+              }}
+              language='ru'
+              closeAfterSave={true}
+              defaultSavedImageName={'photo'}
+              source={newPhotoImage}
+              onBeforeSave={() => false}
+              onSave={(editedImageObject, designState) => {
+                console.log('saved', editedImageObject, designState)
+                if (editedImageObject.height === editedImageObject.width) {
+                  setNewPhoto(editedImageObject.imageBase64)
+                  setNewPhotoImage()
+                  setIsSaveAvailable(true)
+                } else {
+                  enqueueSnackbar('Изображение должно иметь соотношение сторон 1:1', {
+                    variant: 'error',
+                    autoHideDuration: 5000,
+                  })
+                }
+              }}
+              onClose={() => {
+                closeImgEditor()
+                setNewPhotoImage()
+              }}
+              annotationsCommon={{
+                fill: '#ff0000',
+              }}
+              Text={{ text: 'Filerobot...' }}
+              Rotate={{ angle: 90, componentType: 'slider' }}
+              Crop={{
+                ratio: 1,
+                ratioTitleKey: 'Обрезать',
+                noPresets: true,
+              }}
+              tabsIds={[TABS.ADJUST]} // or {['Adjust', 'Annotate', 'Watermark']}
+              defaultTabId={TABS.ADJUST} // or 'Annotate'
+              defaultToolId={TOOLS.CROP} // or 'Text'
+            />
+          </FilerobotImageEditorWrap>
+        )}
       </Dialog>
     </Grid>
   )

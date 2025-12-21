@@ -6,11 +6,12 @@ import { EditableTable } from '../EditableTable'
 import * as Yup from 'yup'
 import { dateColumnType } from '../dataGridCell/GridEditDateCell'
 import { useIsMobile } from '../../hooks/useIsMobile'
-import { MobileMemberExamTab } from './mobileTables/MobileMemberExamTab'
+import { MobileMemberEquipmentTab } from './mobileTables/MobileMemberEquipmentTab'
 import { AuthContext } from '../../components/AuthContext'
 import { useFetchEquipmentTypeList, useFetchStorageList } from '../../queries/equipment'
 import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
 import { checkboxColumnType } from '../dataGridCell/GridEditCheckboxCell'
+import { useIsAdmin } from '../../hooks/useIsAdmin'
 
 const defaultItem = {
   equip_member: '',
@@ -34,11 +35,12 @@ export const MemberEquipmentTab = ({ memberId }) => {
   const readOnly = memberId !== currentMemberId
   const queryClient = useQueryClient()
   const isMobile = useIsMobile()
+  const isAdmin = useIsAdmin()
   const { isLoading, data } = useFetchMemberEquipmentList(memberId)
 
   const [rows, setRows] = React.useState(data)
   const [rowModesModel, setRowModesModel] = React.useState({})
-  console.log('rows', rows)
+
   React.useEffect(() => {
     setRows(data)
   }, [data])
@@ -128,10 +130,11 @@ export const MemberEquipmentTab = ({ memberId }) => {
       editable: !readOnly,
     },
   ]
-  const fieldToFocus = 'stor_name'
+  const fieldToFocus = 'equip_type'
   const columnVisibilityModel = {
     equip_storage: false,
     equip: false,
+    stor_name: isAdmin ? true : false
   }
 
   const processRowUpdate = async (newRow) => {
@@ -142,7 +145,7 @@ export const MemberEquipmentTab = ({ memberId }) => {
   }
 
   if (!memberId) return null
-  if (isMobile) return <MobileMemberExamTab isLoading={isLoading} data={data} />
+  if (isMobile) return <MobileMemberEquipmentTab isLoading={isLoading} data={data} />
 
   return (
     <EditableTable

@@ -55,6 +55,92 @@ const eventListRouter = (app, passport) => {
       );
     }
   );
+
+  app.get(
+    "/mainPageEventList/",
+    (req, res) => {
+      pool.query(
+        `SELECT e.*, m_ob.fio as ob_fio, m_st.fio as st_fio, 
+			e_r.raion_names, e_r.raion_ids,
+			m_organizer.fio as organizer_fio,
+			e_b.base_names,
+			e_d.depart_types,e_d.depart_start_dates,e_d.depart_finish_dates,e_d.depart_instructors_fio
+            FROM eventalp e
+            LEFT JOIN member m_ob on e.event_ob = m_ob.id
+            LEFT JOIN member m_st on e.event_st = m_st.id
+            LEFT JOIN member m_organizer on e.event_organizer = m_organizer.id
+            LEFT JOIN (
+                SELECT
+                  e_r.event_m,
+                  GROUP_CONCAT(r.rai_name SEPARATOR '||') as raion_names,
+                  GROUP_CONCAT(r.id SEPARATOR '||') as raion_ids
+                FROM
+                  eventalp_in_raion e_r
+                LEFT JOIN raion r on
+                  r.id = e_r.raion_m
+                GROUP BY
+                  e_r.event_m) e_r on e_r.event_m = e.id
+              LEFT JOIN (
+                SELECT
+                  e_b.event_m,
+                  GROUP_CONCAT(b.base_name SEPARATOR '||') as base_names,
+                  GROUP_CONCAT(b.id SEPARATOR '||') as base_ids
+                FROM
+                  base_in_eventalp e_b
+                LEFT JOIN base b on
+                  b.id = e_b.base_m
+                GROUP BY
+                  e_b.event_m) e_b on e_b.event_m = e.id
+              LEFT JOIN (
+                SELECT
+                  d.depart_event,
+                  GROUP_CONCAT(d.depart_tip SEPARATOR '||') as depart_types,
+                  GROUP_CONCAT(d.depart_dates SEPARATOR '||') as depart_start_dates,
+                  GROUP_CONCAT(d.depart_datef SEPARATOR '||') as depart_finish_dates,
+                  GROUP_CONCAT(m.fio SEPARATOR '||') as depart_instructors_fio
+                FROM
+                  depart d
+                LEFT JOIN member m on
+                  m.id = d.depart_inst
+                WHERE d.depart_tip<>'ХЗ'
+                GROUP BY
+                  d.depart_event) e_d on e_d.depart_event = e.id
+              WHERE e.event_finish>=CURRENT_TIMESTAMP 
+              ORDER BY e.event_start ASC`,
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return;
+          }
+          const fullResult = result.map((item) => {
+            const { raion_names, raion_ids, base_names, depart_types, depart_start_dates, depart_finish_dates, depart_instructors_fio, ...rest } = item || {}
+            const raion_name_list = item.raion_names?.split("||");
+            const raion_id_list = item.raion_ids
+              ?.split("||")
+              .map((item) => Number(item));
+            const base_names_list = item.base_names?.split("||");
+            const depart_types_list = item.depart_types?.split("||");
+            const depart_start_dates_list = item.depart_start_dates?.split("||");
+            const depart_finish_dates_list = item.depart_finish_dates?.split("||");
+            const depart_instructors_fio_list = item.depart_instructors_fio?.split("||");
+            return {
+              ...rest,
+              raion_name_list,
+              raion_id_list,
+              base_names_list,
+              depart_types_list,
+              depart_start_dates_list,
+              depart_finish_dates_list,
+              depart_instructors_fio_list
+            };
+          });
+          res.send(fullResult);
+        }
+      );
+    }
+  );
+
   app.put(
     "/eventList/",
     passport.authenticate("jwt", { session: false }),
