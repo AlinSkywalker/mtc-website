@@ -14,7 +14,7 @@ import { useIsAdmin } from '../hooks/useIsAdmin'
 import { AppToolbar } from './AppToolbar'
 import { AuthContext } from './AuthContext'
 
-export const MainLayout = ({ children }) => {
+export const MainLayout = ({ children, withProfile = true }) => {
   const isAdmin = useIsAdmin()
   const { isAuthenticated } = useContext(AuthContext)
   const [anchorMainMenuEl, setAnchorMainMenuEl] = React.useState(null)
@@ -101,7 +101,7 @@ export const MainLayout = ({ children }) => {
 
   return (
     <Grid>
-      <AppToolbar renderMenu={renderMenu}>
+      <AppToolbar renderMenu={renderMenu} withProfile={withProfile}>
         <>
           {isMobile && currentPage && (
             <Typography>

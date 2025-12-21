@@ -10,6 +10,10 @@ import { useFetchEventBaseList } from '../queries/eventBase'
 import apiClient from '../api/api'
 import CloseIcon from '@mui/icons-material/Close'
 import { getFormattedNumber } from '../utils/numbers'
+import { EventMemberPopover } from './EventMemberPopover'
+import { EventBasePopover } from './EventBasePopover'
+
+const dashedTextStyle = { textDecoration: 'underline dashed #1976d2', cursor: 'pointer' }
 
 export const EventInfoRO = ({ eventData: data, isLoading }) => {
   const isMobile = useIsMobile()
@@ -18,13 +22,11 @@ export const EventInfoRO = ({ eventData: data, isLoading }) => {
   const { data: eventInstructorsData } = useFetchEventInstructorsList(data.id)
 
   const [memberData, setMemberData] = useState(null)
+  const [baseData, setBaseData] = useState(null)
   const [anchorEl, setAnchorEl] = React.useState(null)
-  const open = Boolean(memberData)
-
-  const handleClose = () => {
-    setAnchorEl(null)
-    setMemberData(null)
-  }
+  const [anchorElBase, setAnchorElBase] = React.useState(null)
+  const open = Boolean(anchorEl)
+  const openBase = Boolean(anchorElBase)
 
   if (isLoading) {
     return (
@@ -40,20 +42,22 @@ export const EventInfoRO = ({ eventData: data, isLoading }) => {
   const price_sport = getFormattedNumber(data.price_sport)
   const price_tourist = getFormattedNumber(data.price_tourist)
 
-  const dashedTextStyle = { textDecoration: 'underline dashed #1976d2', cursor: 'pointer' }
-
   const handleClickMember = async (memberId, event) => {
     try {
       setAnchorEl(event.currentTarget)
-      const { data: member } = await apiClient.get(`/api/memberList/${memberId}`)
 
-      setMemberData({
-        member_photo: member.member_photo,
-        aboutMe: member.about_me,
-        fio: member.fio,
-      })
+      setMemberData(memberId)
     } catch (error) { }
   }
+
+  const handleClickBase = async (baseId, event) => {
+    try {
+      setAnchorElBase(event.currentTarget)
+
+      setBaseData(baseId)
+    } catch (error) { }
+  }
+
   return (
     <CardContent>
       <Grid container flexDirection='row' spacing={2}>
@@ -121,41 +125,32 @@ export const EventInfoRO = ({ eventData: data, isLoading }) => {
         <Grid size={12}>
           <Typography sx={{ fontWeight: 'bold' }}>Проживание</Typography>
           {eventBaseData?.map((item) => (
-            <Typography key={item.id}>{item.base_name}</Typography>
+            <Typography
+              key={item.id}
+              sx={dashedTextStyle}
+              onClick={(e) => handleClickBase(item.base_id, e)}
+            >
+              {item.base_name}
+            </Typography>
           ))}
         </Grid>
       </Grid>
-      <Popover
-        open={open}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-      >
-        <Grid container spacing={2} sx={{ p: 2, maxHeight: 350 }}>
-          <img alt='' src={memberData?.member_photo} width='200' height='200' />
-          <Grid sx={{ maxWidth: 400 }}>
-            <Typography sx={{ fontWeight: 'bold' }}>{memberData?.fio}</Typography>
-            <Typography sx={{ whiteSpace: 'pre-wrap' }}>{memberData?.aboutMe}</Typography>
-          </Grid>
-          <Grid sx={{ width: 20 }}>
-            <IconButton
-              aria-label='close'
-              onClick={handleClose}
-              sx={(theme) => ({
-                position: 'absolute',
-                right: 8,
-                top: 8,
-                color: theme.palette.grey[500],
-              })}
-            >
-              <CloseIcon />
-            </IconButton>
-          </Grid>
-        </Grid>
-      </Popover>
+      {open && (
+        <EventMemberPopover
+          memberId={memberData}
+          anchorEl={anchorEl}
+          setAnchorEl={setAnchorEl}
+          open={open}
+        />
+      )}
+      {openBase && (
+        <EventBasePopover
+          baseId={baseData}
+          anchorEl={anchorElBase}
+          setAnchorEl={setAnchorElBase}
+          open={openBase}
+        />
+      )}
     </CardContent>
   )
 }

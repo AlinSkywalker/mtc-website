@@ -162,3 +162,14 @@ export function useFetchTrainingProgram() {
     },
   })
 }
+
+export function useExternalFetchBase(id) {
+  return useQuery({
+    queryKey: ['external', 'baseDictionary', id],
+    queryFn: async () => {
+      const { data } = await apiClient.get(`/api/external/baseDictionary/${id}`)
+      return data
+    },
+    staleTime: 5 * 60 * 1000,
+  })
+}

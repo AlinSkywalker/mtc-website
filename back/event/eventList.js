@@ -63,8 +63,8 @@ const eventListRouter = (app, passport) => {
         `SELECT e.*, m_ob.fio as ob_fio, m_st.fio as st_fio, 
 			e_r.raion_names, e_r.raion_ids,
 			m_organizer.fio as organizer_fio,
-			e_b.base_names,
-			e_d.depart_types,e_d.depart_start_dates,e_d.depart_finish_dates,e_d.depart_instructors_fio
+			e_b.base_names,base_ids,
+			e_d.depart_types,e_d.depart_start_dates,e_d.depart_finish_dates,e_d.depart_instructors_fio,depart_instructors_id
             FROM eventalp e
             LEFT JOIN member m_ob on e.event_ob = m_ob.id
             LEFT JOIN member m_st on e.event_st = m_st.id
@@ -97,7 +97,8 @@ const eventListRouter = (app, passport) => {
                   GROUP_CONCAT(d.depart_tip SEPARATOR '||') as depart_types,
                   GROUP_CONCAT(d.depart_dates SEPARATOR '||') as depart_start_dates,
                   GROUP_CONCAT(d.depart_datef SEPARATOR '||') as depart_finish_dates,
-                  GROUP_CONCAT(m.fio SEPARATOR '||') as depart_instructors_fio
+                  GROUP_CONCAT(m.fio SEPARATOR '||') as depart_instructors_fio,
+                  GROUP_CONCAT(m.id SEPARATOR '||') as depart_instructors_id
                 FROM
                   depart d
                 LEFT JOIN member m on
@@ -114,25 +115,30 @@ const eventListRouter = (app, passport) => {
             return;
           }
           const fullResult = result.map((item) => {
-            const { raion_names, raion_ids, base_names, depart_types, depart_start_dates, depart_finish_dates, depart_instructors_fio, ...rest } = item || {}
+            const { raion_names, raion_ids, base_names, base_ids, depart_types, depart_start_dates,
+              depart_finish_dates, depart_instructors_fio, depart_instructors_id, ...rest } = item || {}
             const raion_name_list = item.raion_names?.split("||");
             const raion_id_list = item.raion_ids
               ?.split("||")
               .map((item) => Number(item));
             const base_names_list = item.base_names?.split("||");
+            const base_id_list = item.base_ids?.split("||");
             const depart_types_list = item.depart_types?.split("||");
             const depart_start_dates_list = item.depart_start_dates?.split("||");
             const depart_finish_dates_list = item.depart_finish_dates?.split("||");
             const depart_instructors_fio_list = item.depart_instructors_fio?.split("||");
+            const depart_instructors_id_list = item.depart_instructors_id?.split("||");
             return {
               ...rest,
               raion_name_list,
               raion_id_list,
               base_names_list,
+              base_id_list,
               depart_types_list,
               depart_start_dates_list,
               depart_finish_dates_list,
-              depart_instructors_fio_list
+              depart_instructors_fio_list,
+              depart_instructors_id_list
             };
           });
           res.send(fullResult);

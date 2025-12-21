@@ -8,7 +8,7 @@ import './AdminLayoutStyles.css'
 import { useIsAdmin } from '../hooks/useIsAdmin'
 import { Grid, Menu, Box, MenuItem, IconButton, Toolbar, AppBar } from '@mui/material'
 
-export const AppToolbar = ({ children, renderMenu }) => {
+export const AppToolbar = ({ children, renderMenu, withProfile }) => {
   const isAdmin = useIsAdmin()
   const [anchorEl, setAnchorEl] = React.useState(null)
   const { userInfo, setUserInfo, setIsAuthenticated, isAuthenticated } = useContext(AuthContext)
@@ -99,7 +99,7 @@ export const AppToolbar = ({ children, renderMenu }) => {
           <img src={MtcImage} alt='ЦАП' height='55px' />
         </Grid>
         <Box sx={{ flexGrow: 1, display: 'flex', marginLeft: 3 }}>{children}</Box>
-        {renderProfileMenu}
+        {withProfile && renderProfileMenu}
         {renderMenu}
       </Toolbar>
     </AppBar>

@@ -97,3 +97,14 @@ export function useFetchMemberEquipmentList(id) {
     },
   })
 }
+
+export function useExternalFetchMember(id) {
+  return useQuery({
+    queryKey: ['external', 'member', id],
+    queryFn: async () => {
+      const { data } = await apiClient.get(`/api/external/memberList/${id}`)
+      return data
+    },
+    staleTime: 5 * 60 * 1000,
+  })
+}

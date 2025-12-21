@@ -7,11 +7,22 @@ import { format, parseISO } from 'date-fns'
 import { MobileTableItem } from '../../../components/MobileTableItem'
 import { useIsMobile } from '../../../hooks/useIsMobile'
 import { getFormattedNumber } from '../../../utils/numbers'
+import { EventMemberPopover } from '../../../components/EventMemberPopover'
+import { EventBasePopover } from '../../../components/EventBasePopover'
+import apiClient from '../../../api/api'
+
+const dashedTextStyle = { textDecoration: 'underline dashed #1976d2', cursor: 'pointer' }
 
 export const MainPageEventListTable = () => {
   const { isLoading, data } = useFetchMainPageEventList()
   const isMobile = useIsMobile()
-  const navigate = useNavigate()
+
+  const [memberData, setMemberData] = useState(null)
+  const [baseData, setBaseData] = useState(null)
+  const [anchorEl, setAnchorEl] = React.useState(null)
+  const [anchorElBase, setAnchorElBase] = React.useState(null)
+  const open = Boolean(anchorEl)
+  const openBase = Boolean(anchorElBase)
 
   const [expandedItemId, setExpandedItemId] = useState('')
 
@@ -27,20 +38,25 @@ export const MainPageEventListTable = () => {
     const price_sport = getFormattedNumber(eventItem.price_sport)
     const price_tourist = getFormattedNumber(eventItem.price_tourist)
 
+    const handleClickMember = async (memberId, event) => {
+      event.stopPropagation()
+      try {
+        setAnchorEl(event.currentTarget)
+
+        setMemberData(memberId)
+      } catch (error) { }
+    }
+
+    const handleClickBase = async (baseId, event) => {
+      event.stopPropagation()
+      try {
+        setAnchorElBase(event.currentTarget)
+        setBaseData(baseId)
+      } catch (error) { }
+    }
+
     const expandedData = (
       <>
-        {/* <Grid size={isMobile ? 12 : 4}>
-          <Typography sx={{ fontWeight: 'bold' }}>Описание</Typography>
-          <Typography>{eventItem.event_desc}</Typography>
-        </Grid>
-        <Grid size={isMobile ? 12 : 2}>
-          <Typography sx={{ fontWeight: 'bold' }}>Дата начала</Typography>
-          <Typography>{eventStart}</Typography>
-        </Grid>
-        <Grid size={isMobile ? 12 : 2}>
-          <Typography sx={{ fontWeight: 'bold' }}>Дата окончания</Typography>
-          <Typography>{eventFinish}</Typography>
-        </Grid> */}
         {!isMobile && <Grid size={4}></Grid>}
         <Grid size={isMobile ? 12 : 4}>
           <Typography sx={{ fontWeight: 'bold' }}>СТ</Typography>
@@ -82,23 +98,55 @@ export const MainPageEventListTable = () => {
               ? format(parseISO(eventItem.depart_finish_dates_list[index]), 'dd.MM.yyyy')
               : ''
             return (
-              <Typography key={index}>
-                {`${departItem} (${start} - ${finish}). Инструктор - ${eventItem.depart_instructors_fio_list[index]}`}
-              </Typography>
+              <div key={index}>
+                <Typography component='span'>
+                  {`${departItem} (${start} - ${finish}). Инструктор - `}
+                </Typography>
+                <Typography
+                  sx={dashedTextStyle}
+                  onClick={(e) => handleClickMember(eventItem.depart_instructors_id_list[index], e)}
+                  component='span'
+                >
+                  {eventItem.depart_instructors_fio_list[index]}
+                </Typography>
+              </div>
             )
           })}
         </Grid>
         <Grid size={12}>
           <Typography sx={{ fontWeight: 'bold' }}>Проживание</Typography>
           {eventItem?.base_names_list?.map((baseItem, index) => (
-            <Typography key={index}>{baseItem}</Typography>
+            <Typography
+              key={index}
+              sx={dashedTextStyle}
+              onClick={(e) => handleClickBase(eventItem?.base_id_list[index], e)}
+            >
+              {baseItem}
+            </Typography>
           ))}
         </Grid>
+        {open && (
+          <EventMemberPopover
+            memberId={memberData}
+            anchorEl={anchorEl}
+            setAnchorEl={setAnchorEl}
+            open={open}
+          />
+        )}
+        {openBase && (
+          <EventBasePopover
+            baseId={baseData}
+            anchorEl={anchorElBase}
+            setAnchorEl={setAnchorElBase}
+            open={openBase}
+          />
+        )}
       </>
     )
 
     return (
       <MobileTableItem
+        key={eventItem.id}
         id={eventItem.id}
         expandedData={expandedData}
         expandedItemId={expandedItemId}
@@ -113,5 +161,13 @@ export const MainPageEventListTable = () => {
     )
   }
   if (!data) return null
-  return <Grid>{data?.map(renderEventItem)}</Grid>
+  return (
+    <Grid>
+      <Grid sx={{ textAlign: 'center', m: 1 }}>
+        <Typography variant='h4'>Предстоящие мероприятия</Typography>
+      </Grid>
+
+      {data?.map(renderEventItem)}
+    </Grid>
+  )
 }

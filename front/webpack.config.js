@@ -28,6 +28,7 @@ module.exports = {
     path: path.resolve(__dirname, './build'),
     filename: '[name].[contenthash].js',
     publicPath: '/',
+    assetModuleFilename: 'images/[hash][ext][query]',
   },
   devServer: {
     static: {

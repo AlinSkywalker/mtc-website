@@ -53,6 +53,27 @@ LEFT JOIN (
       );
     }
   );
+
+  app.get(
+    "/external/baseDictionary/:id",
+    (req, res) => {
+      const { id } = req.params
+      pool.query(
+        `SELECT b.*
+FROM base b
+  WHERE b.id=${id}`,
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return;
+          }
+          res.send(result[0]);
+        }
+      );
+    }
+  );
+
   app.put(
     "/baseDictionary",
     passport.authenticate("jwt", { session: false }),

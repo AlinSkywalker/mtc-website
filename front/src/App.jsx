@@ -26,7 +26,6 @@ import { ApplicationListPage } from './pages/ApplicationListPage'
 import { ResetPasswordPage } from './pages/ResetPasswordPage'
 import { MainPage } from './pages/MainPage'
 
-
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -63,7 +62,11 @@ const PublicRoute = ({ children }) => {
 
 const LoginRoute = ({ children }) => {
   const { isAuthenticated } = useContext(AuthContext)
-  return isAuthenticated ? <Navigate to='/crm/profile' /> : children
+  return isAuthenticated ? (
+    <Navigate to='/crm/profile' />
+  ) : (
+    <MainLayout withProfile={false}>{children}</MainLayout>
+  )
 }
 
 const App = () => {

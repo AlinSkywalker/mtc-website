@@ -10,7 +10,7 @@ const eventBaseRouter = (app, passport) => {
     (req, res) => {
       const { eventId } = req.params;
       pool.query(
-        `SELECT b.*, b_e.id
+        `SELECT b.*, b_e.id, b.id as base_id
                 FROM base_in_eventalp b_e 
                 LEFT JOIN base b ON b.id=b_e.base_m
                 WHERE b_e.event_m='${eventId}'`,
