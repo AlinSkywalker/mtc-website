@@ -173,3 +173,14 @@ export function useExternalFetchBase(id) {
     staleTime: 5 * 60 * 1000,
   })
 }
+
+export function useFetchEqipmentTemplate() {
+  return useQuery({
+    queryKey: ['eqipmentTemplate'],
+    queryFn: async () => {
+      const { data } = await apiClient.get(`/api/eqipmentTemplate`)
+      return data
+    },
+    staleTime: 5 * 60 * 1000,
+  })
+}

@@ -22,8 +22,6 @@ export function useFetchMainPageEventList() {
   })
 }
 
-
-
 export function useFetchEvent(id) {
   return useQuery({
     queryKey: ['event', id],
@@ -155,6 +153,18 @@ export function useFetchEventApplicationList(eventId) {
   let fetchUrl = `/api/eventList/${eventId}/eventApplication`
   return useQuery({
     queryKey: ['event', eventId, 'eventApplication'],
+    queryFn: async () => {
+      if (!eventId) return []
+      const { data } = await apiClient.get(fetchUrl)
+      return data
+    },
+  })
+}
+
+export function useFetchEventEqipmentList(eventId) {
+  let fetchUrl = `/api/eventList/${eventId}/eqipment`
+  return useQuery({
+    queryKey: ['event', eventId, 'eqipment'],
     queryFn: async () => {
       if (!eventId) return []
       const { data } = await apiClient.get(fetchUrl)
