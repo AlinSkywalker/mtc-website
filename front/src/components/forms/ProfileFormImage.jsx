@@ -23,8 +23,6 @@ import DefaultImage from '../../assets/default_profile.jpg'
 import FilerobotImageEditor, { TABS, TOOLS } from 'react-filerobot-image-editor'
 import { acceptStyle, baseStyle, focusedStyle, rejectStyle } from './dropzone.styles'
 
-
-
 const FilerobotImageEditorWrap = styled('div')({
   '& .FIE_tabs': {
     display: 'none',
@@ -241,6 +239,7 @@ export const ProfileFormImage = ({ photo, currentMemberId, currentUserId }) => {
               language='ru'
               closeAfterSave={true}
               defaultSavedImageName={'photo'}
+              defaultSavedImageQuality={1}
               source={newPhotoImage}
               onBeforeSave={() => false}
               onSave={(editedImageObject, designState) => {

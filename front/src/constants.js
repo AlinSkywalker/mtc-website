@@ -42,6 +42,6 @@ export const warningTypes = {
   notFullSettlement: 'notFullSettlement',
 }
 
-export const DEPARTMENT_TYPE_ARRAY = ['НП', 'СП', 'СС', 'СМ']
+export const DEPARTMENT_TYPE_ARRAY = ['СО', 'НП', 'УТ', 'СС', 'СМ']
 
 export const SERVER_REQUEST_ERROR = 'Произошла ошибка при отправке на сервер'

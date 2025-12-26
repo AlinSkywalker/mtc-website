@@ -43,6 +43,8 @@ const eventManagementStuffRouter = require("./event/eventManagementStuff");
 const eventInstructionLogRouter = require("./event/eventInstructionLog");
 const eventDepartPlanLabaAscentRouter = require("./event/eventDepartPlanLabaAscent");
 const eventApplicationRouter = require("./event/eventApplication");
+const eventStatisticRouter = require("./event/eventStatistic");
+
 
 
 
@@ -322,6 +324,7 @@ eventManagementStuffRouter(app, passport);
 eventInstructionLogRouter(app, passport);
 eventDepartPlanLabaAscentRouter(app, passport);
 eventApplicationRouter(app, passport);
+eventStatisticRouter(app, passport);
 
 
 memberListRouter(app, passport);

@@ -70,7 +70,7 @@ export const EventDepartmentTable = ({ eventId, eventStart, eventFinish, readOnl
   }, [])
 
   const renderInstructorSelectEditCell = (params) => {
-    const hookParams = ['НП', 'СП'].includes(params.row.depart_tip)
+    const hookParams = ['НП', 'УТ'].includes(params.row.depart_tip)
       ? {
         possibleRole: 'instructor',
       }

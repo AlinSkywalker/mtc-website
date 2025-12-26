@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { useFetchMainPageEventList } from '../../../queries/event'
-import { Grid, Typography } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
+import { Grid, IconButton, Tooltip, Typography } from '@mui/material'
 
 import { format, parseISO } from 'date-fns'
 import { MobileTableItem } from '../../../components/MobileTableItem'
@@ -9,12 +8,12 @@ import { useIsMobile } from '../../../hooks/useIsMobile'
 import { getFormattedNumber } from '../../../utils/numbers'
 import { EventMemberPopover } from '../../../components/EventMemberPopover'
 import { EventBasePopover } from '../../../components/EventBasePopover'
-import apiClient from '../../../api/api'
+import InfoOutlineIcon from '@mui/icons-material/InfoOutline'
 
 const dashedTextStyle = { textDecoration: 'underline dashed #1976d2', cursor: 'pointer' }
 
 export const MainPageEventListTable = () => {
-  const { isLoading, data } = useFetchMainPageEventList()
+  const { data } = useFetchMainPageEventList()
   const isMobile = useIsMobile()
 
   const [memberData, setMemberData] = useState(null)
@@ -59,11 +58,15 @@ export const MainPageEventListTable = () => {
       <>
         {!isMobile && <Grid size={4}></Grid>}
         <Grid size={isMobile ? 12 : 4}>
-          <Typography sx={{ fontWeight: 'bold' }}>СТ</Typography>
+          <Typography sx={{ fontWeight: 'bold', whiteSpace: 'pre-wrap' }}>Описание</Typography>
+          <Typography sx={{ whiteSpace: 'pre-wrap' }}>{eventItem.event_full_desc}</Typography>
+        </Grid>
+        <Grid size={isMobile ? 12 : 4}>
+          <Typography sx={{ fontWeight: 'bold' }}>Старший тренер</Typography>
           <Typography>{eventItem.st_fio}</Typography>
         </Grid>
         <Grid size={isMobile ? 12 : 4}>
-          <Typography sx={{ fontWeight: 'bold' }}>ОБ</Typography>
+          <Typography sx={{ fontWeight: 'bold' }}>Ответственный за безопасность</Typography>
           <Typography>{eventItem.ob_fio}</Typography>
         </Grid>
         <Grid size={isMobile ? 12 : 4}>
@@ -77,15 +80,39 @@ export const MainPageEventListTable = () => {
           ))}
         </Grid>
         <Grid size={isMobile ? 12 : 2}>
-          <Typography sx={{ fontWeight: 'bold' }}>Инструкторский сбор</Typography>
+          <Grid container alignItems='center'>
+            <Typography sx={{ fontWeight: 'bold' }}>Инструкторский сбор</Typography>
+            <Tooltip
+              title='Средства идут на проведение лекционных и практических занятий по различным предметам альпинисткой подготовки, проверке уровня профессиональных знаний и навыков участников, а также совершения восхождений согласно этапом подготовки. 
+Включает в себя Стартовый и Организационный взносы'
+            >
+              <IconButton onClick={(e) => e.stopPropagation()}>
+                <InfoOutlineIcon fontSize='small' color='info' />
+              </IconButton>
+            </Tooltip>
+          </Grid>
           <Typography>{price}</Typography>
         </Grid>
         <Grid size={isMobile ? 12 : 2}>
-          <Typography sx={{ fontWeight: 'bold' }}>Цена для спортсменов</Typography>
+          <Grid container alignItems='center'>
+            <Typography sx={{ fontWeight: 'bold' }}>Стартовый взнос</Typography>
+            <Tooltip title='Средства идут на организацию соревнования, в том числе на оплату труда ответственного за безопасность, старшего тренера и судейской бригады, заполнение альпинистских книжек, составлений протоколов, изготовление медалей, грамот и других атрибутов.'>
+              <IconButton onClick={(e) => e.stopPropagation()}>
+                <InfoOutlineIcon fontSize='small' color='info' />
+              </IconButton>
+            </Tooltip>
+          </Grid>
           <Typography>{price_sport}</Typography>
         </Grid>
         <Grid size={isMobile ? 12 : 2}>
-          <Typography sx={{ fontWeight: 'bold' }}>Цена для туристовв</Typography>
+          <Grid container alignItems='center'>
+            <Typography sx={{ fontWeight: 'bold' }}>Организационный взнос</Typography>
+            <Tooltip title='Взымается с болельщиков, сочувствующих и просто отдыхающих пользующихся услугами организации текущего мероприятия, таких как бронирование жилья, трансфера к месту проведения мероприятия, предоставление информации об инфраструктуре района.'>
+              <IconButton onClick={(e) => e.stopPropagation()}>
+                <InfoOutlineIcon fontSize='small' color='info' />
+              </IconButton>
+            </Tooltip>
+          </Grid>
           <Typography>{price_tourist}</Typography>
         </Grid>
         <Grid size={isMobile ? 12 : 4}>

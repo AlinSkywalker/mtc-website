@@ -50,7 +50,7 @@ export const MobileEventListTable = () => {
         <Typography>
           {eventStart} - {eventFinish}
         </Typography>
-        <Typography>{eventItem.event_desc}</Typography>
+        <Typography sx={{ whiteSpace: 'pre-wrap' }}>{eventItem.event_desc}</Typography>
       </MobileTableItem>
     )
   }

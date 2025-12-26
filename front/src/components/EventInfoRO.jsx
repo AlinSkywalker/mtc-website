@@ -3,15 +3,14 @@ import CardContent from '@mui/material/CardContent'
 import Grid from '@mui/material/Grid'
 import Container from '@mui/material/Container'
 import { format } from 'date-fns'
-import { CircularProgress, IconButton, Popover, Typography } from '@mui/material'
+import { CircularProgress, IconButton, Tooltip, Typography } from '@mui/material'
 import { useIsMobile } from '../hooks/useIsMobile'
 import { useFetchEventInstructorsList } from '../queries/event'
 import { useFetchEventBaseList } from '../queries/eventBase'
-import apiClient from '../api/api'
-import CloseIcon from '@mui/icons-material/Close'
 import { getFormattedNumber } from '../utils/numbers'
 import { EventMemberPopover } from './EventMemberPopover'
 import { EventBasePopover } from './EventBasePopover'
+import InfoOutlineIcon from '@mui/icons-material/InfoOutline'
 
 const dashedTextStyle = { textDecoration: 'underline dashed #1976d2', cursor: 'pointer' }
 
@@ -63,7 +62,7 @@ export const EventInfoRO = ({ eventData: data, isLoading }) => {
       <Grid container flexDirection='row' spacing={2}>
         <Grid size={isMobile ? 12 : 4}>
           <Typography sx={{ fontWeight: 'bold' }}>Описание</Typography>
-          <Typography>{data.event_desc}</Typography>
+          <Typography sx={{ whiteSpace: 'pre-wrap' }}>{data.event_full_desc}</Typography>
         </Grid>
         <Grid size={isMobile ? 12 : 2}>
           <Typography sx={{ fontWeight: 'bold' }}>Дата начала</Typography>
@@ -75,13 +74,13 @@ export const EventInfoRO = ({ eventData: data, isLoading }) => {
         </Grid>
         {!isMobile && <Grid size={4}></Grid>}
         <Grid size={isMobile ? 12 : 4}>
-          <Typography sx={{ fontWeight: 'bold' }}>СТ</Typography>
+          <Typography sx={{ fontWeight: 'bold' }}>Старший тренер</Typography>
           <Typography sx={dashedTextStyle} onClick={(e) => handleClickMember(data.st.id, e)}>
             {data.st.fio}
           </Typography>
         </Grid>
         <Grid size={isMobile ? 12 : 4}>
-          <Typography sx={{ fontWeight: 'bold' }}>ОБ</Typography>
+          <Typography sx={{ fontWeight: 'bold' }}>Ответственный за безопасность</Typography>
           <Typography sx={dashedTextStyle} onClick={(e) => handleClickMember(data.ob.id, e)}>
             {data.ob.fio}
           </Typography>
@@ -99,15 +98,42 @@ export const EventInfoRO = ({ eventData: data, isLoading }) => {
           ))}
         </Grid>
         <Grid size={isMobile ? 12 : 2}>
-          <Typography sx={{ fontWeight: 'bold' }}>Инструкторский сбор</Typography>
+          <Grid container alignItems='center'>
+            <Typography sx={{ fontWeight: 'bold' }}>Инструкторский сбор</Typography>
+            <Tooltip
+              title='Средства идут на проведение лекционных и практических занятий по различным предметам альпинисткой подготовки, проверке уровня профессиональных знаний и навыков участников, а также совершения восхождений согласно этапом подготовки. 
+Включает в себя Стартовый и Организационный взносы'
+            >
+              <IconButton onClick={(e) => e.stopPropagation()}>
+                <InfoOutlineIcon fontSize='small' color='info' />
+              </IconButton>
+            </Tooltip>
+          </Grid>
+
           <Typography>{price}</Typography>
         </Grid>
         <Grid size={isMobile ? 12 : 2}>
-          <Typography sx={{ fontWeight: 'bold' }}>Цена для спортсменов</Typography>
+          <Grid container alignItems='center'>
+            <Typography sx={{ fontWeight: 'bold' }}>Стартовый взнос</Typography>
+            <Tooltip title='Средства идут на организацию соревнования, в том числе на оплату труда ответственного за безопасность, старшего тренера и судейской бригады, заполнение альпинистских книжек, составлений протоколов, изготовление медалей, грамот и других атрибутов.'>
+              <IconButton onClick={(e) => e.stopPropagation()}>
+                <InfoOutlineIcon fontSize='small' color='info' />
+              </IconButton>
+            </Tooltip>
+          </Grid>
+
           <Typography>{price_sport}</Typography>
         </Grid>
         <Grid size={isMobile ? 12 : 2}>
-          <Typography sx={{ fontWeight: 'bold' }}>Цена для туристовв</Typography>
+          <Grid container alignItems='center'>
+            <Typography sx={{ fontWeight: 'bold' }}>Организационный взнос</Typography>
+            <Tooltip title='Взымается с болельщиков, сочувствующих и просто отдыхающих пользующихся услугами организации текущего мероприятия, таких как бронирование жилья, трансфера к месту проведения мероприятия, предоставление информации об инфраструктуре района.'>
+              <IconButton onClick={(e) => e.stopPropagation()}>
+                <InfoOutlineIcon fontSize='small' color='info' />
+              </IconButton>
+            </Tooltip>
+          </Grid>
+
           <Typography>{price_tourist}</Typography>
         </Grid>
         <Grid size={isMobile ? 12 : 4}>

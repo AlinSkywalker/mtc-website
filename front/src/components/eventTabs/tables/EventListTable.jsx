@@ -11,6 +11,7 @@ import { SelectEditInputCell } from '../../dataGridCell/SelectEditInputCell'
 import { dateColumnType } from '../../dataGridCell/GridEditDateCell'
 import { MultiValueSelecWithGroupingtEditInputCell } from '../../dataGridCell/MultiValueSelecWithGroupingtEditInputCell'
 import { useIsAdmin } from '../../../hooks/useIsAdmin'
+import { multilineColumnType } from '../../../components/dataGridCell/GridEditMultilineCell'
 
 const defaultItem = {
   event_name: '',
@@ -21,10 +22,13 @@ const defaultItem = {
   event_ob: '',
   event_doctor: '',
   event_desc: '',
+  event_full_desc: '',
   ob_fio: '',
   st_fio: '',
   base_name: '',
   price: null,
+  price_sport: null,
+  price_tourist: null,
 }
 
 const validationSchema = Yup.object({
@@ -139,7 +143,20 @@ export const EventListTable = () => {
       renderCell: renderLink,
       editable: !readOnly,
     },
-    { field: 'event_desc', headerName: 'Описание', width: 350, editable: !readOnly },
+    {
+      field: 'event_desc',
+      headerName: 'Анонс',
+      width: 350,
+      editable: !readOnly,
+      ...multilineColumnType,
+    },
+    {
+      field: 'event_full_desc',
+      headerName: 'Описание',
+      width: 350,
+      editable: !readOnly,
+      ...multilineColumnType,
+    },
     {
       field: 'event_start',
       ...dateColumnType,
@@ -183,10 +200,23 @@ export const EventListTable = () => {
       renderEditCell: renderOrganizerSelectEditCell,
       editable: !readOnly,
     },
-
     {
       field: 'price',
       headerName: 'Инструкторский сбор',
+      width: 150,
+      editable: !readOnly,
+      type: 'number',
+    },
+    {
+      field: 'price_sport',
+      headerName: 'Стартовый взнос',
+      width: 150,
+      editable: !readOnly,
+      type: 'number',
+    },
+    {
+      field: 'price_tourist',
+      headerName: 'Организационный взнос',
       width: 150,
       editable: !readOnly,
       type: 'number',

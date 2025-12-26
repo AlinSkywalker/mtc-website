@@ -222,7 +222,7 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
                 <TextField
                   {...field}
                   variant='outlined'
-                  label='Цена для спортсменов'
+                  label='Стартовый взнос'
                   fullWidth
                   error={errors[field.name]}
                   helperText={errors[field.name]?.message}
@@ -240,7 +240,7 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
                 <TextField
                   {...field}
                   variant='outlined'
-                  label='Цена для туристов'
+                  label='Организационный взнос'
                   fullWidth
                   error={errors[field.name]}
                   helperText={errors[field.name]?.message}
