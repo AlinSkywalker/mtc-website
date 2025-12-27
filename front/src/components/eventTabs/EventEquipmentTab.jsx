@@ -13,6 +13,8 @@ import { useIsAdmin } from '../../hooks/useIsAdmin'
 import { useFetchEquipmentTemplate, useFetchEquipmentTypeList } from '../../queries/equipment'
 import InfoOutlineIcon from '@mui/icons-material/InfoOutline'
 import { GridEditInputCell } from '@mui/x-data-grid'
+import { MobileEventEquipmentTab } from './MobileEventEquipmentTab'
+import { useIsMobile } from '../../hooks/useIsMobile'
 
 const defaultItem = {
   type: '',
@@ -28,6 +30,7 @@ const validationSchema = Yup.object({
 
 export const EventEquipmentTab = ({ eventId }) => {
   const readOnly = !useIsAdmin()
+  const isMobile = useIsMobile()
   const queryClient = useQueryClient()
   const { isLoading, data } = useFetchEventEqipmentList(eventId)
 
@@ -178,6 +181,7 @@ export const EventEquipmentTab = ({ eventId }) => {
     </>
   )
   if (!eventId) return null
+  if (isMobile) return <MobileEventEquipmentTab data={data} />
 
   return (
     <EditableTable

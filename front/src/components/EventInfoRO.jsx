@@ -137,7 +137,7 @@ export const EventInfoRO = ({ eventData: data, isLoading }) => {
           <Typography>{price_tourist}</Typography>
         </Grid>
         <Grid size={isMobile ? 12 : 4}>
-          <Typography sx={{ fontWeight: 'bold' }}>Инструкторский состав</Typography>
+          <Typography sx={{ fontWeight: 'bold' }}>Инструкторско/тренерский состав</Typography>
           {eventInstructorsData?.map((item) => (
             <Typography
               key={item.id}

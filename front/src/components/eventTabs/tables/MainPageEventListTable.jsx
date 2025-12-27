@@ -124,10 +124,11 @@ export const MainPageEventListTable = () => {
             const finish = eventItem.depart_finish_dates_list[index]
               ? format(parseISO(eventItem.depart_finish_dates_list[index]), 'dd.MM.yyyy')
               : ''
+            const instructorType = ['СО', 'НП', 'УТ'].includes(departItem) ? 'Инструктор' : 'Тренер'
             return (
               <div key={index}>
                 <Typography component='span'>
-                  {`${departItem} (${start} - ${finish}). Инструктор - `}
+                  {`${departItem} (${start} - ${finish}). ${instructorType} - `}
                 </Typography>
                 <Typography
                   sx={dashedTextStyle}
