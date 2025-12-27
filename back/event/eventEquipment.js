@@ -9,11 +9,11 @@ const eventEquipmentRouter = (app, passport) => {
     (req, res) => {
       const { eventId } = req.params;
       pool.query(
-        `SELECT e_e.*, e.equip_name, e.equip_desc
+        `SELECT e_e.*, e.equip_name, e.equip_desc, e.equip_type
                   FROM event_equipment e_e
                   LEFT JOIN equip e on e.id = e_e.equip_id
                   WHERE e_e.event_id = ${eventId}
-                  ORDER BY e_e.type, e.equip_name ASC`,
+                  ORDER BY e_e.type,e.equip_type, e.equip_name ASC`,
         (error, result) => {
           if (error) {
             console.log(error);

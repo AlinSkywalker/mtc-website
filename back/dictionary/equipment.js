@@ -106,11 +106,11 @@ const equipmentRouter = (app, passport) => {
     "/dictionary/equipmentType",
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
-      const { equip_name, equip_desk, equip_type, equip_price, equip_loss_price } =
+      const { equip_name, equip_desc, equip_type, equip_price, equip_loss_price } =
         req.body;
       pool.query(
-        `INSERT INTO equip ( equip_name, equip_desk, equip_type, equip_price, equip_loss_price) VALUES(?,?,?,?,?)`,
-        [equip_name, equip_desk, equip_type, equip_price || null, equip_loss_price || null],
+        `INSERT INTO equip ( equip_name, equip_desc, equip_type, equip_price, equip_loss_price) VALUES(?,?,?,?,?)`,
+        [equip_name, equip_desc, equip_type, equip_price || null, equip_loss_price || null],
         (error, result) => {
           if (error) {
             console.log(error);
@@ -127,12 +127,12 @@ const equipmentRouter = (app, passport) => {
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
       const id = req.params.id;
-      const { equip_name, equip_desk, equip_type, equip_price, equip_loss_price } =
+      const { equip_name, equip_desc, equip_type, equip_price, equip_loss_price } =
         req.body;
       pool.query(
         `UPDATE equip SET 
           equip_name='${equip_name}',
-          equip_desk='${equip_desk}',
+          equip_desc='${equip_desc}',
           equip_type='${equip_type}',
           equip_price='${equip_price || null}',
           equip_loss_price='${equip_loss_price || null}',
@@ -163,6 +163,7 @@ const equipmentRouter = (app, passport) => {
       });
     }
   );
+
   //eqipmentTemplate
   app.get(
     "/dictionary/equipmentTemplate",
@@ -180,6 +181,149 @@ const equipmentRouter = (app, passport) => {
           res.send(result);
         }
       );
+    }
+  );
+  app.put(
+    "/dictionary/equipmentTemplate",
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+      const { template_name, template_desc } =
+        req.body;
+      pool.query(
+        `INSERT INTO equipment_template ( template_name, template_desc) VALUES(?,?)`,
+        [template_name, template_desc],
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return;
+          }
+          res.send(result);
+        }
+      );
+    }
+  );
+  app.post(
+    "/dictionary/equipmentTemplate/:id",
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+      const id = req.params.id;
+      const { template_name, template_desc } =
+        req.body;
+      pool.query(
+        `UPDATE equipment_template SET 
+          template_name='${template_name}',
+          template_desc='${template_desc}',
+          updated_date=CURRENT_TIMESTAMP WHERE id=${id}`,
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return;
+          }
+          res.send(result);
+        }
+      );
+    }
+  );
+  app.delete(
+    "/dictionary/equipmentTemplate/:id",
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+      const id = req.params.id;
+      pool.query(`DELETE FROM equipment_template WHERE id=${id}`, (error, result) => {
+        if (error) {
+          console.log(error);
+          res.status(500).json({ success: false, message: error });
+          return;
+        }
+        res.send(result);
+      });
+    }
+  );
+
+  //eqipmentTemplateEquip
+  app.get(
+    "/dictionary/equipmentTemplate/:templateId/equip",
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+      const { templateId } = req.params
+      pool.query(
+        `SELECT e_e.*, e.equip_name,e.equip_type
+        FROM event_equipment e_e
+          LEFT JOIN equip e on e.id = e_e.equip_id
+          WHERE e_e.template_id=${templateId}
+          ORDER BY e_e.type, e.equip_type, e.equip_name ASC`,
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return;
+          }
+          res.send(result);
+        }
+      );
+    }
+  );
+  app.put(
+    "/dictionary/equipmentTemplate/:templateId/equip",
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+      const { templateId } = req.params
+      const { equip_id, quantity, type } =
+        req.body;
+      pool.query(
+        `INSERT INTO event_equipment ( template_id, equip_id, quantity, type) VALUES(?,?,?,?)`,
+        [templateId, equip_id, quantity, type],
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return;
+          }
+          res.send(result);
+        }
+      );
+    }
+  );
+  app.post(
+    "/dictionary/equipmentTemplate/:templateId/equip/:id",
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+
+      const { id } = req.params
+      const { equip_id, quantity, type } =
+        req.body;
+      pool.query(
+        `UPDATE event_equipment SET 
+          equip_id='${equip_id}',
+          quantity='${quantity}',
+          type='${type}',
+          updated_date=CURRENT_TIMESTAMP WHERE id=${id}`,
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return;
+          }
+          res.send(result);
+        }
+      );
+    }
+  );
+  app.delete(
+    "/dictionary/equipmentTemplate/:templateId/equip/:id",
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+      const id = req.params.id;
+      pool.query(`DELETE FROM event_equipment WHERE id=${id}`, (error, result) => {
+        if (error) {
+          console.log(error);
+          res.status(500).json({ success: false, message: error });
+          return;
+        }
+        res.send(result);
+      });
     }
   );
 

@@ -14,6 +14,7 @@ import { BaseDictionaryTab } from '../components/dictionaryTabs/BaseDictionaryTa
 import { SummitDictionaryTab } from '../components/dictionaryTabs/SummitDictionaryTab'
 import { RouteDictionaryTab } from '../components/dictionaryTabs/RouteDictionaryTab'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { EquipmentTemplateTab } from '../components/dictionaryTabs/EquipmentTemplateTab'
 
 const dictionaryTabs = [
   {
@@ -40,6 +41,11 @@ const dictionaryTabs = [
     name: 'laboratory',
     label: 'Лаборатории',
     component: <LaboratoryDictionaryTab />,
+  },
+  {
+    name: 'equipmentTemplate',
+    label: 'Шаблоны снаряжения',
+    component: <EquipmentTemplateTab />,
   },
   {
     name: 'contractor',

@@ -31,3 +31,15 @@ export function useFetchEquipmentTemplate() {
     staleTime: 5 * 60 * 1000,
   })
 }
+
+export function useFetchEquipmentTemplateEquip(templateId) {
+  return useQuery({
+    queryKey: ['equipmentTemplateEquipDictionary', templateId],
+    queryFn: async () => {
+      if (!templateId) return []
+      const { data } = await apiClient.get(`/api/dictionary/equipmentTemplate/${templateId}/equip`)
+      return data
+    },
+    staleTime: 5 * 60 * 1000,
+  })
+}

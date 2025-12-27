@@ -12,6 +12,7 @@ import { red } from '@mui/material/colors'
 import { useIsAdmin } from '../../hooks/useIsAdmin'
 import { useFetchEquipmentTemplate, useFetchEquipmentTypeList } from '../../queries/equipment'
 import InfoOutlineIcon from '@mui/icons-material/InfoOutline'
+import { GridEditInputCell } from '@mui/x-data-grid'
 
 const defaultItem = {
   type: '',
@@ -58,12 +59,16 @@ export const EventEquipmentTab = ({ eventId }) => {
   }, [])
 
   const renderSelectEditCell = (params) => {
+    const pickMap = {
+      equip_type: 'equip_type',
+    }
     return (
       <SelectEditInputCell
         {...params}
         dictionaryName='equipment_type'
         nameField='equip_id'
         hook={useFetchEquipmentTypeList}
+        pickMap={pickMap}
       // secondarySource='equip_desc'
       />
     )
@@ -94,6 +99,15 @@ export const EventEquipmentTab = ({ eventId }) => {
       editable: !readOnly,
       type: 'singleSelect',
       valueOptions: ['Личное', 'Групповое'],
+    },
+    {
+      field: 'equip_type',
+      headerName: 'Тип',
+      width: 120,
+      editable: !readOnly,
+      renderEditCell: (props) => (
+        <GridEditInputCell {...props} disabled className={'roTableInput'} />
+      ),
     },
     {
       field: 'equip_name',
@@ -143,7 +157,7 @@ export const EventEquipmentTab = ({ eventId }) => {
         queryClient.invalidateQueries({ queryKey: ['event', eventId, 'equipment'] })
       })
   }
-  const additionalButton = (
+  const additionalButton = readOnly ? null : (
     <>
       <Select sx={{ width: 300 }} onChange={handleChangeTemplateSelect} value={seleсtedTemplate}>
         {templateData?.map((item, index) => (
