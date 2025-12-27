@@ -1,30 +1,43 @@
-import React, { useState } from 'react'
-import { Grid, Typography } from '@mui/material'
-
-import { MobileTableItem } from '../MobileTableItem'
+import React from 'react'
+import { Grid, IconButton, Tooltip, Typography } from '@mui/material'
+import InfoOutlineIcon from '@mui/icons-material/InfoOutline'
 
 export const MobileEventEquipmentTab = ({ data }) => {
-  const [expandedItemId, setExpandedItemId] = useState('')
-
+  let previousType = ''
+  let previousEquipType = ' '
   const renderItem = (item) => {
-    const expandedData = (
-      <Grid size={12}>
-        <Typography sx={{ whiteSpace: 'pre-wrap' }}>{item.equip_desc}</Typography>
-      </Grid>
-    )
+    const displayType = item.type !== previousType
+    previousType = item.type
+    const displayEquipType = item.equip_type !== previousEquipType
+    previousEquipType = item.equip_type
     return (
-      <MobileTableItem
-        key={item.id}
-        id={item.id}
-        expandedData={expandedData}
-        expandedItemId={expandedItemId}
-        setExpandedItemId={setExpandedItemId}
-      >
-        <Typography>
-          {item.type}, {item.equip_type}, {item.equip_name} - {item.quantity} шт
-        </Typography>
-        <Typography>{item.event_desc}</Typography>
-      </MobileTableItem>
+      <>
+        {displayType && (
+          <Typography variant='h5' sx={{ fontSize: '19px', fontWeight: 'bold' }}>
+            {item.type}
+          </Typography>
+        )}
+        {displayEquipType && (
+          <Typography variant='h5' sx={{ fontSize: '17px', fontWeight: 'bold' }}>
+            {item.equip_type}
+          </Typography>
+        )}
+        <Grid container sx={{ alignItems: 'center' }}>
+          <Typography>
+            {item.equip_name} - {item.quantity} шт
+          </Typography>
+          <Grid sx={{ height: 36, width: 36 }}>
+            {item.equip_desc && (
+              <Tooltip title={item.equip_desc}>
+                <IconButton>
+                  <InfoOutlineIcon fontSize='small' color='info' />
+                </IconButton>
+              </Tooltip>
+            )}
+          </Grid>
+          <Typography>{item.event_desc}</Typography>
+        </Grid>
+      </>
     )
   }
 

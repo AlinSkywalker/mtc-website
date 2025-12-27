@@ -84,7 +84,7 @@ export const EventEquipmentTab = ({ eventId }) => {
         <>
           {value}
           <Tooltip title={params.row.equip_desc}>
-            <IconButton sx={{ marginLeft: 1, color: red[500] }}>
+            <IconButton sx={{ marginLeft: 1 }}>
               <InfoOutlineIcon fontSize='small' color='info' />
             </IconButton>
           </Tooltip>
