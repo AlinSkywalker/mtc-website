@@ -162,9 +162,9 @@ export function useFetchEventApplicationList(eventId) {
 }
 
 export function useFetchEventEqipmentList(eventId) {
-  let fetchUrl = `/api/eventList/${eventId}/eqipment`
+  let fetchUrl = `/api/eventList/${eventId}/equipment`
   return useQuery({
-    queryKey: ['event', eventId, 'eqipment'],
+    queryKey: ['event', eventId, 'equipment'],
     queryFn: async () => {
       if (!eventId) return []
       const { data } = await apiClient.get(fetchUrl)

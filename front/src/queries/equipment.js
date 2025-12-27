@@ -20,3 +20,14 @@ export function useFetchEquipmentTypeList() {
     },
   })
 }
+
+export function useFetchEquipmentTemplate() {
+  return useQuery({
+    queryKey: ['equipmentTemplate'],
+    queryFn: async () => {
+      const { data } = await apiClient.get(`/api/dictionary/equipmentTemplate`)
+      return data
+    },
+    staleTime: 5 * 60 * 1000,
+  })
+}

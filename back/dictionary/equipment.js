@@ -163,6 +163,26 @@ const equipmentRouter = (app, passport) => {
       });
     }
   );
+  //eqipmentTemplate
+  app.get(
+    "/dictionary/equipmentTemplate",
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+      pool.query(
+        `SELECT * FROM equipment_template e
+        ORDER BY template_name ASC`,
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return;
+          }
+          res.send(result);
+        }
+      );
+    }
+  );
+
 };
 // Export the router
 module.exports = equipmentRouter;

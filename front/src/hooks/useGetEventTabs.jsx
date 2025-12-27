@@ -14,7 +14,7 @@ import { EventInstructionLogTab } from '../components/eventTabs/EventInstruction
 import { EventDistrictInfoTab } from '../components/eventTabs/EventDistrictInfoTab'
 import { MobileEventMembersTab } from '../components/eventTabs/MobileEventMembersTab'
 import { EventDescriptionTab } from '../components/eventTabs/EventDescriptionTab'
-import { EventEqipmentTab } from '../components/eventTabs/EventEqipmentTab'
+import { EventEquipmentTab } from '../components/eventTabs/EventEquipmentTab'
 
 export const useGetEventTabs = (eventData) => {
   const isMobile = useIsMobile()
@@ -49,7 +49,7 @@ export const useGetEventTabs = (eventData) => {
       name: 'equipment',
       path: `/equipment/`,
       label: 'Снаряжение',
-      component: <EventEqipmentTab eventId={eventData?.id} />,
+      component: <EventEquipmentTab eventId={eventData?.id} />,
       adminOnly: false,
     },
     {

@@ -9,11 +9,11 @@ const eventEquipmentRouter = (app, passport) => {
     (req, res) => {
       const { eventId } = req.params;
       pool.query(
-        `SELECT e_e.*, e.equip_name as equip_type
+        `SELECT e_e.*, e.equip_name, e.equip_desc
                   FROM event_equipment e_e
-                  LEFT JOIN equip e on e.id = e_e.equip
+                  LEFT JOIN equip e on e.id = e_e.equip_id
                   WHERE e_e.event_id = ${eventId}
-                  ORDER BY e.equip_name DESC`,
+                  ORDER BY e_e.type, e.equip_name ASC`,
         (error, result) => {
           if (error) {
             console.log(error);
@@ -35,7 +35,7 @@ const eventEquipmentRouter = (app, passport) => {
         req.body;
       pool.query(
         `INSERT INTO event_equipment ( event_id,equip_id, quantity, type) 
-            VALUES(?,?,?,?,)`,
+            VALUES(?,?,?,?)`,
         [
           eventId, equip_id || null, quantity, type
         ],
@@ -86,6 +86,29 @@ const eventEquipmentRouter = (app, passport) => {
       const id = req.params.id;
       pool.query(
         `DELETE FROM event_equipment WHERE id=${id}`,
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return;
+          }
+          res.send(result);
+        }
+      );
+    }
+  );
+  app.post(
+    "/eventList/:eventId/copyEquipmentTemplate",
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+      const { eventId } = req.params;
+      const { templateId } = req.body;
+      pool.query(
+        `INSERT INTO event_equipment (event_id, equip_id, quantity, type)
+          SELECT '${eventId}', equip_id, quantity, type
+          FROM event_equipment
+          WHERE template_id=${templateId}
+        `,
         (error, result) => {
           if (error) {
             console.log(error);
