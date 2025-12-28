@@ -1,35 +1,19 @@
 import React, { useContext } from 'react'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
-import IconButton from '@mui/material/IconButton'
-import MenuIcon from '@mui/icons-material/Menu'
-import MenuItem from '@mui/material/MenuItem'
-import Menu from '@mui/material/Menu'
 import { Link, useNavigate } from 'react-router-dom'
 import Button from '@mui/material/Button'
 import './AdminLayoutStyles.css'
-import { useMediaQuery } from 'react-responsive'
 import { useLocation } from 'react-router-dom'
 import { useIsAdmin } from '../hooks/useIsAdmin'
 import { AppToolbar } from './AppToolbar'
 import { AuthContext } from './AuthContext'
+import { useIsMobile } from '../hooks/useIsMobile'
+import { Toolbar } from '@mui/material'
 
 export const MainLayout = ({ children, withProfile = true }) => {
   const isAdmin = useIsAdmin()
   const { isAuthenticated } = useContext(AuthContext)
-  const [anchorMainMenuEl, setAnchorMainMenuEl] = React.useState(null)
-
-  const menuId = 'primary-search-account-menu'
-
-  const handleMainMenuOpen = (event) => {
-    setAnchorMainMenuEl(event.currentTarget)
-  }
-  const handleMainMenuClose = () => {
-    setAnchorMainMenuEl(null)
-  }
-
-  const isMainMenuOpen = Boolean(anchorMainMenuEl)
-  const mainMenuId = 'primary-search-account-menu'
 
   const navigate = useNavigate()
 
@@ -53,55 +37,15 @@ export const MainLayout = ({ children, withProfile = true }) => {
       (tab.url !== '/' && location.pathname.startsWith(`${tab.url}`)),
   )
 
-  const handleCloseGoToPage = (page) => () => {
+  const isMobile = useIsMobile()
+
+  const handleGoToPage = (page) => () => {
     navigate(page.url)
-    handleMainMenuClose()
-    // handleMenuClose()
   }
-
-  const isMobile = useMediaQuery({ query: '(max-device-width: 768px)' })
-
-  const renderMenu =
-    isMobile && pages.length !== 0 ? (
-      <>
-        <IconButton
-          size='large'
-          edge='end'
-          aria-label='account of current user'
-          aria-controls={menuId}
-          aria-haspopup='true'
-          onClick={handleMainMenuOpen}
-          color='inherit'
-        >
-          <MenuIcon />
-        </IconButton>
-        <Menu
-          anchorEl={anchorMainMenuEl}
-          anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-          id={mainMenuId}
-          keepMounted
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-          open={isMainMenuOpen}
-          onClose={handleMainMenuClose}
-        >
-          {pages.map((page) => (
-            <MenuItem key={page.name} onClick={handleCloseGoToPage(page)}>
-              {page.label}
-            </MenuItem>
-          ))}
-        </Menu>
-      </>
-    ) : null
 
   return (
     <Grid>
-      <AppToolbar renderMenu={renderMenu} withProfile={withProfile}>
+      <AppToolbar withProfile={withProfile} pages={pages}>
         <>
           {isMobile && currentPage && (
             <Typography>
@@ -114,7 +58,7 @@ export const MainLayout = ({ children, withProfile = true }) => {
             pages.map((page) => (
               <Button
                 key={page.name}
-                onClick={handleCloseGoToPage(page)}
+                onClick={handleGoToPage(page)}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
                 {page.label}
@@ -122,6 +66,7 @@ export const MainLayout = ({ children, withProfile = true }) => {
             ))}
         </>
       </AppToolbar>
+      <Toolbar />
       {children}
     </Grid>
   )
