@@ -7,7 +7,7 @@ import { useIsMobile } from '../../hooks/useIsMobile'
 import { EventInfoRO } from '../EventInfoRO'
 import { EventInfoForm } from '../EventInfoForm'
 import { EventBaseTable } from '../tables/EventBaseTable'
-import { EventApplicationDialog } from '../dialogs/EventApplicationDialog'
+import { EventApplicationDialog } from './dialogs/EventApplicationDialog'
 
 export const EventDescriptionTab = ({ eventId }) => {
   const readOnly = !useIsAdmin()

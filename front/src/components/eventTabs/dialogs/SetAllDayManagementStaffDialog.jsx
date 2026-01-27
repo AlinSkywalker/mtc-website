@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import apiClient from '../../api/api'
+import apiClient from '../../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
-import { useFetchMemberList } from '../../queries/member'
+import { useFetchMemberList } from '../../../queries/member'
 import {
   Box,
   Button,

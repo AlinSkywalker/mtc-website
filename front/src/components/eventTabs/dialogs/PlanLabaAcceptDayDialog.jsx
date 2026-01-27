@@ -1,5 +1,5 @@
 import CloseIcon from '@mui/icons-material/Close'
-import { Button, Grid } from '@mui/material'
+import { Button, Checkbox, FormControl, Grid, MenuItem, Select, Typography } from '@mui/material'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
@@ -7,12 +7,12 @@ import DialogTitle from '@mui/material/DialogTitle'
 import IconButton from '@mui/material/IconButton'
 import { useQueryClient } from '@tanstack/react-query'
 import React, { useEffect, useState } from 'react'
-import apiClient from '../../api/api'
-import { useFetchEventDepartmentMemberList } from '../../queries/eventDepartment'
-import { DataGrid, GridEditInputCell, Toolbar, useGridApiRef } from '@mui/x-data-grid'
-import { useFetchLaboratoryRouteDictionaryList } from '../../queries/dictionary'
-import { checkboxColumnType } from '../dataGridCell/GridEditCheckboxCell'
-import { useFetchEventDepartPlanLabaAscent } from '../../queries/eventDepartPlanLabaAscent'
+import apiClient from '../../../api/api'
+import { useFetchEventDepartmentMemberList } from '../../../queries/eventDepartment'
+import { DataGrid, Toolbar } from '@mui/x-data-grid'
+import { useFetchLaboratoryRouteDictionaryList } from '../../../queries/dictionary'
+
+import { useFetchEventDepartPlanLabaAscent } from '../../../queries/eventDepartPlanLabaAscent'
 
 const emptyRowSelection = {
   type: 'include',
@@ -31,14 +31,13 @@ export const PlanLabaAcceptDayDialog = ({
   practiceLabaId,
 }) => {
   const queryClient = useQueryClient()
-  const apiRef = useGridApiRef()
+
   let labaId = selectedPlan.laba
   if (selectedPlan.type === 'Лекция') {
     labaId = lecturesLabaId
   } else if (selectedPlan.type === 'Практика') {
     labaId = practiceLabaId
   }
-  console.log('labaId', labaId, selectedPlan.type)
   const { isLoading, data: laboratoryRouteData } = useFetchLaboratoryRouteDictionaryList(labaId)
 
   const [state, setState] = useState({})
@@ -106,18 +105,6 @@ export const PlanLabaAcceptDayDialog = ({
     }
   }, [selectedDateDepartmentMembers, laboratoryRouteData, selectedDateDepartmentLabaAscents])
 
-  const [isEditMode, setIsEditMode] = useState(false)
-
-  const applyNewChanges = () => {
-    laboratoryRouteData.forEach((row) => {
-      const newRow = apiRef.current?.getRowWithUpdatedValues(row.id, 'id') || {}
-      setState((prevState) => {
-        const newState = { ...prevState }
-        newState[newRow.member_id][newRow.id] = newRow
-        return newState
-      })
-    })
-  }
   const handleRowSelectionModelChange = (newRowSelectionModel) => {
     setRowSelectionModel(newRowSelectionModel)
     let newMemberId = ''
@@ -125,19 +112,6 @@ export const PlanLabaAcceptDayDialog = ({
       newMemberId = item
     })
     setSelectedMember(newMemberId)
-
-    const routeRows = Object.values(state[newMemberId])
-
-    if (isEditMode) {
-      setIsEditMode(false)
-      applyNewChanges()
-      laboratoryRouteData.forEach((row) => {
-        try {
-          apiRef.current?.stopRowEditMode({ id: row.id, ignoreModifications: true })
-        } catch (err) { }
-      })
-    }
-    apiRef.current?.setRows(routeRows)
   }
 
   const handleAcceptDay = (withAccept) => () => {
@@ -181,51 +155,47 @@ export const PlanLabaAcceptDayDialog = ({
     },
   ]
 
-  const labaRouteColumns = [
-    {
-      field: 'done',
-      headerName: '',
-      width: 100,
-      editable: true,
-      ...checkboxColumnType,
-    },
-    {
-      field: 'labatr_name',
-      headerName: 'Название трассы',
-      editable: true,
-      width: 300,
-      renderEditCell: (props) => (
-        <GridEditInputCell {...props} disabled className={'roTableInput'} />
-      ),
-    },
-    {
-      field: 'labatr_sl',
-      headerName: 'Сложность',
-      width: 100,
-    },
-    {
-      field: 'ascent_belay',
-      headerName: 'Оценка',
-      width: 150,
-      editable: true,
-      type: 'singleSelect',
-      valueOptions: ['Уверенно', 'Не уверенно'],
-    },
-  ]
-
-  const handleStartEditing = () => {
-    if (isEditMode) {
-      setIsEditMode(false)
-      applyNewChanges()
-      laboratoryRouteData.forEach((row) => {
-        apiRef.current?.stopRowEditMode({ id: row.id })
-      })
-    } else {
-      setIsEditMode(true)
-      laboratoryRouteData.forEach((row) => {
-        apiRef.current?.startRowEditMode({ id: row.id })
-      })
-    }
+  const handleCheckRoute = (routeId) => (event) => {
+    setState((prevState) => {
+      const newState = { ...prevState }
+      newState[selectedMember][routeId].done = event.target.checked
+      return newState
+    })
+  }
+  const handleChangeMark = (routeId) => (event) => {
+    setState((prevState) => {
+      const newState = { ...prevState }
+      newState[selectedMember][routeId].ascent_belay = event.target.value
+      return newState
+    })
+  }
+  const renderRouteItem = (routeItem) => {
+    return (
+      <Grid container alignItems={'center'} key={routeItem.id}>
+        <Grid size={1}>
+          <Checkbox checked={routeItem.done} onChange={handleCheckRoute(routeItem.id)} />
+        </Grid>
+        <Grid size={5}>
+          <Typography>{routeItem.labatr_name}</Typography>
+        </Grid>
+        <Grid size={2}>
+          <Typography>{routeItem.labatr_sl}</Typography>
+        </Grid>
+        <Grid size={4}>
+          <FormControl fullWidth size='small'>
+            <Select
+              labelId='demo-simple-select-label'
+              id='demo-simple-select'
+              value={routeItem.ascent_belay}
+              onChange={handleChangeMark(routeItem.id)}
+            >
+              <MenuItem value={'Уверенно'}>Уверенно</MenuItem>
+              <MenuItem value={'Не уверенно'}>Не уверенно</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+      </Grid>
+    )
   }
 
   return (
@@ -265,26 +235,20 @@ export const PlanLabaAcceptDayDialog = ({
               }}
             />
           </Grid>
-          <Grid size={9} sx={{ height: `calc(100vh - 190px)` }}>
-            <DataGrid
-              apiRef={apiRef}
-              columns={labaRouteColumns}
-              columnHeaderHeight={36}
-              rowHeight={42}
-              editMode='row'
-              showToolbar
-              slots={{
-                toolbar: () => {
-                  return (
-                    <Toolbar>
-                      <Button onClick={handleStartEditing} disabled={!selectedMember}>
-                        {isEditMode ? 'Применить' : 'Редактировать'}
-                      </Button>
-                    </Toolbar>
-                  )
-                },
-              }}
-            />
+          <Grid size={9} sx={{ height: `calc(100vh - 190px)`, overflowY: 'scroll' }}>
+            <Grid container alignItems={'center'}>
+              <Grid size={1}></Grid>
+              <Grid size={5}>
+                <Typography>Название трассы</Typography>
+              </Grid>
+              <Grid size={2}>
+                <Typography>Сложность</Typography>
+              </Grid>
+              <Grid size={4}>
+                <Typography>Оценка</Typography>
+              </Grid>
+            </Grid>
+            {selectedMember && Object.values(state[selectedMember])?.map(renderRouteItem)}
           </Grid>
         </Grid>
       </DialogContent>

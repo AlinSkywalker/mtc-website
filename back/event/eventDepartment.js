@@ -107,6 +107,9 @@ const eventDepartmentRouter = (app, passport) => {
         depart_dates,
         depart_name,
         depart_inst,
+        isDatesChanged,
+        depart_dates_old,
+        depart_datef_old,
       } = req.body;
       pool.query(
         `UPDATE depart SET 
@@ -122,7 +125,29 @@ const eventDepartmentRouter = (app, passport) => {
             res.status(500).json({ success: false, message: error });
             return;
           }
-          res.send(result);
+          if (isDatesChanged) {
+            const oldDates = getDatesInRange(new Date(depart_dates_old), new Date(depart_datef_old))
+            const newDates = getDatesInRange(new Date(depart_dates), new Date(depart_datef))
+            const deletedDates = oldDates.filter(date => !new Set(newDates).has(date));
+            const deletedDatesString = deletedDates.map(item => `'${item}'`).join(', ')
+            if (deletedDates.length !== 0) {
+              pool.query(
+                `DELETE FROM member_in_depart 
+            WHERE membd_dep=${departmentId} AND membd_date IN (${deletedDatesString})`,
+                (error, result) => {
+                  if (error) {
+                    console.log(error);
+                    res.status(500).json({ success: false, message: error });
+                    return;
+                  }
+                  res.send(result);
+                }
+              );
+            }
+            else {
+              res.send(result);
+            }
+          }
         }
       );
     }

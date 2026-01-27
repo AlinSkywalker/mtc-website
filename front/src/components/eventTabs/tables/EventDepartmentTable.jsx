@@ -136,7 +136,12 @@ export const EventDepartmentTable = ({ eventId, eventStart, eventFinish, readOnl
       oldRow?.depart_dates !== newRow.depart_dates ||
       oldRow?.depart_datef !== newRow.depart_datef
     ) {
-      newRow = { ...newRow, isDatesChanged: true }
+      newRow = {
+        ...newRow,
+        isDatesChanged: true,
+        depart_dates_old: oldRow?.depart_dates,
+        depart_datef_old: oldRow?.depart_datef,
+      }
     }
     await handleSave(newRow)
     queryClient.invalidateQueries({ queryKey: ['event', eventId, 'department'] })

@@ -153,11 +153,11 @@ export const AppToolbar = ({ children, pages, withProfile }) => {
   return (
     <AppBar position='fixed'>
       <Toolbar className='AppBarToolbar'>
-        {renderMenu}
         <Grid onClick={handleGoToMainPage} sx={{ cursor: 'pointer' }}>
           <img src={MtcImage} alt='ЦАП' height='55px' />
         </Grid>
         <Box sx={{ flexGrow: 1, display: 'flex', marginLeft: 3 }}>{children}</Box>
+        {renderMenu}
         {withProfile && renderProfileMenu}
       </Toolbar>
     </AppBar>

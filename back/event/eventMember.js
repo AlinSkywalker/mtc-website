@@ -1,6 +1,7 @@
 // Load the MySQL pool connection
 const pool = require("../mysql");
 const fs = require('fs');
+const getDatesInRange = require("../getDatesInRange");
 
 function getRandomNumber(min, max) {
   min = Math.ceil(min)
@@ -190,7 +191,10 @@ const eventMemberRouter = (app, passport) => {
         strah_file_name,
         med_file_name,
         strah_file_path,
-        med_file_path
+        med_file_path,
+        isDatesChanged,
+        eventmemb_dates_old,
+        eventmemb_datef_old
       } = data;
 
 
@@ -247,7 +251,29 @@ const eventMemberRouter = (app, passport) => {
             res.status(500).json({ success: false, message: error });
             return;
           }
-          res.send(result);
+          if (isDatesChanged) {
+            const oldDates = getDatesInRange(new Date(eventmemb_dates_old), new Date(eventmemb_datef_old))
+            const newDates = getDatesInRange(new Date(eventmemb_dates), new Date(eventmemb_datef))
+            const deletedDates = oldDates.filter(date => !new Set(newDates).has(date));
+            const deletedDatesString = deletedDates.map(item => `'${item}'`).join(', ')
+            if (deletedDates.length !== 0) {
+              pool.query(
+                `DELETE FROM member_in_depart 
+            WHERE membd_memb=${memberId} AND membd_date IN (${deletedDatesString})`,
+                (error, result) => {
+                  if (error) {
+                    console.log(error);
+                    res.status(500).json({ success: false, message: error });
+                    return;
+                  }
+                  res.send(result);
+                }
+              );
+            }
+            else {
+              res.send(result);
+            }
+          }
         }
       );
     }

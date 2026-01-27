@@ -315,7 +315,12 @@ export const EventMembersTab = ({ eventId }) => {
       oldRow?.eventmemb_dates !== newRow.eventmemb_dates ||
       oldRow?.eventmemb_datef !== newRow.eventmemb_datef
     ) {
-      newRow = { ...newRow, isDatesChanged: true }
+      newRow = {
+        ...newRow,
+        isDatesChanged: true,
+        eventmemb_dates_old: oldRow?.eventmemb_dates,
+        eventmemb_datef_old: oldRow?.eventmemb_datef,
+      }
     }
     await handleSave(newRow)
     queryClient.invalidateQueries({ queryKey: ['event', eventId, 'member'] })

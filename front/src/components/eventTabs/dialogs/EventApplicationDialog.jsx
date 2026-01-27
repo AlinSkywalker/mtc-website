@@ -16,12 +16,12 @@ import {
 import React, { useContext, useState } from 'react'
 import CloseIcon from '@mui/icons-material/Close'
 import { DatePicker } from '@mui/x-date-pickers'
-import apiClient from '../../api/api'
-import { AuthContext } from '../AuthContext'
+import apiClient from '../../../api/api'
+import { AuthContext } from '../../AuthContext'
 import { format, parseISO } from 'date-fns'
-import { useFetchEventDepartmentList } from '../../queries/eventDepartment'
-import { DEPARTMENT_TYPE_ARRAY } from '../../constants'
-import { useIsMobile } from '../../hooks/useIsMobile'
+import { useFetchEventDepartmentList } from '../../../queries/eventDepartment'
+import { DEPARTMENT_TYPE_ARRAY } from '../../../constants'
+import { useIsMobile } from '../../../hooks/useIsMobile'
 
 export const EventApplicationDialog = ({ eventId, open, setOpen }) => {
   const {
@@ -124,7 +124,7 @@ export const EventApplicationDialog = ({ eventId, open, setOpen }) => {
               // defaultValue=''
               value={department}
             >
-              {data?.filter(item => item.depart_tip !== 'ХЗ').map(renderMenuItem)}
+              {data?.filter((item) => item.depart_tip !== 'ХЗ').map(renderMenuItem)}
             </TextField>
           </FormControl>
         </Box>

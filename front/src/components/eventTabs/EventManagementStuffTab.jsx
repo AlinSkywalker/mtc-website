@@ -13,7 +13,7 @@ import {
   Button,
   Grid,
 } from '@mui/material'
-import { SetAllDayManagementStaffDialog } from '../dialogs/SetAllDayManagementStaffDialog'
+import { SetAllDayManagementStaffDialog } from './dialogs/SetAllDayManagementStaffDialog'
 const defaultItem = {}
 
 const validationSchema = Yup.object({

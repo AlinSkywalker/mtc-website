@@ -11,14 +11,14 @@ import { useFetchLaboratoryByName, useFetchLaboratoryForEvent } from '../../../q
 import { SelectEditInputCell } from '../../dataGridCell/SelectEditInputCell'
 import { EditCascadeSelectMenu } from '../../dataGridCell/EditCascadeSelectMenu'
 import { Button } from '@mui/material'
-import { PlanAscentAcceptDayDialog } from '../../dialogs/PlanAscentAcceptDayDialog'
+import { PlanAscentAcceptDayDialog } from '../dialogs/PlanAscentAcceptDayDialog'
 import { MultiValueSelecWithGroupingtEditInputCell } from '../../dataGridCell/MultiValueSelecWithGroupingtEditInputCell'
 import { eventDepartmentPlanValidationSchema } from '../../../validations/eventDepartmentPlanValidation'
 import {
   plansTableHiddenColumns,
   plansTableColumnVisibilityModel,
 } from './eventDepartmentPlansTableSettings'
-import { PlanLabaAcceptDayDialog } from '../../dialogs/PlanLabaAcceptDayDialog'
+import { PlanLabaAcceptDayDialog } from '../dialogs/PlanLabaAcceptDayDialog'
 
 export const EventDepartmentPlansTable = ({
   eventId,
@@ -52,8 +52,7 @@ export const EventDepartmentPlansTable = ({
   const { data: practiceLabaData } = useFetchLaboratoryByName('Практорий')
   const lecturesLabaId = lecturesLabaData?.id
   const practiceLabaId = practiceLabaData?.id
-  console.log('practiceLabaId', practiceLabaId)
-  console.log('lecturesLabaId', lecturesLabaId)
+
   const [rows, setRows] = React.useState(data)
   const [rowModesModel, setRowModesModel] = React.useState({})
 
