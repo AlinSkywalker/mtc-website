@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useFetchMainPageEventList } from '../../../queries/event'
 import { Grid, IconButton, Tooltip, Typography } from '@mui/material'
 
@@ -9,10 +9,14 @@ import { getFormattedNumber } from '../../../utils/numbers'
 import { EventMemberPopover } from '../../../components/EventMemberPopover'
 import { EventBasePopover } from '../../../components/EventBasePopover'
 import InfoOutlineIcon from '@mui/icons-material/InfoOutline'
+import { AuthContext } from '../../AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 const dashedTextStyle = { textDecoration: 'underline dashed #1976d2', cursor: 'pointer' }
 
 export const MainPageEventListTable = () => {
+  const { isAuthenticated } = useContext(AuthContext)
+  const navigate = useNavigate()
   const { data } = useFetchMainPageEventList()
   const isMobile = useIsMobile()
 
@@ -24,7 +28,9 @@ export const MainPageEventListTable = () => {
   const openBase = Boolean(anchorElBase)
 
   const [expandedItemId, setExpandedItemId] = useState('')
-
+  const handleItemClick = (id) => {
+    navigate(`/crm/event/${id}`)
+  }
   const renderEventItem = (eventItem) => {
     const eventStart = eventItem.event_start
       ? format(parseISO(eventItem.event_start), 'dd.MM.yyyy')
@@ -178,7 +184,8 @@ export const MainPageEventListTable = () => {
         id={eventItem.id}
         expandedData={expandedData}
         expandedItemId={expandedItemId}
-        setExpandedItemId={setExpandedItemId}
+        setExpandedItemId={isAuthenticated ? null : setExpandedItemId}
+        handleItemClick={isAuthenticated ? handleItemClick : null}
       >
         <Typography variant='h5'>{eventItem.event_name}</Typography>
         <Typography>
