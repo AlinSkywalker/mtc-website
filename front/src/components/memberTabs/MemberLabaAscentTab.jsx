@@ -8,6 +8,12 @@ import { dateColumnType } from '../dataGridCell/GridEditDateCell'
 import { GridEditInputCell } from '@mui/x-data-grid'
 import { useIsMobile } from '../../hooks/useIsMobile'
 import { MobileMemberLabaAscentTab } from './mobileTables/MobileMemberLabaAscentTab'
+import { useIsAdmin } from '../../hooks/useIsAdmin'
+import {
+  useFetchLaboratoryDictionaryList,
+  useFetchLaboratoryRouteDictionaryList,
+} from '../../queries/dictionary'
+import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
 
 const defaultItem = {
   ascent_date: '',
@@ -24,8 +30,8 @@ const validationSchema = Yup.object({
 })
 
 export const MemberLabaAscentTab = ({ memberId }) => {
-  // const readOnly = !useIsAdmin()
-  const readOnly = true
+  const readOnly = !useIsAdmin()
+  // const readOnly = true
   const queryClient = useQueryClient()
   const isMobile = useIsMobile()
   const { isLoading, data } = useFetchMemberLabaAscentList(memberId)
@@ -53,6 +59,31 @@ export const MemberLabaAscentTab = ({ memberId }) => {
     return apiClient.post(`/api/memberList/${memberId}/labaAscent/${id}`, postedData)
   }, [])
 
+  const renderLabaSelectEditCell = (params) => {
+    return (
+      <SelectEditInputCell
+        {...params}
+        dictionaryName='laboratoryDictionary'
+        nameField='laba_id'
+        hook={useFetchLaboratoryDictionaryList}
+        secondarySource='rai_name'
+      />
+    )
+  }
+  const renderLabaRouteSelectEditCell = (params) => {
+    const hookParams = { laboratoryId: params.row.laba_id }
+    return (
+      <SelectEditInputCell
+        {...params}
+        dictionaryName='laboratoryRouteDictionary'
+        nameField='laba_route'
+        hook={useFetchLaboratoryRouteDictionaryList}
+        secondarySource='labatr_sl'
+        hookParams={hookParams}
+      />
+    )
+  }
+
   const columns = [
     {
       field: 'ascent_date',
@@ -66,14 +97,13 @@ export const MemberLabaAscentTab = ({ memberId }) => {
       headerName: 'Лаборатория',
       width: 180,
       editable: !readOnly,
-      renderEditCell: (props) => (
-        <GridEditInputCell {...props} disabled className={'roTableInput'} />
-      ),
+      renderEditCell: renderLabaSelectEditCell,
     },
     {
       field: 'labatr_name',
       headerName: 'Трасса',
       width: 180,
+      renderEditCell: renderLabaRouteSelectEditCell,
       editable: !readOnly,
     },
     {
@@ -87,29 +117,36 @@ export const MemberLabaAscentTab = ({ memberId }) => {
     },
     {
       field: 'ascent_belay',
-      headerName: 'Страховка',
+      headerName: 'Оценка',
       width: 150,
       editable: true,
       type: 'singleSelect',
-      valueOptions: ['Верхняя', 'Нижняя'],
+      valueOptions: ['Уверенно', 'Не уверено'],
     },
     {
-      field: 'ascent_type',
-      headerName: 'Тип пролаза',
-      width: 150,
-      editable: true,
-      type: 'singleSelect',
-      valueOptions: ['Онсайт', 'Флеш', 'Редпоинт'],
+      field: 'laba_id',
+      headerName: 'laba_id',
+      width: 100,
+      editable: !readOnly,
+    },
+    {
+      field: 'laba_route',
+      headerName: 'laba_route',
+      width: 100,
+      editable: !readOnly,
     },
   ]
-  const fieldToFocus = 'type'
-  const columnVisibilityModel = {}
+  const fieldToFocus = 'ascent_date'
+  const columnVisibilityModel = {
+    laba_id: false,
+    laba_route: false,
+  }
 
   const processRowUpdate = async (newRow) => {
     validationSchema.validateSync(newRow, { abortEarly: false })
     const handleSave = newRow.isNew ? handleSaveNewItem : handleSaveEditedItem
     await handleSave(newRow)
-    queryClient.invalidateQueries({ queryKey: ['member', memberId, 'sportCategory'] })
+    queryClient.invalidateQueries({ queryKey: ['member', memberId, 'labaAscent'] })
   }
 
   if (!memberId) return null

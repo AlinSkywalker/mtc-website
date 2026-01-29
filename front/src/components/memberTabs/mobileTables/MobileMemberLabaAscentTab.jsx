@@ -33,10 +33,7 @@ export const MobileMemberLabaAscentTab = ({ isLoading, data }) => {
         {isExpanded && (
           <>
             <Typography>
-              <b>Страховка:</b> {ascentItem.ascent_belay}
-            </Typography>
-            <Typography>
-              <b>Тип пролаза:</b> {ascentItem.ascent_type}
+              <b>Оценка:</b> {ascentItem.ascent_belay}
             </Typography>
           </>
         )}

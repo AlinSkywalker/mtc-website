@@ -74,7 +74,7 @@ export function useFetchLaboratoryByName(name) {
     },
   })
 }
-export function useFetchLaboratoryRouteDictionaryList(laboratoryId) {
+export function useFetchLaboratoryRouteDictionaryList({ laboratoryId }) {
   return useQuery({
     queryKey: ['laboratoryRouteDictionary', laboratoryId],
     queryFn: async () => {

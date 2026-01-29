@@ -37,6 +37,9 @@ function mapDictionaryData(
       case 'laboratoryDictionary':
         itemName = item.laba_name
         break
+      case 'laboratoryRouteDictionary':
+        itemName = item.labatr_name
+        break
       case 'summitDictionary':
         itemName = item.mount_name
         break

@@ -25,7 +25,9 @@ const validationSchema = Yup.object({
 
 export const LaboratoryRouteDictionaryTable = ({ selectedLaboratory }) => {
   const queryClient = useQueryClient()
-  const { isLoading, data } = useFetchLaboratoryRouteDictionaryList(selectedLaboratory)
+  const { isLoading, data } = useFetchLaboratoryRouteDictionaryList({
+    laboratoryId: selectedLaboratory,
+  })
 
   const [rows, setRows] = React.useState(data)
   const [rowModesModel, setRowModesModel] = React.useState({})

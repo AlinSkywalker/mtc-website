@@ -38,7 +38,9 @@ export const PlanLabaAcceptDayDialog = ({
   } else if (selectedPlan.type === 'Практика') {
     labaId = practiceLabaId
   }
-  const { isLoading, data: laboratoryRouteData } = useFetchLaboratoryRouteDictionaryList(labaId)
+  const { isLoading, data: laboratoryRouteData } = useFetchLaboratoryRouteDictionaryList({
+    laboratoryId: labaId,
+  })
 
   const [state, setState] = useState({})
   const [selectedMember, setSelectedMember] = useState('')

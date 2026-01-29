@@ -138,7 +138,9 @@ const dictionaryRouter = (app, passport) => {
         return;
       }
       pool.query(
-        `SELECT * FROM laba_tr WHERE labatr_lab=${id}`,
+        `SELECT * FROM laba_tr 
+        WHERE labatr_lab=${id}
+        ORDER BY labatr_name ASC`,
         (error, result) => {
           if (error) {
             console.log(error);

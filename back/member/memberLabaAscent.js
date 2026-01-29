@@ -5,7 +5,7 @@ const pool = require("../mysql")
 const memberLabaAscentRouter = (app, passport) => {
   app.get('/memberList/:memberId/labaAscent', passport.authenticate('jwt', { session: false }), (req, res) => {
     const { memberId } = req.params;
-    pool.query(`SELECT l_r_a.*,l_t.labatr_name, l_t.labatr_typ, l_t.labatr_sl, l.laba_name
+    pool.query(`SELECT l_r_a.*,l_t.labatr_name, l_t.labatr_typ, l_t.labatr_sl, l.laba_name, l.id as laba_id
                   FROM laba_route_ascent l_r_a
                     LEFT OUTER JOIN laba_tr l_t ON l_t.id=l_r_a.laba_route
                     LEFT OUTER JOIN laba l ON l.id = l_t.labatr_lab
@@ -25,13 +25,12 @@ const memberLabaAscentRouter = (app, passport) => {
     const {
       ascent_date,
       ascent_belay,
-      ascent_type,
       laba_route,
     } = req.body;
     pool.query(`INSERT INTO laba_route_ascent 
-              ( ascent_member, ascent_date, ascent_belay, ascent_type,laba_route)  
-               VALUES(?,?,?,?,?)`,
-      [id, ascent_date, ascent_belay, ascent_type, laba_route], (error, result) => {
+              ( ascent_member, ascent_date, ascent_belay,laba_route)  
+               VALUES(?,?,?,?)`,
+      [id, ascent_date, ascent_belay, laba_route], (error, result) => {
         if (error) {
           console.log(error);
           res.status(500).json({ success: false, message: error });
@@ -46,15 +45,13 @@ const memberLabaAscentRouter = (app, passport) => {
     const {
       ascent_date,
       ascent_belay,
-      ascent_type,
       laba_route,
     } = req.body;
     pool.query(`UPDATE laba_route_ascent SET 
       ascent_date=?,
       ascent_belay=?,
-      ascent_type=?,
       laba_route=?,
-      updated_date=CURRENT_TIMESTAMP WHERE id=${id}`, [ascent_date, ascent_belay, ascent_type, laba_route], (error, result) => {
+      updated_date=CURRENT_TIMESTAMP WHERE id=${id}`, [ascent_date, ascent_belay, laba_route], (error, result) => {
       if (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error });
