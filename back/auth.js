@@ -194,6 +194,7 @@ const authRouter = (app, passport) => {
                     return;
                   }
                   const userId = result.insertId;
+
                   if (member) {
                     pool.query(
                       `UPDATE member SET user_id=${userId}, memb_email='${email}'  WHERE id=${member.id} AND user_id IS NULL`,
@@ -208,6 +209,7 @@ const authRouter = (app, passport) => {
                             user_id: userId,
                             user_name: email,
                             user_role: "USER_ROLE",
+                            user_member_id: member.id,
                             iat: Date.now(),
                           },
                           jwtOptions.secretOrKey
@@ -219,6 +221,7 @@ const authRouter = (app, passport) => {
                           token,
                           user_role: "USER_ROLE",
                           user_id: userId,
+                          user_member_id: member.id
                         });
                       }
                     );
@@ -251,6 +254,7 @@ const authRouter = (app, passport) => {
                                 user_name: email,
                                 user_role: "USER_ROLE",
                                 iat: Date.now(),
+                                user_member_id: newMemberId
                               },
                               jwtOptions.secretOrKey
                             );

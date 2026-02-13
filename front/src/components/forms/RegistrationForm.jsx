@@ -19,6 +19,7 @@ export const RegistrationForm = ({
   consentValue,
   handleChangeConsentValue,
   serverError,
+  isSubmitting,
 }) => {
   return (
     <form onSubmit={handleSubmit(handleLogin)}>
@@ -138,7 +139,7 @@ export const RegistrationForm = ({
           )}
         />
         <Grid>
-          <Button variant='contained' type='submit' disabled={!consentValue}>
+          <Button variant='contained' type='submit' disabled={!consentValue || isSubmitting}>
             Зарегистрироваться
           </Button>
         </Grid>

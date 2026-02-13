@@ -13,7 +13,7 @@ function sendTelegramMessage(text, reciever) {
     body: JSON.stringify(data),
   })
     .then(response => response.json())
-    .then(data => console.log("Сообщение отправлено:", data))
+    // .then(data => console.log("Сообщение отправлено:", data))
     .catch(error => console.error("Ошибка отправки:", error));
 }
 

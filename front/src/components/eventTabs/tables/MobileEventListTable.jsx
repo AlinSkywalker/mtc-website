@@ -45,7 +45,7 @@ export const MobileEventListTable = () => {
     const eventStart = format(parseISO(eventItem.event_start || ''), 'dd.MM.yyyy')
     const eventFinish = format(parseISO(eventItem.event_finish || ''), 'dd.MM.yyyy')
     return (
-      <MobileTableItem handleItemClick={handleItemClickName} id={eventItem.id}>
+      <MobileTableItem handleItemClick={handleItemClickName} id={eventItem.id} key={eventItem.id}>
         <Typography variant='h5'>{eventItem.event_name}</Typography>
         <Typography>
           {eventStart} - {eventFinish}

@@ -63,7 +63,7 @@ const PublicRoute = ({ children }) => {
 const LoginRoute = ({ children }) => {
   const { isAuthenticated } = useContext(AuthContext)
   return isAuthenticated ? (
-    <Navigate to='/crm/profile' />
+    <Navigate to='/crm/event' />
   ) : (
     <MainLayout withProfile={false}>{children}</MainLayout>
   )

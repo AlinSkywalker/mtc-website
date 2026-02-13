@@ -43,7 +43,7 @@ const defaultValues = {
 export const RegistrationPage = () => {
   const {
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     control,
   } = useForm({ defaultValues, resolver: yupResolver(validationSchema) })
 
@@ -63,9 +63,13 @@ export const RegistrationPage = () => {
       .post('/api/register', { ...data, date_birth: format(data.date_birth, 'yyyy-MM-dd') })
       .then((response) => {
         // Handle successful login
+
         const { token, user_role, user_id, user_member_id } = response.data
         setIsAuthenticated(true)
-        setUserInfo({ id: user_id, role: user_role, memberId: user_member_id })
+
+        const userInfo = { id: user_id, role: user_role, memberId: user_member_id }
+        setUserInfo(userInfo)
+
         localStorage.setItem('token', token)
       })
       .catch((error) => {
@@ -102,6 +106,7 @@ export const RegistrationPage = () => {
               consentValue={consentValue}
               handleChangeConsentValue={handleChangeConsentValue}
               serverError={serverError}
+              isSubmitting={isSubmitting}
             />
           </CardContent>
         </Card>
