@@ -1,53 +1,67 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const dotenv = require('dotenv')
 
-module.exports = {
-  entry: path.resolve(__dirname, './src/index.js'),
-  context: path.resolve(__dirname, 'mountaineering-training-center'),
-  module: {
-    rules: [
-      {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: ['babel-loader'],
-      },
-      {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
-      },
-      {
-        test: /\.(png|svg|jpg|jpeg|gif)$/i,
-        type: 'asset/resource',
-      },
-    ],
-  },
-  resolve: {
-    extensions: ['.*', '.js', '.jsx'],
-  },
-  output: {
-    path: path.resolve(__dirname, './build'),
-    filename: '[name].[contenthash].js',
-    publicPath: '/',
-    assetModuleFilename: 'images/[hash][ext][query]',
-  },
-  devServer: {
-    static: {
-      directory: path.join(__dirname, 'public'),
+module.exports = (env, argv) => {
+  // Загружаем соответствующий .env файл
+  const envFile = env.local ? '.env.local' : '.env.server'
+
+  const envConfig = dotenv.config({ path: envFile }).parsed || {}
+
+  // Преобразуем в формат для DefinePlugin
+  const envKeys = Object.keys(envConfig).reduce((prev, next) => {
+    prev[`process.env.${next}`] = JSON.stringify(envConfig[next])
+    return prev
+  }, {})
+
+  return {
+    entry: path.resolve(__dirname, './src/index.js'),
+    context: path.resolve(__dirname, 'mountaineering-training-center'),
+    module: {
+      rules: [
+        {
+          test: /\.(js|jsx)$/,
+          exclude: /node_modules/,
+          use: ['babel-loader'],
+        },
+        {
+          test: /\.css$/,
+          use: ['style-loader', 'css-loader'],
+        },
+        {
+          test: /\.(png|svg|jpg|jpeg|gif)$/i,
+          type: 'asset/resource',
+        },
+      ],
     },
-    port: 9000,
-    open: ['/mountaineering-training-center/login'],
-    historyApiFallback: true,
-    proxy: [
-      {
-        context: ['/api'],
-        target: 'http://0.0.0.0:8000',
-        pathRewrite: { '^/api': '' },
+    resolve: {
+      extensions: ['.*', '.js', '.jsx'],
+    },
+    output: {
+      path: path.resolve(__dirname, './build'),
+      filename: '[name].[contenthash].js',
+      publicPath: '/',
+      assetModuleFilename: 'images/[hash][ext][query]',
+    },
+    devServer: {
+      static: {
+        directory: path.join(__dirname, 'public'),
       },
+      port: 9000,
+      open: ['/mountaineering-training-center/login'],
+      historyApiFallback: true,
+      proxy: [
+        {
+          context: ['/api'],
+          target: envConfig.API_URL,
+          pathRewrite: { '^/api': '' },
+        },
+      ],
+    },
+    plugins: [
+      new HtmlWebpackPlugin({
+        template: path.join(__dirname, 'public', 'index.html'),
+      }),
     ],
-  },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: path.join(__dirname, 'public', 'index.html'),
-    }),
-  ],
+  }
 }
