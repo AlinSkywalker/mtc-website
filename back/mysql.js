@@ -1,7 +1,7 @@
 const mysql = require('mysql2');
 
 const dbConfig = {
-  host: '109.120.142.80',
+  host: process.env.MTC_DB_HOST,
   user: process.env.MTC_DB_USER,
   password: process.env.MTC_DB_PASSWORD,
   database: 'mtc_db',

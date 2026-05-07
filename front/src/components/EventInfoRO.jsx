@@ -101,6 +101,7 @@ export const EventInfoRO = ({ eventData: data, isLoading }) => {
           <Grid container alignItems='center'>
             <Typography sx={{ fontWeight: 'bold' }}>Инструкторский сбор</Typography>
             <Tooltip
+              enterTouchDelay={0}
               title='Средства идут на проведение лекционных и практических занятий по различным предметам альпинисткой подготовки, проверке уровня профессиональных знаний и навыков участников, а также совершения восхождений согласно этапом подготовки. 
 Включает в себя Стартовый и Организационный взносы'
             >
@@ -115,7 +116,10 @@ export const EventInfoRO = ({ eventData: data, isLoading }) => {
         <Grid size={isMobile ? 12 : 2}>
           <Grid container alignItems='center'>
             <Typography sx={{ fontWeight: 'bold' }}>Стартовый взнос</Typography>
-            <Tooltip title='Средства идут на организацию соревнования, в том числе на оплату труда ответственного за безопасность, старшего тренера и судейской бригады, заполнение альпинистских книжек, составлений протоколов, изготовление медалей, грамот и других атрибутов.'>
+            <Tooltip
+              enterTouchDelay={0}
+              title='Средства идут на организацию соревнования, в том числе на оплату труда ответственного за безопасность, старшего тренера и судейской бригады, заполнение альпинистских книжек, составлений протоколов, изготовление медалей, грамот и других атрибутов.'
+            >
               <IconButton onClick={(e) => e.stopPropagation()}>
                 <InfoOutlineIcon fontSize='small' color='info' />
               </IconButton>
@@ -127,7 +131,10 @@ export const EventInfoRO = ({ eventData: data, isLoading }) => {
         <Grid size={isMobile ? 12 : 2}>
           <Grid container alignItems='center'>
             <Typography sx={{ fontWeight: 'bold' }}>Организационный взнос</Typography>
-            <Tooltip title='Взымается с болельщиков, сочувствующих и просто отдыхающих пользующихся услугами организации текущего мероприятия, таких как бронирование жилья, трансфера к месту проведения мероприятия, предоставление информации об инфраструктуре района.'>
+            <Tooltip
+              enterTouchDelay={0}
+              title='Взымается с болельщиков, сочувствующих и просто отдыхающих пользующихся услугами организации текущего мероприятия, таких как бронирование жилья, трансфера к месту проведения мероприятия, предоставление информации об инфраструктуре района.'
+            >
               <IconButton onClick={(e) => e.stopPropagation()}>
                 <InfoOutlineIcon fontSize='small' color='info' />
               </IconButton>

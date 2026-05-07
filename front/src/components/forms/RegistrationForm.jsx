@@ -10,9 +10,11 @@ import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
+import PhoneInput from 'react-phone-number-input/react-hook-form-input'
+import { PhoneField } from '../formFields/PhoneField'
 
 export const RegistrationForm = ({
-  handleLogin,
+  handleRegister,
   handleSubmit,
   control,
   errors,
@@ -22,7 +24,7 @@ export const RegistrationForm = ({
   isSubmitting,
 }) => {
   return (
-    <form onSubmit={handleSubmit(handleLogin)}>
+    <form onSubmit={handleSubmit(handleRegister)}>
       <Grid
         container
         justifyContent='center'
@@ -58,6 +60,18 @@ export const RegistrationForm = ({
             />
           )}
         />
+
+        <PhoneInput
+          control={control}
+          rules={{ required: true }}
+          name='tel_1'
+          label='Телефон основной'
+          defaultCountry='RU'
+          inputComponent={PhoneField}
+          error={errors['tel_1']}
+          helperText={errors['tel_1']?.message}
+        />
+
         <Controller
           name='date_birth'
           control={control}

@@ -57,7 +57,6 @@ export const MemberInfoPage = () => {
       label: 'Мероприятия',
       component: <MemberEventTab memberId={currentId} />,
     },
-
   ]
 
   if (isLoading) {

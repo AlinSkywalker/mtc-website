@@ -2,6 +2,9 @@ import apiClient from '../api/api'
 import { useQuery } from '@tanstack/react-query'
 import { parseISO } from 'date-fns'
 
+/**
+ * @param {{ possibleRole?: any; eventId?: any; } | undefined} [params]
+ */
 export function useFetchMemberList(params) {
   let queryUrl = `/api/memberList`
   if (params?.possibleRole) queryUrl = `/api/memberList?possibleRole=${params?.possibleRole}`
@@ -15,6 +18,9 @@ export function useFetchMemberList(params) {
   })
 }
 
+/**
+ * @param {string} id
+ */
 export function useFetchMember(id) {
   return useQuery({
     queryKey: ['member', id],
@@ -32,6 +38,9 @@ export function useFetchMember(id) {
   })
 }
 
+/**
+ * @param {string} id
+ */
 export function useFetchMemberExamList(id) {
   return useQuery({
     queryKey: ['member', id, 'exam'],
@@ -43,6 +52,9 @@ export function useFetchMemberExamList(id) {
   })
 }
 
+/**
+ * @param {string} id
+ */
 export function useFetchMemberAscentList(id) {
   return useQuery({
     queryKey: ['member', id, 'ascent'],
@@ -54,6 +66,9 @@ export function useFetchMemberAscentList(id) {
   })
 }
 
+/**
+ * @param {string} id
+ */
 export function useFetchMemberEvent(id) {
   return useQuery({
     queryKey: ['member', id, 'events'],
@@ -65,6 +80,9 @@ export function useFetchMemberEvent(id) {
   })
 }
 
+/**
+ * @param {string} id
+ */
 export function useFetchMemberSportCategoryList(id) {
   return useQuery({
     queryKey: ['member', id, 'sportCategory'],
@@ -76,6 +94,9 @@ export function useFetchMemberSportCategoryList(id) {
   })
 }
 
+/**
+ * @param {string} id
+ */
 export function useFetchMemberLabaAscentList(id) {
   return useQuery({
     queryKey: ['member', id, 'labaAscent'],
@@ -87,6 +108,9 @@ export function useFetchMemberLabaAscentList(id) {
   })
 }
 
+/**
+ * @param {string} id
+ */
 export function useFetchMemberEquipmentList(id) {
   return useQuery({
     queryKey: ['member', id, 'equipment'],
@@ -98,6 +122,9 @@ export function useFetchMemberEquipmentList(id) {
   })
 }
 
+/**
+ * @param {string} id
+ */
 export function useExternalFetchMember(id) {
   return useQuery({
     queryKey: ['external', 'member', id],

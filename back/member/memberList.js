@@ -1,11 +1,13 @@
 // Load the MySQL pool connection
 const pool = require("../mysql");
+const checkAdminAccess = require('../authAdminRoleMiddleware');
 
 // Route the app
 const memberListRouter = (app, passport) => {
   app.get(
     "/memberList/",
     passport.authenticate("jwt", { session: false }),
+    checkAdminAccess(),
     (req, res) => {
       const { possibleRole, eventId } = req.query;
       if (!possibleRole && !eventId) {
@@ -114,6 +116,7 @@ const memberListRouter = (app, passport) => {
   app.get(
     "/memberList/:id",
     passport.authenticate("jwt", { session: false }),
+    checkAdminAccess(),
     (req, res) => {
       const id = req.params.id;
       pool.query(
@@ -172,6 +175,7 @@ const memberListRouter = (app, passport) => {
   app.put(
     "/memberList",
     passport.authenticate("jwt", { session: false }),
+    checkAdminAccess(),
     (req, res) => {
       const {
         fio,
@@ -234,6 +238,7 @@ const memberListRouter = (app, passport) => {
   app.post(
     "/memberList/:id",
     passport.authenticate("jwt", { session: false }),
+    checkAdminAccess(),
     (req, res) => {
       const id = req.params.id;
       const {
@@ -313,6 +318,7 @@ const memberListRouter = (app, passport) => {
   app.delete(
     "/memberList/:id",
     passport.authenticate("jwt", { session: false }),
+    checkAdminAccess(),
     (req, res) => {
       const id = req.params.id;
       pool.query(`DELETE FROM member WHERE id=${id}`, (error, result) => {

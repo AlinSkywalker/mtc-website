@@ -1,8 +1,7 @@
 import React, { useContext } from 'react'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
-import { Link, useNavigate } from 'react-router-dom'
-import Button from '@mui/material/Button'
+import { Link } from 'react-router-dom'
 import './AdminLayoutStyles.css'
 import { useLocation } from 'react-router-dom'
 import { useIsAdmin } from '../hooks/useIsAdmin'
@@ -10,13 +9,15 @@ import { AppToolbar } from './AppToolbar'
 import { AuthContext } from './AuthContext'
 import { useIsMobile } from '../hooks/useIsMobile'
 import { Toolbar } from '@mui/material'
+import { AppToolbarDesktopMenuItem } from './AppToolbarDesktopMenuItem'
 
 export const MainLayout = ({ children, withProfile = true }) => {
   const isAdmin = useIsAdmin()
   const { isAuthenticated } = useContext(AuthContext)
 
-  const navigate = useNavigate()
-
+  /**
+   * @type {Array<{url: string, name: string, label: string, subPages?: Array<{url: string, name: string, label: string}>}>}
+   */
   let pages = []
   if (isAuthenticated && isAdmin) {
     pages = [
@@ -27,7 +28,20 @@ export const MainLayout = ({ children, withProfile = true }) => {
     ]
   } else if (isAuthenticated) {
     pages = [{ name: 'eventList', url: '/crm/event', label: 'Мероприятия' }]
+  } else {
+    pages = [{ name: 'main', url: '/', label: 'Мероприятия' }]
   }
+
+  pages.push({
+    name: 'aboutUs',
+    url: '/about',
+    label: 'О нас',
+    subPages: [
+      { name: 'boardMembers', url: '/boardMembers', label: 'Члены правления' },
+      { name: 'regionalOffices', url: '/regionalOffices', label: 'Региональные отделения' },
+      { name: 'companyCharter', url: '/companyCharter', label: 'Устав' },
+    ],
+  })
 
   const location = useLocation()
 
@@ -38,10 +52,6 @@ export const MainLayout = ({ children, withProfile = true }) => {
   )
 
   const isMobile = useIsMobile()
-
-  const handleGoToPage = (page) => () => {
-    navigate(page.url)
-  }
 
   return (
     <Grid>
@@ -55,15 +65,7 @@ export const MainLayout = ({ children, withProfile = true }) => {
             </Typography>
           )}
           {!isMobile &&
-            pages.map((page) => (
-              <Button
-                key={page.name}
-                onClick={handleGoToPage(page)}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page.label}
-              </Button>
-            ))}
+            pages.map((page) => <AppToolbarDesktopMenuItem menuItem={page} key={page.name} />)}
         </>
       </AppToolbar>
       <Toolbar />

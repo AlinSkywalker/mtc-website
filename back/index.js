@@ -55,6 +55,9 @@ const memberEquipmentRouter = require("./member/memberEquipment");
 
 
 const applicationRouter = require("./application");
+const boardMembersRouter = require("./boardMembers");
+const regionalOfficesRouter = require("./regionalOffices");
+const companyDataRouter = require("./companyData");
 
 
 const jwtOptions = {
@@ -173,11 +176,6 @@ app.post("/testEmail", (req, res) => {
 
 });
 
-
-
-
-
-
 app.get(
   "/users",
   passport.authenticate("jwt", { session: false }),
@@ -202,6 +200,12 @@ app.get(
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     const id = req.params.id;
+    const currentUserId = req.user.user_id
+
+    if (currentUserId != id) {
+      res.status(500).json({ result: 'Нельзя получить данные по другому профилю' });
+      return
+    }
     pool.query(
       `SELECT u.*, m.*, c.name_city,
       CONVERT(m_p.photo USING utf8) as member_photo 
@@ -217,9 +221,9 @@ app.get(
           return;
         }
         if (result[0]) {
-          const { name_city, memb_city } = result[0];
+          const { name_city, memb_city, password, password_bckp, password_reset_token, password_reset_date, ...rest } = result[0];
 
-          res.send({ ...result[0], city: { name_city, id: memb_city } });
+          res.send({ ...rest, city: { name_city, id: memb_city } });
           return
         }
         res.status(500).json({ success: false });
@@ -233,6 +237,13 @@ app.post(
   (req, res) => {
     const { id, size_cloth, size_shoe, tel_1, tel_2, gender, fio, date_birth, memb_city, emergency_contact, about_me } =
       req.body;
+
+    const currentUserMemberId = req.user.user_member_id
+    if (currentUserMemberId != id) {
+      res.status(500).json({ result: 'Нельзя обновить данные по другому профилю' });
+      return
+    }
+
     pool.query(
       `UPDATE member 
       SET size_cloth='${size_cloth}',
@@ -334,8 +345,9 @@ memberLabaAscentRouter(app, passport);
 memberEquipmentRouter(app, passport);
 
 applicationRouter(app, passport);
-
-
+boardMembersRouter(app, passport);
+regionalOfficesRouter(app, passport);
+companyDataRouter(app, passport);
 
 app.get(/(.*)/, (req, res) => {
   // console.log(req.params);

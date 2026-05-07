@@ -28,6 +28,7 @@ const validationSchema = Yup.object({
     }),
   date_birth: Yup.string().required('Поле обязательно для заполнения'),
   personal_data_consent: Yup.boolean(),
+  tel_1: Yup.string().required('Поле обязательно для заполнения'),
 })
 
 const defaultValues = {
@@ -38,6 +39,7 @@ const defaultValues = {
   password_repeat: '',
   gender: 'М',
   personal_data_consent: false,
+  tel_1: '',
 }
 
 export const RegistrationPage = () => {
@@ -56,10 +58,10 @@ export const RegistrationPage = () => {
     setConsentValue((prevValue) => !prevValue)
   }
 
-  const handleLogin = (data, e) => {
+  const handleRegister = (data, e) => {
     e.preventDefault()
 
-    apiClient
+    return apiClient
       .post('/api/register', { ...data, date_birth: format(data.date_birth, 'yyyy-MM-dd') })
       .then((response) => {
         // Handle successful login
@@ -99,7 +101,7 @@ export const RegistrationPage = () => {
               </Typography>
             </Grid>
             <RegistrationForm
-              handleLogin={handleLogin}
+              handleRegister={handleRegister}
               handleSubmit={handleSubmit}
               control={control}
               errors={errors}

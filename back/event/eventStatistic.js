@@ -56,7 +56,7 @@ const eventStatisticRouter = (app, passport) => {
           pool.query(
             `SELECT count(em.id) as result_count FROM eventmemb em
                         LEFT JOIN member m on m.id=em.eventmemb_memb
-                        WHERE em.eventmemb_even=${id}
+                        WHERE em.eventmemb_even=${id} AND m.memb_city IS NOT NULL
                         GROUP BY memb_city`,
             (error, result) => {
               if (error) {
@@ -78,7 +78,7 @@ const eventStatisticRouter = (app, passport) => {
             `SELECT count(em.id) as result_count FROM eventmemb em
                         LEFT JOIN member m on m.id=em.eventmemb_memb
                         LEFT JOIN city c on c.id=m.memb_city
-                        WHERE em.eventmemb_even=${id}
+                        WHERE em.eventmemb_even=${id} AND m.memb_city IS NOT NULL
                         GROUP BY city_sub`,
             (error, result) => {
               if (error) {
@@ -101,7 +101,7 @@ const eventStatisticRouter = (app, passport) => {
                         LEFT JOIN member m on m.id=em.eventmemb_memb
                         LEFT JOIN city c on c.id=m.memb_city
                         LEFT JOIN subekt s on s.id=c.city_sub
-                        WHERE em.eventmemb_even=${id}
+                        WHERE em.eventmemb_even=${id} AND m.memb_city IS NOT NULL
                         GROUP BY sub_okr`,
             (error, result) => {
               if (error) {
@@ -125,7 +125,7 @@ const eventStatisticRouter = (app, passport) => {
                         LEFT JOIN city c on c.id=m.memb_city
                         LEFT JOIN subekt s on s.id=c.city_sub
                         LEFT JOIN okrug o on o.id=s.sub_okr
-                        WHERE em.eventmemb_even=${id}
+                        WHERE em.eventmemb_even=${id} AND m.memb_city IS NOT NULL
                         GROUP BY okr_count`,
             (error, result) => {
               if (error) {

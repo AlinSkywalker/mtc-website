@@ -20,11 +20,13 @@ import { ru } from 'date-fns/locale/ru'
 import theme from './api/theme'
 import { Grid, ThemeProvider } from '@mui/material'
 import { SnackbarProvider } from 'notistack'
-import { PublicLayout } from './components/PublicLayout'
 import { PersonalDataConsentPage } from './pages/PersonalDataConsentPage'
 import { ApplicationListPage } from './pages/ApplicationListPage'
 import { ResetPasswordPage } from './pages/ResetPasswordPage'
 import { MainPage } from './pages/MainPage'
+import { BoardMembersPage } from './pages/BoardMembersPage'
+import { RegionalOfficesPage } from './pages/RegionalOfficesPage'
+import { CompanyCharterPage } from './pages/CompanyCharterPage'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -184,6 +186,30 @@ const App = () => {
                     element={
                       <PublicRoute>
                         <PersonalDataConsentPage />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path='/boardMembers'
+                    element={
+                      <PublicRoute>
+                        <BoardMembersPage />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path='/regionalOffices'
+                    element={
+                      <PublicRoute>
+                        <RegionalOfficesPage />
+                      </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path='/companyCharter'
+                    element={
+                      <PublicRoute>
+                        <CompanyCharterPage />
                       </PublicRoute>
                     }
                   />

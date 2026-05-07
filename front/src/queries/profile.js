@@ -2,6 +2,9 @@ import apiClient from '../api/api'
 import { useQuery } from '@tanstack/react-query'
 import { parseISO } from 'date-fns'
 
+/**
+ * @param {string} id
+ */
 export function useFetchProfile(id) {
   return useQuery({
     queryKey: ['profile', id],

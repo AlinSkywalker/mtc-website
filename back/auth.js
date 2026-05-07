@@ -150,7 +150,7 @@ const authRouter = (app, passport) => {
     }
   );
   app.post("/register", (req, res) => {
-    const { email, fio, date_birth, password, gender } = req.body;
+    const { email, fio, date_birth, password, gender, tel_1 } = req.body;
     pool.query(`SELECT * FROM user WHERE login='${email}'`, (error, result) => {
       if (error) {
         console.log(error);
@@ -197,7 +197,8 @@ const authRouter = (app, passport) => {
 
                   if (member) {
                     pool.query(
-                      `UPDATE member SET user_id=${userId}, memb_email='${email}'  WHERE id=${member.id} AND user_id IS NULL`,
+                      `UPDATE member SET user_id=${userId}, memb_email='${email}', tel_1=${tel_1}
+                        WHERE id=${member.id} AND user_id IS NULL`,
                       (error, result) => {
                         if (error) {
                           console.log(error);
@@ -227,8 +228,8 @@ const authRouter = (app, passport) => {
                     );
                   } else {
                     pool.query(
-                      "INSERT INTO member (fio, date_birth, gender, user_id,memb_email) VALUES(?,?,?,?,?)",
-                      [fio, date_birth, gender, userId, email],
+                      "INSERT INTO member (fio, date_birth, gender, user_id,memb_email,tel_1) VALUES(?,?,?,?,?,?)",
+                      [fio, date_birth, gender, userId, email, tel_1],
                       (error, result) => {
                         if (error) {
                           console.log(error);
@@ -258,13 +259,19 @@ const authRouter = (app, passport) => {
                               },
                               jwtOptions.secretOrKey
                             );
-                            sendSuccessfulRegistrationEmail(email, () => {
-                              res.json({
-                                success: true,
-                                token,
-                                user_role: "USER_ROLE",
-                                user_id: userId,
-                              });
+                            // sendSuccessfulRegistrationEmail(email, () => {
+                            //   res.json({
+                            //     success: true,
+                            //     token,
+                            //     user_role: "USER_ROLE",
+                            //     user_id: userId,
+                            //   });
+                            // });
+                            res.json({
+                              success: true,
+                              token,
+                              user_role: "USER_ROLE",
+                              user_id: userId,
                             });
                           }
                         );
