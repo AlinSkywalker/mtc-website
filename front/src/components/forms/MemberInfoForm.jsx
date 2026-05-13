@@ -24,6 +24,7 @@ import { PhoneField } from './../formFields/PhoneField'
 import { parsePhoneNumber } from 'react-phone-number-input'
 import { useQueryClient } from '@tanstack/react-query'
 import DefaultImage from '../../assets/default_profile.jpg'
+import { useSnackbar } from 'notistack'
 
 const defaultValues = {
   fio: '',
@@ -46,6 +47,7 @@ const defaultValues = {
   ledu: 'WI2',
   skali: '5a',
   emergency_contact: '',
+  last_payment_date: null,
 }
 
 const validationSchema = Yup.object({
@@ -64,6 +66,7 @@ const validationSchema = Yup.object({
 
 export const MemberInfoForm = ({ memberData, isLoading }) => {
   const queryClient = useQueryClient()
+  const { enqueueSnackbar } = useSnackbar()
   const {
     handleSubmit,
     formState: { errors, dirtyFields },
@@ -79,20 +82,25 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
   const handleSave = async (data, e) => {
     e.preventDefault()
     try {
-      const { date_birth, date_razr, date_zeton, date_instr, photo, ...rest } = data
+      const { date_birth, date_razr, date_zeton, date_instr, photo, last_payment_date, ...rest } =
+        data
       await apiClient.post(`/api/memberList/${data.id}`, {
         ...rest,
         date_birth: date_birth ? format(date_birth, 'yyyy-MM-dd') : null,
         date_razr: date_razr ? format(date_razr, 'yyyy-MM-dd') : null,
         date_zeton: date_zeton ? format(date_zeton, 'yyyy-MM-dd') : null,
         date_instr: date_instr ? format(date_instr, 'yyyy-MM-dd') : null,
+        last_payment_date: last_payment_date ? format(last_payment_date, 'yyyy-MM-dd') : null,
         tel_1: data.tel_1 ? parsePhoneNumber(data.tel_1)?.number : '',
         tel_2: data.tel_2 ? parsePhoneNumber(data.tel_2)?.number : '',
       })
-      // reset(undefined, { keepDirtyValues: true })
 
       queryClient.invalidateQueries({ queryKey: ['member', String(data.id)] })
     } catch (error) {
+      enqueueSnackbar('Произошла ошибка при сохранении', {
+        variant: 'error',
+        autoHideDuration: 2000,
+      })
       console.error(error)
     }
   }
@@ -298,7 +306,7 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
                   />
                 </Grid>
               </Grid>
-              <Grid container flexDirection='row' spacing={2} columns={24}>
+              <Grid container flexDirection='row' spacing={2} columns={24} sx={{ marginBottom: 2 }}>
                 <Grid size={isMobile ? 24 : 4}>
                   <Controller
                     name='alpzeton'
@@ -392,6 +400,21 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
                           ))}
                         </Select>
                       </FormControl>
+                    )}
+                  />
+                </Grid>
+              </Grid>
+              <Grid container flexDirection='row' spacing={2} columns={24}>
+                <Grid size={isMobile ? 24 : 4}>
+                  <Controller
+                    name='last_payment_date'
+                    control={control}
+                    render={({ field }) => (
+                      <DatePicker
+                        label='Дата оплаты членства'
+                        {...field}
+                        slotProps={{ textField: { fullWidth: true } }}
+                      />
                     )}
                   />
                 </Grid>

@@ -1,12 +1,9 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import './AdminLayoutStyles.css'
-import { useIsAdmin } from '../hooks/useIsAdmin'
 import { Button, Menu, MenuItem } from '@mui/material'
-import { useIsMobile } from '../hooks/useIsMobile'
 
-export const AppToolbarDesktopMenuItem = ({ menuItem }) => {
-  console.log('menuItem', menuItem)
+export const AppToolbarDesktopMenuItem = ({ menuItem, isCurrentPage }) => {
   const [anchorEl, setAnchorEl] = React.useState(null)
 
   const handleMenuClose = () => {
@@ -38,7 +35,12 @@ export const AppToolbarDesktopMenuItem = ({ menuItem }) => {
       <Button
         key={menuItem.name}
         onClick={handleMenuItemClick}
-        sx={{ my: 2, color: 'white', display: 'block' }}
+        sx={{
+          my: 2,
+          color: 'white',
+          display: 'block',
+          textDecoration: isCurrentPage ? 'underline' : 'none',
+        }}
       >
         {menuItem.label}
       </Button>

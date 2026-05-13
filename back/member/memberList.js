@@ -257,7 +257,8 @@ const memberListRouter = (app, passport) => {
         skali,
         ledu,
         memb,
-        emergency_contact
+        emergency_contact,
+        last_payment_date
       } = req.body;
       pool.query(
         `UPDATE member SET 
@@ -272,6 +273,7 @@ const memberListRouter = (app, passport) => {
       size_shoe=?,
       memb=?,
       emergency_contact=?,
+      last_payment_date=?,
       updated_date=CURRENT_TIMESTAMP WHERE id=${id}`,
         [
           fio,
@@ -284,7 +286,8 @@ const memberListRouter = (app, passport) => {
           size_cloth,
           size_shoe,
           memb,
-          emergency_contact
+          emergency_contact,
+          last_payment_date,
         ],
         (error, result) => {
           if (error) {

@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography'
 import { Link } from 'react-router-dom'
 import './AdminLayoutStyles.css'
 import { useLocation } from 'react-router-dom'
-import { useIsAdmin } from '../hooks/useIsAdmin'
+import { useIsAdmin, useIsBoardMember } from '../hooks/useIsAdmin'
 import { AppToolbar } from './AppToolbar'
 import { AuthContext } from './AuthContext'
 import { useIsMobile } from '../hooks/useIsMobile'
@@ -13,6 +13,7 @@ import { AppToolbarDesktopMenuItem } from './AppToolbarDesktopMenuItem'
 
 export const MainLayout = ({ children, withProfile = true }) => {
   const isAdmin = useIsAdmin()
+  const isBoardMember = useIsBoardMember()
   const {
     isAuthenticated,
     userInfo: { isClubMember },
@@ -37,6 +38,13 @@ export const MainLayout = ({ children, withProfile = true }) => {
   if (isClubMember) {
     pages.push({ name: 'minutesOfMeeting', url: '/minutesOfMeeting', label: 'Протоколы собраний' })
   }
+  if (isBoardMember) {
+    pages.push({
+      name: 'membershipApplication',
+      url: '/crm/membershipApplication',
+      label: 'Заявки на членство',
+    })
+  }
   pages.push({
     name: 'aboutUs',
     url: '/about',
@@ -53,7 +61,7 @@ export const MainLayout = ({ children, withProfile = true }) => {
   const currentPage = pages.find(
     (tab) =>
       `${tab.url}` === location.pathname ||
-      (tab.url !== '/' && location.pathname.startsWith(`${tab.url}`)),
+      (tab.url !== '/' && location.pathname.startsWith(`${tab.url}/`)),
   )
 
   const isMobile = useIsMobile()
@@ -70,7 +78,13 @@ export const MainLayout = ({ children, withProfile = true }) => {
             </Typography>
           )}
           {!isMobile &&
-            pages.map((page) => <AppToolbarDesktopMenuItem menuItem={page} key={page.name} />)}
+            pages.map((page) => (
+              <AppToolbarDesktopMenuItem
+                menuItem={page}
+                key={page.name}
+                isCurrentPage={currentPage?.name === page.name}
+              />
+            ))}
         </>
       </AppToolbar>
       <Toolbar />

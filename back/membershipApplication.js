@@ -29,16 +29,36 @@ const membershipApplicationRouter = (app, passport) => {
   app.put('/membershipApplication/',
     passport.authenticate('jwt', { session: false }),
     (req, res) => {
-      const { member_id } = req.body;
-      pool.query(`INSERT INTO membership_application ( member_id) 
+      const member_id = req.user.user_member_id;
+      pool.query(
+        `SELECT m_a.*
+          FROM membership_application m_a
+          WHERE m_a.member_id=${member_id}
+          ORDER BY created_date DESC`,
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return;
+          }
+          if (result.length !== 0) {
+            res.status(500).json({ success: false, message: 'Вы уже подали заявку на вступление' });
+          }
+          else {
+            pool.query(`INSERT INTO membership_application ( member_id) 
       VALUES(${member_id})`, (error, result) => {
-        if (error) {
-          console.log(error);
-          res.status(500).json({ success: false, message: error });
-          return
+              if (error) {
+                console.log(error);
+                res.status(500).json({ success: false, message: error });
+                return
+              }
+              res.send(result);
+            });
+          }
+
         }
-        res.send(result);
-      });
+      );
+
     })
   app.post('/membershipApplication/:id/confirmPayment',
     passport.authenticate('jwt', { session: false }),
@@ -48,7 +68,7 @@ const membershipApplicationRouter = (app, passport) => {
         `SELECT m_a.*
           FROM membership_application m_a
           WHERE id=${id}`,
-        (error, result) => {
+        (error, result_ma) => {
           if (error) {
             console.log(error);
             res.status(500).json({ success: false, message: error });
@@ -65,11 +85,13 @@ const membershipApplicationRouter = (app, passport) => {
                 return;
               }
               const boardMembersCount = result_bm[0]?.board_members_count
-              const voting_results = result[0]?.voting_results
+              const voting_results = result_ma[0]?.voting_results
 
               let statusUpdateStatement = ''
+              let needToSetMembership = false
               const positiveVotedMemberCount = Object.values(voting_results || {}).filter(item => item === 'yes').length
               if (voting_results && positiveVotedMemberCount > (boardMembersCount / 2)) {
+                needToSetMembership = true
                 statusUpdateStatement = `status='Принято',`
               }
               pool.query(
@@ -84,7 +106,23 @@ const membershipApplicationRouter = (app, passport) => {
                     res.status(500).json({ success: false, message: error });
                     return;
                   }
-                  res.send({ boardMembersCount, voting_results });
+                  if (needToSetMembership) {
+                    pool.query(
+                      `UPDATE member SET 
+                  memb=1,
+                  updated_date=CURRENT_TIMESTAMP
+                  WHERE id=${result_ma[0]?.member_id}`,
+                      (error, result) => {
+                        if (error) {
+                          console.log(error);
+                          res.status(500).json({ success: false, message: error });
+                          return;
+                        }
+                        res.send(result);
+                      }
+                    );
+                  }
+                  res.send(result);
                 }
               );
             }
@@ -104,7 +142,7 @@ const membershipApplicationRouter = (app, passport) => {
         `SELECT m_a.*
           FROM membership_application m_a
           WHERE id=${id}`,
-        (error, result) => {
+        (error, result_ma) => {
           if (error) {
             console.log(error);
             res.status(500).json({ success: false, message: error });
@@ -120,15 +158,17 @@ const membershipApplicationRouter = (app, passport) => {
                 return;
               }
               const boardMembersCount = result_bm[0]?.board_members_count
-              const voting_results = result[0]?.voting_results
+              const voting_results = result_ma[0]?.voting_results
 
 
               const newVotingResults = { ...(voting_results || {}), [currentUserMemberId]: vote }
 
               let statusUpdateStatement = ''
+              let needToSetMembership = false
               const positiveVotedMemberCount = Object.values(newVotingResults).filter(item => item === 'yes').length
               if (positiveVotedMemberCount > (boardMembersCount / 2) && vote === 'yes') {
                 statusUpdateStatement = `status='Принято',`
+                needToSetMembership = true
               }
 
               pool.query(
@@ -143,6 +183,22 @@ const membershipApplicationRouter = (app, passport) => {
                     res.status(500).json({ success: false, message: error });
                     return;
                   }
+                  if (needToSetMembership) {
+                    pool.query(
+                      `UPDATE member SET 
+                  memb=1,
+                  updated_date=CURRENT_TIMESTAMP
+                  WHERE id=${result_ma[0]?.member_id}`,
+                      (error, result) => {
+                        if (error) {
+                          console.log(error);
+                          res.status(500).json({ success: false, message: error });
+                          return;
+                        }
+                        res.send(result);
+                      }
+                    );
+                  }
                   res.send(result);
                 }
               );
@@ -151,6 +207,22 @@ const membershipApplicationRouter = (app, passport) => {
         }
       );
     })
+  app.delete(
+    "/membershipApplication/:id",
+    passport.authenticate("jwt", { session: false }),
+    checkAdminAccess(),
+    (req, res) => {
+      const id = req.params.id;
+      pool.query(`DELETE FROM membership_application WHERE id=${id}`, (error, result) => {
+        if (error) {
+          console.log(error);
+          res.status(500).json({ success: false, message: error });
+          return;
+        }
+        res.json({ success: true });
+      });
+    }
+  );
 };
 
 // Export the router

@@ -1,5 +1,26 @@
 import React, { createContext, useEffect, useState } from 'react'
 
+/**
+ * @typedef {Object} UserInfo
+ * @property {string} id
+ * @property {string} role
+ * @property {string} memberId
+ * @property {boolean} isClubMember
+ * @property {boolean} isBoardMember
+ */
+
+/**
+ * @typedef {Object} AuthContextValue
+ * @property {boolean} isAuthenticated
+ * @property {function(boolean): void} setIsAuthenticated
+ * @property {UserInfo} userInfo
+ * @property {function(UserInfo): void} setUserInfo
+ */
+
+/**
+ * @type {React.Context<AuthContextValue>}
+ */
+
 const AuthContext = createContext()
 
 const AuthProvider = ({ children }) => {
@@ -19,11 +40,9 @@ const AuthProvider = ({ children }) => {
     setIsAuthenticated(!!token)
   }, [])
 
-  return (
-    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, userInfo, setUserInfo }}>
-      {children}
-    </AuthContext.Provider>
-  )
+  const contextValue = { isAuthenticated, setIsAuthenticated, userInfo, setUserInfo }
+
+  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
 }
 
 export { AuthContext, AuthProvider }

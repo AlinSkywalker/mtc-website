@@ -17,7 +17,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
 import { useForm } from 'react-hook-form'
 import { useIsMobile } from '../../hooks/useIsMobile'
-import { Card, CardContent } from '@mui/material'
+import { Card, CardContent, Typography } from '@mui/material'
 import { AuthContext } from '../AuthContext'
 import { useNavigate } from 'react-router-dom'
 
@@ -90,6 +90,25 @@ export const ProfileForm = ({
     navigate('/crm/membership')
   }
 
+  const lastPaymentDate = data?.last_payment_date ? new Date(data?.last_payment_date) : null
+  const currentDate = new Date()
+
+  const isActiveMembersip =
+    lastPaymentDate?.getFullYear() === currentDate.getFullYear() ||
+    (lastPaymentDate?.getFullYear() === currentDate.getFullYear() - 1 &&
+      lastPaymentDate?.getMonth() > 10)
+
+  let activeUntilYear = ''
+  if (
+    lastPaymentDate?.getFullYear() === currentDate.getFullYear() &&
+    currentDate?.getMonth() > 10 &&
+    lastPaymentDate?.getMonth() > 10
+  ) {
+    String(currentDate.getFullYear() + 1)
+  } else if (lastPaymentDate?.getFullYear() === currentDate.getFullYear()) {
+    activeUntilYear = String(currentDate.getFullYear())
+  }
+
   return (
     <Card sx={{ minWidth: 275 }}>
       <CardContent>
@@ -109,6 +128,7 @@ export const ProfileForm = ({
                 currentMemberId={currentMemberId}
                 currentUserId={currentUserId}
               />
+              {isActiveMembersip && <Typography>Действующий до 31.12.{activeUntilYear}</Typography>}
               <Button variant='contained' onClick={handleClick}>
                 {isClubMember ? 'Продлить членство' : 'Вступить в клуб'}
               </Button>

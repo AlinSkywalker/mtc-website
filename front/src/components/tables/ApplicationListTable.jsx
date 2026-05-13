@@ -1,15 +1,12 @@
 import React from 'react'
-import { useFetchMemberList } from '../../queries/member'
 import { Button, Link } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import apiClient from '../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
 import { EditableTable } from '../EditableTable'
 import * as Yup from 'yup'
-import { SelectEditInputCell } from '../dataGridCell/SelectEditInputCell'
 import { dateColumnType } from '../dataGridCell/GridEditDateCell'
-import { DEPARTMENT_TYPE_ARRAY, sizeClothOptions, sizeShoeOptions } from '../../constants'
-import { checkboxColumnType } from '../dataGridCell/GridEditCheckboxCell'
+import { DEPARTMENT_TYPE_ARRAY } from '../../constants'
 import { useFetchApplicationList } from '../../queries/application'
 
 const defaultItem = {

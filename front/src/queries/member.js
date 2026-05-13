@@ -33,6 +33,7 @@ export function useFetchMember(id) {
         date_razr: data.date_razr ? parseISO(data.date_razr) : null,
         date_zeton: data.date_zeton ? parseISO(data.date_zeton) : null,
         date_instr: data.date_instr ? parseISO(data.date_instr) : null,
+        last_payment_date: data.last_payment_date ? parseISO(data.last_payment_date) : null,
       }
     },
   })

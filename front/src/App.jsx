@@ -18,8 +18,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { ru } from 'date-fns/locale/ru'
 import theme from './api/theme'
-import { Grid, ThemeProvider } from '@mui/material'
-import { SnackbarProvider } from 'notistack'
+import { Grid, IconButton, ThemeProvider } from '@mui/material'
+import { closeSnackbar, SnackbarProvider } from 'notistack'
 import { PersonalDataConsentPage } from './pages/PersonalDataConsentPage'
 import { ApplicationListPage } from './pages/ApplicationListPage'
 import { ResetPasswordPage } from './pages/ResetPasswordPage'
@@ -29,6 +29,8 @@ import { RegionalOfficesPage } from './pages/RegionalOfficesPage'
 import { CompanyCharterPage } from './pages/CompanyCharterPage'
 import { MinutesOfMeetingPage } from './pages/MinutesOfMeetingPage'
 import { MembershipPage } from './pages/MembershipPage'
+import { MembershipApplicationListPage } from './pages/MembershipApplicationListPage'
+import CloseIcon from '@mui/icons-material/Close'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -78,7 +80,17 @@ const App = () => {
     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ru}>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
-          <SnackbarProvider>
+          <SnackbarProvider
+            action={(snackbarId) => (
+              <IconButton
+                aria-label='delete'
+                onClick={() => closeSnackbar(snackbarId)}
+                sx={{ color: 'white' }}
+              >
+                <CloseIcon />
+              </IconButton>
+            )}
+          >
             <CssBaseline />
             <AuthProvider>
               <BrowserRouter>
@@ -228,6 +240,14 @@ const App = () => {
                     element={
                       <PrivateRoute>
                         <MembershipPage />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path='/crm/membershipApplication'
+                    element={
+                      <PrivateRoute>
+                        <MembershipApplicationListPage />
                       </PrivateRoute>
                     }
                   />
