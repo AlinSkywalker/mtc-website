@@ -5,16 +5,16 @@ import Button from '@mui/material/Button'
 import CardContent from '@mui/material/CardContent'
 import Grid from '@mui/material/Grid'
 import Container from '@mui/material/Container'
-import apiClient from '../api/api'
+import apiClient from '../../api/api'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { format } from 'date-fns'
 import { CircularProgress } from '@mui/material'
 
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
-import { useIsMobile } from '../hooks/useIsMobile'
+import { useIsMobile } from '../../hooks/useIsMobile'
 import { useSnackbar } from 'notistack'
-import { SERVER_REQUEST_ERROR } from '../constants'
+import { SERVER_REQUEST_ERROR } from '../../constants'
 import { useQueryClient } from '@tanstack/react-query'
 
 const defaultValues = {
@@ -115,13 +115,7 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
   return (
     <CardContent>
       <form onSubmit={handleSubmit(handleSave)}>
-        <Grid
-          container
-          // justifyContent='center'
-          // alignItems='center'
-          flexDirection='row'
-          spacing={2}
-        >
+        <Grid container flexDirection='row' spacing={2}>
           <Grid size={isMobile ? 12 : 4}>
             <Controller
               name='event_name'

@@ -12,7 +12,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
 import { Typography } from '@mui/material'
 import MtcImage from '../assets/mtc_black.png'
-import { SetNewPasswordForm } from '../components/SetNewPasswordForm'
+import { SetNewPasswordForm } from '../components/forms/SetNewPasswordForm'
 
 const validationSchema = Yup.object({
   username: Yup.string().required('Поле обязательно для заполнения'),

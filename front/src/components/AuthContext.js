@@ -5,7 +5,13 @@ const AuthContext = createContext()
 const AuthProvider = ({ children }) => {
   const savedToken = localStorage.getItem('token')
   const [isAuthenticated, setIsAuthenticated] = useState(!!savedToken)
-  const [userInfo, setUserInfo] = useState({ id: '', role: '', memberId: '' })
+  const [userInfo, setUserInfo] = useState({
+    id: '',
+    role: '',
+    memberId: '',
+    isClubMember: false,
+    isBoardMember: false,
+  })
 
   useEffect(() => {
     const token = localStorage.getItem('token')

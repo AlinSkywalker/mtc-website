@@ -67,19 +67,13 @@ export const ProfilePage = () => {
       maxWidth={false}
       sx={{ height: '100vh', backgroundColor: { xs: '#fff', md: '#f4f4f4' }, overflowY: 'scroll' }}
     >
-      <Grid container justifyContent='center' alignItems='center'>
-        <Card sx={{ width: 400 }}>
-          <CardContent>
-            <ProfileForm
-              handleSaveProfileData={handleSaveProfileData}
-              fetchAllCities={fetchAllCities}
-              currentMemberId={currentMemberId}
-              currentUserId={userInfo.id}
-              data={data}
-            />
-          </CardContent>
-        </Card>
-      </Grid>
+      <ProfileForm
+        handleSaveProfileData={handleSaveProfileData}
+        fetchAllCities={fetchAllCities}
+        currentMemberId={currentMemberId}
+        currentUserId={userInfo.id}
+        data={data}
+      />
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs onChange={handleChange} variant='scrollable' scrollButtons='auto' value={value}>

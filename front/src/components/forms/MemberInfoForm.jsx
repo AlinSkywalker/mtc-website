@@ -6,24 +6,24 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Grid from '@mui/material/Grid'
 import Container from '@mui/material/Container'
-import apiClient from '../api/api'
+import apiClient from '../../api/api'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { format } from 'date-fns'
-import { AsynchronousAutocomplete } from './AsynchronousAutocomplete'
+import { AsynchronousAutocomplete } from '../AsynchronousAutocomplete'
 import { CircularProgress } from '@mui/material'
-import { sizeClothOptions, sizeShoeOptions } from '../constants'
+import { sizeClothOptions, sizeShoeOptions } from '../../constants'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
-import { useIsMobile } from '../hooks/useIsMobile'
+import { useIsMobile } from '../../hooks/useIsMobile'
 import PhoneInput from 'react-phone-number-input/react-hook-form-input'
-import { PhoneField } from './formFields/PhoneField'
+import { PhoneField } from './../formFields/PhoneField'
 import { parsePhoneNumber } from 'react-phone-number-input'
 import { useQueryClient } from '@tanstack/react-query'
-import DefaultImage from '../assets/default_profile.jpg'
+import DefaultImage from '../../assets/default_profile.jpg'
 
 const defaultValues = {
   fio: '',
@@ -131,14 +131,7 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
               <img alt='' src={memberData?.member_photo || DefaultImage} width='200' height='200' />
             </Grid>
             <Grid>
-              <Grid
-                container
-                // justifyContent='center'
-                // alignItems='center'
-                flexDirection='row'
-                spacing={2}
-                sx={{ marginBottom: 4 }}
-              >
+              <Grid container flexDirection='row' spacing={2} sx={{ marginBottom: 4 }}>
                 <Grid size={isMobile ? 12 : 4}>
                   <Controller
                     name='fio'
@@ -239,13 +232,6 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
                   />
                 </Grid>
                 <Grid size={isMobile ? 12 : 2}>
-                  {/* <Controller
-                name='tel_1'
-                control={control}
-                render={({ field }) => (
-                  <TextField {...field} variant='outlined' label='Телефон основной' fullWidth />
-                )}
-              /> */}
                   <PhoneInput
                     control={control}
                     rules={{ required: true }}
@@ -256,18 +242,6 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
                   />
                 </Grid>
                 <Grid size={isMobile ? 12 : 2}>
-                  {/* <Controller
-                name='tel_2'
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    variant='outlined'
-                    label='Телефон экстренного контакта'
-                    fullWidth
-                  />
-                )}
-              /> */}
                   <PhoneInput
                     control={control}
                     rules={{ required: true }}
@@ -324,14 +298,7 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
                   />
                 </Grid>
               </Grid>
-              <Grid
-                container
-                // justifyContent='center'
-                // alignItems='center'
-                flexDirection='row'
-                spacing={2}
-                columns={24}
-              >
+              <Grid container flexDirection='row' spacing={2} columns={24}>
                 <Grid size={isMobile ? 24 : 4}>
                   <Controller
                     name='alpzeton'

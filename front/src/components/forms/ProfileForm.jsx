@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Controller } from 'react-hook-form'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
@@ -16,6 +16,10 @@ import { ProfileFormImage } from './ProfileFormImage'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
 import { useForm } from 'react-hook-form'
+import { useIsMobile } from '../../hooks/useIsMobile'
+import { Card, CardContent } from '@mui/material'
+import { AuthContext } from '../AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 const validationSchema = Yup.object({
   fio: Yup.string().required('Поле обязательно для заполнения'),
@@ -76,195 +80,224 @@ export const ProfileForm = ({
 
   const photo = data?.member_photo
 
+  const isMobile = useIsMobile()
+  const {
+    userInfo: { isClubMember },
+  } = useContext(AuthContext)
+  const navigate = useNavigate()
+
+  const handleClick = () => {
+    navigate('/crm/membership')
+  }
+
   return (
-    <form onSubmit={handleSubmit(handleSaveProfileData)}>
-      <Grid
-        container
-        justifyContent='center'
-        // alignItems='center'
-        flexDirection='column'
-        spacing={2}
-      >
-        <ProfileFormImage
-          photo={photo}
-          currentMemberId={currentMemberId}
-          currentUserId={currentUserId}
-        />
-        <Grid>
-          <Controller
-            name='memb_email'
-            control={control}
-            render={({ field }) => (
-              <TextField {...field} variant='outlined' label='Email' disabled fullWidth />
-            )}
-          />
-        </Grid>
-        <Grid>
-          <Controller
-            name='fio'
-            control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                variant='outlined'
-                label='Фамилия Имя Отчество'
-                fullWidth
-                error={errors[field.name]}
-                helperText={errors[field.name]?.message}
+    <Card sx={{ minWidth: 275 }}>
+      <CardContent>
+        <form onSubmit={handleSubmit(handleSaveProfileData)}>
+          <Grid container wrap={isMobile ? 'wrap' : 'nowrap'}>
+            <Grid
+              sx={{
+                width: isMobile ? '100%' : 200,
+                flexShrink: 0,
+                marginRight: 1,
+                marginBottom: 1,
+                textAlign: 'center',
+              }}
+            >
+              <ProfileFormImage
+                photo={photo}
+                currentMemberId={currentMemberId}
+                currentUserId={currentUserId}
               />
-            )}
-          />
-        </Grid>
-        <Grid>
-          <Controller
-            name='date_birth'
-            control={control}
-            render={({ field }) => (
-              <DatePicker
-                label='Дата рождения'
-                {...field}
-                slotProps={{
-                  textField: {
-                    fullWidth: true,
-                    error: errors[field.name],
-                    helperText: errors[field.name]?.message,
-                  },
-                }}
-              />
-            )}
-          />
-        </Grid>
-        <Grid>
-          <Controller
-            name='gender'
-            control={control}
-            render={({ field }) => (
-              <FormControl fullWidth>
-                <InputLabel id='ageLabel'>Пол</InputLabel>
-                <Select {...field} label='Пол' fullWidth labelId='ageLabel'>
-                  {['М', 'Ж'].map((item, index) => (
-                    <MenuItem value={item} key={index}>
-                      {item}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            )}
-          />
-        </Grid>
-        <Grid>
-          <Controller
-            name='size_shoe'
-            control={control}
-            render={({ field }) => (
-              <FormControl fullWidth>
-                <InputLabel id='sizeShoeLabel'>Размер обуви</InputLabel>
-                <Select {...field} label='Размер обуви' fullWidth labelId='sizeShoeLabel'>
-                  {sizeShoeOptions.map((item, index) => (
-                    <MenuItem value={item} key={index}>
-                      {item}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            )}
-          />
-        </Grid>
-        <Grid>
-          <Controller
-            name='size_cloth'
-            control={control}
-            render={({ field }) => (
-              <FormControl fullWidth>
-                <InputLabel id='sizeClothLabel'>Размер одежды</InputLabel>
-                <Select {...field} label='Размер одежды' fullWidth labelId='sizeClothLabel'>
-                  {sizeClothOptions.map((item, index) => (
-                    <MenuItem value={item} key={index}>
-                      {item}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            )}
-          />
-        </Grid>
-        <Grid>
-          <Controller
-            name='city'
-            control={control}
-            render={({ field }) => (
-              <AsynchronousAutocomplete
-                label='Город'
-                request={fetchAllCities}
-                dataNameField='name_city'
-                field={field}
-                errors={errors}
-                secondarySourceArray={['count_name', 'okr_name', 'sub_name']}
-              />
-            )}
-          />
-        </Grid>
-        <Grid>
-          <PhoneInput
-            control={control}
-            rules={{ required: true }}
-            name='tel_1'
-            label='Телефон основной'
-            defaultCountry='RU'
-            inputComponent={PhoneField}
-            error={errors['tel_1']}
-            helperText={errors['tel_1']?.message}
-          />
-        </Grid>
-        <Grid>
-          <PhoneInput
-            control={control}
-            name='tel_2'
-            label='Телефон экстренного контакта'
-            defaultCountry='RU'
-            inputComponent={PhoneField}
-            error={errors['tel_2']}
-            helperText={errors['tel_2']?.message}
-          />
-        </Grid>
-        <Grid>
-          <Controller
-            name='emergency_contact'
-            control={control}
-            render={({ field }) => (
-              <TextField {...field} variant='outlined' label='Имя экстренного контакта' fullWidth />
-            )}
-          />
-        </Grid>
-        <Grid>
-          <Controller
-            name='about_me'
-            control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                variant='outlined'
-                label='О себе'
-                fullWidth
-                multiline
-                maxRows={4}
-              />
-            )}
-          />
-        </Grid>
-        <Grid container>
-          <Grid>
-            <Button variant='text' type='button' disabled={!isDirty} onClick={handleReset}>
-              Отменить
-            </Button>
+              <Button variant='contained' onClick={handleClick}>
+                {isClubMember ? 'Продлить членство' : 'Вступить в клуб'}
+              </Button>
+            </Grid>
+            <Grid>
+              <Grid container flexDirection='row' spacing={2} sx={{ marginBottom: 4 }}>
+                <Grid size={isMobile ? 12 : 4}>
+                  <Controller
+                    name='fio'
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        variant='outlined'
+                        label='ФИО'
+                        fullWidth
+                        error={errors[field.name]}
+                        helperText={errors[field.name]?.message}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid size={isMobile ? 12 : 1}>
+                  <Controller
+                    name='gender'
+                    control={control}
+                    render={({ field }) => (
+                      <FormControl fullWidth>
+                        <InputLabel id='ageLabel'>Пол</InputLabel>
+                        <Select {...field} label='Пол' fullWidth labelId='ageLabel'>
+                          {['М', 'Ж'].map((item, index) => (
+                            <MenuItem value={item} key={index}>
+                              {item}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    )}
+                  />
+                </Grid>
+                <Grid size={isMobile ? 12 : 2}>
+                  <Controller
+                    name='date_birth'
+                    control={control}
+                    render={({ field }) => (
+                      <DatePicker
+                        label='Дата рождения'
+                        {...field}
+                        slotProps={{ textField: { fullWidth: true } }}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid size={isMobile ? 12 : 1}>
+                  <Controller
+                    name='size_shoe'
+                    control={control}
+                    render={({ field }) => (
+                      <FormControl fullWidth>
+                        <InputLabel id='sizeShoeLabel'>Размер обуви</InputLabel>
+                        <Select {...field} label='Размер обуви' fullWidth labelId='sizeShoeLabel'>
+                          {sizeShoeOptions.map((item, index) => (
+                            <MenuItem value={item} key={index}>
+                              {item}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    )}
+                  />
+                </Grid>
+                <Grid size={isMobile ? 12 : 1}>
+                  <Controller
+                    name='size_cloth'
+                    control={control}
+                    render={({ field }) => (
+                      <FormControl fullWidth>
+                        <InputLabel id='sizeClothLabel'>Размер одежды</InputLabel>
+                        <Select {...field} label='Размер одежды' fullWidth labelId='sizeClothLabel'>
+                          {sizeClothOptions.map((item, index) => (
+                            <MenuItem value={item} key={index}>
+                              {item}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    )}
+                  />
+                </Grid>
+                <Grid size={isMobile ? 12 : 2}>
+                  <Controller
+                    name='city'
+                    control={control}
+                    render={({ field }) => (
+                      <AsynchronousAutocomplete
+                        label='Город'
+                        request={fetchAllCities}
+                        dataNameField='name_city'
+                        field={field}
+                        errors={errors}
+                        secondarySourceArray={['count_name', 'okr_name', 'sub_name']}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid size={isMobile ? 12 : 2}>
+                  <PhoneInput
+                    control={control}
+                    rules={{ required: true }}
+                    name='tel_1'
+                    label='Телефон основной'
+                    defaultCountry='RU'
+                    inputComponent={PhoneField}
+                  />
+                </Grid>
+                <Grid size={isMobile ? 12 : 2}>
+                  <PhoneInput
+                    control={control}
+                    rules={{ required: true }}
+                    name='tel_2'
+                    label='Телефон экстренного контакта'
+                    defaultCountry='RU'
+                    inputComponent={PhoneField}
+                  />
+                </Grid>
+                <Grid size={isMobile ? 12 : 2}>
+                  <Controller
+                    name='emergency_contact'
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        variant='outlined'
+                        label='Имя экстренного контакта'
+                        fullWidth
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid size={isMobile ? 12 : 2}>
+                  <Controller
+                    name='memb_email'
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        variant='outlined'
+                        label='Email'
+                        fullWidth
+                        error={errors[field.name]}
+                        helperText={errors[field.name]?.message}
+                        disabled
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid size={isMobile ? 12 : 3}>
+                  <Controller
+                    name='about_me'
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        variant='outlined'
+                        label='О себе'
+                        fullWidth
+                        multiline
+                        maxRows={isMobile ? 3 : 1}
+                      />
+                    )}
+                  />
+                </Grid>
+              </Grid>
+              <Grid container sx={{ marginTop: 4 }}>
+                <Grid>
+                  <Button variant='text' type='button' disabled={!isDirty} onClick={handleReset}>
+                    Отменить
+                  </Button>
+                </Grid>
+                <Grid>
+                  <Button variant='contained' type='submit' disabled={!isDirty}>
+                    Сохранить
+                  </Button>
+                </Grid>
+              </Grid>
+            </Grid>
           </Grid>
-          <Grid>
-            <Button variant='contained' type='submit' disabled={!isDirty}>
-              Сохранить
-            </Button>
-          </Grid>
-        </Grid>
-      </Grid>
-    </form>
+        </form>
+      </CardContent>
+    </Card>
   )
 }

@@ -1,16 +1,26 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import './AdminLayoutStyles.css'
-import { IconButton, Drawer, List, ListItem, ListItemText, Collapse, styled } from '@mui/material'
+import {
+  IconButton,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  Collapse,
+  styled,
+  Box,
+} from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
 import { useIsMobile } from '../hooks/useIsMobile'
 import { useState } from 'react'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
+import CloseIcon from '@mui/icons-material/Close'
 
 const DrawerStyled = styled(Drawer)`
   & .MuiPaper-root {
-    width: 50%;
+    width: 100%;
   }
 `
 
@@ -89,6 +99,11 @@ export const AppToolbarMainMenuMobile = ({ pages }) => {
         <MenuIcon />
       </IconButton>
       <DrawerStyled open={isMainMenuOpen} onClose={handleMainMenuClose} anchor='right'>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 1 }}>
+          <IconButton onClick={handleMainMenuClose} aria-label='close drawer'>
+            <CloseIcon />
+          </IconButton>
+        </Box>
         <List>{pages.map(renderPageItem)}</List>
       </DrawerStyled>
     </>

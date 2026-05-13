@@ -18,6 +18,8 @@ export const AppToolbar = ({ children, pages, withProfile }) => {
           id: response.data.id,
           role: response.data.role,
           memberId: response.data.memberId,
+          isClubMember: Boolean(response.data.isClubMember),
+          isBoardMember: response.data.isBoardMember,
         })
       })
     }

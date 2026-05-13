@@ -58,6 +58,8 @@ const applicationRouter = require("./application");
 const boardMembersRouter = require("./boardMembers");
 const regionalOfficesRouter = require("./regionalOffices");
 const companyDataRouter = require("./companyData");
+const minutesOfMeetingsRouter = require("./minutesOfMeetings");
+const membershipApplicationRouter = require("./membershipApplication");
 
 
 const jwtOptions = {
@@ -191,7 +193,26 @@ app.get(
   "/current",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    res.send({ id: req.user.user_id, role: req.user.user_role, memberId: req.user.user_member_id });
+    pool.query(
+      `SELECT m.*, b_m.position FROM member m
+      LEFT OUTER JOIN board_members b_m ON b_m.member_id=m.id
+      WHERE m.id=${req.user.user_member_id}`,
+      (error, result) => {
+        if (error) {
+          console.log(error);
+          res.status(500).json({ success: false, message: error });
+          return;
+        }
+        if (result[0]) {
+          const { memb, position } = result[0];
+
+          res.send({ id: req.user.user_id, role: req.user.user_role, memberId: req.user.user_member_id, isClubMember: memb, isBoardMember: !!position });
+          return
+        }
+        res.status(500).json({ success: false });
+      }
+    );
+
   }
 );
 
@@ -253,10 +274,11 @@ app.post(
       gender='${gender}',
       fio='${fio}',
       date_birth='${date_birth}',
-      memb_city='${memb_city || null}',
-      emergency_contact=${emergency_contact ? 'emergency_contact' : ''},
-      about_me='${about_me}'
+      memb_city=?,
+      emergency_contact=?,
+      about_me=?
       WHERE id=${id}`,
+      [memb_city || null, emergency_contact || null, about_me || null],
       (error, result) => {
         if (error) {
           console.log(error);
@@ -348,6 +370,9 @@ applicationRouter(app, passport);
 boardMembersRouter(app, passport);
 regionalOfficesRouter(app, passport);
 companyDataRouter(app, passport);
+minutesOfMeetingsRouter(app, passport);
+membershipApplicationRouter(app, passport);
+
 
 app.get(/(.*)/, (req, res) => {
   // console.log(req.params);

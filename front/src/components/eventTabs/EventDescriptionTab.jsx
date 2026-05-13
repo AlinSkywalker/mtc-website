@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom'
 import { useIsAdmin } from '../../hooks/useIsAdmin'
 import { useIsMobile } from '../../hooks/useIsMobile'
 import { EventInfoRO } from '../EventInfoRO'
-import { EventInfoForm } from '../EventInfoForm'
+import { EventInfoForm } from '../forms/EventInfoForm'
 import { EventBaseTable } from '../tables/EventBaseTable'
 import { EventApplicationDialog } from './dialogs/EventApplicationDialog'
 

@@ -13,7 +13,10 @@ import { AppToolbarDesktopMenuItem } from './AppToolbarDesktopMenuItem'
 
 export const MainLayout = ({ children, withProfile = true }) => {
   const isAdmin = useIsAdmin()
-  const { isAuthenticated } = useContext(AuthContext)
+  const {
+    isAuthenticated,
+    userInfo: { isClubMember },
+  } = useContext(AuthContext)
 
   /**
    * @type {Array<{url: string, name: string, label: string, subPages?: Array<{url: string, name: string, label: string}>}>}
@@ -31,7 +34,9 @@ export const MainLayout = ({ children, withProfile = true }) => {
   } else {
     pages = [{ name: 'main', url: '/', label: 'Мероприятия' }]
   }
-
+  if (isClubMember) {
+    pages.push({ name: 'minutesOfMeeting', url: '/minutesOfMeeting', label: 'Протоколы собраний' })
+  }
   pages.push({
     name: 'aboutUs',
     url: '/about',

@@ -27,6 +27,8 @@ import { MainPage } from './pages/MainPage'
 import { BoardMembersPage } from './pages/BoardMembersPage'
 import { RegionalOfficesPage } from './pages/RegionalOfficesPage'
 import { CompanyCharterPage } from './pages/CompanyCharterPage'
+import { MinutesOfMeetingPage } from './pages/MinutesOfMeetingPage'
+import { MembershipPage } from './pages/MembershipPage'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -211,6 +213,22 @@ const App = () => {
                       <PublicRoute>
                         <CompanyCharterPage />
                       </PublicRoute>
+                    }
+                  />
+                  <Route
+                    path='/minutesOfMeeting'
+                    element={
+                      <PrivateRoute>
+                        <MinutesOfMeetingPage />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path='/crm/membership'
+                    element={
+                      <PrivateRoute>
+                        <MembershipPage />
+                      </PrivateRoute>
                     }
                   />
                 </Routes>
