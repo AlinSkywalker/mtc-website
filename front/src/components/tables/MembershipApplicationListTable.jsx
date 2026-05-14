@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { Button, Grid, Link } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import apiClient from '../../api/api'
@@ -47,20 +47,36 @@ export const MembershipApplicationListTable = () => {
       </Link>
     )
   }
+  const [isVoting, setIsVoting] = useState(false)
+
   const handleVote = (id, vote) => () => {
-    apiClient.post(`/api/membershipApplication/${id}/vote/${vote}`).then((res) => {
-      queryClient.invalidateQueries({
-        queryKey: ['membershipApplication'],
+    setIsVoting(true)
+    return apiClient
+      .post(`/api/membershipApplication/${id}/vote/${vote}`)
+      .then((res) => {
+        queryClient.invalidateQueries({
+          queryKey: ['membershipApplication'],
+        })
+        setIsVoting(false)
       })
-    })
+      .catch(() => {
+        setIsVoting(false)
+      })
   }
 
   const handleConfirmPayment = (id) => () => {
-    apiClient.post(`/api/membershipApplication/${id}/confirmPayment`).then((res) => {
-      queryClient.invalidateQueries({
-        queryKey: ['membershipApplication'],
+    setIsVoting(true)
+    return apiClient
+      .post(`/api/membershipApplication/${id}/confirmPayment`)
+      .then((res) => {
+        queryClient.invalidateQueries({
+          queryKey: ['membershipApplication'],
+        })
+        setIsVoting(false)
       })
-    })
+      .catch(() => {
+        setIsVoting(false)
+      })
   }
 
   const renderAcceptButtonCell = (params) => {
@@ -80,6 +96,7 @@ export const MembershipApplicationListTable = () => {
             onClick={handleVote(params.row.id, 'yes')}
             ref={buttonElement}
             sx={{ mr: 2 }}
+            disabled={isVoting}
           >
             ЗА
           </Button>
@@ -88,6 +105,7 @@ export const MembershipApplicationListTable = () => {
             variant='contained'
             onClick={handleVote(params.row.id, 'no')}
             ref={buttonElement}
+            disabled={isVoting}
           >
             ПРОТИВ
           </Button>
@@ -106,6 +124,7 @@ export const MembershipApplicationListTable = () => {
           variant='contained'
           onClick={handleConfirmPayment(params.row.id)}
           ref={buttonElement}
+          disabled={isVoting}
         >
           Подтвердить оплату
         </Button>

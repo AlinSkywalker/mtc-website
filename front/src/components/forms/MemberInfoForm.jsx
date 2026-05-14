@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
@@ -10,7 +10,7 @@ import apiClient from '../../api/api'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { format } from 'date-fns'
 import { AsynchronousAutocomplete } from '../AsynchronousAutocomplete'
-import { CircularProgress } from '@mui/material'
+import { CircularProgress, Dialog } from '@mui/material'
 import { sizeClothOptions, sizeShoeOptions } from '../../constants'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
@@ -67,6 +67,9 @@ const validationSchema = Yup.object({
 export const MemberInfoForm = ({ memberData, isLoading }) => {
   const queryClient = useQueryClient()
   const { enqueueSnackbar } = useSnackbar()
+
+  const [open, setOpen] = React.useState(false)
+
   const {
     handleSubmit,
     formState: { errors, dirtyFields },
@@ -122,6 +125,17 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
   }
   const isMobile = useIsMobile()
 
+  const [fullsizePhoto, setFullsizePhoto] = React.useState()
+  const [isPhotoLoading, setIsPhotoLoading] = useState(false)
+
+  const handleClickPhoto = async () => {
+    setOpen(true)
+    setIsPhotoLoading(true)
+    const data = await apiClient.get(`/api/memberList/${memberData.id}/photo`)
+    setFullsizePhoto(data.data.member_photo)
+    setIsPhotoLoading(false)
+  }
+
   return (
     <Card sx={{ minWidth: 275 }}>
       <CardContent>
@@ -135,6 +149,7 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
                 marginBottom: 1,
                 textAlign: 'center',
               }}
+              onClick={handleClickPhoto}
             >
               <img alt='' src={memberData?.member_photo || DefaultImage} width='200' height='200' />
             </Grid>
@@ -435,6 +450,20 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
           </Grid>
         </form>
       </CardContent>
+      <Dialog onClose={() => setOpen(false)} open={open}>
+        {isPhotoLoading ? (
+          <Grid
+            sx={{ width: 500, height: 500 }}
+            container
+            alignItems={'center'}
+            justifyContent={'center'}
+          >
+            <CircularProgress size={100} />
+          </Grid>
+        ) : (
+          <img alt='' src={fullsizePhoto} width='500' height='500' />
+        )}
+      </Dialog>
     </Card>
   )
 }

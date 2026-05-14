@@ -229,10 +229,9 @@ app.get(
     }
     pool.query(
       `SELECT u.*, m.*, c.name_city,
-      CONVERT(m_p.photo USING utf8) as member_photo 
+      CONVERT(m.photo_preview USING utf8) as member_photo 
       FROM mtc_db.user u 
       RIGHT JOIN member m on m.user_id=u.id 
-      LEFT JOIN member_photo m_p on m_p.id=m.id 
       LEFT JOIN city c on c.id=m.memb_city
       WHERE u.id=${id}`,
       (error, result) => {
@@ -245,6 +244,38 @@ app.get(
           const { name_city, memb_city, password, password_bckp, password_reset_token, password_reset_date, ...rest } = result[0];
 
           res.send({ ...rest, city: { name_city, id: memb_city } });
+          return
+        }
+        res.status(500).json({ success: false });
+      }
+    );
+  }
+);
+app.get(
+  "/profile/:id/photo",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    const id = req.params.id;
+    const currentUserId = req.user.user_id
+
+    if (currentUserId != id) {
+      res.status(500).json({ result: 'Нельзя получить данные по другому профилю' });
+      return
+    }
+    pool.query(
+      `SELECT CONVERT(m_p.photo USING utf8) as member_photo 
+      FROM mtc_db.user u 
+      RIGHT JOIN member m on m.user_id=u.id 
+      LEFT JOIN member_photo m_p on m_p.id=m.id 
+      WHERE u.id=${id}`,
+      (error, result) => {
+        if (error) {
+          console.log(error);
+          res.status(500).json({ success: false, message: error });
+          return;
+        }
+        if (result[0]) {
+          res.send(result[0]);
           return
         }
         res.status(500).json({ success: false });
@@ -295,7 +326,7 @@ app.post(
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     const id = req.params.id;
-    const { newPhoto } =
+    const { newPhoto, newPhotoPreview } =
       req.body;
     pool.query(
       `INSERT INTO member_photo (id, photo)
@@ -308,7 +339,20 @@ app.post(
           res.status(500).json({ success: false, message: error });
           return;
         }
-        res.send(result);
+        pool.query(
+          `UPDATE member 
+            SET photo_preview='${newPhotoPreview}'
+            WHERE id=${id}`,
+          (error, result) => {
+            if (error) {
+              console.log(error);
+              res.status(500).json({ success: false, message: error });
+              return;
+            }
+            res.send(result);
+          }
+        );
+
       }
     );
   }

@@ -29,6 +29,21 @@ const FilerobotImageEditorWrap = styled('div')({
   },
 })
 
+function resizeBase64Img(base64, newWidth, newHeight) {
+  var img = new Image()
+  img.src = base64
+
+  var canvas = document.createElement('canvas')
+  canvas.width = newWidth
+  canvas.height = newHeight
+
+  var ctx = canvas.getContext('2d')
+  ctx.drawImage(img, 0, 0, newWidth, newHeight)
+
+  var resizedBase64 = canvas.toDataURL()
+  return resizedBase64
+}
+
 export const ProfileFormImage = ({ photo, currentMemberId, currentUserId }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [isSaveAvailable, setIsSaveAvailable] = useState(false)
@@ -128,7 +143,11 @@ export const ProfileFormImage = ({ photo, currentMemberId, currentUserId }) => {
   const handleSavePhoto = async () => {
     try {
       setIsLoading(true)
-      const result = await apiClient.post(`/api/profile/${currentMemberId}/setPhoto`, { newPhoto })
+      var newPhotoPreview = resizeBase64Img(newPhoto, 200, 200)
+      const result = await apiClient.post(`/api/profile/${currentMemberId}/setPhoto`, {
+        newPhoto,
+        newPhotoPreview,
+      })
       setIsLoading(false)
       if (!result) {
         enqueueSnackbar(SERVER_REQUEST_ERROR, {
@@ -149,6 +168,17 @@ export const ProfileFormImage = ({ photo, currentMemberId, currentUserId }) => {
     }
   }
 
+  const [fullsizePhoto, setFullsizePhoto] = React.useState()
+  const [isPhotoLoading, setIsPhotoLoading] = useState(false)
+
+  const handleClickPhoto = async () => {
+    setIsDialogOpen(true)
+    setIsPhotoLoading(true)
+    const data = await apiClient.get(`/api/memberList/${currentMemberId}/photo`)
+    setFullsizePhoto(data.data.member_photo)
+    setIsPhotoLoading(false)
+  }
+
   return (
     <Grid
       sx={{
@@ -157,12 +187,7 @@ export const ProfileFormImage = ({ photo, currentMemberId, currentUserId }) => {
         textAlign: 'center',
       }}
     >
-      <Grid
-        onClick={() => {
-          setIsDialogOpen(true)
-        }}
-        sx={{ cursor: 'pointer' }}
-      >
+      <Grid onClick={handleClickPhoto} sx={{ cursor: 'pointer' }}>
         <img alt='' src={newPhoto || DefaultImage} width='200' height='200' />
       </Grid>
       <Dialog onClose={handleClose} open={isDialogOpen} maxWidth='md'>
@@ -197,7 +222,7 @@ export const ProfileFormImage = ({ photo, currentMemberId, currentUserId }) => {
                 direction={isMobile ? 'column' : 'row'}
               >
                 <Grid width='200'>
-                  <img alt='' src={newPhoto || DefaultImage} width='200' height='200' />
+                  <img alt='' src={fullsizePhoto || DefaultImage} width='200' height='200' />
                 </Grid>
                 <Grid>
                   <div {...getRootProps({ style })}>

@@ -7,12 +7,10 @@ const boardMembersRouter = (app, passport) => {
   app.get(
     "/boardMembers/",
     (req, res) => {
-      //, CONVERT(m_p.photo USING utf8) as member_photo
-      //LEFT JOIN member_photo m_p ON m_p.id=bm.member_id
       pool.query(
-        `SELECT bm.*, m.fio, m.tel_1, m.memb_email
+        `SELECT bm.*, m.fio, m.tel_1, m.memb_email, 
+          CONVERT(m.photo_preview USING utf8) as photo_preview
                 FROM board_members bm
-                
                 LEFT JOIN member m ON m.id=bm.member_id`,
         (error, result) => {
           if (error) {

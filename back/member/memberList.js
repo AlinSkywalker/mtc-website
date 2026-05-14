@@ -112,7 +112,7 @@ const memberListRouter = (app, passport) => {
       }
     }
   );
-
+  //LEFT JOIN member_photo m_p ON m_p.id=m.id
   app.get(
     "/memberList/:id",
     passport.authenticate("jwt", { session: false }),
@@ -121,10 +121,10 @@ const memberListRouter = (app, passport) => {
       const id = req.params.id;
       pool.query(
         `SELECT m.*, ma.*, c.name_city, 
-                  CONVERT(m_p.photo USING utf8) as member_photo
+                  CONVERT(m.photo_preview USING utf8) as member_photo
                   FROM member m 
                   JOIN membalp ma ON ma.id=m.id
-                  LEFT JOIN member_photo m_p ON m_p.id=m.id
+                  
                   LEFT JOIN city c ON c.id=m.memb_city
                   WHERE m.id=${id}`,
         (error, result) => {
@@ -140,6 +140,34 @@ const memberListRouter = (app, passport) => {
           }
           const { name_city, memb_city } = result[0];
           res.send({ ...result[0], city: { name_city, id: memb_city } });
+        }
+      );
+    }
+  );
+  app.get(
+    "/memberList/:id/photo",
+    passport.authenticate("jwt", { session: false }),
+    checkAdminAccess(),
+    (req, res) => {
+      const id = req.params.id;
+      pool.query(
+        `SELECT CONVERT(m_p.photo USING utf8) as member_photo
+                  FROM member m 
+                  LEFT JOIN member_photo m_p ON m_p.id=m.id
+                  WHERE m.id=${id}`,
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return;
+          }
+          if (!result[0]) {
+            console.log(error);
+            res.status(500).json({ success: false, message: error });
+            return;
+          }
+
+          res.send(result[0]);
         }
       );
     }

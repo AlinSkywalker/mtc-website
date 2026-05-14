@@ -7,10 +7,8 @@ const regionalOfficesRouter = (app, passport) => {
   app.get(
     "/regionalOffices/",
     (req, res) => {
-      //, CONVERT(m_p.photo USING utf8) as member_photo
-      //LEFT JOIN member_photo m_p ON m_p.id=bm.member_id
       pool.query(
-        `SELECT ro.*, m.fio, m.tel_1, m.memb_email, s.sub_name
+        `SELECT ro.*, m.fio, m.tel_1, m.memb_email, s.sub_name, CONVERT(m.photo_preview USING utf8) as photo_preview
                 FROM regional_offices ro
                 LEFT JOIN member m ON m.id=ro.director_member_id
                 LEFT JOIN subekt s ON s.id=ro.region`,
