@@ -15,6 +15,7 @@ import { MemberSportCategoryTab } from '../components/memberTabs/MemberSportCate
 import { MemberInfoForm } from '../components/forms/MemberInfoForm'
 import { MemberLabaAscentTab } from '../components/memberTabs/MemberLabaAscentTab'
 import { MemberEquipmentTab } from '../components/memberTabs/MemberEquipmentTab'
+import { MemberChartsTab } from '../components/memberTabs/MemberChartsTab'
 
 export const MemberInfoPage = () => {
   const [value, setValue] = React.useState(0)
@@ -56,6 +57,11 @@ export const MemberInfoPage = () => {
       name: 'event',
       label: 'Мероприятия',
       component: <MemberEventTab memberId={currentId} />,
+    },
+    {
+      name: 'charts',
+      label: 'Графики',
+      component: <MemberChartsTab memberId={currentId} />,
     },
   ]
 

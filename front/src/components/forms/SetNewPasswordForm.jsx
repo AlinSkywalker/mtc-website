@@ -8,6 +8,7 @@ import apiClient from '../../api/api'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
 import { Typography } from '@mui/material'
+import { PasswordField } from '../formFields/PasswordField'
 
 const validationSchema = Yup.object({
   password: Yup.string().required('Поле обязательно для заполнения'),
@@ -75,31 +76,13 @@ export const SetNewPasswordForm = () => {
             <Controller
               name='password'
               control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  variant='outlined'
-                  label='Пароль'
-                  type='password'
-                  error={errors[field.name]}
-                  helperText={errors[field.name]?.message}
-                  fullWidth
-                />
-              )}
+              render={({ field }) => <PasswordField field={field} errors={errors} label='Пароль' />}
             />
             <Controller
               name='password_repeat'
               control={control}
               render={({ field }) => (
-                <TextField
-                  {...field}
-                  variant='outlined'
-                  label='Повторите пароль'
-                  type='password'
-                  error={errors[field.name]}
-                  helperText={errors[field.name]?.message}
-                  fullWidth
-                />
+                <PasswordField field={field} errors={errors} label='Повторите пароль' />
               )}
             />
             <Grid>

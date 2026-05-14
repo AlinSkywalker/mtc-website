@@ -136,3 +136,17 @@ export function useExternalFetchMember(id) {
     staleTime: 5 * 60 * 1000,
   })
 }
+
+/**
+ * @param {string} id
+ */
+export function useFetchMemberAscentChartList(id) {
+  return useQuery({
+    queryKey: ['member', id, 'ascentChart'],
+    queryFn: async () => {
+      const { data } = await apiClient.get(`/api/memberList/${id}/ascentChart`)
+      return data
+    },
+    staleTime: 5 * 60 * 1000,
+  })
+}

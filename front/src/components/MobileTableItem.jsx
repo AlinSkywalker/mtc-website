@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Card } from '@mui/material'
 
 export const MobileTableItem = ({
@@ -14,7 +14,7 @@ export const MobileTableItem = ({
       setExpandedItemId(id)
     } else if (handleItemClick) {
       handleItemClick(id)
-    } else {
+    } else if (setExpandedItemId) {
       setExpandedItemId()
     }
   }

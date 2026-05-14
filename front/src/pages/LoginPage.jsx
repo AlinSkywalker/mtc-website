@@ -13,6 +13,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
 import { Typography } from '@mui/material'
 import MtcImage from '../assets/mtc_black.png'
+import { PasswordField } from '../components/formFields/PasswordField'
 
 const validationSchema = Yup.object({
   username: Yup.string().required('Поле обязательно для заполнения'),
@@ -96,15 +97,7 @@ export const LoginPage = () => {
                   name='password'
                   control={control}
                   render={({ field }) => (
-                    <TextField
-                      {...field}
-                      variant='outlined'
-                      label='Пароль'
-                      type='password'
-                      error={errors[field.name]}
-                      helperText={errors[field.name]?.message}
-                      fullWidth
-                    />
+                    <PasswordField field={field} errors={errors} label='Пароль' />
                   )}
                 />
                 <Grid>

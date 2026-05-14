@@ -128,7 +128,9 @@ export const ProfileForm = ({
                 currentMemberId={currentMemberId}
                 currentUserId={currentUserId}
               />
-              {isActiveMembersip && <Typography>Действующий до 31.12.{activeUntilYear}</Typography>}
+              {isActiveMembersip && isClubMember && (
+                <Typography>Действующий до 31.12.{activeUntilYear}</Typography>
+              )}
               <Button variant='contained' onClick={handleClick}>
                 {isClubMember ? 'Продлить членство' : 'Вступить в клуб'}
               </Button>

@@ -45,3 +45,5 @@ export const warningTypes = {
 export const DEPARTMENT_TYPE_ARRAY = ['СО', 'НП', 'УТ', 'СС', 'СМ']
 
 export const SERVER_REQUEST_ERROR = 'Произошла ошибка при отправке на сервер'
+
+export const ROUTE_COMP_ARRAY = ['1Б', '2А', '2Б', '3А', '3Б', '4А', '4Б', '5А', '5Б', '6А', '6Б']

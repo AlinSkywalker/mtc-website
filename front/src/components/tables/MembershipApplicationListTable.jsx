@@ -82,7 +82,7 @@ export const MembershipApplicationListTable = () => {
   const renderAcceptButtonCell = (params) => {
     const buttonElement = React.useRef(null)
 
-    if (params.row.status === '' && !params.row.voting_results?.[memberId]) {
+    if (params.row.status === 'Новая' && !params.row.voting_results?.[memberId]) {
       return (
         <Grid
           container

@@ -7,6 +7,7 @@ import { EditableTable } from '../EditableTable'
 import * as Yup from 'yup'
 import { checkboxColumnType } from '../dataGridCell/GridEditCheckboxCell'
 import { multilineColumnType } from '../dataGridCell/GridEditMultilineCell'
+import { ROUTE_COMP_ARRAY } from '../../constants'
 
 const defaultItem = {
   rout_mount: '',
@@ -80,7 +81,7 @@ export const RouteDictionaryTab = () => {
       width: 80,
       editable: true,
       type: 'singleSelect',
-      valueOptions: ['1Б', '2А', '2Б', '3А', '3Б', '4А', '4Б', '5А', '5Б', '6А', '6Б'],
+      valueOptions: ROUTE_COMP_ARRAY,
     },
     {
       field: 'rout_tip',

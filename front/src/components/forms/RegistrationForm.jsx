@@ -12,6 +12,7 @@ import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
 import PhoneInput from 'react-phone-number-input/react-hook-form-input'
 import { PhoneField } from '../formFields/PhoneField'
+import { PasswordField } from '../formFields/PasswordField'
 
 export const RegistrationForm = ({
   handleRegister,
@@ -108,31 +109,13 @@ export const RegistrationForm = ({
         <Controller
           name='password'
           control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              variant='outlined'
-              label='Пароль'
-              type='password'
-              error={errors[field.name]}
-              helperText={errors[field.name]?.message}
-              fullWidth
-            />
-          )}
+          render={({ field }) => <PasswordField field={field} errors={errors} label='Пароль' />}
         />
         <Controller
           name='password_repeat'
           control={control}
           render={({ field }) => (
-            <TextField
-              {...field}
-              variant='outlined'
-              label='Повторите пароль'
-              type='password'
-              error={errors[field.name]}
-              helperText={errors[field.name]?.message}
-              fullWidth
-            />
+            <PasswordField field={field} errors={errors} label='Повторите пароль' />
           )}
         />
         <Controller
