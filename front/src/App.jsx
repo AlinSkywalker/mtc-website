@@ -31,6 +31,9 @@ import { MinutesOfMeetingPage } from './pages/MinutesOfMeetingPage'
 import { MembershipPage } from './pages/MembershipPage'
 import { MembershipApplicationListPage } from './pages/MembershipApplicationListPage'
 import CloseIcon from '@mui/icons-material/Close'
+import { useIsBoardMember } from './hooks/useIsAdmin'
+import { ForbiddenPage } from './pages/ForbiddenPage'
+import { NotFoundPage } from './pages/NotFoundPage'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -54,12 +57,44 @@ const AdminRoute = ({ children }) => {
   if (userInfo.role !== 'ADMIN_ROLE') {
     return (
       <MainLayout>
-        <Grid>Данная страница недоступна</Grid>
+        <ForbiddenPage />
       </MainLayout>
     )
   }
   return <MainLayout>{children}</MainLayout>
-  // return isAuthenticated ? <AdminLayout>{children}</AdminLayout> : <Navigate to='/login' />
+}
+
+const MemberRoute = ({ children }) => {
+  const { isAuthenticated, userInfo } = useContext(AuthContext)
+
+  if (!isAuthenticated) {
+    return <Navigate to='/crm/login' />
+  }
+  if (!userInfo.isClubMember) {
+    return (
+      <MainLayout>
+        <ForbiddenPage />
+      </MainLayout>
+    )
+  }
+  return <MainLayout>{children}</MainLayout>
+}
+
+const BoardMemberRoute = ({ children }) => {
+  const { isAuthenticated } = useContext(AuthContext)
+  const isBoardMember = useIsBoardMember()
+
+  if (!isAuthenticated) {
+    return <Navigate to='/crm/login' />
+  }
+  if (!isBoardMember) {
+    return (
+      <MainLayout>
+        <ForbiddenPage />
+      </MainLayout>
+    )
+  }
+  return <MainLayout>{children}</MainLayout>
 }
 
 const PublicRoute = ({ children }) => {
@@ -149,9 +184,9 @@ const App = () => {
                   <Route
                     path='/crm/member'
                     element={
-                      <PrivateRoute>
+                      <AdminRoute>
                         <MemberListPage />
-                      </PrivateRoute>
+                      </AdminRoute>
                     }
                   />
                   <Route
@@ -230,9 +265,9 @@ const App = () => {
                   <Route
                     path='/minutesOfMeeting'
                     element={
-                      <PrivateRoute>
+                      <MemberRoute>
                         <MinutesOfMeetingPage />
-                      </PrivateRoute>
+                      </MemberRoute>
                     }
                   />
                   <Route
@@ -246,11 +281,13 @@ const App = () => {
                   <Route
                     path='/crm/membershipApplication'
                     element={
-                      <PrivateRoute>
+                      <BoardMemberRoute>
                         <MembershipApplicationListPage />
-                      </PrivateRoute>
+                      </BoardMemberRoute>
                     }
                   />
+
+                  <Route path='*' element={<NotFoundPage />} />
                 </Routes>
               </BrowserRouter>
             </AuthProvider>

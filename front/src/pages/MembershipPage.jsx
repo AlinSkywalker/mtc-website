@@ -40,6 +40,8 @@ export const MembershipPage = () => {
         height: '100vh',
         backgroundColor: '#fff',
         border: '1px solid transparent',
+        pb: 3,
+        overflowY: 'scroll',
       }}
     >
       <Grid
@@ -93,8 +95,8 @@ export const MembershipPage = () => {
 
         <Typography>
           {isClubMember ? '2' : '3'}. Уведомить Вещагина Михаила Александровича любым доступным
-          способом (мессенджеры, почта) о совершении оплаты, прислав ему скрин, подтверждающий
-          оплату.
+          способом (мессенджеры (@MTC_Tritonn), почта(misha19-01-79@yandex.ru), телефон(+7 (950)
+          9632051)) о совершении оплаты, прислав ему скрин, подтверждающий оплату.
         </Typography>
       </Grid>
     </Container>

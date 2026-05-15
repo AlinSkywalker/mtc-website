@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
 import { Typography, Grid, Container, Button } from '@mui/material'
 import { useFetchMinutesOfMeetings } from '../queries/minutesOfMeetings'
 import apiClient from '../api/api'
+import { AuthContext } from '../components/AuthContext'
 
 export const MinutesOfMeetingPage = () => {
   const { data } = useFetchMinutesOfMeetings()
@@ -41,6 +42,13 @@ export const MinutesOfMeetingPage = () => {
       </Grid>
     )
   }
+
+  const {
+    userInfo: { isClubMember },
+  } = useContext(AuthContext)
+
+  if (!isClubMember) return null
+
   return (
     <Container
       maxWidth={false}

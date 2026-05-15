@@ -55,7 +55,7 @@ export const MobileMembershipApplicationListTable = () => {
 
   const renderItem = (item) => {
     const applicationDate = format(parseISO(item.created_date || ''), 'dd.MM.yyyy')
-    const isVoteEnabled = item.status === 'Новая' && !item.voting_results?.[memberId]
+    const isVoteEnabled = !item.voting_results?.[memberId]
 
     return (
       <MobileTableItem id={item.id} key={item.id}>
@@ -97,9 +97,9 @@ export const MobileMembershipApplicationListTable = () => {
             size='small'
             variant='contained'
             onClick={handleConfirmPayment(item.id)}
-            disabled={isVoting || item.payment_confirmed !== 1}
+            disabled={isVoting || item.payment_confirmed === 1}
           >
-            Подтвердить оплату
+            Оплатил
           </Button>
         </Grid>
       </MobileTableItem>

@@ -7,7 +7,6 @@ const membershipApplicationRouter = (app, passport) => {
   app.get(
     "/membershipApplication/",
     passport.authenticate("jwt", { session: false }),
-    checkAdminAccess(),
     (req, res) => {
       pool.query(
         `SELECT m_a.*, m.fio 
@@ -109,9 +108,9 @@ const membershipApplicationRouter = (app, passport) => {
                   if (needToSetMembership) {
                     pool.query(
                       `UPDATE member SET 
-                  memb=1,
-                  updated_date=CURRENT_TIMESTAMP
-                  WHERE id=${result_ma[0]?.member_id}`,
+                        memb=1,
+                        updated_date=CURRENT_TIMESTAMP
+                        WHERE id=${result_ma[0]?.member_id}`,
                       (error, result) => {
                         if (error) {
                           console.log(error);
@@ -157,16 +156,15 @@ const membershipApplicationRouter = (app, passport) => {
                 res.status(500).json({ success: false, message: error });
                 return;
               }
+              const { voting_results, status, member_id } = result_ma[0] || {}
               const boardMembersCount = result_bm[0]?.board_members_count
-              const voting_results = result_ma[0]?.voting_results
-
 
               const newVotingResults = { ...(voting_results || {}), [currentUserMemberId]: vote }
 
               let statusUpdateStatement = ''
               let needToSetMembership = false
               const positiveVotedMemberCount = Object.values(newVotingResults).filter(item => item === 'yes').length
-              if (positiveVotedMemberCount > (boardMembersCount / 2) && vote === 'yes') {
+              if (positiveVotedMemberCount > (boardMembersCount / 2) && vote === 'yes' && status === 'Новая') {
                 statusUpdateStatement = `status='Принято',`
                 needToSetMembership = true
               }
@@ -186,9 +184,9 @@ const membershipApplicationRouter = (app, passport) => {
                   if (needToSetMembership) {
                     pool.query(
                       `UPDATE member SET 
-                  memb=1,
-                  updated_date=CURRENT_TIMESTAMP
-                  WHERE id=${result_ma[0]?.member_id}`,
+                        memb=1,
+                        updated_date=CURRENT_TIMESTAMP
+                        WHERE id=${member_id}`,
                       (error, result) => {
                         if (error) {
                           console.log(error);
