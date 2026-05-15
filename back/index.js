@@ -45,6 +45,8 @@ const eventDepartPlanLabaAscentRouter = require("./event/eventDepartPlanLabaAsce
 const eventApplicationRouter = require("./event/eventApplication");
 const eventStatisticRouter = require("./event/eventStatistic");
 const eventEquipmentRouter = require("./event/eventEquipment");
+const eventChartsRouter = require("./event/eventCharts");
+
 
 const memberListRouter = require("./member/memberList");
 const memberExamRouter = require("./member/memberExam");
@@ -401,7 +403,7 @@ eventDepartPlanLabaAscentRouter(app, passport);
 eventApplicationRouter(app, passport);
 eventStatisticRouter(app, passport);
 eventEquipmentRouter(app, passport);
-
+eventChartsRouter(app, passport);
 
 memberListRouter(app, passport);
 memberExamRouter(app, passport);
@@ -416,6 +418,7 @@ regionalOfficesRouter(app, passport);
 companyDataRouter(app, passport);
 minutesOfMeetingsRouter(app, passport);
 membershipApplicationRouter(app, passport);
+
 
 
 app.get(/(.*)/, (req, res) => {

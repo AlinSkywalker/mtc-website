@@ -32,11 +32,9 @@ export const MinutesOfMeetingPage = () => {
     /** @type {{ id: number; file_title: string ; file_path: string }} */ item,
   ) => {
     return (
-      <Grid key={item.id} sx={{ mb: 1 }}>
-        <Typography variant='h5' fontWeight={600}>
-          {item.file_title}
-        </Typography>
-        <Button onClick={handleDownloadFile(item.id)} variant='contained'>
+      <Grid key={item.id} sx={{ mb: 1, borderBottom: '1px solid #ccc' }}>
+        <Typography fontWeight={600}>{item.file_title}</Typography>
+        <Button onClick={handleDownloadFile(item.id)} variant='contained' sx={{ mb: 2, mt: 1 }}>
           Скачать
         </Button>
       </Grid>

@@ -172,3 +172,33 @@ export function useFetchEventEqipmentList(eventId) {
     },
   })
 }
+
+/**
+ * @param {string} eventId
+ */
+export function useFetchEventAscentChartData(eventId) {
+  let fetchUrl = `/api/eventList/${eventId}/ascentChart`
+  return useQuery({
+    queryKey: ['event', eventId, 'ascentChart'],
+    queryFn: async () => {
+      if (!eventId) return []
+      const { data } = await apiClient.get(fetchUrl)
+      return data
+    },
+  })
+}
+
+/**
+ * @param {string} eventId
+ */
+export function useFetchEventMemberChartData(eventId) {
+  let fetchUrl = `/api/eventList/${eventId}/memberChart`
+  return useQuery({
+    queryKey: ['event', eventId, 'memberChart'],
+    queryFn: async () => {
+      if (!eventId) return []
+      const { data } = await apiClient.get(fetchUrl)
+      return data
+    },
+  })
+}

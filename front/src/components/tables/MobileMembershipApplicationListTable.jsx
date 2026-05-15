@@ -7,6 +7,7 @@ import { useFetchMembershipApplicationList } from '../../queries/membershipAppli
 import { AuthContext } from '../AuthContext'
 import { MobileTableItem } from '../MobileTableItem'
 import { format, parseISO } from 'date-fns'
+import { useIsMainAdmin } from '../../hooks/useIsAdmin'
 
 export const MobileMembershipApplicationListTable = () => {
   const { isLoading, data } = useFetchMembershipApplicationList()
@@ -22,6 +23,7 @@ export const MobileMembershipApplicationListTable = () => {
   }
 
   const [isVoting, setIsVoting] = useState(false)
+  const isMainAdmin = useIsMainAdmin()
 
   const handleVote = (id, vote) => () => {
     setIsVoting(true)
@@ -93,14 +95,16 @@ export const MobileMembershipApplicationListTable = () => {
           >
             ПРОТИВ
           </Button>
-          <Button
-            size='small'
-            variant='contained'
-            onClick={handleConfirmPayment(item.id)}
-            disabled={isVoting || item.payment_confirmed === 1}
-          >
-            Оплатил
-          </Button>
+          {isMainAdmin && (
+            <Button
+              size='small'
+              variant='contained'
+              onClick={handleConfirmPayment(item.id)}
+              disabled={isVoting || item.payment_confirmed === 1}
+            >
+              Оплатил
+            </Button>
+          )}
         </Grid>
       </MobileTableItem>
     )

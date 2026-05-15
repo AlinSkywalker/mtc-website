@@ -15,6 +15,7 @@ import { EventDistrictInfoTab } from '../components/eventTabs/EventDistrictInfoT
 import { MobileEventMembersTab } from '../components/eventTabs/MobileEventMembersTab'
 import { EventDescriptionTab } from '../components/eventTabs/EventDescriptionTab'
 import { EventEquipmentTab } from '../components/eventTabs/EventEquipmentTab'
+import { EventChartsTab } from '../components/eventTabs/EventChartsTab'
 
 export const useGetEventTabs = (eventData) => {
   const isMobile = useIsMobile()
@@ -99,6 +100,13 @@ export const useGetEventTabs = (eventData) => {
       path: `/instruction_log`,
       label: 'Книга распоряжений',
       component: <EventInstructionLogTab />,
+      adminOnly: true,
+    },
+    {
+      name: 'charts',
+      path: `/charts`,
+      label: 'Графики',
+      component: <EventChartsTab eventId={eventData?.id} />,
       adminOnly: true,
     },
   ]

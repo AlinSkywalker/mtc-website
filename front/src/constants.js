@@ -47,3 +47,17 @@ export const DEPARTMENT_TYPE_ARRAY = ['СО', 'НП', 'УТ', 'СС', 'СМ']
 export const SERVER_REQUEST_ERROR = 'Произошла ошибка при отправке на сервер'
 
 export const ROUTE_COMP_ARRAY = ['1Б', '2А', '2Б', '3А', '3Б', '4А', '4Б', '5А', '5Б', '6А', '6Б']
+
+export const ROUTE_COMP_ARRAY_COLORS = [
+  '#FF6B6B',
+  '#4ECDC4',
+  '#45B7D1',
+  '#FFA07A',
+  '#96CEB4',
+  '#FFD700',
+  '#BA55D3',
+  '#00CED1',
+  '#FF69B4',
+  '#20B2AA',
+  '#DAA520',
+]

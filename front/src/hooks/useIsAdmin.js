@@ -12,7 +12,7 @@ export const useIsMainAdmin = () => {
   const {
     userInfo: { memberId },
   } = useContext(AuthContext)
-  return memberId === 4
+  return memberId == 4 || memberId == 1
 }
 
 export const useIsBoardMember = () => {

@@ -7,6 +7,7 @@ import { EditableTable } from '../EditableTable'
 import { dateColumnType } from '../dataGridCell/GridEditDateCell'
 import { useFetchMembershipApplicationList } from '../../queries/membershipApplication'
 import { AuthContext } from '../AuthContext'
+import { useIsMainAdmin } from '../../hooks/useIsAdmin'
 
 const defaultItem = {
   fio: '',
@@ -48,6 +49,8 @@ export const MembershipApplicationListTable = () => {
     )
   }
   const [isVoting, setIsVoting] = useState(false)
+
+  const isMainAdmin = useIsMainAdmin()
 
   const handleVote = (id, vote) => () => {
     setIsVoting(true)
@@ -117,7 +120,7 @@ export const MembershipApplicationListTable = () => {
   const renderConfirmPaymentButtonCell = (params) => {
     const buttonElement = React.useRef(null)
 
-    if (params.row.payment_confirmed !== 1) {
+    if (params.row.payment_confirmed !== 1 && isMainAdmin) {
       return (
         <Button
           size='small'

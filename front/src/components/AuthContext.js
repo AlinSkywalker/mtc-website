@@ -2,9 +2,9 @@ import React, { createContext, useEffect, useState } from 'react'
 
 /**
  * @typedef {Object} UserInfo
- * @property {string} id
+ * @property {number} id
  * @property {string} role
- * @property {string} memberId
+ * @property {number} memberId
  * @property {boolean} isClubMember
  * @property {boolean} isBoardMember
  */
