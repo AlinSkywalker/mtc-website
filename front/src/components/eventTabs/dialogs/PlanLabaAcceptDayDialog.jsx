@@ -41,12 +41,13 @@ export const PlanLabaAcceptDayDialog = ({
   const { isLoading, data: laboratoryRouteData } = useFetchLaboratoryRouteDictionaryList({
     laboratoryId: labaId,
   })
+  // console.log('laboratoryRouteData', laboratoryRouteData)
 
   const [state, setState] = useState({})
   const [selectedMember, setSelectedMember] = useState('')
 
   const [rowSelectionModel, setRowSelectionModel] = useState(emptyRowSelection)
-
+  // console.log('state', state)
   const { data: selectedDateDepartmentMembers } = useFetchEventDepartmentMemberList({
     eventId,
     departmentId,
@@ -218,7 +219,7 @@ export const PlanLabaAcceptDayDialog = ({
         </IconButton>
       </DialogTitle>
 
-      <DialogContent sx={{ minWidth: '800px' }}>
+      <DialogContent sx={{ minWidth: '1000px' }}>
         <Grid container>
           <Grid size={3} sx={{ height: `calc(100vh - 190px)` }}>
             <DataGrid
@@ -250,7 +251,14 @@ export const PlanLabaAcceptDayDialog = ({
                 <Typography>Оценка</Typography>
               </Grid>
             </Grid>
-            {selectedMember && Object.values(state[selectedMember])?.map(renderRouteItem)}
+            {!laboratoryRouteData?.length && (
+              <Grid container alignItems='center' direction={'column'} sx={{ mb: 4, mt: 4 }}>
+                <Typography variant='h6'>В данной лаборатории нет маршрутов</Typography>
+              </Grid>
+            )}
+            {selectedMember &&
+              state[selectedMember] &&
+              Object.values(state[selectedMember])?.map(renderRouteItem)}
           </Grid>
         </Grid>
       </DialogContent>

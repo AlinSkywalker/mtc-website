@@ -63,6 +63,8 @@ const companyDataRouter = require("./companyData");
 const minutesOfMeetingsRouter = require("./minutesOfMeetings");
 const membershipApplicationRouter = require("./membershipApplication");
 
+require('./bithdayReminderScheduler')
+
 
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),

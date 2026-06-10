@@ -168,6 +168,12 @@ export const MembershipApplicationListTable = () => {
       width: 202,
       renderCell: renderConfirmPaymentButtonCell,
     },
+    {
+      field: 'votingResultsWithFio',
+      headerName: 'Результаты голосования',
+      width: 250,
+      editable: false,
+    },
   ]
   const fieldToFocus = 'event_name'
   const columnVisibilityModel = {

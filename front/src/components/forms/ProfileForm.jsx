@@ -159,8 +159,8 @@ export const ProfileForm = ({
                     control={control}
                     render={({ field }) => (
                       <FormControl fullWidth>
-                        <InputLabel id='ageLabel'>Пол</InputLabel>
-                        <Select {...field} label='Пол' fullWidth labelId='ageLabel'>
+                        <InputLabel id='genderLabel'>Пол</InputLabel>
+                        <Select {...field} label='Пол' fullWidth labelId='genderLabel'>
                           {['М', 'Ж'].map((item, index) => (
                             <MenuItem value={item} key={index}>
                               {item}

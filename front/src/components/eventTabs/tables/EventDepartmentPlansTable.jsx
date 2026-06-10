@@ -19,6 +19,7 @@ import {
   plansTableColumnVisibilityModel,
 } from './eventDepartmentPlansTableSettings'
 import { PlanLabaAcceptDayDialog } from '../dialogs/PlanLabaAcceptDayDialog'
+import { multilineColumnType } from '../../dataGridCell/GridEditMultilineCell'
 
 export const EventDepartmentPlansTable = ({
   eventId,
@@ -240,6 +241,13 @@ export const EventDepartmentPlansTable = ({
       width: 120,
       editable: true,
       type: 'string',
+    },
+    {
+      field: 'comment',
+      headerName: 'Комментарий',
+      width: 350,
+      editable: true,
+      ...multilineColumnType,
     },
     {
       field: 'accept_day',

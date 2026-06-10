@@ -1,9 +1,15 @@
 import { Container, Grid, Typography } from '@mui/material'
-import React from 'react'
+import React, { useContext } from 'react'
 
 import HttpsIcon from '@mui/icons-material/Https'
+import { AuthContext } from '../components/AuthContext'
 
 export const ForbiddenPage = () => {
+  const {
+    userInfo: { memberId },
+  } = useContext(AuthContext)
+  if (!memberId) return
+
   return (
     <Container
       maxWidth={false}

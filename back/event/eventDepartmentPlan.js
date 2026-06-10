@@ -131,12 +131,13 @@ const eventDepartmentPlanRouter = (app, passport) => {
         laba,
         ascent_head,
         program_id_list,
-        place
+        place,
+        comment,
       } = req.body;
       pool.query(
         `INSERT INTO depart_plan 
-      ( department, route, start, ob_agreement,type,laba,ascent_head,place) 
-      VALUES(?,?,?,?,?,?,?,?)`,
+      ( department, route, start, ob_agreement,type,laba,ascent_head,place,comment) 
+      VALUES(?,?,?,?,?,?,?,?,?)`,
         [
           departmentId,
           route || null,
@@ -145,7 +146,8 @@ const eventDepartmentPlanRouter = (app, passport) => {
           type,
           laba || null,
           ascent_head || null,
-          place
+          place,
+          comment
         ],
         (error, result) => {
           if (error) {
@@ -189,7 +191,8 @@ const eventDepartmentPlanRouter = (app, passport) => {
         laba,
         ascent_head,
         program_id_list,
-        place
+        place,
+        comment
       } = req.body;
       const planProgramValues = program_id_list
         ?.map((item) => `(${id},${item})`)
@@ -203,6 +206,7 @@ const eventDepartmentPlanRouter = (app, passport) => {
       laba=?,
       ascent_head=?,
       place=?,
+      comment=?,
       updated_date=CURRENT_TIMESTAMP WHERE id=${id}`,
         [
           route || null,
@@ -211,7 +215,8 @@ const eventDepartmentPlanRouter = (app, passport) => {
           type,
           laba || null,
           ascent_head || null,
-          place
+          place,
+          comment
         ],
         (error, result) => {
           if (error) {
