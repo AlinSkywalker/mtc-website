@@ -46,7 +46,7 @@ const eventMemberRouter = (app, passport) => {
     (req, res) => {
       const eventId = req.params.eventId;
       pool.query(
-        `SELECT e_m.*, m.fio, m.gender, m.tel_1, m.memb_email, m.size_cloth, m.size_shoe, c.name_city, 
+        `SELECT e_m.*, m.fio, m.gender, m.tel_1, m.memb_email, m.size_cloth, m.size_shoe, m.id as member_id, c.name_city, 
                     COUNT(m_i_d.id) as days_with_dept, e.price, m_s_c.ball 
                 FROM eventmemb e_m
                 LEFT JOIN member m on m.id=e_m.eventmemb_memb 

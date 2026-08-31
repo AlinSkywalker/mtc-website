@@ -63,6 +63,8 @@ const companyDataRouter = require("./companyData");
 const minutesOfMeetingsRouter = require("./minutesOfMeetings");
 const membershipApplicationRouter = require("./membershipApplication");
 
+const bithdayReminder = require('./bithdayReminder')
+
 require('./bithdayReminderScheduler')
 
 
@@ -375,6 +377,17 @@ app.post(
     });
   }
 );
+
+app.post(
+  "/bithdayReminder",
+  (req, res) => {
+    bithdayReminder();
+    res.send('ok');
+  }
+);
+
+
+
 
 authRouter(app, passport);
 

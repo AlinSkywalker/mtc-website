@@ -150,7 +150,7 @@ const authRouter = (app, passport) => {
     }
   );
   app.post("/register", (req, res) => {
-    const { email, fio, date_birth, password, gender, tel_1 } = req.body;
+    const { email, fio, date_birth, password, gender, tel_1, city } = req.body;
     pool.query(`SELECT * FROM user WHERE login='${email}'`, (error, result) => {
       if (error) {
         console.log(error);
@@ -197,7 +197,7 @@ const authRouter = (app, passport) => {
 
                   if (member) {
                     pool.query(
-                      `UPDATE member SET user_id=${userId}, memb_email='${email}', tel_1=${tel_1}
+                      `UPDATE member SET user_id=${userId}, memb_email='${email}', tel_1=${tel_1}, memb_city=${city?.id || null}
                         WHERE id=${member.id} AND user_id IS NULL`,
                       (error, result) => {
                         if (error) {
@@ -228,8 +228,8 @@ const authRouter = (app, passport) => {
                     );
                   } else {
                     pool.query(
-                      "INSERT INTO member (fio, date_birth, gender, user_id,memb_email,tel_1) VALUES(?,?,?,?,?,?)",
-                      [fio, date_birth, gender, userId, email, tel_1],
+                      "INSERT INTO member (fio, date_birth, gender, user_id,memb_email,tel_1,memb_city) VALUES(?,?,?,?,?,?,?)",
+                      [fio, date_birth, gender, userId, email, tel_1, city?.id || null],
                       (error, result) => {
                         if (error) {
                           console.log(error);

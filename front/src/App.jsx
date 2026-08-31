@@ -34,6 +34,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import { useIsBoardMember } from './hooks/useIsAdmin'
 import { ForbiddenPage } from './pages/ForbiddenPage'
 import { NotFoundPage } from './pages/NotFoundPage'
+import { ruRU } from '@mui/x-date-pickers/locales'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -112,7 +113,11 @@ const LoginRoute = ({ children }) => {
 
 const App = () => {
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ru}>
+    <LocalizationProvider
+      dateAdapter={AdapterDateFns}
+      adapterLocale={ru}
+      localeText={ruRU.components.MuiLocalizationProvider.defaultProps.localeText}
+    >
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
           <SnackbarProvider

@@ -36,3 +36,11 @@
 .editableTable.withoutPagination .MuiTablePagination-root {
   display: none;
 }
+
+.tableActionCellItem {
+  opacity: 0
+}
+
+.MuiDataGrid-row:hover .tableActionCellItem {
+  opacity: 1
+}

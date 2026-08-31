@@ -1,16 +1,18 @@
 import React, { useState } from 'react'
 import { useFetchEventMemberList } from '../../queries/event'
-import { Card, CircularProgress, Container, Grid, Typography } from '@mui/material'
+import { Card, CircularProgress, Container, Grid, Link, Typography } from '@mui/material'
 import ErrorIcon from '@mui/icons-material/Error'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import { red } from '@mui/material/colors'
 import { format, parseISO } from 'date-fns'
 import { useIsAdmin } from '../../hooks/useIsAdmin'
+import { useNavigate } from 'react-router-dom'
 
 export const MobileEventMembersTab = ({ eventId }) => {
   const { isLoading, data } = useFetchEventMemberList(eventId)
   const isAdmin = useIsAdmin()
+  const navigate = useNavigate()
 
   const renderAlerts = (value) => {
     const alerts = value ?? []
@@ -32,20 +34,21 @@ export const MobileEventMembersTab = ({ eventId }) => {
   const getBoolText = (value) => {
     return value ? 'Да' : 'Нет'
   }
-  if (!eventId) return null
-  if (isLoading)
-    return (
-      <Container
-        maxWidth={false}
-        sx={{ height: '100vh', backgroundColor: { xs: '#fff', md: '#f4f4f4' } }}
-      >
-        <CircularProgress />
-      </Container>
-    )
+
+  const handleClickName = (id) => () => {
+    navigate(`/crm/member/${id}`)
+  }
   const renderMemberItem = (memberItem) => {
     const memberStart = format(parseISO(memberItem.eventmemb_dates || ''), 'dd.MM.yyyy')
     const memberFinish = format(parseISO(memberItem.eventmemb_datef || ''), 'dd.MM.yyyy')
     const isExpanded = memberItem.id === expandedItemId
+
+    const memberFio = (
+      <Typography variant='h5' sx={{ fontSize: '19px' }}>
+        {isAdmin && renderAlerts(memberItem.alerts)}
+        {memberItem.fio}
+      </Typography>
+    )
 
     return (
       <Card
@@ -53,10 +56,12 @@ export const MobileEventMembersTab = ({ eventId }) => {
         onClick={() => setExpandedItemId(isExpanded ? '' : memberItem.id)}
         key={memberItem.id}
       >
-        <Typography variant='h5' sx={{ fontSize: '19px' }}>
-          {isAdmin && renderAlerts(memberItem.alerts)}
-          {memberItem.fio}
-        </Typography>
+        {isAdmin ? (
+          <Link onClick={handleClickName(memberItem.member_id)}>{memberFio}</Link>
+        ) : (
+          memberFio
+        )}
+
         <Typography>
           {memberItem.eventmemb_role} (Разряд: {memberItem.ball})
         </Typography>
@@ -85,6 +90,17 @@ export const MobileEventMembersTab = ({ eventId }) => {
       </Card>
     )
   }
+
+  if (!eventId) return null
+  if (isLoading)
+    return (
+      <Container
+        maxWidth={false}
+        sx={{ height: '100vh', backgroundColor: { xs: '#fff', md: '#f4f4f4' } }}
+      >
+        <CircularProgress />
+      </Container>
+    )
 
   return <Grid>{data?.map(renderMemberItem)}</Grid>
 }

@@ -175,7 +175,7 @@ export const EditableTable = ({
           key={1}
           icon={<EditIcon />}
           label='Редактировать'
-          className='textPrimary'
+          className='tableActionCellItem'
           onClick={handleEditClick(id)}
           color='inherit'
           disabled={!isRowEditable(row) || isSomeNewRow || isSomeRowEditing}
@@ -200,6 +200,7 @@ export const EditableTable = ({
             label='Удалить'
             onClick={handleDeleteClick(id)}
             color='inherit'
+            className='tableActionCellItem'
             disabled={(isSomeNewRow && !isNew) || isSomeRowEditing}
           />,
         )

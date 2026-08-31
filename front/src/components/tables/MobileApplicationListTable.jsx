@@ -31,6 +31,7 @@ export const MobileApplicationListTable = () => {
   const renderItem = (item) => {
     const dateStart = format(parseISO(item.date_start || ''), 'dd.MM.yyyy')
     const dateFinish = format(parseISO(item.date_finish || ''), 'dd.MM.yyyy')
+    const applicationDate = format(parseISO(item.created_date || ''), 'dd.MM.yyyy')
 
     return (
       <MobileTableItem id={item.id} key={item.id}>
@@ -40,7 +41,9 @@ export const MobileApplicationListTable = () => {
         <Link onClick={handleClickName(item.member)}>
           <Typography variant='h6'>{item.fio}</Typography>
         </Link>
-
+        <Typography>
+          <b>Дата:</b> {applicationDate}
+        </Typography>
         <Typography>
           <b>Дата заезда:</b> {dateStart}
         </Typography>

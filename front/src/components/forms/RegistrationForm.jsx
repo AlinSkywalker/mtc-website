@@ -13,6 +13,8 @@ import FormControl from '@mui/material/FormControl'
 import PhoneInput from 'react-phone-number-input/react-hook-form-input'
 import { PhoneField } from '../formFields/PhoneField'
 import { PasswordField } from '../formFields/PasswordField'
+import { AsynchronousAutocomplete } from '../AsynchronousAutocomplete'
+import apiClient from '../../api/api'
 
 export const RegistrationForm = ({
   handleRegister,
@@ -24,6 +26,7 @@ export const RegistrationForm = ({
   serverError,
   isSubmitting,
 }) => {
+  const fetchAllCities = () => apiClient.get(`/api/cityDictionary`)
   return (
     <form onSubmit={handleSubmit(handleRegister)}>
       <Grid
@@ -104,6 +107,20 @@ export const RegistrationForm = ({
                 ))}
               </Select>
             </FormControl>
+          )}
+        />
+        <Controller
+          name='city'
+          control={control}
+          render={({ field }) => (
+            <AsynchronousAutocomplete
+              label='Город'
+              request={fetchAllCities}
+              dataNameField='name_city'
+              field={field}
+              errors={errors}
+              secondarySourceArray={['count_name', 'okr_name', 'sub_name']}
+            />
           )}
         />
         <Controller

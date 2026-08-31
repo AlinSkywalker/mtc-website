@@ -96,6 +96,7 @@ export const MemberInfoForm = ({ memberData, isLoading }) => {
         last_payment_date: last_payment_date ? format(last_payment_date, 'yyyy-MM-dd') : null,
         tel_1: data.tel_1 ? parsePhoneNumber(data.tel_1)?.number : '',
         tel_2: data.tel_2 ? parsePhoneNumber(data.tel_2)?.number : '',
+        memb_city: data.city?.id,
       })
 
       queryClient.invalidateQueries({ queryKey: ['member', String(data.id)] })

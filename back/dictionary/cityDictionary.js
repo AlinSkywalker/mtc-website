@@ -6,7 +6,6 @@ const dictionaryRouter = (app, passport) => {
   // cityDictionary
   app.get(
     "/cityDictionary/",
-    passport.authenticate("jwt", { session: false }),
     (req, res) => {
       pool.query(
         `SELECT c.*, s.sub_name, o.okr_name, ctry.count_name FROM city c
