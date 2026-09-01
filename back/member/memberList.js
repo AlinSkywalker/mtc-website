@@ -139,7 +139,7 @@ const memberListRouter = (app, passport) => {
             return;
           }
           const { name_city, memb_city } = result[0];
-          res.send({ ...result[0], city: { name_city, id: memb_city } });
+          res.send({ ...result[0], city: memb_city ? { name_city, id: memb_city } : null });
         }
       );
     }
@@ -195,7 +195,7 @@ const memberListRouter = (app, passport) => {
             return;
           }
           const { name_city, memb_city } = result[0];
-          res.send({ ...result[0], city: { name_city, id: memb_city } });
+          res.send({ ...result[0], city: memb_city ? { name_city, id: memb_city } : null });
         }
       );
     }

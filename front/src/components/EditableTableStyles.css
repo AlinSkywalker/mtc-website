@@ -37,10 +37,10 @@
   display: none;
 }
 
-.tableActionCellItem {
+/* .MuiDataGrid-row .tableActionCellItem {
   opacity: 0
 }
 
 .MuiDataGrid-row:hover .tableActionCellItem {
   opacity: 1
-}
+} */

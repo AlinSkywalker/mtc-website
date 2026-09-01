@@ -249,7 +249,7 @@ app.get(
         if (result[0]) {
           const { name_city, memb_city, password, password_bckp, password_reset_token, password_reset_date, ...rest } = result[0];
 
-          res.send({ ...rest, city: { name_city, id: memb_city } });
+          res.send({ ...rest, city: memb_city ? { name_city, id: memb_city } : null });
           return
         }
         res.status(500).json({ success: false });
