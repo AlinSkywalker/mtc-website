@@ -20,6 +20,7 @@ import {
 } from './eventDepartmentPlansTableSettings'
 import { PlanLabaAcceptDayDialog } from '../dialogs/PlanLabaAcceptDayDialog'
 import { multilineColumnType } from '../../dataGridCell/GridEditMultilineCell'
+import { DEPARTMENT_PLAN_TYPES } from '../../../constants'
 
 export const EventDepartmentPlansTable = ({
   eventId,
@@ -34,7 +35,6 @@ export const EventDepartmentPlansTable = ({
     route: '',
     start: '',
     ob_agreement: 0,
-    // ascplan_ruk: '',
     type: '',
     laba: '',
     departmentStartDate,
@@ -43,7 +43,6 @@ export const EventDepartmentPlansTable = ({
     prog_tem: '',
     place: '',
   }
-
   const [open, setOpen] = React.useState(false)
   const [selectedDate, setSelectedDate] = React.useState()
   const [selectedPlan, setSelectedPlan] = React.useState({})
@@ -199,16 +198,7 @@ export const EventDepartmentPlansTable = ({
       width: 120,
       editable: true,
       type: 'singleSelect',
-      valueOptions: [
-        'Заезд',
-        'Подход/отход',
-        'Восхождение',
-        'Занятие',
-        'Лекция',
-        'Практика',
-        'Отдых',
-        'Отъезд',
-      ],
+      valueOptions: DEPARTMENT_PLAN_TYPES,
     },
     {
       field: 'rout_name',

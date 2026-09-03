@@ -1,6 +1,6 @@
 .depPlanCell {
   width: 250px;
-  height: 80px;
+  min-height: 80px;
   border: 1px solid #ccc;
   border-top: none;
   border-left: none;
@@ -11,6 +11,23 @@
   background-color: white;
   flex-shrink: 0;
 }
+
+.MuiIconButton-root.editDepPlanButton {
+  margin-left: 8px;
+}
+
+.editDepPlanButton,
+.addDepPlanButton {
+  opacity: 0
+}
+
+.depPlanCell:hover .editDepPlanButton,
+.depPlanCell:hover .addDepPlanButton {
+  opacity: 1
+}
+
+
+
 
 .MuiGrid-root.depPlanDateCell {
   width: 120px;
@@ -24,6 +41,7 @@
 
 .depPlanTitleCell {
   height: 40px;
+  background-color: white;
 }
 
 .depPlanRowPast {

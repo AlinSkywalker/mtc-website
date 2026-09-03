@@ -61,3 +61,14 @@ export const ROUTE_COMP_ARRAY_COLORS = [
   '#20B2AA',
   '#DAA520',
 ]
+
+export const DEPARTMENT_PLAN_TYPES = [
+  'Заезд',
+  'Занятие',
+  'Отдых',
+  'Подход/отход',
+  'Восхождение',
+  'Лекция',
+  'Практика',
+  'Отъезд',
+]

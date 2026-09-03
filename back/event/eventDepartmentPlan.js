@@ -18,12 +18,13 @@ const eventDepartmentPlanRouter = (app, passport) => {
             return;
           }
           pool.query(
-            `SELECT dp.*, l.laba_name, r.rout_name, m.mount_name, r.rout_comp
+            `SELECT dp.*, l.laba_name, r.rout_name, m.mount_name, r.rout_comp, memb.fio as ascent_head_fio
                   FROM depart_plan dp 
                   LEFT JOIN depart d ON dp.department=d.id
                   LEFT JOIN laba l on l.id=dp.laba
                   LEFT JOIN route r on r.id=dp.route
                   LEFT JOIN mount m on m.id=r.rout_mount
+                  LEFT JOIN member memb on memb.id=dp.ascent_head
                   WHERE d.depart_event=${eventId}
                   `,
             (error, result) => {

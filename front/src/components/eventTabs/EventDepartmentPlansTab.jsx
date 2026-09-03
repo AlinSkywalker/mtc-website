@@ -17,7 +17,9 @@ export const EventDepartmentPlansTab = ({ eventId, eventDistrict, eventStart, ev
 
   const { isLoading, data } = useFetchEventDepartmentList(eventId)
   const { isCurrentMemberST } = useGetUserEventPermisson(eventId)
-  const { userInfo: { memberId: currentUserId } } = useContext(AuthContext)
+  const {
+    userInfo: { memberId: currentUserId },
+  } = useContext(AuthContext)
 
   const selectedDepartmentStartDate = useMemo(() => {
     return data?.find((item) => item.id === selectedDepartment)?.depart_dates
@@ -71,6 +73,7 @@ export const EventDepartmentPlansTab = ({ eventId, eventDistrict, eventStart, ev
             eventId={eventId}
             eventStart={eventStart}
             eventFinish={eventFinish}
+            eventDistrict={eventDistrict}
           />
         </Grid>
       )}
