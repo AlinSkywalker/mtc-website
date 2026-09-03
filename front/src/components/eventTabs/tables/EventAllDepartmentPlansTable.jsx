@@ -91,7 +91,7 @@ export const EventAllDepartmentPlansTable = ({
           ))
         ) : (
           <Button
-            variant='contained'
+            variant='outlined'
             size='small'
             onClick={handleOpenDialog(department.id, date)}
             className='addDepPlanButton'

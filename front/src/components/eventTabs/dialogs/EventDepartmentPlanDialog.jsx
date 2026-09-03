@@ -22,6 +22,7 @@ import { DEPARTMENT_PLAN_TYPES } from '../../../constants'
 import { useFetchEventDepartmentMemberList } from '../../../queries/eventDepartment'
 import { useFetchLaboratoryForEvent } from '../../../queries/dictionary'
 import { useFetchDictionaryByName } from '../../../queries/dictionary'
+import { useIsMobile } from '../../../hooks/useIsMobile'
 
 const defaultValues = {
   type: '',
@@ -47,6 +48,7 @@ export const EventDepartmentPlanDialog = ({
   const queryClient = useQueryClient()
   const { enqueueSnackbar } = useSnackbar()
   const isEdit = !!plan
+  const isMobile = useIsMobile()
   console.log('plan', plan)
 
   const {
@@ -164,16 +166,18 @@ export const EventDepartmentPlanDialog = ({
   }
 
   return (
-    <Dialog onClose={handleClose} open={open} maxWidth='sm'>
-      <DialogTitle>
-        {isEdit ? 'Редактировать план отделения' : 'Добавить план отделения'}
+    <Dialog onClose={handleClose} open={open} maxWidth={isMobile ? 'md' : 'sm'} fullWidth>
+      <DialogTitle sx={{ display: 'flex', alignItems: 'center' }}>
+        <Typography variant='h6' sx={{ pr: 1 }}>
+          {isEdit ? 'Редактировать план' : 'Добавить план'}
+        </Typography>
+
         <IconButton
           aria-label='close'
           onClick={handleClose}
           sx={(theme) => ({
             position: 'absolute',
             right: 8,
-            top: 8,
             color: theme.palette.grey[500],
           })}
         >

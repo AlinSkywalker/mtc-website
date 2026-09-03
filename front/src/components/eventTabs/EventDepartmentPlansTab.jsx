@@ -4,15 +4,18 @@ import Grid from '@mui/material/Grid'
 import { useFetchEventDepartmentList } from '../../queries/eventDepartment'
 import { EventDepartmentPlansTable } from './tables/EventDepartmentPlansTable'
 import { EventAllDepartmentPlansTable } from './tables/EventAllDepartmentPlansTable'
+import { EventAllDepartmentPlansTableMobile } from './tables/EventAllDepartmentPlansTableMobile'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import { format, parseISO } from 'date-fns'
 import { useIsAdmin } from '../../hooks/useIsAdmin'
 import { useGetUserEventPermisson } from '../../hooks/useGetUserPermisson'
 import { AuthContext } from '../AuthContext'
+import { useIsMobile } from '../../hooks/useIsMobile'
 
 export const EventDepartmentPlansTab = ({ eventId, eventDistrict, eventStart, eventFinish }) => {
   const isAdmin = useIsAdmin()
+  const isMobile = useIsMobile()
   const [selectedDepartment, setSelectedDepartment] = useState('all')
 
   const { isLoading, data } = useFetchEventDepartmentList(eventId)
@@ -45,6 +48,17 @@ export const EventDepartmentPlansTab = ({ eventId, eventDistrict, eventStart, ev
           exclusive
           onChange={handleSelectDepartment}
           aria-label='text alignment'
+          sx={{
+            overflowX: 'auto',
+            // Прячем скроллбар для красоты
+            scrollbarWidth: 'none',
+            '&::-webkit-scrollbar': { display: 'none' },
+            // Настройки для самих кнопок
+            '& .MuiToggleButton-root': {
+              whiteSpace: 'nowrap', // Запрещаем перенос текста
+              flexShrink: 0, // Запрещаем сжатие кнопок
+            },
+          }}
         >
           <ToggleButton value={'all'} aria-label='left aligned' key={0}>
             {`ВСЕ ОТДЕЛЕНИЯ`}
@@ -69,12 +83,21 @@ export const EventDepartmentPlansTab = ({ eventId, eventDistrict, eventStart, ev
       )}
       {selectedDepartment && selectedDepartment === 'all' && (
         <Grid size={12}>
-          <EventAllDepartmentPlansTable
-            eventId={eventId}
-            eventStart={eventStart}
-            eventFinish={eventFinish}
-            eventDistrict={eventDistrict}
-          />
+          {isMobile ? (
+            <EventAllDepartmentPlansTableMobile
+              eventId={eventId}
+              eventStart={eventStart}
+              eventFinish={eventFinish}
+              eventDistrict={eventDistrict}
+            />
+          ) : (
+            <EventAllDepartmentPlansTable
+              eventId={eventId}
+              eventStart={eventStart}
+              eventFinish={eventFinish}
+              eventDistrict={eventDistrict}
+            />
+          )}
         </Grid>
       )}
     </Grid>
