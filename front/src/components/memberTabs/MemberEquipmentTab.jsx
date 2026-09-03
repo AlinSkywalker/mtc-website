@@ -4,7 +4,6 @@ import apiClient from '../../api/api'
 import { useQueryClient } from '@tanstack/react-query'
 import { EditableTable } from '../EditableTable'
 import * as Yup from 'yup'
-import { dateColumnType } from '../dataGridCell/GridEditDateCell'
 import { useIsMobile } from '../../hooks/useIsMobile'
 import { MobileMemberEquipmentTab } from './mobileTables/MobileMemberEquipmentTab'
 import { AuthContext } from '../../components/AuthContext'
@@ -134,7 +133,7 @@ export const MemberEquipmentTab = ({ memberId }) => {
   const columnVisibilityModel = {
     equip_storage: false,
     equip: false,
-    stor_name: isAdmin ? true : false
+    stor_name: isAdmin ? true : false,
   }
 
   const processRowUpdate = async (newRow) => {
@@ -145,7 +144,15 @@ export const MemberEquipmentTab = ({ memberId }) => {
   }
 
   if (!memberId) return null
-  if (isMobile) return <MobileMemberEquipmentTab isLoading={isLoading} data={data} />
+  if (isMobile)
+    return (
+      <MobileMemberEquipmentTab
+        isLoading={isLoading}
+        data={data}
+        readOnly={readOnly}
+        memberId={memberId}
+      />
+    )
 
   return (
     <EditableTable
@@ -160,9 +167,6 @@ export const MemberEquipmentTab = ({ memberId }) => {
       defaultItem={defaultItem}
       isLoading={isLoading}
       handleDeleteItem={handleDeleteItem}
-      // isCellEditable={(params) =>
-      //   params.field !== 'fio' || (params.row.isNew && params.field == 'fio')
-      // }
       readOnly={readOnly}
     />
   )
