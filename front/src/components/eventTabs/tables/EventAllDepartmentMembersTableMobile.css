@@ -1,4 +1,4 @@
-.mobile-plans-container {
+.mobile-members-container {
   padding: 16px;
   padding-bottom: 80px;
 }
@@ -53,44 +53,21 @@
   line-height: 1.3;
 }
 
-.mobile-dept-plans {
+.mobile-dept-members {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.mobile-dept-plan-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.mobile-dept-plan-text {
+.mobile-dept-member-item {
   font-size: 14px;
   color: #555;
   line-height: 1.4;
-  flex: 1;
+  padding: 4px 0;
 }
 
-.mobile-edit-btn {
-  flex-shrink: 0;
-  color: #3f51b5;
-  padding: 4px;
-}
-
-.mobile-add-btn {
-  color: #3f51b5;
-  border-color: #c5cae9;
-  background: #e8eaf6;
-  border-radius: 8px;
-  font-weight: 500;
-  text-transform: none;
-  padding: 8px 16px;
-  align-self: flex-start;
-}
-
-.mobile-add-btn:hover {
-  background: #c5cae9;
-  border-color: #3f51b5;
+.mobile-dept-empty {
+  font-size: 14px;
+  color: #999;
+  font-style: italic;
 }

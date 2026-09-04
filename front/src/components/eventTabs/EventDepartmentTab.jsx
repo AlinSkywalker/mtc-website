@@ -7,13 +7,16 @@ import Box from '@mui/material/Box'
 import { EventDepartmentTable } from './tables/EventDepartmentTable'
 import { EventDepartmentPlansTab } from './EventDepartmentPlansTab'
 import { EventAllDepartmentMembersTable } from './tables/EventAllDepartmentMembersTable'
+import { EventAllDepartmentMembersTableMobile } from './tables/EventAllDepartmentMembersTableMobile'
 import { EventMemberDepartment } from './components/EventMemberDepartment'
 import { useLocation, Route, Routes, Link } from 'react-router-dom'
 import { useIsAdmin } from '../../hooks/useIsAdmin'
+import { useIsMobile } from '../../hooks/useIsMobile'
 
 export const EventDepartmentTab = ({ event }) => {
   const location = useLocation()
   const readOnly = !useIsAdmin()
+  const isMobile = useIsMobile()
   if (!event) return
   const basePath = `/crm/event/${event.id}/department`
 
@@ -41,7 +44,13 @@ export const EventDepartmentTab = ({ event }) => {
       name: 'depMembersView',
       path: `/depMembersView`,
       label: 'Просмотр состава',
-      component: (
+      component: isMobile ? (
+        <EventAllDepartmentMembersTableMobile
+          eventId={event.id}
+          eventStart={event.event_start}
+          eventFinish={event.event_finish}
+        />
+      ) : (
         <EventAllDepartmentMembersTable
           eventId={event.id}
           eventStart={event.event_start}
