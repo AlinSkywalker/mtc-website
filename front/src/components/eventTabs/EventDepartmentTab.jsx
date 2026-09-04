@@ -12,6 +12,7 @@ import { EventMemberDepartment } from './components/EventMemberDepartment'
 import { useLocation, Route, Routes, Link } from 'react-router-dom'
 import { useIsAdmin } from '../../hooks/useIsAdmin'
 import { useIsMobile } from '../../hooks/useIsMobile'
+import { EventMemberDepartmentMobile } from './components/EventMemberDepartmentMobile'
 
 export const EventDepartmentTab = ({ event }) => {
   const location = useLocation()
@@ -38,7 +39,11 @@ export const EventDepartmentTab = ({ event }) => {
       name: 'depMembers',
       path: `/depMembers`,
       label: 'Состав',
-      component: <EventMemberDepartment eventId={event.id} />,
+      component: isMobile ? (
+        <EventMemberDepartmentMobile eventId={event.id} />
+      ) : (
+        <EventMemberDepartment eventId={event.id} />
+      ),
     },
     {
       name: 'depMembersView',
