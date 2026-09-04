@@ -8,6 +8,8 @@ import { dateColumnType } from '../../dataGridCell/GridEditDateCell'
 import { useFetchMemberList } from '../../../queries/member'
 import { SelectEditInputCell } from '../../dataGridCell/SelectEditInputCell'
 import { DEPARTMENT_TYPE_ARRAY } from '../../../constants'
+import { useIsMobile } from '../../../hooks/useIsMobile'
+import { MobileEventDepartmentTab } from '../mobileTables/MobileEventDepartmentTab'
 
 const validationSchema = Yup.object({
   depart_tip: Yup.string().required('Поле обязательно для заполнения'),
@@ -33,6 +35,7 @@ const validationSchema = Yup.object({
 })
 
 export const EventDepartmentTable = ({ eventId, eventStart, eventFinish, readOnly }) => {
+  const isMobile = useIsMobile()
   const defaultItem = {
     depart_tip: '',
     depart_name: '',
@@ -147,6 +150,16 @@ export const EventDepartmentTable = ({ eventId, eventStart, eventFinish, readOnl
     queryClient.invalidateQueries({ queryKey: ['event', eventId, 'department'] })
   }
   if (!eventId) return null
+  if (isMobile)
+    return (
+      <MobileEventDepartmentTab
+        isLoading={isLoading}
+        data={data}
+        readOnly={readOnly}
+        eventId={eventId}
+      />
+    )
+
   return (
     <EditableTable
       rows={rows}
