@@ -4,6 +4,8 @@ import Grid from '@mui/material/Grid'
 import Container from '@mui/material/Container'
 import { format } from 'date-fns'
 import { CircularProgress, IconButton, Tooltip, Typography } from '@mui/material'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import { useIsMobile } from '../hooks/useIsMobile'
 import { useFetchEventInstructorsList } from '../queries/event'
 import { useFetchEventBaseList } from '../queries/eventBase'
@@ -24,6 +26,9 @@ export const EventInfoRO = ({ eventData: data, isLoading }) => {
   const [baseData, setBaseData] = useState(null)
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [anchorElBase, setAnchorElBase] = React.useState(null)
+  const [priceDescOpen, setPriceDescOpen] = useState(false)
+  const [priceSportDescOpen, setPriceSportDescOpen] = useState(false)
+  const [priceTouristDescOpen, setPriceTouristDescOpen] = useState(false)
   const open = Boolean(anchorEl)
   const openBase = Boolean(anchorElBase)
 
@@ -99,7 +104,7 @@ export const EventInfoRO = ({ eventData: data, isLoading }) => {
         </Grid>
         <Grid size={isMobile ? 12 : 2}>
           <Grid container alignItems='center'>
-            <Typography sx={{ fontWeight: 'bold' }}>Инструкторский сбор</Typography>
+            <Typography sx={{ fontWeight: 'bold' }}>Путевка на учебную смену</Typography>
             <Tooltip
               enterTouchDelay={0}
               title='Средства идут на проведение лекционных и практических занятий по различным предметам альпинисткой подготовки, проверке уровня профессиональных знаний и навыков участников, а также совершения восхождений согласно этапом подготовки. 
@@ -111,11 +116,23 @@ export const EventInfoRO = ({ eventData: data, isLoading }) => {
             </Tooltip>
           </Grid>
 
-          <Typography>{price}</Typography>
+          <Grid container alignItems='center' spacing={1}>
+            <Typography>{price}</Typography>
+            {data.price_desc && (
+              <IconButton size='small' onClick={() => setPriceDescOpen(!priceDescOpen)}>
+                {priceDescOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+              </IconButton>
+            )}
+          </Grid>
+          {priceDescOpen && (
+            <Typography sx={{ fontSize: '0.875rem', color: 'text.secondary', whiteSpace: 'pre-wrap' }}>
+              {data.price_desc}
+            </Typography>
+          )}
         </Grid>
         <Grid size={isMobile ? 12 : 2}>
           <Grid container alignItems='center'>
-            <Typography sx={{ fontWeight: 'bold' }}>Стартовый взнос</Typography>
+            <Typography sx={{ fontWeight: 'bold' }}>Путевка на спортивную смену</Typography>
             <Tooltip
               enterTouchDelay={0}
               title='Средства идут на организацию соревнования, в том числе на оплату труда ответственного за безопасность, старшего тренера и судейской бригады, заполнение альпинистских книжек, составлений протоколов, изготовление медалей, грамот и других атрибутов.'
@@ -126,11 +143,23 @@ export const EventInfoRO = ({ eventData: data, isLoading }) => {
             </Tooltip>
           </Grid>
 
-          <Typography>{price_sport}</Typography>
+          <Grid container alignItems='center' spacing={1}>
+            <Typography>{price_sport}</Typography>
+            {data.price_sport_desc && (
+              <IconButton size='small' onClick={() => setPriceSportDescOpen(!priceSportDescOpen)}>
+                {priceSportDescOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+              </IconButton>
+            )}
+          </Grid>
+          {priceSportDescOpen && (
+            <Typography sx={{ fontSize: '0.875rem', color: 'text.secondary', whiteSpace: 'pre-wrap' }}>
+              {data.price_sport_desc}
+            </Typography>
+          )}
         </Grid>
         <Grid size={isMobile ? 12 : 2}>
           <Grid container alignItems='center'>
-            <Typography sx={{ fontWeight: 'bold' }}>Организационный взнос</Typography>
+            <Typography sx={{ fontWeight: 'bold' }}>Предоплата</Typography>
             <Tooltip
               enterTouchDelay={0}
               title='Взымается с болельщиков, сочувствующих и просто отдыхающих пользующихся услугами организации текущего мероприятия, таких как бронирование жилья, трансфера к месту проведения мероприятия, предоставление информации об инфраструктуре района.'
@@ -141,7 +170,19 @@ export const EventInfoRO = ({ eventData: data, isLoading }) => {
             </Tooltip>
           </Grid>
 
-          <Typography>{price_tourist}</Typography>
+          <Grid container alignItems='center' spacing={1}>
+            <Typography>{price_tourist}</Typography>
+            {data.price_tourist_desc && (
+              <IconButton size='small' onClick={() => setPriceTouristDescOpen(!priceTouristDescOpen)}>
+                {priceTouristDescOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+              </IconButton>
+            )}
+          </Grid>
+          {priceTouristDescOpen && (
+            <Typography sx={{ fontSize: '0.875rem', color: 'text.secondary', whiteSpace: 'pre-wrap' }}>
+              {data.price_tourist_desc}
+            </Typography>
+          )}
         </Grid>
         <Grid size={isMobile ? 12 : 4}>
           <Typography sx={{ fontWeight: 'bold' }}>Инструкторско/тренерский состав</Typography>

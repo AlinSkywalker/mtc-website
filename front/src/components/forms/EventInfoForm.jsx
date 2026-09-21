@@ -190,7 +190,7 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
               )}
             />
           </Grid>
-          <Grid size={isMobile ? 12 : 2}>
+          <Grid size={isMobile ? 12 : 4}>
             <Controller
               name='price'
               control={control}
@@ -198,7 +198,7 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
                 <TextField
                   {...field}
                   variant='outlined'
-                  label='Инструкторский сбор'
+                  label='Путевка на учебную смену'
                   fullWidth
                   error={errors[field.name]}
                   helperText={errors[field.name]?.message}
@@ -207,8 +207,24 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
                 />
               )}
             />
+            <Controller
+              name='price_desc'
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  variant='outlined'
+                  label='Что входит в путевку на учебную смену'
+                  fullWidth
+                  multiline
+                  minRows={2}
+                  disabled={readOnly}
+                  sx={{ marginTop: 2 }}
+                />
+              )}
+            />
           </Grid>
-          <Grid size={isMobile ? 12 : 2}>
+          <Grid size={isMobile ? 12 : 4}>
             <Controller
               name='price_sport'
               control={control}
@@ -216,7 +232,7 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
                 <TextField
                   {...field}
                   variant='outlined'
-                  label='Стартовый взнос'
+                  label='Путевка на спортивную смену'
                   fullWidth
                   error={errors[field.name]}
                   helperText={errors[field.name]?.message}
@@ -225,8 +241,24 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
                 />
               )}
             />
+            <Controller
+              name='price_sport_desc'
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  variant='outlined'
+                  label='Что входит в путевку на спортивную смену'
+                  fullWidth
+                  multiline
+                  minRows={2}
+                  disabled={readOnly}
+                  sx={{ marginTop: 2 }}
+                />
+              )}
+            />
           </Grid>
-          <Grid size={isMobile ? 12 : 2}>
+          <Grid size={isMobile ? 12 : 4}>
             <Controller
               name='price_tourist'
               control={control}
@@ -234,12 +266,28 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
                 <TextField
                   {...field}
                   variant='outlined'
-                  label='Организационный взнос'
+                  label='Предоплата'
                   fullWidth
                   error={errors[field.name]}
                   helperText={errors[field.name]?.message}
                   type='number'
                   disabled={readOnly}
+                />
+              )}
+            />
+            <Controller
+              name='price_tourist_desc'
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  variant='outlined'
+                  label='Что входит в предоплату'
+                  fullWidth
+                  multiline
+                  minRows={2}
+                  disabled={readOnly}
+                  sx={{ marginTop: 2 }}
                 />
               )}
             />

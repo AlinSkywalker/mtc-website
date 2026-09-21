@@ -162,9 +162,12 @@ const eventListRouter = (app, passport) => {
         event_full_desc,
         event_organizer,
         raion_id_list,
+        price,
+        price_sport,
+        price_tourist,
       } = req.body;
       pool.query(
-        `INSERT INTO eventalp (event_name, event_start,event_finish, event_st, event_ob,event_organizer,event_desc,event_doctor,event_full_desc) 
+        `INSERT INTO eventalp (event_name, event_start,event_finish, event_st, event_ob,event_organizer,event_desc,event_doctor,event_full_desc, price, price_sport, price_tourist, price_desc, price_sport_desc, price_tourist_desc) 
                   VALUES('${event_name}',
                   CONVERT('${event_start}',DATETIME),
                   CONVERT('${event_finish}',DATETIME),
@@ -173,7 +176,11 @@ const eventListRouter = (app, passport) => {
                   ${event_organizer || null},
                   '${event_desc}',
                   ${event_doctor || null},
-                  '${event_full_desc}')`,
+                  '${event_full_desc}',
+                  ${price || null}, 
+                  ${price_sport || null}, 
+                  ${price_tourist || null}, 
+                  NULL, NULL, NULL)`,
         (error, result) => {
           if (error) {
             console.log(error);
@@ -285,6 +292,7 @@ const eventListRouter = (app, passport) => {
       );
     }
   );
+
   app.post(
     "/eventList/:id",
     passport.authenticate("jwt", { session: false }),
@@ -303,6 +311,9 @@ const eventListRouter = (app, passport) => {
         price,
         price_sport,
         price_tourist,
+        price_desc,
+        price_sport_desc,
+        price_tourist_desc,
         raion_id_list,
         isDatesChanged,
       } = req.body;
@@ -323,8 +334,11 @@ const eventListRouter = (app, passport) => {
         price=?,
         price_sport=?,
         price_tourist=?,
+        price_desc=?,
+        price_sport_desc=?,
+        price_tourist_desc=?,
         updated_date=CURRENT_TIMESTAMP WHERE id=${id}`,
-        [event_name, event_start, event_finish, event_desc, event_full_desc, price || null, price_sport || null, price_tourist || null],
+        [event_name, event_start, event_finish, event_desc, event_full_desc, price || null, price_sport || null, price_tourist || null, price_desc || null, price_sport_desc || null, price_tourist_desc || null],
         (error, result) => {
           if (error) {
             console.log(error);

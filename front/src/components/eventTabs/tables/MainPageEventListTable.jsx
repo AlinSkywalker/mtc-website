@@ -1,6 +1,8 @@
 import React, { useContext, useState } from 'react'
 import { useFetchMainPageEventList } from '../../../queries/event'
 import { Grid, IconButton, Tooltip, Typography } from '@mui/material'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 
 import { format, parseISO } from 'date-fns'
 import { MobileTableItem } from '../../../components/MobileTableItem'
@@ -28,6 +30,9 @@ export const MainPageEventListTable = () => {
   const openBase = Boolean(anchorElBase)
 
   const [expandedItemId, setExpandedItemId] = useState('')
+  const [priceDescOpen, setPriceDescOpen] = useState({})
+  const [priceSportDescOpen, setPriceSportDescOpen] = useState({})
+  const [priceTouristDescOpen, setPriceTouristDescOpen] = useState({})
   const handleItemClick = (id) => {
     navigate(`/crm/event/${id}`)
   }
@@ -42,6 +47,10 @@ export const MainPageEventListTable = () => {
     const price = getFormattedNumber(eventItem.price)
     const price_sport = getFormattedNumber(eventItem.price_sport)
     const price_tourist = getFormattedNumber(eventItem.price_tourist)
+
+    const togglePriceDesc = (field, setId) => {
+      setId((prev) => ({ ...prev, [eventItem.id]: !prev[eventItem.id] }))
+    }
 
     const handleClickMember = async (memberId, event) => {
       event.stopPropagation()
@@ -87,7 +96,7 @@ export const MainPageEventListTable = () => {
         </Grid>
         <Grid size={isMobile ? 12 : 2}>
           <Grid container alignItems='center'>
-            <Typography sx={{ fontWeight: 'bold' }}>Инструкторский сбор</Typography>
+            <Typography sx={{ fontWeight: 'bold' }}>Путевка на учебную смену</Typography>
             <Tooltip
               title='Средства идут на проведение лекционных и практических занятий по различным предметам альпинисткой подготовки, проверке уровня профессиональных знаний и навыков участников, а также совершения восхождений согласно этапом подготовки. 
 Включает в себя Стартовый и Организационный взносы'
@@ -97,29 +106,97 @@ export const MainPageEventListTable = () => {
               </IconButton>
             </Tooltip>
           </Grid>
-          <Typography>{price}</Typography>
+          <Grid container alignItems='center' spacing={1}>
+            <Typography>{price}</Typography>
+            {eventItem.price_desc && (
+              <IconButton
+                size='small'
+                onClick={(e) => {
+                  e.stopPropagation()
+                  togglePriceDesc('price', setPriceDescOpen)
+                }}
+              >
+                {priceDescOpen[eventItem.id] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+              </IconButton>
+            )}
+          </Grid>
+          {priceDescOpen[eventItem.id] && (
+            <Typography
+              sx={{ fontSize: '0.875rem', color: 'text.secondary', whiteSpace: 'pre-wrap' }}
+            >
+              {eventItem.price_desc}
+            </Typography>
+          )}
         </Grid>
         <Grid size={isMobile ? 12 : 2}>
           <Grid container alignItems='center'>
-            <Typography sx={{ fontWeight: 'bold' }}>Стартовый взнос</Typography>
+            <Typography sx={{ fontWeight: 'bold' }}>Путевка на спортивную смену</Typography>
             <Tooltip title='Средства идут на организацию соревнования, в том числе на оплату труда ответственного за безопасность, старшего тренера и судейской бригады, заполнение альпинистских книжек, составлений протоколов, изготовление медалей, грамот и других атрибутов.'>
               <IconButton onClick={(e) => e.stopPropagation()}>
                 <InfoOutlineIcon fontSize='small' color='info' />
               </IconButton>
             </Tooltip>
           </Grid>
-          <Typography>{price_sport}</Typography>
+          <Grid container alignItems='center' spacing={1}>
+            <Typography>{price_sport}</Typography>
+            {eventItem.price_sport_desc && (
+              <IconButton
+                size='small'
+                onClick={(e) => {
+                  e.stopPropagation()
+                  togglePriceDesc('price_sport', setPriceSportDescOpen)
+                }}
+              >
+                {priceSportDescOpen[eventItem.id] ? (
+                  <KeyboardArrowUpIcon />
+                ) : (
+                  <KeyboardArrowDownIcon />
+                )}
+              </IconButton>
+            )}
+          </Grid>
+          {priceSportDescOpen[eventItem.id] && (
+            <Typography
+              sx={{ fontSize: '0.875rem', color: 'text.secondary', whiteSpace: 'pre-wrap' }}
+            >
+              {eventItem.price_sport_desc}
+            </Typography>
+          )}
         </Grid>
         <Grid size={isMobile ? 12 : 2}>
           <Grid container alignItems='center'>
-            <Typography sx={{ fontWeight: 'bold' }}>Организационный взнос</Typography>
+            <Typography sx={{ fontWeight: 'bold' }}>Предоплата</Typography>
             <Tooltip title='Взымается с болельщиков, сочувствующих и просто отдыхающих пользующихся услугами организации текущего мероприятия, таких как бронирование жилья, трансфера к месту проведения мероприятия, предоставление информации об инфраструктуре района.'>
               <IconButton onClick={(e) => e.stopPropagation()}>
                 <InfoOutlineIcon fontSize='small' color='info' />
               </IconButton>
             </Tooltip>
           </Grid>
-          <Typography>{price_tourist}</Typography>
+          <Grid container alignItems='center' spacing={1}>
+            <Typography>{price_tourist}</Typography>
+            {eventItem.price_tourist_desc && (
+              <IconButton
+                size='small'
+                onClick={(e) => {
+                  e.stopPropagation()
+                  togglePriceDesc('price_tourist', setPriceTouristDescOpen)
+                }}
+              >
+                {priceTouristDescOpen[eventItem.id] ? (
+                  <KeyboardArrowUpIcon />
+                ) : (
+                  <KeyboardArrowDownIcon />
+                )}
+              </IconButton>
+            )}
+          </Grid>
+          {priceTouristDescOpen[eventItem.id] && (
+            <Typography
+              sx={{ fontSize: '0.875rem', color: 'text.secondary', whiteSpace: 'pre-wrap' }}
+            >
+              {eventItem.price_tourist_desc}
+            </Typography>
+          )}
         </Grid>
         <Grid size={isMobile ? 12 : 4}>
           <Typography sx={{ fontWeight: 'bold' }}>Отделения</Typography>
