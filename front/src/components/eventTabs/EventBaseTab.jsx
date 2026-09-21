@@ -1,23 +1,18 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import Grid from '@mui/material/Grid'
 
-import { EventBaseHouseRoomTable } from './tables/EventBaseHouseRoomTable'
-import { EventBaseHouseRoomMemberTable } from './tables/EventBaseHouseRoomMemberTable'
-import { useParams, useLocation } from 'react-router-dom'
+import { useIsAdmin } from '../../hooks/useIsAdmin'
+import { useParams, useLocation, Routes, Route, Link } from 'react-router-dom'
 import { EventBaseSettlementTab } from './EventBaseSettlementTab'
+import { EventBaseTable } from '../tables/EventBaseTable'
+import { Box, Tab, Tabs } from '@mui/material'
 
 export const EventBaseTab = () => {
   const { id: eventId } = useParams()
-  const [selectedBaseRoom, setSelectedBaseRoom] = useState('')
 
-  const onRowSelectionModelChange = (newRowSelectionModel) => {
-    let newId = ''
-    newRowSelectionModel.ids.forEach((item) => {
-      newId = item
-    })
-    setSelectedBaseRoom(newId)
-  }
+  const readOnly = !useIsAdmin()
+
   const location = useLocation()
   const basePath = `/crm/event/${eventId}/base`
 
@@ -25,36 +20,25 @@ export const EventBaseTab = () => {
     {
       name: 'baseList',
       path: '/',
-      label: 'Список номеров',
-      component: (
-        <EventBaseHouseRoomTable
-          eventId={eventId}
-          onRowSelectionModelChange={onRowSelectionModelChange}
-        />
-      ),
+      label: 'Базы',
+      component: <EventBaseTable eventId={eventId} readOnly={readOnly} />,
     },
     {
       name: 'settlement',
       path: '/settlement',
       label: 'Расселение',
-      component: <EventBaseSettlementTab />,
+      component: (
+        <Grid container spacing={1}>
+          <EventBaseSettlementTab />
+        </Grid>
+      ),
     },
   ]
   const currentTab = tabs.findIndex((tab) => `${basePath}${tab.path}` === location.pathname)
+
   return (
     <>
-      <Grid container spacing={1}>
-        <Grid size={7}>
-          <EventBaseHouseRoomTable
-            eventId={eventId}
-            onRowSelectionModelChange={onRowSelectionModelChange}
-          />
-        </Grid>
-        <Grid size={5}>
-          <EventBaseHouseRoomMemberTable eventId={eventId} selectedBaseRoom={selectedBaseRoom} />
-        </Grid>
-      </Grid>
-      {/* <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs
           value={currentTab !== -1 ? currentTab : false}
           variant='scrollable'
@@ -69,7 +53,7 @@ export const EventBaseTab = () => {
         {tabs.map((tab, index) => (
           <Route key={index} path={`${tab.path}/*`} element={tab.component} />
         ))}
-      </Routes> */}
+      </Routes>
     </>
   )
 }

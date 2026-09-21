@@ -3,15 +3,12 @@ import { useFetchEvent } from '../../queries/event'
 import { Button, Card, Grid } from '@mui/material'
 import { useParams } from 'react-router-dom'
 import { useIsAdmin } from '../../hooks/useIsAdmin'
-import { useIsMobile } from '../../hooks/useIsMobile'
 import { EventInfoRO } from '../EventInfoRO'
 import { EventInfoForm } from '../forms/EventInfoForm'
-import { EventBaseTable } from '../tables/EventBaseTable'
 import { EventApplicationDialog } from './dialogs/EventApplicationDialog'
 
 export const EventDescriptionTab = ({ eventId }) => {
   const readOnly = !useIsAdmin()
-  const isMobile = useIsMobile()
   const params = useParams()
   const { id: currentId } = params
   const { isLoading, data } = useFetchEvent(currentId)
@@ -32,14 +29,9 @@ export const EventDescriptionTab = ({ eventId }) => {
         <EventInfoRO eventData={data} isLoading={isLoading} />
       ) : (
         <Grid container spacing={2}>
-          <Grid size={isMobile ? 12 : 10}>
-            <Card sx={{ minWidth: 275 }}>
-              <EventInfoForm eventData={data} isLoading={isLoading} readOnly={readOnly} />
-            </Card>
-          </Grid>
-          <Grid size={isMobile ? 12 : 2}>
-            <EventBaseTable eventId={currentId} readOnly={readOnly} />
-          </Grid>
+          <Card sx={{ minWidth: 275 }}>
+            <EventInfoForm eventData={data} isLoading={isLoading} readOnly={readOnly} />
+          </Card>
         </Grid>
       )}
       <EventApplicationDialog
