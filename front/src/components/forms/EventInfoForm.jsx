@@ -116,7 +116,7 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
     <CardContent>
       <form onSubmit={handleSubmit(handleSave)}>
         <Grid container flexDirection='row' spacing={2}>
-          <Grid size={isMobile ? 12 : 4}>
+          <Grid container size={isMobile ? 12 : 4} justifyContent='flex-start' direction='column'>
             <Controller
               name='event_name'
               control={control}
@@ -132,25 +132,6 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
                 />
               )}
             />
-          </Grid>
-          <Grid size={isMobile ? 12 : 4}>
-            <Controller
-              name='event_desc'
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  variant='outlined'
-                  label='Описание'
-                  fullWidth
-                  disabled={readOnly}
-                  multiline
-                  maxRows={4}
-                />
-              )}
-            />
-          </Grid>
-          <Grid size={isMobile ? 12 : 2}>
             <Controller
               name='event_start'
               control={control}
@@ -169,8 +150,6 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
                 />
               )}
             />
-          </Grid>
-          <Grid size={isMobile ? 12 : 2}>
             <Controller
               name='event_finish'
               control={control}
@@ -186,6 +165,40 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
                       helperText: errors[field.name]?.message,
                     },
                   }}
+                />
+              )}
+            />
+          </Grid>
+          <Grid size={isMobile ? 12 : 4}>
+            <Controller
+              name='event_desc'
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  variant='outlined'
+                  label='Описание (видно на карточке в списке событий)'
+                  fullWidth
+                  disabled={readOnly}
+                  multiline
+                  minRows={2}
+                />
+              )}
+            />
+          </Grid>
+          <Grid size={isMobile ? 12 : 4}>
+            <Controller
+              name='event_full_desc'
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  variant='outlined'
+                  label='Полное писание (видно внутри карточки события)'
+                  fullWidth
+                  disabled={readOnly}
+                  multiline
+                  minRows={2}
                 />
               )}
             />

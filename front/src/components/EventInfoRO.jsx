@@ -69,15 +69,15 @@ export const EventInfoRO = ({ eventData: data, isLoading }) => {
           <Typography sx={{ fontWeight: 'bold' }}>Описание</Typography>
           <Typography sx={{ whiteSpace: 'pre-wrap' }}>{data.event_full_desc}</Typography>
         </Grid>
-        <Grid size={isMobile ? 12 : 2}>
+        <Grid size={isMobile ? 12 : 4}>
           <Typography sx={{ fontWeight: 'bold' }}>Дата начала</Typography>
           <Typography>{format(data.event_start, 'dd.MM.yyyy')}</Typography>
         </Grid>
-        <Grid size={isMobile ? 12 : 2}>
+        <Grid size={isMobile ? 12 : 4}>
           <Typography sx={{ fontWeight: 'bold' }}>Дата окончания</Typography>
           <Typography>{format(data.event_finish, 'dd.MM.yyyy')}</Typography>
         </Grid>
-        {!isMobile && <Grid size={4}></Grid>}
+        {/* {!isMobile && <Grid size={4}></Grid>} */}
         <Grid size={isMobile ? 12 : 4}>
           <Typography sx={{ fontWeight: 'bold' }}>Старший тренер</Typography>
           <Typography sx={dashedTextStyle} onClick={(e) => handleClickMember(data.st.id, e)}>
@@ -96,95 +96,110 @@ export const EventInfoRO = ({ eventData: data, isLoading }) => {
             {data.doctor.fio}
           </Typography>
         </Grid>
-        <Grid size={isMobile ? 12 : 4}>
+        <Grid size={isMobile ? 12 : 12}>
           <Typography sx={{ fontWeight: 'bold' }}>Район проведения</Typography>
           {data?.raion_name_list?.map((baseItem, index) => (
             <Typography key={index}>{baseItem}</Typography>
           ))}
         </Grid>
-        <Grid size={isMobile ? 12 : 2}>
-          <Grid container alignItems='center'>
-            <Typography sx={{ fontWeight: 'bold' }}>Путевка на учебную смену</Typography>
-            <Tooltip
-              enterTouchDelay={0}
-              title='Средства идут на проведение лекционных и практических занятий по различным предметам альпинисткой подготовки, проверке уровня профессиональных знаний и навыков участников, а также совершения восхождений согласно этапом подготовки. 
+        {price && (
+          <Grid size={isMobile ? 12 : 4}>
+            <Grid container alignItems='center'>
+              <Typography sx={{ fontWeight: 'bold' }}>Путевка на учебную смену</Typography>
+              {/* <Tooltip
+                enterTouchDelay={0}
+                title='Средства идут на проведение лекционных и практических занятий по различным предметам альпинисткой подготовки, проверке уровня профессиональных знаний и навыков участников, а также совершения восхождений согласно этапом подготовки. 
 Включает в себя Стартовый и Организационный взносы'
-            >
-              <IconButton onClick={(e) => e.stopPropagation()}>
-                <InfoOutlineIcon fontSize='small' color='info' />
-              </IconButton>
-            </Tooltip>
-          </Grid>
+              >
+                <IconButton onClick={(e) => e.stopPropagation()}>
+                  <InfoOutlineIcon fontSize='small' color='info' />
+                </IconButton>
+              </Tooltip> */}
+            </Grid>
 
-          <Grid container alignItems='center' spacing={1}>
-            <Typography>{price}</Typography>
-            {data.price_desc && (
-              <IconButton size='small' onClick={() => setPriceDescOpen(!priceDescOpen)}>
-                {priceDescOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-              </IconButton>
+            <Grid container alignItems='center' spacing={1}>
+              <Typography>{price}</Typography>
+              {data.price_desc && (
+                <IconButton size='small' onClick={() => setPriceDescOpen(!priceDescOpen)}>
+                  {priceDescOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                </IconButton>
+              )}
+            </Grid>
+            {priceDescOpen && (
+              <Typography
+                sx={{ fontSize: '0.875rem', color: 'text.secondary', whiteSpace: 'pre-wrap' }}
+              >
+                {data.price_desc}
+              </Typography>
             )}
           </Grid>
-          {priceDescOpen && (
-            <Typography sx={{ fontSize: '0.875rem', color: 'text.secondary', whiteSpace: 'pre-wrap' }}>
-              {data.price_desc}
-            </Typography>
-          )}
-        </Grid>
-        <Grid size={isMobile ? 12 : 2}>
-          <Grid container alignItems='center'>
-            <Typography sx={{ fontWeight: 'bold' }}>Путевка на спортивную смену</Typography>
-            <Tooltip
-              enterTouchDelay={0}
-              title='Средства идут на организацию соревнования, в том числе на оплату труда ответственного за безопасность, старшего тренера и судейской бригады, заполнение альпинистских книжек, составлений протоколов, изготовление медалей, грамот и других атрибутов.'
-            >
-              <IconButton onClick={(e) => e.stopPropagation()}>
-                <InfoOutlineIcon fontSize='small' color='info' />
-              </IconButton>
-            </Tooltip>
-          </Grid>
+        )}
+        {price_sport && (
+          <Grid size={isMobile ? 12 : 4}>
+            <Grid container alignItems='center'>
+              <Typography sx={{ fontWeight: 'bold' }}>Путевка на спортивную смену</Typography>
+              {/* <Tooltip
+                enterTouchDelay={0}
+                title='Средства идут на организацию соревнования, в том числе на оплату труда ответственного за безопасность, старшего тренера и судейской бригады, заполнение альпинистских книжек, составлений протоколов, изготовление медалей, грамот и других атрибутов.'
+              >
+                <IconButton onClick={(e) => e.stopPropagation()}>
+                  <InfoOutlineIcon fontSize='small' color='info' />
+                </IconButton>
+              </Tooltip> */}
+            </Grid>
 
-          <Grid container alignItems='center' spacing={1}>
-            <Typography>{price_sport}</Typography>
-            {data.price_sport_desc && (
-              <IconButton size='small' onClick={() => setPriceSportDescOpen(!priceSportDescOpen)}>
-                {priceSportDescOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-              </IconButton>
+            <Grid container alignItems='center' spacing={1}>
+              <Typography>{price_sport}</Typography>
+              {data.price_sport_desc && (
+                <IconButton size='small' onClick={() => setPriceSportDescOpen(!priceSportDescOpen)}>
+                  {priceSportDescOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                </IconButton>
+              )}
+            </Grid>
+            {priceSportDescOpen && (
+              <Typography
+                sx={{ fontSize: '0.875rem', color: 'text.secondary', whiteSpace: 'pre-wrap' }}
+              >
+                {data.price_sport_desc}
+              </Typography>
             )}
           </Grid>
-          {priceSportDescOpen && (
-            <Typography sx={{ fontSize: '0.875rem', color: 'text.secondary', whiteSpace: 'pre-wrap' }}>
-              {data.price_sport_desc}
-            </Typography>
-          )}
-        </Grid>
-        <Grid size={isMobile ? 12 : 2}>
-          <Grid container alignItems='center'>
-            <Typography sx={{ fontWeight: 'bold' }}>Предоплата</Typography>
-            <Tooltip
-              enterTouchDelay={0}
-              title='Взымается с болельщиков, сочувствующих и просто отдыхающих пользующихся услугами организации текущего мероприятия, таких как бронирование жилья, трансфера к месту проведения мероприятия, предоставление информации об инфраструктуре района.'
-            >
-              <IconButton onClick={(e) => e.stopPropagation()}>
-                <InfoOutlineIcon fontSize='small' color='info' />
-              </IconButton>
-            </Tooltip>
-          </Grid>
+        )}
+        {price_tourist && (
+          <Grid size={isMobile ? 12 : 4}>
+            <Grid container alignItems='center'>
+              <Typography sx={{ fontWeight: 'bold' }}>Предоплата</Typography>
+              {/* <Tooltip
+                enterTouchDelay={0}
+                title='Взымается с болельщиков, сочувствующих и просто отдыхающих пользующихся услугами организации текущего мероприятия, таких как бронирование жилья, трансфера к месту проведения мероприятия, предоставление информации об инфраструктуре района.'
+              >
+                <IconButton onClick={(e) => e.stopPropagation()}>
+                  <InfoOutlineIcon fontSize='small' color='info' />
+                </IconButton>
+              </Tooltip> */}
+            </Grid>
 
-          <Grid container alignItems='center' spacing={1}>
-            <Typography>{price_tourist}</Typography>
-            {data.price_tourist_desc && (
-              <IconButton size='small' onClick={() => setPriceTouristDescOpen(!priceTouristDescOpen)}>
-                {priceTouristDescOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-              </IconButton>
+            <Grid container alignItems='center' spacing={1}>
+              <Typography>{price_tourist}</Typography>
+              {data.price_tourist_desc && (
+                <IconButton
+                  size='small'
+                  onClick={() => setPriceTouristDescOpen(!priceTouristDescOpen)}
+                >
+                  {priceTouristDescOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                </IconButton>
+              )}
+            </Grid>
+            {priceTouristDescOpen && (
+              <Typography
+                sx={{ fontSize: '0.875rem', color: 'text.secondary', whiteSpace: 'pre-wrap' }}
+              >
+                {data.price_tourist_desc}
+              </Typography>
             )}
           </Grid>
-          {priceTouristDescOpen && (
-            <Typography sx={{ fontSize: '0.875rem', color: 'text.secondary', whiteSpace: 'pre-wrap' }}>
-              {data.price_tourist_desc}
-            </Typography>
-          )}
-        </Grid>
-        <Grid size={isMobile ? 12 : 4}>
+        )}
+        <Grid size={isMobile ? 12 : 6}>
           <Typography sx={{ fontWeight: 'bold' }}>Инструкторско/тренерский состав</Typography>
           {eventInstructorsData?.map((item) => (
             <Typography
