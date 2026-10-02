@@ -170,7 +170,7 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
               )}
             />
           </Grid>
-          <Grid size={isMobile ? 12 : 4}>
+          <Grid size={isMobile ? 12 : 8}>
             <Controller
               name='event_desc'
               control={control}
@@ -187,7 +187,7 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
               )}
             />
           </Grid>
-          <Grid size={isMobile ? 12 : 4}>
+          <Grid size={12}>
             <Controller
               name='event_full_desc'
               control={control}
@@ -195,7 +195,7 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
                 <TextField
                   {...field}
                   variant='outlined'
-                  label='Полное писание (видно внутри карточки события)'
+                  label='Полное описание (видно внутри карточки события)'
                   fullWidth
                   disabled={readOnly}
                   multiline
@@ -296,7 +296,7 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
                 <TextField
                   {...field}
                   variant='outlined'
-                  label='Что входит в предоплату'
+                  label='Условия оплаты и отмены'
                   fullWidth
                   multiline
                   minRows={2}
@@ -316,6 +316,7 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
                   onChange={field.onChange}
                   disabled={readOnly}
                   fullWidth
+                  label='Цвет мероприятия'
                   placeholder='Цвет мероприятия'
                 />
               )}
