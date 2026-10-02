@@ -3,7 +3,7 @@ import CardContent from '@mui/material/CardContent'
 import Grid from '@mui/material/Grid'
 import Container from '@mui/material/Container'
 import { format } from 'date-fns'
-import { CircularProgress, IconButton, Tooltip, Typography } from '@mui/material'
+import { CircularProgress, IconButton, Typography } from '@mui/material'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import { useIsMobile } from '../hooks/useIsMobile'
@@ -12,7 +12,6 @@ import { useFetchEventBaseList } from '../queries/eventBase'
 import { getFormattedNumber } from '../utils/numbers'
 import { EventMemberPopover } from './EventMemberPopover'
 import { EventBasePopover } from './EventBasePopover'
-import InfoOutlineIcon from '@mui/icons-material/InfoOutline'
 
 const dashedTextStyle = { textDecoration: 'underline dashed #1976d2', cursor: 'pointer' }
 

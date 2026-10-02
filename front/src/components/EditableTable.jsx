@@ -15,6 +15,12 @@ import './EditableTableStyles.css'
 import { useSnackbar } from 'notistack'
 import { Button, Grid, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material'
 
+function colorToClass(color) {
+  if (!color) return ''
+  // убираем # и делаем безопасное имя
+  return `bg-${color.replace(/[^0-9a-f]/gi, '')}`
+}
+
 export const EditableTable = ({
   rows,
   setRows,
@@ -232,6 +238,25 @@ export const EditableTable = ({
     rowSelectionParams.rowSelectionModel = rowSelectionModel
   }
 
+  const rowStyles = React.useMemo(() => {
+    const map = new Map()
+    rows?.forEach((row) => {
+      if (!row.background_color) return
+      const cls = colorToClass(row.background_color)
+      if (!map.has(cls)) {
+        map.set(cls, {
+          backgroundColor: row.background_color,
+          '&:hover': { backgroundColor: row.background_color },
+        })
+      }
+    })
+
+    // превращаем в объект для sx: { "& .bgFFF": {...}, "& .bgEEE": {...} }
+    return Object.fromEntries(
+      Array.from(map.entries()).map(([cls, styles]) => [`& .${cls}`, styles]),
+    )
+  }, [rows])
+
   return (
     <Grid spacing={2} container flexDirection={'column'}>
       {renderConfirmDialog()}
@@ -289,6 +314,8 @@ export const EditableTable = ({
           disableColumnMenu
           paginationModel={paginationModel}
           onPaginationModelChange={setPaginationModel}
+          sx={rowStyles}
+          getRowClassName={(params) => colorToClass(params.row.background_color)}
         />
       </Grid>
     </Grid>

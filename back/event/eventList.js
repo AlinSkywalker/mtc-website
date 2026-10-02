@@ -316,6 +316,7 @@ const eventListRouter = (app, passport) => {
         price_tourist_desc,
         raion_id_list,
         isDatesChanged,
+        background_color
       } = req.body;
       const eventRaionValues = raion_id_list
         .map((item) => `(${id},${item})`)
@@ -337,8 +338,9 @@ const eventListRouter = (app, passport) => {
         price_desc=?,
         price_sport_desc=?,
         price_tourist_desc=?,
+        background_color=?,
         updated_date=CURRENT_TIMESTAMP WHERE id=${id}`,
-        [event_name, event_start, event_finish, event_desc, event_full_desc, price || null, price_sport || null, price_tourist || null, price_desc || null, price_sport_desc || null, price_tourist_desc || null],
+        [event_name, event_start, event_finish, event_desc, event_full_desc, price || null, price_sport || null, price_tourist || null, price_desc || null, price_sport_desc || null, price_tourist_desc || null, background_color || null],
         (error, result) => {
           if (error) {
             console.log(error);

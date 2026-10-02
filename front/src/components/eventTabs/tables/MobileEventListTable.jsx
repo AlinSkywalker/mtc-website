@@ -44,8 +44,14 @@ export const MobileEventListTable = () => {
   const renderEventItem = (eventItem) => {
     const eventStart = format(parseISO(eventItem.event_start || ''), 'dd.MM.yyyy')
     const eventFinish = format(parseISO(eventItem.event_finish || ''), 'dd.MM.yyyy')
+    const cardSx = eventItem.background_color ? { backgroundColor: eventItem.background_color } : {}
     return (
-      <MobileTableItem handleItemClick={handleItemClickName} id={eventItem.id} key={eventItem.id}>
+      <MobileTableItem
+        handleItemClick={handleItemClickName}
+        id={eventItem.id}
+        key={eventItem.id}
+        sx={cardSx}
+      >
         <Typography variant='h5'>{eventItem.event_name}</Typography>
         <Typography>
           {eventStart} - {eventFinish}

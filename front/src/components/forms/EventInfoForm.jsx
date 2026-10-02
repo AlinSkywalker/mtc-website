@@ -9,6 +9,7 @@ import apiClient from '../../api/api'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { format } from 'date-fns'
 import { CircularProgress } from '@mui/material'
+import { MuiColorInput } from 'mui-color-input'
 
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
@@ -301,6 +302,21 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
                   minRows={2}
                   disabled={readOnly}
                   sx={{ marginTop: 2 }}
+                />
+              )}
+            />
+          </Grid>
+          <Grid size={isMobile ? 12 : 4}>
+            <Controller
+              name='background_color'
+              control={control}
+              render={({ field }) => (
+                <MuiColorInput
+                  value={field.value || '#ffffff'}
+                  onChange={field.onChange}
+                  disabled={readOnly}
+                  fullWidth
+                  placeholder='Цвет мероприятия'
                 />
               )}
             />

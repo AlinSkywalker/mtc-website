@@ -255,6 +255,8 @@ export const MainPageEventListTable = () => {
       </>
     )
 
+    const cardSx = eventItem.background_color ? { backgroundColor: eventItem.background_color } : {}
+
     return (
       <MobileTableItem
         key={eventItem.id}
@@ -263,6 +265,7 @@ export const MainPageEventListTable = () => {
         expandedItemId={expandedItemId}
         setExpandedItemId={isAuthenticated ? null : setExpandedItemId}
         handleItemClick={isAuthenticated ? handleItemClick : null}
+        sx={cardSx}
       >
         <Typography variant='h5'>{eventItem.event_name}</Typography>
         <Typography>

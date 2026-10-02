@@ -8,6 +8,7 @@ export const MobileTableItem = ({
   id,
   expandedItemId,
   setExpandedItemId,
+  sx,
 }) => {
   const handleItemClickName = () => {
     if (expandedData && setExpandedItemId && expandedItemId !== id) {
@@ -21,7 +22,7 @@ export const MobileTableItem = ({
 
   const isExpanded = id === expandedItemId
   return (
-    <Card onClick={handleItemClickName} sx={{ margin: 2, padding: 2 }} key={id}>
+    <Card onClick={handleItemClickName} sx={{ margin: 2, padding: 2, ...sx }} key={id}>
       {children}
 
       {isExpanded && (
