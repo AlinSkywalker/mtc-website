@@ -3,6 +3,7 @@ import {
   useFetchEventAllDepartmentPlanList,
   useFetchEventDepartmentList,
 } from '../../../queries/eventDepartment'
+import { useIsAdmin } from '../../../hooks/useIsAdmin'
 import { formatISO, format } from 'date-fns'
 import { EventDepartmentPlanDialog } from '../dialogs/EventDepartmentPlanDialog'
 import Button from '@mui/material/Button'
@@ -29,6 +30,7 @@ export const EventAllDepartmentPlansTableMobile = ({
   const [selectedDepartmentId, setSelectedDepartmentId] = useState(null)
   const [selectedDate, setSelectedDate] = useState(null)
   const [selectedPlan, setSelectedPlan] = useState(null)
+  const isAdmin = useIsAdmin()
 
   const handleShowPast = () => {
     setIsShowPast((prev) => !prev)
@@ -104,7 +106,7 @@ export const EventAllDepartmentPlansTableMobile = ({
 
   return (
     <div className='mobile-plans-container'>
-      {!isPastEvent && (
+      {new Date(eventStart) < new Date() && (
         <div className='mobile-toolbar'>
           <Tooltip title='Показать прошедшие даты'>
             <Button
@@ -146,9 +148,7 @@ export const EventAllDepartmentPlansTableMobile = ({
                   onClick={() => toggleDate(dateStr)}
                   className='mobile-date-toggle'
                 >
-                  <ExpandMoreIcon
-                    className={collapsedDates.has(dateStr) ? '' : 'expanded'}
-                  />
+                  <ExpandMoreIcon className={collapsedDates.has(dateStr) ? '' : 'expanded'} />
                 </IconButton>
               </div>
               {!collapsedDates.has(dateStr) && (
@@ -166,7 +166,9 @@ export const EventAllDepartmentPlansTableMobile = ({
                           <div className='mobile-dept-plans'>
                             {plans.map((plan, idx) => (
                               <div key={idx} className='mobile-dept-plan-item'>
-                                <span className='mobile-dept-plan-text'>{renderPlanText(plan)}</span>
+                                <span className='mobile-dept-plan-text'>
+                                  {renderPlanText(plan)}
+                                </span>
                                 <IconButton
                                   size='small'
                                   onClick={handleOpenDialog(department.id, dateStr, plan)}
@@ -177,7 +179,7 @@ export const EventAllDepartmentPlansTableMobile = ({
                               </div>
                             ))}
                           </div>
-                        ) : (
+                        ) : isAdmin ? (
                           <Button
                             variant='outlined'
                             size='small'
@@ -186,7 +188,7 @@ export const EventAllDepartmentPlansTableMobile = ({
                           >
                             + Добавить
                           </Button>
-                        )}
+                        ) : null}
                       </div>
                     )
                   })}

@@ -216,7 +216,14 @@ export const EventListTable = () => {
     },
     {
       field: 'price_tourist',
-      headerName: 'Предоплата',
+      headerName: 'Предоплата учебная смена',
+      width: 150,
+      editable: !readOnly,
+      type: 'number',
+    },
+    {
+      field: 'sport_prepayment',
+      headerName: 'Предоплата спортивная смена',
       width: 150,
       editable: !readOnly,
       type: 'number',

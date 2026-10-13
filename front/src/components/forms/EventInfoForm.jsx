@@ -222,6 +222,23 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
               )}
             />
             <Controller
+              name='price_tourist'
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  variant='outlined'
+                  label='Предоплата учебной смены'
+                  fullWidth
+                  error={errors[field.name]}
+                  helperText={errors[field.name]?.message}
+                  type='number'
+                  disabled={readOnly}
+                  sx={{ marginTop: 2 }}
+                />
+              )}
+            />
+            <Controller
               name='price_desc'
               control={control}
               render={({ field }) => (
@@ -256,6 +273,23 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
               )}
             />
             <Controller
+              name='sport_prepayment'
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  variant='outlined'
+                  label='Предоплата спортивной смены'
+                  fullWidth
+                  error={errors[field.name]}
+                  helperText={errors[field.name]?.message}
+                  type='number'
+                  disabled={readOnly}
+                  sx={{ marginTop: 2 }}
+                />
+              )}
+            />
+            <Controller
               name='price_sport_desc'
               control={control}
               render={({ field }) => (
@@ -274,22 +308,6 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
           </Grid>
           <Grid size={isMobile ? 12 : 4}>
             <Controller
-              name='price_tourist'
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  variant='outlined'
-                  label='Предоплата'
-                  fullWidth
-                  error={errors[field.name]}
-                  helperText={errors[field.name]?.message}
-                  type='number'
-                  disabled={readOnly}
-                />
-              )}
-            />
-            <Controller
               name='price_tourist_desc'
               control={control}
               render={({ field }) => (
@@ -301,7 +319,6 @@ export const EventInfoForm = ({ eventData: data, isLoading, readOnly }) => {
                   multiline
                   minRows={2}
                   disabled={readOnly}
-                  sx={{ marginTop: 2 }}
                 />
               )}
             />

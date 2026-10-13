@@ -3,6 +3,7 @@ import {
   useFetchEventAllDepartmentPlanList,
   useFetchEventDepartmentList,
 } from '../../../queries/eventDepartment'
+import { useIsAdmin } from '../../../hooks/useIsAdmin'
 import Grid from '@mui/material/Grid'
 import { getDatesInRange } from '../../../utils/getDatesInRange'
 import './EventAllDepartmentPlansTableStyle.css'
@@ -29,6 +30,7 @@ export const EventAllDepartmentPlansTable = ({
   const [selectedDepartmentId, setSelectedDepartmentId] = useState(null)
   const [selectedDate, setSelectedDate] = useState(null)
   const [selectedPlan, setSelectedPlan] = useState(null)
+  const isAdmin = useIsAdmin()
 
   const handleShowPast = () => {
     setIsShowPast((prev) => !prev)
@@ -89,7 +91,7 @@ export const EventAllDepartmentPlansTable = ({
               </IconButton>
             </Grid>
           ))
-        ) : (
+        ) : isAdmin ? (
           <Button
             variant='outlined'
             size='small'
@@ -98,7 +100,7 @@ export const EventAllDepartmentPlansTable = ({
           >
             Добавить
           </Button>
-        )}
+        ) : null}
       </Grid>
     )
   }
@@ -115,11 +117,13 @@ export const EventAllDepartmentPlansTable = ({
         flexWrap='nowrap'
       >
         <Grid className={'depPlanCell depPlanDateCell depPlanTitleCell'}>
-          <Tooltip title='Показать прошедшие даты'>
-            <IconButton aria-label='delete' color='primary' onClick={handleShowPast}>
-              <ScheduleIcon />
-            </IconButton>
-          </Tooltip>
+          {new Date(eventStart) < new Date() && (
+            <Tooltip title={isShowPast ? 'Скрыть прошедшие даты' : 'Показать прошедшие даты'}>
+              <IconButton aria-label='delete' color='primary' onClick={handleShowPast}>
+                <ScheduleIcon />
+              </IconButton>
+            </Tooltip>
+          )}
         </Grid>
         {departmentData.map((department) => {
           return (

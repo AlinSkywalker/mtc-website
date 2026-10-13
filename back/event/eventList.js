@@ -165,9 +165,10 @@ const eventListRouter = (app, passport) => {
         price,
         price_sport,
         price_tourist,
+        sport_prepayment
       } = req.body;
       pool.query(
-        `INSERT INTO eventalp (event_name, event_start,event_finish, event_st, event_ob,event_organizer,event_desc,event_doctor,event_full_desc, price, price_sport, price_tourist, price_desc, price_sport_desc, price_tourist_desc) 
+        `INSERT INTO eventalp (event_name, event_start,event_finish, event_st, event_ob,event_organizer,event_desc,event_doctor,event_full_desc, price, price_sport, price_tourist,sport_prepayment, price_desc, price_sport_desc, price_tourist_desc) 
                   VALUES('${event_name}',
                   CONVERT('${event_start}',DATETIME),
                   CONVERT('${event_finish}',DATETIME),
@@ -180,6 +181,7 @@ const eventListRouter = (app, passport) => {
                   ${price || null}, 
                   ${price_sport || null}, 
                   ${price_tourist || null}, 
+                  ${sport_prepayment || null}, 
                   NULL, NULL, NULL)`,
         (error, result) => {
           if (error) {
@@ -316,7 +318,8 @@ const eventListRouter = (app, passport) => {
         price_tourist_desc,
         raion_id_list,
         isDatesChanged,
-        background_color
+        background_color,
+        sport_prepayment,
       } = req.body;
       const eventRaionValues = raion_id_list
         .map((item) => `(${id},${item})`)
@@ -339,8 +342,9 @@ const eventListRouter = (app, passport) => {
         price_sport_desc=?,
         price_tourist_desc=?,
         background_color=?,
+        sport_prepayment=?,
         updated_date=CURRENT_TIMESTAMP WHERE id=${id}`,
-        [event_name, event_start, event_finish, event_desc, event_full_desc, price || null, price_sport || null, price_tourist || null, price_desc || null, price_sport_desc || null, price_tourist_desc || null, background_color || null],
+        [event_name, event_start, event_finish, event_desc, event_full_desc, price || null, price_sport || null, price_tourist || null, price_desc || null, price_sport_desc || null, price_tourist_desc || null, background_color || null, sport_prepayment || null],
         (error, result) => {
           if (error) {
             console.log(error);

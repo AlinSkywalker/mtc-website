@@ -44,6 +44,7 @@ export const EventInfoRO = ({ eventData: data, isLoading }) => {
   const price = getFormattedNumber(data.price)
   const price_sport = getFormattedNumber(data.price_sport)
   const price_tourist = getFormattedNumber(data.price_tourist)
+  const sport_prepaymnet = getFormattedNumber(data.sport_prepaymnet)
 
   const handleClickMember = async (memberId, event) => {
     try {
@@ -88,77 +89,101 @@ export const EventInfoRO = ({ eventData: data, isLoading }) => {
             {data.ob.fio}
           </Typography>
         </Grid>
-        <Grid size={isMobile ? 12 : 4}>
-          <Typography sx={{ fontWeight: 'bold' }}>Врач</Typography>
-          <Typography sx={dashedTextStyle} onClick={(e) => handleClickMember(data.doctor.id, e)}>
-            {data.doctor.fio}
-          </Typography>
-        </Grid>
+        {data.doctor.fio && (
+          <Grid size={isMobile ? 12 : 4}>
+            <Typography sx={{ fontWeight: 'bold' }}>Врач</Typography>
+            <Typography sx={dashedTextStyle} onClick={(e) => handleClickMember(data.doctor.id, e)}>
+              {data.doctor.fio}
+            </Typography>
+          </Grid>
+        )}
         <Grid size={12}>
           <Typography sx={{ fontWeight: 'bold' }}>Район проведения</Typography>
           {data?.raion_name_list?.map((baseItem, index) => (
             <Typography key={index}>{baseItem}</Typography>
           ))}
         </Grid>
-        {price && (
-          <Grid size={isMobile ? 12 : 4}>
-            <Grid container alignItems='center'>
-              <Typography sx={{ fontWeight: 'bold' }}>Путевка на учебную смену</Typography>
-            </Grid>
+        {(price || price_tourist) && (
+          <Grid container size={isMobile ? 12 : 4} spacing={2} direction={'column'}>
+            {price && (
+              <Grid>
+                <Grid container alignItems='center'>
+                  <Typography sx={{ fontWeight: 'bold' }}>Путевка на учебную смену</Typography>
+                </Grid>
 
-            <Grid container alignItems='center' spacing={1}>
-              <Typography>{price}</Typography>
-              {data.price_desc && (
-                <IconButton size='small' onClick={() => setPriceDescOpen(!priceDescOpen)}>
-                  {priceDescOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                </IconButton>
-              )}
-            </Grid>
-            {priceDescOpen && (
-              <Typography
-                sx={{ fontSize: '0.875rem', color: 'text.secondary', whiteSpace: 'pre-wrap' }}
-              >
-                {data.price_desc}
-              </Typography>
+                <Grid container alignItems='center' spacing={1}>
+                  <Typography>{price}</Typography>
+                  {data.price_desc && (
+                    <IconButton size='small' onClick={() => setPriceDescOpen(!priceDescOpen)}>
+                      {priceDescOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                    </IconButton>
+                  )}
+                </Grid>
+                {priceDescOpen && (
+                  <Typography
+                    sx={{ fontSize: '0.875rem', color: 'text.secondary', whiteSpace: 'pre-wrap' }}
+                  >
+                    {data.price_desc}
+                  </Typography>
+                )}
+              </Grid>
+            )}
+            {price_tourist && (
+              <Grid>
+                <Grid container alignItems='center'>
+                  <Typography sx={{ fontWeight: 'bold' }}>Предоплата учебной смены</Typography>
+                </Grid>
+
+                <Grid container alignItems='center' spacing={1}>
+                  <Typography>{price_tourist}</Typography>
+                </Grid>
+              </Grid>
             )}
           </Grid>
         )}
-        {price_sport && (
-          <Grid size={isMobile ? 12 : 4}>
-            <Grid container alignItems='center'>
-              <Typography sx={{ fontWeight: 'bold' }}>Путевка на спортивную смену</Typography>
-            </Grid>
+        {(price_sport || sport_prepaymnet) && (
+          <Grid container size={isMobile ? 12 : 4} spacing={2} direction={'column'}>
+            {price_sport && (
+              <Grid>
+                <Grid container alignItems='center'>
+                  <Typography sx={{ fontWeight: 'bold' }}>Путевка на спортивную смену</Typography>
+                </Grid>
 
-            <Grid container alignItems='center' spacing={1}>
-              <Typography>{price_sport}</Typography>
-              {data.price_sport_desc && (
-                <IconButton size='small' onClick={() => setPriceSportDescOpen(!priceSportDescOpen)}>
-                  {priceSportDescOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                </IconButton>
-              )}
-            </Grid>
-            {priceSportDescOpen && (
-              <Typography
-                sx={{ fontSize: '0.875rem', color: 'text.secondary', whiteSpace: 'pre-wrap' }}
-              >
-                {data.price_sport_desc}
-              </Typography>
+                <Grid container alignItems='center' spacing={1}>
+                  <Typography>{price_sport}</Typography>
+                  {data.price_sport_desc && (
+                    <IconButton
+                      size='small'
+                      onClick={() => setPriceSportDescOpen(!priceSportDescOpen)}
+                    >
+                      {priceSportDescOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                    </IconButton>
+                  )}
+                </Grid>
+                {priceSportDescOpen && (
+                  <Typography
+                    sx={{ fontSize: '0.875rem', color: 'text.secondary', whiteSpace: 'pre-wrap' }}
+                  >
+                    {data.price_sport_desc}
+                  </Typography>
+                )}
+              </Grid>
             )}
-          </Grid>
-        )}
-        {price_tourist && (
-          <Grid size={isMobile ? 12 : 4}>
-            <Grid container alignItems='center'>
-              <Typography sx={{ fontWeight: 'bold' }}>Предоплата</Typography>
-            </Grid>
+            {sport_prepaymnet && (
+              <Grid>
+                <Grid container alignItems='center'>
+                  <Typography sx={{ fontWeight: 'bold' }}>Предоплата спортивной смены</Typography>
+                </Grid>
 
-            <Grid container alignItems='center' spacing={1}>
-              <Typography>{price_tourist}</Typography>
-            </Grid>
+                <Grid container alignItems='center' spacing={1}>
+                  <Typography>{sport_prepaymnet}</Typography>
+                </Grid>
+              </Grid>
+            )}
           </Grid>
         )}
         {data.price_tourist_desc && (
-          <Grid size={isMobile ? 12 : 4}>
+          <Grid size={12}>
             <Grid container alignItems='center'>
               <Typography sx={{ fontWeight: 'bold' }}>Условия оплаты и отмены</Typography>
             </Grid>
@@ -168,33 +193,37 @@ export const EventInfoRO = ({ eventData: data, isLoading }) => {
             </Grid>
           </Grid>
         )}
-        <Grid container size={12}>
-          <Grid size={isMobile ? 12 : 6}>
-            <Typography sx={{ fontWeight: 'bold' }}>Инструкторско/тренерский состав</Typography>
-            {eventInstructorsData?.map((item) => (
+        {eventInstructorsData && (
+          <Grid container size={12}>
+            <Grid size={isMobile ? 12 : 6}>
+              <Typography sx={{ fontWeight: 'bold' }}>Инструкторско/тренерский состав</Typography>
+              {eventInstructorsData?.map((item) => (
+                <Typography
+                  key={item.id}
+                  sx={dashedTextStyle}
+                  onClick={(e) => handleClickMember(item.member_id, e)}
+                >
+                  {item.fio}
+                </Typography>
+              ))}
+            </Grid>
+          </Grid>
+        )}
+
+        {eventBaseData?.lengtn >= 0 && (
+          <Grid size={12}>
+            <Typography sx={{ fontWeight: 'bold' }}>Проживание</Typography>
+            {eventBaseData?.map((item) => (
               <Typography
                 key={item.id}
                 sx={dashedTextStyle}
-                onClick={(e) => handleClickMember(item.member_id, e)}
+                onClick={(e) => handleClickBase(item.base_id, e)}
               >
-                {item.fio}
+                {item.base_name}
               </Typography>
             ))}
           </Grid>
-        </Grid>
-
-        <Grid size={12}>
-          <Typography sx={{ fontWeight: 'bold' }}>Проживание</Typography>
-          {eventBaseData?.map((item) => (
-            <Typography
-              key={item.id}
-              sx={dashedTextStyle}
-              onClick={(e) => handleClickBase(item.base_id, e)}
-            >
-              {item.base_name}
-            </Typography>
-          ))}
-        </Grid>
+        )}
       </Grid>
       {open && (
         <EventMemberPopover
